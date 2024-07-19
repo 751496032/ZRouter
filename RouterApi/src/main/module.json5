@@ -1,0 +1,9 @@
+{
+  "module": {
+    "name": "RouterApi",
+    "type": "har",
+    "deviceTypes": [
+      "default"
+    ]
+  }
+}

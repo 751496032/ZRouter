@@ -1,0 +1,38 @@
+{
+  "routerMap": [
+    {
+      "name": "LoginPage",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "harALoginPageBuilder",
+      "data": {
+        "needLogin": "false"
+      }
+    },
+    {
+      "name": "harAMainPage",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "harAMainPageBuilder",
+      "data": {
+        "description": "测试",
+        "needLogin": "false"
+      }
+    },
+    {
+      "name": "harAPage1",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "harAPage1Builder",
+      "data": {
+        "needLogin": "true"
+      }
+    },
+    {
+      "name": "harAPage2",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "harAPage2Builder",
+      "data": {
+        "description": "测试",
+        "needLogin": "false"
+      }
+    }
+  ]
+}
