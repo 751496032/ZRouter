@@ -5,7 +5,6 @@
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
 import { InterceptorInfo, ObjectOrNull, OnInterceptorCallback, OnPopCallback, RouteMapData } from '../model/Model'
-import { BusinessError } from '@kit.BasicServicesKit'
 
 
 export class RouterMgr {

@@ -7,6 +7,18 @@ import { ZRouter } from 'routerapi/src/main/ets/api/Router';
 export struct MainPage {
   @State message: string = 'Hello World';
 
+  aboutToAppear(): void {
+    // 添加拦截器
+    ZRouter.addInterceptor('key',(info)=>{
+
+    })
+  }
+
+  aboutToDisappear(): void {
+    // 移除拦截器
+    ZRouter.removeInterceptor('key')
+  }
+
   build() {
     NavDestination(){
       Column({space:12}){
