@@ -8,13 +8,20 @@ struct Index {
   aboutToAppear(): void {
     ZRouter.addGlobalInterceptor((info) => {
       console.log('GlobalInterceptor: ', JSON.stringify(info.data) , info.needLogin)
+      if (info.notRegistered) {
+        // 页面不存在，重定向到提示页
+        ZRouter.redirect("PageNotFound")
+        return
+      }
       let isLogin = AppStorage.get<Boolean>("isLogin")
       if (info.needLogin && !isLogin) {
-        ZRouter.pushForResult("LoginPage", null, (data) => {
+        ZRouter.redirectForResult("LoginPage", null, (data) => {
             if (data.result) {
               // 登录成功
-              promptAction.showToast({ message: '登录成功' })
+              promptAction.showToast({ message: `登录成功` })
+              return true // 返回true 则继续跳转登录前的页面
             }
+            return false
           })
       }
     })
@@ -36,6 +43,15 @@ struct Index {
         Button('toHarBMainPage').onClick((event: ClickEvent) => {
           ZRouter.push("harBMainPage")
 
+        })
+
+        Button('toHspCIndex').onClick((event: ClickEvent) => {
+          ZRouter.push("hspCIndex")
+        })
+
+        Button('redirectToPageNotFound').onClick((event: ClickEvent) => {
+          // 页面不存在，重定向到提示页
+          ZRouter.push("PageNotFound111")
         })
 
       }

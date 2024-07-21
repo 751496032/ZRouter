@@ -14,7 +14,7 @@
       "buildFunction": "harAMainPageBuilder",
       "data": {
         "description": "测试",
-        "needLogin": "false"
+        "needLogin": "true"
       }
     },
     {

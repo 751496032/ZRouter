@@ -1,3 +1,4 @@
+import { ObjectOrNull } from '../model/Model';
 
 /**
  * @author: HZWei
@@ -7,6 +8,11 @@
 export class ObjectUtil {
   private constructor() {
   }
+  /**
+   * 将对象转换成hashCode，用于对象的唯一标识
+   * @param obj
+   * @returns
+   */
   static hashCode(obj: object): number {
     let hash = 0
     let i = 0
@@ -23,8 +29,83 @@ export class ObjectUtil {
     return hash
   }
 
-  static isObject(obj: Object): boolean {
-    return typeof obj === 'object'
+  /**
+   *  判断是否是对象
+   * @param obj
+   * @returns
+   */
+  static isObject(obj: ObjectOrNull): boolean {
+    return typeof obj === 'object' && obj !== null
+  }
+
+  /**
+   * 判断是否为空
+   * @param obj
+   * @returns
+   */
+  static isEmpty(obj: ObjectOrNull): boolean {
+    let isEmpty = obj === undefined || obj === null
+    if (typeof obj === 'string') {
+      isEmpty = isEmpty || obj.trim().length === 0
+    }
+    return isEmpty
+  }
+
+  /**
+   * 判断是否不为空
+   * @param obj
+   * @returns
+   */
+  static isNotEmpty(obj: ObjectOrNull): boolean {
+    return !ObjectUtil.isEmpty(obj)
+  }
+
+  /**
+   * 判断是否存在属性
+   * @param obj
+   * @param propertyName
+   * @returns
+   */
+  static hasProperty(obj: ObjectOrNull, propertyName: string): boolean {
+    if (!ObjectUtil.isObject(obj)) {
+      return false
+    }
+    for (const key of Object.keys(obj!)) {
+      if (key === propertyName) {
+        return true
+      }
+    }
+    return false
+  }
+
+  /**
+   * 对象深拷贝
+   * @param obj
+   * @returns
+   */
+  static  deepCopy(obj: object): object {
+    let newObj: Record<string, Object> | Object[] = Array.isArray(obj) ? [] : {};
+    for (let key of Object.keys(obj)) {
+      if (ObjectUtil.isObject(obj[key])) {
+        newObj[key] = ObjectUtil.deepCopy(obj[key]);
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+    return newObj;
+  }
+
+  /**
+   * 对象浅拷贝
+   * @param obj
+   * @returns
+   */
+   shallowCopy(obj: object): object {
+    let newObj: Record<string, Object> = {};
+    for (let key of Object.keys(obj)) {
+      newObj[key] = obj[key];
+    }
+    return newObj;
   }
 
 }

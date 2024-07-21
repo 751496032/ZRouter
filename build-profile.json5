@@ -42,6 +42,18 @@
     {
       "name": "harB",
       "srcPath": "./harB",
+    },
+    {
+      "name": "hspC",
+      "srcPath": "./hspC",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
     }
   ]
 }

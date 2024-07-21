@@ -1,9 +1,10 @@
 import { Route } from 'routerapi/src/main/ets/annotation/Route';
 import { ZRouter } from 'routerapi/src/main/ets/api/Router';
 
-@Route({name:'harBMainPage'})
+
+@Route({ name: 'hspCPage1', needLogin:true ,extra: 'hsp'})
 @Component
-export struct MainPage {
+export struct Page1 {
   @State message: string = 'Hello World';
 
   build() {
@@ -25,13 +26,17 @@ export struct MainPage {
           ZRouter.push("harBPage2")
         })
 
-        Button('toHspCIndex').onClick((event: ClickEvent) => {
-          ZRouter.push("hspCIndex")
+        Button('toHspCPage1').onClick((event: ClickEvent) => {
+          ZRouter.push("hspCPage1")
+        })
+
+        Button('toHspCPage2').onClick((event: ClickEvent) => {
+          ZRouter.push("harCPage2")
         })
       }
 
     }
-    .title('harBMainPage')
+    .title('hspCPage1')
     .width('100%')
     .height('100%')
 

@@ -1,0 +1,30 @@
+{
+  "routerMap": [
+    {
+      "name": "hspCIndex",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "hspCIndexBuilder",
+      "data": {
+        "needLogin": "true",
+        "extra": "hsp"
+      }
+    },
+    {
+      "name": "hspCPage1",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "hspCPage1Builder",
+      "data": {
+        "needLogin": "true",
+        "extra": "hsp"
+      }
+    },
+    {
+      "name": "hspCPage2",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "hspCPage2Builder",
+      "data": {
+        "needLogin": "false"
+      }
+    }
+  ]
+}
