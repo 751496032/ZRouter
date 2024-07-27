@@ -1,13 +1,22 @@
 import { Route } from 'routerapi/src/main/ets/annotation/Route';
 import { ZRouter } from 'routerapi/src/main/ets/api/Router';
+import { HashMap } from '@kit.ArkTS';
 
 class Test{
     static harBPage1:string ="harBPage1";
 }
+
+
+
 @Route({ name: 'harBPage1', needLogin:true})
 @Component
 export struct Page1 {
   @State message: string = 'Hello World';
+
+  async test(): Promise<HashMap<string, string>> {
+    let map = new HashMap<string, string>()
+    return Promise.resolve(map)
+  }
 
   build() {
     NavDestination(){

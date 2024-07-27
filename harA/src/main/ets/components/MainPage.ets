@@ -1,5 +1,7 @@
-import { Route } from 'routerapi/src/main/ets/annotation/Route'
-import { ZRouter } from 'routerapi/src/main/ets/api/Router';
+import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route';
+import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router';
+
+
 
 
 @Route({ name: "harAMainPage", description: "测试",needLogin: true })

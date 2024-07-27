@@ -1,10 +1,11 @@
+import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router';
+import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route';
+
 /**
  * @author: HZWei
  * @date: 2024/7/18
  * @desc:
  */
-import { Route } from 'routerapi/src/main/ets/annotation/Route'
-import { ZRouter } from 'routerapi/src/main/ets/api/Router';
 
 
 @Route({ name: "harAPage1", needLogin: true })

@@ -1,5 +1,7 @@
 import { Route } from 'routerapi/src/main/ets/annotation/Route';
 import { ZRouter } from 'routerapi/src/main/ets/api/Router';
+import { promptAction } from '@kit.ArkUI';
+import { ObjectOrNull } from 'routerapi/src/main/ets/model/Model';
 
 @Route({name:'harBMainPage'})
 @Component
@@ -9,6 +11,9 @@ export struct MainPage {
   build() {
     NavDestination(){
       Column({space:12}){
+
+
+
         Button('toHarAPage1').onClick((event: ClickEvent) => {
           ZRouter.push("harAPage1")
         })
@@ -25,8 +30,12 @@ export struct MainPage {
           ZRouter.push("harBPage2")
         })
 
-        Button('toHspCIndex').onClick((event: ClickEvent) => {
-          ZRouter.push("hspCIndex")
+        Button('toHspCIndex(测试跳转与返回携带数据)').onClick((event: ClickEvent) => {
+          // ZRouter.push("hspCIndex")
+          let data: Record<string, ObjectOrNull> = { 'msg': 'hello' }
+          ZRouter.pushForResult("hspCIndex", data, (data) => {
+            promptAction.showDialog({ message: `返回携带的数据：${JSON.stringify(data.result)}` })
+          })
         })
       }
 

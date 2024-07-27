@@ -5,18 +5,18 @@ import { Page1 } from "../components/Page1";
 import { Page2 } from "../components/Page2";
 
 @Builder
-export function harALoginPageBuilder(name: string, param?: Object) {
+export function harALoginPageBuilder() {
   LoginPage()
 }
 @Builder
-export function harAMainPageBuilder(name: string, param?: Object) {
+export function harAMainPageBuilder() {
   MainPage()
 }
 @Builder
-export function harAPage1Builder(name: string, param?: Object) {
+export function harAPage1Builder() {
   Page1()
 }
 @Builder
-export function harAPage2Builder(name: string, param?: Object) {
+export function harAPage2Builder() {
   Page2()
 }

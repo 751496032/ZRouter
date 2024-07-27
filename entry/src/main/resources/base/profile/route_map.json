@@ -1,0 +1,20 @@
+{
+  "routerMap": [
+    {
+      "name": "PageNotFound",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "entryEmptyPageBuilder",
+      "data": {
+        "needLogin": "false"
+      }
+    },
+    {
+      "name": "PageNotFound2",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "entryEmptyPage2Builder",
+      "data": {
+        "needLogin": "false"
+      }
+    }
+  ]
+}

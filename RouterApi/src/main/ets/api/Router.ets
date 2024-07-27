@@ -46,12 +46,13 @@ export class ZRouter {
     return ZRouter.getRouterMgr().getNavStackByName(stackName)
   }
 
-  public static pushByStackName(stackName: string, name: string, param?: ObjectOrNull) {
-    ZRouter.getRouterMgr().pushByStackName(stackName, name, param)
+  public static pushByStackName(stackName: string, name: string, param?: ObjectOrNull,
+  animated: boolean = true) {
+    ZRouter.getRouterMgr().pushByStackName(stackName, name, param, animated)
   }
 
-  public static push(name: string, param?: ObjectOrNull) {
-    ZRouter.getRouterMgr().push(name, param)
+  public static push(name: string, param?: ObjectOrNull, animated: boolean = true) {
+    ZRouter.getRouterMgr().push(name, param, animated)
   }
 
   /**
@@ -80,16 +81,16 @@ export class ZRouter {
   }
 
 
-  public static popToName(name: string) {
-    ZRouter.getRouterMgr().popToName(name)
+  public static popToName(name: string,animated: boolean = true) {
+    ZRouter.getRouterMgr().popToName(name, animated)
   }
 
-  public static pop() {
-    ZRouter.getRouterMgr().pop()
+  public static pop(animated: boolean = true) {
+    ZRouter.getRouterMgr().pop(animated)
   }
 
-  public static popWithResult(result?: Object) {
-    ZRouter.getRouterMgr().popWithResult(result)
+  public static popWithResult(result?: Object,animated: boolean = true) {
+    ZRouter.getRouterMgr().popWithResult(result, animated)
   }
 
   public static addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
@@ -118,7 +119,37 @@ export class ZRouter {
   }
 
 
+  /**
+   * @deprecated
+   * @param remove
+   */
   public static pushByTopName(remove: boolean = true) {
     ZRouter.getRouterMgr().pushByTopName(remove)
   }
+
+
+  public static getParamByName(name: string): Record<string, ObjectOrNull>[] {
+    return ZRouter.getRouterMgr().getParamByName(name)
+  }
+
+  public static getParam(): ObjectOrNull {
+    return ZRouter.getRouterMgr().getParam()
+  }
+
+  public static getAnnotationParam() {
+    return ZRouter.getRouterMgr().getAnnotationParam()
+  }
+
+  public static  removeByName(name: string) {
+    ZRouter.getRouterMgr().removeByName(name)
+  }
+
+  public static  moveToTop(name: string) {
+    ZRouter.getRouterMgr().moveToTop(name)
+  }
+
+  public static replacePathByName(name: string, param?: ObjectOrNull, animated: boolean = true) {
+    ZRouter.getRouterMgr().replacePathByName(name, param, animated)
+  }
+
 }

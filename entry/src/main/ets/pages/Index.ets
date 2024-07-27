@@ -1,5 +1,6 @@
 import { promptAction } from '@kit.ArkUI'
 import { ZRouter } from 'routerapi/src/main/ets/api/Router'
+import { List } from '@kit.ArkTS'
 
 
 @Entry
@@ -9,13 +10,14 @@ struct Index {
     ZRouter.addGlobalInterceptor((info) => {
       console.log('GlobalInterceptor: ', JSON.stringify(info.data) , info.needLogin)
       if (info.notRegistered) {
-        // 页面不存在，重定向到提示页
-        ZRouter.redirect("PageNotFound")
+        // 页面不存在，重定向到提示页 PageNotFound
+        ZRouter.redirect("PageNotFound2")
         return
       }
       let isLogin = AppStorage.get<Boolean>("isLogin")
       if (info.needLogin && !isLogin) {
-        ZRouter.redirectForResult("LoginPage", null, (data) => {
+        let param = ZRouter.getParamByName(info.data?.name ?? "")
+        ZRouter.redirectForResult("LoginPage", param, (data) => {
             if (data.result) {
               // 登录成功
               promptAction.showToast({ message: `登录成功` })
@@ -45,8 +47,17 @@ struct Index {
 
         })
 
-        Button('toHspCIndex').onClick((event: ClickEvent) => {
-          ZRouter.push("hspCIndex")
+        Button('toHspCIndex(携带参数)').onClick((event: ClickEvent) => {
+          // let data = 'hello ZRouter'
+          // let data = 100
+          // let data : List<string> = new List<string>()
+          // data.add('hello ZRouter')
+          // data.add('100')
+          let data: Record<string, string | number> = { "msg": "hello ZRouter", "num": 100 }
+          ZRouter.pushForResult("hspCIndex", data, (info) => {
+            console.log('hspCIndex 返回携带的数据：', info.result)
+            promptAction.showDialog({message: `返回携带的数据：${JSON.stringify(info.result)}`})
+          })
         })
 
         Button('redirectToPageNotFound').onClick((event: ClickEvent) => {

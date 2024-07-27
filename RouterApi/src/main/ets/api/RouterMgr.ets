@@ -5,6 +5,7 @@
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
 import { InterceptorInfo, ObjectOrNull, OnInterceptorCallback, OnPopCallback, RouteMapData } from '../model/Model'
+import { BusinessError } from '@kit.BasicServicesKit'
 
 
 export class RouterMgr {
@@ -32,6 +33,7 @@ export class RouterMgr {
       pathStack.setInterception({
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
+          console.log('ZRouter operation: ', operation)
           if (operation === NavigationOperation.PUSH) {
             const interceptorInfo = new InterceptorInfo()
             try {
@@ -51,10 +53,7 @@ export class RouterMgr {
                 callback(interceptorInfo)
               })
             }
-
-
           }
-
         }
       })
     }
@@ -74,17 +73,17 @@ export class RouterMgr {
     return stack
   }
 
-  public pushByStackName(stackName: string, name: string, param?: ObjectOrNull) {
-    this.getNavStackByName(stackName).pushPathByName(name, param)
+  public pushByStackName(stackName: string, name: string, param?: ObjectOrNull, animated: boolean = false) {
+    this.getNavStackByName(stackName).pushPathByName(name, param, animated)
   }
 
   /**
    * 页面跳转
-   * @param name 是Route装饰器上的name
+   * @param name 是Route装饰器上的name属性值
    * @param param 携带的参数
    */
-  public push(name: string, param?: ObjectOrNull) {
-    this.getNavStack().pushPathByName(name, param)
+  public push(name: string, param?: ObjectOrNull, animated: boolean = false) {
+    this.getNavStack().pushPathByName(name, param, animated)
   }
 
   /**
@@ -100,32 +99,58 @@ export class RouterMgr {
         let r = callback?.(data)
         // 默认实现逻辑，一般与登录配合使用
         if (typeof r === 'boolean' && r) {
-          this.pushByTopName()
+          this.pushByTopName(param)
         }
       }
     })
   }
 
+  /**
+   * 携带结果重定向页面
+   * @param name
+   * @param param
+   * @param callback
+   */
   public redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
-    this.pop()
+    this.pop(false)
     this.pushForResult(name, param, callback)
   }
 
+  /**
+   * 重定向页面
+   * @param name
+   */
   public redirect(name: string) {
     this.redirectForResult(name)
   }
 
-  public popToName(name: string) {
-    this.getNavStack().popToName(name)
+  /**
+   * 关闭到指定名称页面
+   * @param name
+   * @param animated
+   */
+  public popToName(name: string, animated: boolean = true) {
+    this.getNavStack().popToName(name, animated)
   }
 
-  public pop() {
-    this.getNavStack().pop()
+  /**
+   * 关闭当前页面
+   * @param animated
+   */
+  public pop(animated: boolean = true) {
+    this.getNavStack().pop(animated)
   }
 
-  public popWithResult(result?: Object) {
-    this.getNavStack().pop(result, false)
+  /**
+   * 带结果的关闭页面
+   * @see {popWithResult}
+   * @param result
+   * @param animated
+   */
+  public popWithResult(result?: Object, animated: boolean = true) {
+    this.getNavStack().pop(result, animated)
   }
+
 
   public addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
     this.addInterceptor('', callback)
@@ -142,6 +167,9 @@ export class RouterMgr {
     }
   }
 
+  /**
+   * 清空页面栈，返回Navigation主页
+   */
   public clear() {
     this.getNavStack().clear()
   }
@@ -161,29 +189,77 @@ export class RouterMgr {
   }
 
 
-  public pushByTopName(remove: boolean = true) {
+  public  pushByTopName(param?: ObjectOrNull, remove: boolean = true) {
     try {
-      // if (this.pageInfoFromStackTop?.data?.extra === 'hsp') {
-      //   let param = this.pageInfoFromStackTop?.toContext?.pathInfo?.param as Object[]
-      //   this.push(this.pageInfoFromStackTop?.data?.name, param)
-      //   return
-      // }
       let name = this.getTopPathName()
       if (!name) {
         name = this.pageInfoFromStackTop?.data?.name ?? null
       }
       if (name) {
-        let param: Object[] = this.getNavStack().getParamByName(name) as Object[]
-        if (ObjectUtil.isEmpty(param)) {
-          param = this.pageInfoFromStackTop?.toContext?.pathInfo?.param as Object[]
-        }
+        // if (ObjectUtil.isEmpty(param)) {
+        //    param = this.getParamByName(name) as ObjectOrNull
+        //   if (ObjectUtil.isEmpty(param)) {
+        //     param = this.pageInfoFromStackTop?.toContext?.pathInfo?.param as ObjectOrNull
+        //   }
+        // }
         if (remove) {
           this.getNavStack().removeByName(name)
         }
         this.push(name, param)
       }
     } catch (e) {
-      console.error('ZRouter: ',e )
+      console.error('ZRouter: ', e)
     }
+  }
+
+  /**
+   * 获取跳转携带的参数
+   * @param name
+   * @returns
+   */
+  public getParamByName(name: string): Record<string, ObjectOrNull>[] {
+    return this.getNavStack().getParamByName(name) as Record<string, ObjectOrNull>[]
+  }
+
+  /**
+   * 获取页面携带的参数
+   * @returns
+   */
+  public getParam(): ObjectOrNull {
+    let name = this.getTopPathName()
+    if (!name) {
+      name = this.pageInfoFromStackTop?.data?.name ?? ""
+    }
+    if (name) {
+      try {
+        return this.getParamByName(name)[0]
+      } catch (e) {
+        console.error('ZRouter: ', e)
+        return null
+      }
+    } else {
+      return null
+    }
+
+  }
+
+  /**
+   * 获取栈顶页面的装饰器参数
+   * @returns
+   */
+  public getAnnotationParam(): RouteMapData | undefined {
+    return this.pageInfoFromStackTop?.data
+  }
+
+  public removeByName(name: string) {
+    this.getNavStack().removeByName(name)
+  }
+
+  public moveToTop(name: string) {
+    this.getNavStack().moveToTop(name)
+  }
+
+  public replacePathByName(name: string, param?: ObjectOrNull,animated: boolean = true) {
+    this.getNavStack().replacePathByName(name, param, animated)
   }
 }

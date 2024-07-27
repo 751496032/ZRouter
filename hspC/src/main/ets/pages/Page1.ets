@@ -31,7 +31,7 @@ export struct Page1 {
         })
 
         Button('toHspCPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harCPage2")
+          ZRouter.push("hspCPage2")
         })
       }
 
