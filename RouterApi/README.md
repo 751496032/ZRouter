@@ -53,7 +53,29 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 }
 ```
 
+或者安装远程包：
+
+
+```
+  "dependencies": {
+//    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
+    "router-register-plugin":"1.0.2"
+  },
+```
+
+
+
+> 版本记录：https://www.npmjs.com/package/router-register-plugin?activeTab=versions
+
+
 最后记得Sync Now或重新build让插件安装生效。
+
+或者使用hvigorw命令行工具执行任一命令，命令行工具会自动执行安装构建依赖。
+
+
+```
+hvigorw --sync
+```
 
 ### 初始配置
 
@@ -299,7 +321,8 @@ struct Index {
       }
       let isLogin = AppStorage.get<Boolean>("isLogin")
       if (info.needLogin && !isLogin) {
-        ZRouter.redirectForResult("LoginPage", null, (data) => {
+        let param = ZRouter.getParamByName(info.data?.name ?? "")
+        ZRouter.redirectForResult("LoginPage", param, (data) => {
             if (data.result) {
               // 登录成功
               promptAction.showToast({ message: `登录成功` })
