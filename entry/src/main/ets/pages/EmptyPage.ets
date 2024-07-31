@@ -11,6 +11,23 @@ import { HashMap } from '@kit.ArkTS'
 @Component
 export struct EmptyPage {
 
+
+  aboutToAppear(): void {
+    const r: Record<string, string> = {}
+    if (r.id) {
+
+    }
+    this.test()
+  }
+
+  @Builder
+  private buildItem(){
+    Column(){
+
+    }
+  }
+
+
   async test(): Promise<HashMap<string, string>> {
     let map = new HashMap<string, string>()
     return Promise.resolve(map)
@@ -60,5 +77,19 @@ export struct EmptyPage2 {
 
     }.width('100%')
     .title('PageNotFound2')
+  }
+}
+
+@Component
+export struct  PageNotFound3{
+  build() {
+  }
+}
+
+@CustomDialog
+export struct Dialog {
+  private controller: CustomDialogController
+
+  build() {
   }
 }
