@@ -1,5 +1,6 @@
-import { Route } from 'routerapi/src/main/ets/annotation/Route';
-import { ZRouter } from 'routerapi/src/main/ets/api/Router';
+import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route';
+import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router';
+
 
 @Route({name:'harBPage2'})
 @Component
