@@ -1,7 +1,7 @@
-import { Route } from 'routerapi/src/main/ets/annotation/Route';
-import { ZRouter } from 'routerapi/src/main/ets/api/Router';
+import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router';
 import { promptAction } from '@kit.ArkUI';
-import { ObjectOrNull } from 'routerapi/src/main/ets/model/Model';
+import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route';
+import { ObjectOrNull } from '@hzw/zrouter/src/main/ets/model/Model';
 
 @Route({name:'harBMainPage'})
 @Component

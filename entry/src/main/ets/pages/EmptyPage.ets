@@ -1,15 +1,16 @@
+import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route'
 /**
  * @author: HZWei
  * @date: 2024/7/21
  * @desc: 404页面  测试一个ets文件多个子页面
  */
-import { Route } from 'routerapi/src/main/ets/annotation/Route'
-import { ZRouter } from 'routerapi/src/main/ets/api/Router'
+
 import { HashMap } from '@kit.ArkTS'
+import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router'
 
 @Route({name: 'PageNotFound'})
 @Component
-export struct EmptyPage {
+export default struct EmptyPage {
 
 
   aboutToAppear(): void {
