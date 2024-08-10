@@ -1,7 +1,6 @@
-import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router';
 
 import { HashMap } from '@kit.ArkTS';
-import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route';
+import { Route, ZRouter } from 'routerapi';
 
 class Test{
     static harBPage1:string ="harBPage1";

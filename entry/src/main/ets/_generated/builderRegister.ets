@@ -1,5 +1,5 @@
 
-import { EmptyPage } from "../pages/EmptyPage";
+import EmptyPage from "../pages/EmptyPage";
 import { EmptyPage2 } from "../pages/EmptyPage";
 
 @Builder

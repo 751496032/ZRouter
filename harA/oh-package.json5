@@ -6,7 +6,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-//    "@hzw/zrouter": "^1.0.1"
+    "routerapi": "file:../RouterApi"
   },
   "devDependencies": {},
   "dynamicDependencies": {}

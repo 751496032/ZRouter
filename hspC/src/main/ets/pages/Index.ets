@@ -1,5 +1,4 @@
-import { Route } from 'routerapi/src/main/ets/annotation/Route';
-import { ZRouter } from 'routerapi/src/main/ets/api/Router';
+import { Route, ZRouter } from 'routerapi';
 
 @Route({ name: "hspCIndex", needLogin: true, extra: 'hsp' })
 @Entry

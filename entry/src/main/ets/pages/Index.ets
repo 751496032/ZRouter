@@ -1,6 +1,6 @@
 import { promptAction } from '@kit.ArkUI'
 import { List } from '@kit.ArkTS'
-import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router'
+import { ZRouter } from 'routerapi'
 
 
 @Entry

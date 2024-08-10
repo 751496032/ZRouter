@@ -1,4 +1,3 @@
-import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route'
 /**
  * @author: HZWei
  * @date: 2024/7/21
@@ -6,7 +5,7 @@ import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route'
  */
 
 import { HashMap } from '@kit.ArkTS'
-import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router'
+import { Route, ZRouter } from 'routerapi'
 
 @Route({name: 'PageNotFound'})
 @Component

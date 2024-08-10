@@ -1,5 +1,4 @@
-import { ZRouter } from '@hzw/zrouter/src/main/ets/api/Router';
-import { Route } from '@hzw/zrouter/src/main/ets/annotation/Route';
+import { Route, ZRouter } from 'routerapi';
 
 /**
  * @author: HZWei
