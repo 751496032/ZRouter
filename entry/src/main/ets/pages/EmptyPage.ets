@@ -13,10 +13,10 @@ export struct EmptyPage {
 
 
   aboutToAppear(): void {
-    const r: Record<string, string> = {}
-    if (r.id) {
-
-    }
+    // const r: Record<string, string> = {}
+    // if (r.id) {
+    //
+    // }
     this.test()
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@hzw/zrouter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ZRouter是基于Navigation系统路由表和Hvigor插件的动态路由方案，可以轻松实现页面跳转，实现模块间的解耦",
   "main": "Index.ets",
   "author": "HZWei",

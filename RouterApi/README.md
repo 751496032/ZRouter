@@ -20,7 +20,7 @@ ZRouter是基于Navigation系统路由表和Hvigor插件实现的动态路由方
 
 <center>
 
-![img.png](img/img.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/201d21e432674db28b026d0af0341a2e.png)
 
 </center>
 
@@ -39,7 +39,7 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 
 <center>
 
-![img.png](img/img2.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/9e9b0e0732de42028807d0baa7f1d3d1.png)
 </center>
 
 在hvigor/hvigor-config.json5文件中进行依赖安装，如下：
@@ -406,18 +406,23 @@ ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封
 
 <center>
 
-![img.png](img/img4.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/22886175c0e64a2abfc623e9ed0d052b.png)
 </center>
 
 
 ## 源码
 
-- router-register-plugin插件
-    - github：https://github.com/751496032/RouterRegisterPlugin
-    - gitee：https://gitee.com/common-apps/RouterRegisterPlugin
 - ZRouter
-    - github：https://github.com/751496032/ZRouter
-    - gitee：https://gitee.com/common-apps/ZRouter
+  - github：https://github.com/751496032/ZRouter
+  - gitee：https://gitee.com/common-apps/ZRouter
+- router-register-plugin插件
+  - github：https://github.com/751496032/RouterRegisterPlugin
+  - gitee：https://gitee.com/common-apps/RouterRegisterPlugin
+
+
+## 交流
+
+如使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(v: 751496032)。
 
 ## 参考
 
