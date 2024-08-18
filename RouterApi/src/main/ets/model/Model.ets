@@ -7,8 +7,7 @@ import { ObjectUtil } from '../utlis/ObjectUtil'
 
 export class InterceptorInfo {
   toContext: NavDestinationContext | undefined
-  data?: RouteMapData
-  // private _needLogin: boolean = false
+  data?: RouteMetadata
 
 
   public get needLogin(): boolean {
@@ -27,7 +26,7 @@ export class InterceptorInfo {
 }
 
 
-export class RouteMapData {
+export class RouteMetadata {
   name: string = ''
   description?: string
   extra?: string
@@ -35,7 +34,17 @@ export class RouteMapData {
 }
 
 
+export class InitConfig {
+  isShowLog: boolean = true
+}
+
+export class PopResult<T> {
+  data?: T;
+}
+
 export type OnPopCallback = (data: PopInfo) => void | boolean
+
+export type OnPopWithResultCallback<T> = (data: PopResult<T>) => void | boolean
 
 export type OnInterceptorCallback = (data: InterceptorInfo) => void | boolean
 

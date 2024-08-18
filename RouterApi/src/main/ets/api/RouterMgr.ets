@@ -4,8 +4,14 @@
  * @desc:
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
-import { InterceptorInfo, ObjectOrNull, OnInterceptorCallback, OnPopCallback, RouteMapData } from '../model/Model'
-import { BusinessError } from '@kit.BasicServicesKit'
+import { InterceptorInfo, ObjectOrNull, OnInterceptorCallback, OnPopCallback,
+  OnPopWithResultCallback,
+  PopResult,
+  RouteMetadata } from '../model/Model'
+import LogUtil from '../utlis/LogUtil'
+import { emitter } from '@kit.BasicServicesKit'
+import { ArrayList } from '@kit.ArkTS'
+import uiObserver from '@ohos.arkui.observer';
 
 
 export class RouterMgr {
@@ -13,8 +19,26 @@ export class RouterMgr {
   private interceptions: Map<string, OnInterceptorCallback> =
     new Map<string, OnInterceptorCallback>()
   private pageInfoFromStackTop: InterceptorInfo | undefined
+  private registerEventNames = new ArrayList<string>()
 
   private constructor() {
+    uiObserver.on('navDestinationUpdate', (info) => {
+       const name =  info.name.toString()
+      switch (info.state) {
+        case uiObserver.NavDestinationState.ON_WILL_DISAPPEAR:
+          LogUtil.log(name, 'onWillDisappear')
+          break
+        case uiObserver.NavDestinationState.ON_DISAPPEAR:
+          LogUtil.log(name, 'onDisappear')
+          const indexList = this.getNavStack().getIndexByName(name)
+          if (indexList.length == 0) {
+            this.unregisterEvent(name)
+          }
+
+          break
+
+      }
+    });
   }
 
   private static instance: RouterMgr
@@ -33,7 +57,7 @@ export class RouterMgr {
       pathStack.setInterception({
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
-          console.log('ZRouter operation: ', operation)
+          LogUtil.log('ZRouter operation: ', operation)
           if (operation === NavigationOperation.PUSH) {
             const interceptorInfo = new InterceptorInfo()
             try {
@@ -41,13 +65,13 @@ export class RouterMgr {
               interceptorInfo.toContext = toContext
               const data = toContext.getConfigInRouteMap()?.data
               if (ObjectUtil.isObject(data)) {
-                const mapData: RouteMapData = data as RouteMapData
+                const mapData: RouteMetadata = data as RouteMetadata
                 mapData.name = toContext.getConfigInRouteMap()?.name
                 interceptorInfo.data = mapData
               }
               this.pageInfoFromStackTop = interceptorInfo
             } catch (e) {
-              console.error('ZRouter: 页面配置错误，请检查是否正确配置')
+              LogUtil.error('ZRouter push: 页面配置错误，请检查是否正确配置')
             } finally {
               this.interceptions.forEach((callback) => {
                 callback(interceptorInfo)
@@ -105,6 +129,20 @@ export class RouterMgr {
     })
   }
 
+  public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopWithResultCallback<T>) {
+    const topName = this.getTopPathName()
+    this.getNavStack().pushDestinationByName(name, param).then(() => {
+      if (ObjectUtil.isNotEmpty(topName)) {
+        this.registerEvent<T>(topName!, callback)
+      }
+
+    })
+      .catch((e: Error) => {
+        LogUtil.error('ZRouter: ', e)
+      })
+
+  }
+
   /**
    * 携带结果重定向页面
    * @param name
@@ -150,6 +188,19 @@ export class RouterMgr {
   public popWithResult(result?: Object, animated: boolean = true) {
     this.getNavStack().pop(result, animated)
   }
+
+
+  /**
+   * 带结果的关闭页面
+   * @param name 路由名称
+   * @param result
+   * @param animated
+   */
+  public popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
+    this.getNavStack().popToName(name, result, animated)
+    this.sendEvent<T>(name, result)
+  }
+
 
 
   public addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
@@ -208,7 +259,7 @@ export class RouterMgr {
         this.push(name, param)
       }
     } catch (e) {
-      console.error('ZRouter: ', e)
+      LogUtil.error('ZRouter: ', e)
     }
   }
 
@@ -234,7 +285,7 @@ export class RouterMgr {
       try {
         return this.getParamByName(name)[0]
       } catch (e) {
-        console.error('ZRouter: ', e)
+        LogUtil.error('ZRouter: ', e)
         return null
       }
     } else {
@@ -247,7 +298,7 @@ export class RouterMgr {
    * 获取栈顶页面的装饰器参数
    * @returns
    */
-  public getAnnotationParam(): RouteMapData | undefined {
+  public getAnnotationParam(): RouteMetadata | undefined {
     return this.pageInfoFromStackTop?.data
   }
 
@@ -261,5 +312,29 @@ export class RouterMgr {
 
   public replacePathByName(name: string, param?: ObjectOrNull,animated: boolean = true) {
     this.getNavStack().replacePathByName(name, param, animated)
+  }
+
+  private isRegisterEvent(name: string) {
+    return emitter.getListenerCount(name) > 0
+  }
+
+  private registerEvent<T>(name: string, callback?: OnPopWithResultCallback<T>) {
+    emitter.on(name, (data: emitter.EventData) => {
+      callback?.(data.data as PopResult<T>)
+    })
+  }
+
+  private unregisterEvent(name: string) {
+    if (this.isRegisterEvent(name)) {
+      emitter.off(name)
+    }
+  }
+
+  private sendEvent<T>(name: string, result?: T) {
+    if (this.isRegisterEvent(name)) {
+      const data = new PopResult<T>()
+      data.data = result
+      emitter.emit(name, { data: data })
+    }
   }
 }

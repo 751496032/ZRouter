@@ -4,8 +4,9 @@
  * @desc:
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
-import { InterceptorInfo, ObjectOrNull, OnPopCallback } from '../model/Model'
+import { InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopWithResultCallback } from '../model/Model'
 import { RouterMgr } from './RouterMgr'
+import LogUtil from '../utlis/LogUtil'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -15,11 +16,12 @@ export class ZRouter {
   private constructor() {
   }
 
-  public static init(isHspModuleExist: boolean = false) {
+  public static init(isDependHspModule: boolean = false, config: InitConfig = { isShowLog: true }) {
     ZRouter.routerMgr = RouterMgr.getInstance()
-    if (isHspModuleExist) {
+    if (isDependHspModule) {
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
+    LogUtil.config = config
   }
 
   private static getRouterMgr(): RouterMgr {
@@ -66,6 +68,11 @@ export class ZRouter {
     ZRouter.getRouterMgr().pushForResult(name, param, callback)
   }
 
+
+  public static pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopWithResultCallback<T>) {
+    ZRouter.getRouterMgr().pushNavForResult<T>(name, param, callback)
+  }
+
   /**
    * 重定向页面，可携带返回数据
    * @param name
@@ -91,6 +98,10 @@ export class ZRouter {
 
   public static popWithResult(result?: Object,animated: boolean = true) {
     ZRouter.getRouterMgr().popWithResult(result, animated)
+  }
+
+  public static popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
+    ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
   }
 
   public static addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {

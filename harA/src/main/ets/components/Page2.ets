@@ -33,7 +33,7 @@ export struct Page2 {
       }
 
     }
-    .title('harAPage1')
+    .title('harAPage2')
     .width('100%')
     .height('100%')
 

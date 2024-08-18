@@ -65,6 +65,11 @@ struct Index {
           ZRouter.push("PageNotFound111")
         })
 
+        Button('监听pop携带的参数').onClick((event: ClickEvent) => {
+          // 页面不存在，重定向到提示页
+          ZRouter.push("harAPage3")
+        })
+
       }
     }
     .title('Main')
