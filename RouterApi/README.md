@@ -418,7 +418,7 @@ ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封
 
 ## 交流
 
-如使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(v: 751496032)。
+如使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(+v: 751496032)。
 
 ## 参考
 
