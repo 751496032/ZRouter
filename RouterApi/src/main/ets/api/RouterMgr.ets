@@ -140,15 +140,14 @@ export class RouterMgr {
   public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
     const topName = this.getTopPathName()
     this.getNavStack().pushDestinationByName(name, param).then(() => {
+      let eName = ''
       if (ObjectUtil.isNotEmpty(topName)) {
-        this.registerEvent<T>(topName!, callback)
+        eName = topName!
       } else {
-        const n = emitter.getListenerCount(NavRootEvent)
-        if (n > 0) {
-          emitter.off(NavRootEvent)
-        }
-        this.registerEvent<T>(NavRootEvent, callback)
+        eName = NavRootEvent
       }
+      this.unregisterEvent(eName)
+      this.registerEvent<T>(eName, callback)
     })
       .catch((e: Error) => {
         LogUtil.error('error: ', e)
@@ -367,7 +366,10 @@ export class RouterMgr {
 
   private unregisterEvent(name: string) {
     if (this.isRegisterEvent(name)) {
-      emitter.off(name)
+     let n =  emitter.getListenerCount(name);
+      for (let i = 0; i < n; i++) {
+        emitter.off(name)
+      }
     }
   }
 
