@@ -1,4 +1,5 @@
 import { Route, ZRouter } from 'routerapi';
+import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil';
 
 
 @Route({ name: "harAPage3" })
@@ -9,6 +10,7 @@ export struct Page3 {
   build() {
     NavDestination(){
       Column({space:12}){
+        Text(this.message)
         Button('pushForResult').onClick((event: ClickEvent) => {
           // 上一个页面返回
           ZRouter.pushForResult("hspCIndex", 'hello', (data) => {
@@ -19,8 +21,14 @@ export struct Page3 {
         Button('pushNavForResult').onClick((event: ClickEvent) => {
           // 上上个页面返回
           ZRouter.pushNavForResult<string>("harAPage4", 'hello', (r) => {
-             console.log("result: ", r.data)
+            let msg = `from: ${r.from} data: ${r.data}`;
+            this.message = msg
+            LogUtil.log(msg);
           })
+        })
+
+        Button('popToRootWithResult').onClick((event: ClickEvent) => {
+          ZRouter.popToRootWithResult<string>('哈哈')
         })
 
       }

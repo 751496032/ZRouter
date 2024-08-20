@@ -11,12 +11,12 @@ export default class LogUtil {
 
   static log(msg: string, ...args: ObjectOrNull[]) {
     if (LogUtil.closeLog()) return
-    console.log(msg, ...args)
+    console.log("ZRouter -> " + msg, ...args)
   }
 
   static error(msg: string, ...args: ObjectOrNull[]) {
     if (LogUtil.closeLog()) return
-    console.error(msg, ...args)
+    console.error("ZRouter -> " + msg, ...args)
   }
 
   private static closeLog(): boolean {

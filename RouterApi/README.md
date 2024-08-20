@@ -59,7 +59,7 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.2"
+    "router-register-plugin":"1.0.4"
   },
 ```
 
@@ -174,14 +174,10 @@ ohpm install ../libs/RouterApi.har
 
 <center>
 
-![img.png](img/img3.png)
+[模块依赖图](https://i-blog.csdnimg.cn/direct/213307fcfc9b4d6c9d39b67fbedc5355.png)
+
 </center>
 
-页面跳转描述如下：
-
-- 在entry模块可以跳转到A、B、C模块页面；
-- 在A模块可以跳转到entry、B、C模块页面；
-- 依次类推
 
 
 1、在EntryAbility的onCreate()方法中初始化ZRouter

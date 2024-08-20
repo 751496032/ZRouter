@@ -4,8 +4,10 @@
  * @desc:
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
-import { InterceptorInfo, ObjectOrNull, OnInterceptorCallback, OnPopCallback,
-  OnPopWithResultCallback,
+import { InterceptorInfo,
+  NavRootEvent,
+  ObjectOrNull, OnInterceptorCallback, OnPopCallback,
+  OnPopResultCallback,
   PopResult,
   RouteMetadata } from '../model/Model'
 import LogUtil from '../utlis/LogUtil'
@@ -29,12 +31,11 @@ export class RouterMgr {
           LogUtil.log(name, 'onWillDisappear')
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
-          LogUtil.log(name, 'onDisappear')
           const indexList = this.getNavStack().getIndexByName(name)
+          LogUtil.log(name, 'onDisappear: ' + indexList.length)
           if (indexList.length == 0) {
             this.unregisterEvent(name)
           }
-
           break
 
       }
@@ -57,7 +58,7 @@ export class RouterMgr {
       pathStack.setInterception({
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
-          LogUtil.log('ZRouter operation: ', operation)
+          LogUtil.log('operation: ', operation)
           if (operation === NavigationOperation.PUSH) {
             const interceptorInfo = new InterceptorInfo()
             try {
@@ -71,7 +72,7 @@ export class RouterMgr {
               }
               this.pageInfoFromStackTop = interceptorInfo
             } catch (e) {
-              LogUtil.error('ZRouter push: 页面配置错误，请检查是否正确配置')
+              LogUtil.error('push: 页面配置错误，请检查是否正确配置')
             } finally {
               this.interceptions.forEach((callback) => {
                 callback(interceptorInfo)
@@ -129,16 +130,28 @@ export class RouterMgr {
     })
   }
 
-  public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopWithResultCallback<T>) {
+  /**
+   * 监听返回结果跳转，必须与popNavWithResult配合使用
+   * @see {popNavWithResult}
+   * @param name
+   * @param param
+   * @param callback
+   */
+  public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
     const topName = this.getTopPathName()
     this.getNavStack().pushDestinationByName(name, param).then(() => {
       if (ObjectUtil.isNotEmpty(topName)) {
         this.registerEvent<T>(topName!, callback)
+      } else {
+        const n = emitter.getListenerCount(NavRootEvent)
+        if (n > 0) {
+          emitter.off(NavRootEvent)
+        }
+        this.registerEvent<T>(NavRootEvent, callback)
       }
-
     })
       .catch((e: Error) => {
-        LogUtil.error('ZRouter: ', e)
+        LogUtil.error('error: ', e)
       })
 
   }
@@ -191,14 +204,42 @@ export class RouterMgr {
 
 
   /**
-   * 带结果的关闭页面
+   * 带结果的关闭页面 ，必须与pushNavForResult配合使用
+   * @see {pushNavForResult}
    * @param name 路由名称
    * @param result
    * @param animated
    */
   public popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
-    this.getNavStack().popToName(name, result, animated)
-    this.sendEvent<T>(name, result)
+    const currentName = this.getTopPathName()
+    if (ObjectUtil.isEmpty(currentName)) {
+      LogUtil.error(currentName + " 不存在路由栈顶中")
+      return;
+    }
+    if (ObjectUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
+      if (currentName !== name) {
+        this.getNavStack().popToName(name, result, animated)
+      } else {
+        LogUtil.error('不支持关闭当前页， 请使用popWithResult')
+      }
+    }else {
+      LogUtil.error(name + " 不存在路由栈中")
+      return
+    }
+    this.sendEvent<T>(name!,currentName!, result)
+
+  }
+
+
+  public popToRootWithResult<T>(result?: T, animated: boolean = true){
+    const currentName = this.getTopPathName()
+    if (ObjectUtil.isEmpty(currentName)) {
+      LogUtil.error(currentName + " 不存在路由栈顶中")
+      return;
+    }
+    this.getNavStack().clear(animated)
+    const name = NavRootEvent
+    this.sendEvent<T>(name!,currentName!, result)
   }
 
 
@@ -259,7 +300,7 @@ export class RouterMgr {
         this.push(name, param)
       }
     } catch (e) {
-      LogUtil.error('ZRouter: ', e)
+      LogUtil.error('error: ', e)
     }
   }
 
@@ -285,7 +326,7 @@ export class RouterMgr {
       try {
         return this.getParamByName(name)[0]
       } catch (e) {
-        LogUtil.error('ZRouter: ', e)
+        LogUtil.error('err: ', e)
         return null
       }
     } else {
@@ -318,7 +359,7 @@ export class RouterMgr {
     return emitter.getListenerCount(name) > 0
   }
 
-  private registerEvent<T>(name: string, callback?: OnPopWithResultCallback<T>) {
+  private registerEvent<T>(name: string, callback?: OnPopResultCallback<T>) {
     emitter.on(name, (data: emitter.EventData) => {
       callback?.(data.data as PopResult<T>)
     })
@@ -330,11 +371,12 @@ export class RouterMgr {
     }
   }
 
-  private sendEvent<T>(name: string, result?: T) {
+  private sendEvent<T>(name: string, from: string, result?: T) {
     if (this.isRegisterEvent(name)) {
-      const data = new PopResult<T>()
-      data.data = result
-      emitter.emit(name, { data: data })
+      const r = new PopResult<T>()
+      r.data = result
+      r.from = from
+      emitter.emit(name, { data: r })
     }
   }
 }

@@ -1,6 +1,7 @@
 import { promptAction } from '@kit.ArkUI'
 import { List } from '@kit.ArkTS'
-import { ZRouter } from 'routerapi'
+import { PopResult, ZRouter } from 'routerapi'
+import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 
 
 @Entry
@@ -67,7 +68,10 @@ struct Index {
 
         Button('监听pop携带的参数').onClick((event: ClickEvent) => {
           // 页面不存在，重定向到提示页
-          ZRouter.push("harAPage3")
+          // ZRouter.push("harAPage3")
+          ZRouter.pushNavForResult<string>("harAPage3", null, (r: PopResult<string>) => {
+            LogUtil.log("index result: ", r.data ," from: ", r.from);
+          })
         })
 
       }

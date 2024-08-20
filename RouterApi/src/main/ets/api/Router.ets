@@ -4,7 +4,7 @@
  * @desc:
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
-import { InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopWithResultCallback } from '../model/Model'
+import { InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopResultCallback } from '../model/Model'
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
 
@@ -69,7 +69,7 @@ export class ZRouter {
   }
 
 
-  public static pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopWithResultCallback<T>) {
+  public static pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
     ZRouter.getRouterMgr().pushNavForResult<T>(name, param, callback)
   }
 
@@ -102,6 +102,11 @@ export class ZRouter {
 
   public static popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
     ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
+  }
+
+
+  public static popToRootWithResult<T>(result?: T, animated: boolean = true) {
+    ZRouter.getRouterMgr().popToRootWithResult<T>(result, animated)
   }
 
   public static addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {

@@ -1,4 +1,6 @@
 import { Route, ZRouter } from 'routerapi';
+import systemTime from '@ohos.systemTime';
+import { systemDateTime } from '@kit.BasicServicesKit';
 
 
 @Route({ name: "harAPage5" })
@@ -11,7 +13,11 @@ export struct Page5 {
       Column({space:12}){
 
         Button('popNavWithResult').onClick((event: ClickEvent) => {
-          ZRouter.popNavWithResult<string>('harAPage3', 'result data')
+          ZRouter.popNavWithResult<string>('harAPage3', 'result data 11 ' + systemDateTime.getTime())
+        })
+
+        Button('popRoot').onClick((event: ClickEvent) => {
+          ZRouter.popToRootWithResult<string>('result data 22 ' + + systemDateTime.getTime())
         })
 
       }

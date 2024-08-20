@@ -40,12 +40,15 @@ export class InitConfig {
 
 export class PopResult<T> {
   data?: T;
+  from?: string
 }
 
 export type OnPopCallback = (data: PopInfo) => void | boolean
 
-export type OnPopWithResultCallback<T> = (data: PopResult<T>) => void | boolean
+export type OnPopResultCallback<T> = (data: PopResult<T>) => void | boolean
 
 export type OnInterceptorCallback = (data: InterceptorInfo) => void | boolean
 
 export type ObjectOrNull = Object | undefined | null
+
+export const NavRootEvent = 'NavRoot'

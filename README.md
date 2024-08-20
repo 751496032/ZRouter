@@ -59,7 +59,7 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.2"
+    "router-register-plugin":"1.0.4"
   },
 ```
 
@@ -177,11 +177,7 @@ ohpm install ../libs/RouterApi.har
 ![img.png](img/img3.png)
 </center>
 
-页面跳转描述如下：
 
-- 在entry模块可以跳转到A、B、C模块页面；
-- 在A模块可以跳转到entry、B、C模块页面；
-- 依次类推
 
 
 1、在EntryAbility的onCreate()方法中初始化ZRouter
@@ -409,15 +405,21 @@ ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封
 ![img.png](img/img4.png)
 </center>
 
+## 交流
+
+如使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(v: 751496032)。
+
 
 ## 源码
+
+- ZRouter
+  - github：https://github.com/751496032/ZRouter
+  - gitee：https://gitee.com/common-apps/ZRouter
 
 - router-register-plugin插件
     - github：https://github.com/751496032/RouterRegisterPlugin
     - gitee：https://gitee.com/common-apps/RouterRegisterPlugin
-- ZRouter
-    - github：https://github.com/751496032/ZRouter
-    - gitee：https://gitee.com/common-apps/ZRouter
+
 
 ## 参考
 
