@@ -67,7 +67,6 @@ struct Index {
         })
 
         Button('监听pop携带的参数').onClick((event: ClickEvent) => {
-          // 页面不存在，重定向到提示页
           // ZRouter.push("harAPage3")
           ZRouter.pushNavForResult<string>("harAPage3", null, (r: PopResult<string>) => {
             LogUtil.log("index result: ", r.data ," from: ", r.from);

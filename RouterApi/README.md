@@ -53,7 +53,7 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 }
 ```
 
-或者安装远程包：
+**或者安装远程包(建议使用远程包，离线包可能不是最新的)**
 
 
 ```
@@ -65,8 +65,8 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 
 
 
-> 版本记录：https://www.npmjs.com/package/router-register-plugin?activeTab=versions
-
+> **[点击查看插件最新版本
+](https://www.npmjs.com/package/router-register-plugin?activeTab=versions)**
 
 最后记得Sync Now或重新build让插件安装生效。
 
