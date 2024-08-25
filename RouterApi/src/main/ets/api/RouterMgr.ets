@@ -323,7 +323,8 @@ export class RouterMgr {
     }
     if (name) {
       try {
-        return this.getParamByName(name)[0]
+        let params = this.getParamByName(name)
+        return params[params.length-1]
       } catch (e) {
         LogUtil.error('err: ', e)
         return null
