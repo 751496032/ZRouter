@@ -15,11 +15,11 @@ struct Index {
         ZRouter.redirect("PageNotFound2")
         return
       }
-      let isLogin = AppStorage.get<Boolean>("isLogin")
+      let isLogin = AppStorage.get<boolean>("isLogin")
       if (info.needLogin && !isLogin) {
         let param = ZRouter.getParamByName(info.data?.name ?? "")
-        ZRouter.redirectForResult("LoginPage", param, (data) => {
-            if (data.result) {
+        ZRouter.redirectForResult2<boolean>("LoginPage", param, (data) => {
+            if (data.data) {
               // 登录成功
               promptAction.showToast({ message: `登录成功` })
               return true // 返回true 则继续跳转登录前的页面
@@ -68,9 +68,15 @@ struct Index {
 
         Button('监听pop携带的参数').onClick((event: ClickEvent) => {
           // ZRouter.push("harAPage3")
-          ZRouter.pushNavForResult<string>("harAPage3", null, (r: PopResult<string>) => {
+          ZRouter.pushNavForResult<string>("harAPage3", "root data", (r: PopResult<string>) => {
             LogUtil.log("index result: ", r.data ," from: ", r.from);
           })
+        })
+
+
+        Button('退出登录').onClick((event: ClickEvent) => {
+          AppStorage.set("isLogin", false)
+
         })
 
       }

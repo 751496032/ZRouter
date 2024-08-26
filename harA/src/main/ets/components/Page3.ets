@@ -2,7 +2,7 @@ import { Route, ZRouter } from 'routerapi';
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil';
 
 
-@Route({ name: "harAPage3" })
+@Route({ name: "harAPage3" ,needLogin: true})
 @Component
 export struct Page3 {
   @State message: string = 'Hello World';

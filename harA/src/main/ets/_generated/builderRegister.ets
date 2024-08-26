@@ -1,5 +1,6 @@
 
 import { LoginPage } from "../components/LoginPage";
+import { LoginVerifyCodePage } from "../components/LoginVerifyCodePage";
 import { MainPage } from "../components/MainPage";
 import { Page1 } from "../components/Page1";
 import { Page2 } from "../components/Page2";
@@ -10,6 +11,10 @@ import { Page5 } from "../components/Page5";
 @Builder
 export function harALoginPageBuilder() {
   LoginPage()
+}
+@Builder
+export function harALoginVerifyCodePageBuilder() {
+  LoginVerifyCodePage()
 }
 @Builder
 export function harAMainPageBuilder() {

@@ -14,14 +14,17 @@ import LogUtil from '../utlis/LogUtil'
 import { emitter } from '@kit.BasicServicesKit'
 import { ArrayList } from '@kit.ArkTS'
 import uiObserver from '@ohos.arkui.observer';
+import { RedirectInfo as RedirectInfo } from '../model/RedirectModel'
 
 
 export class RouterMgr {
   private stackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
   private interceptions: Map<string, OnInterceptorCallback> =
     new Map<string, OnInterceptorCallback>()
-  private pageInfoFromStackTop: InterceptorInfo | undefined
-  private registerEventNames = new ArrayList<string>()
+  private stackTopInfo: InterceptorInfo | undefined
+  private redirectWithResultMode: boolean = false
+  private pushFromRoot = false
+  private redirectInfo = new RedirectInfo()
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -70,9 +73,15 @@ export class RouterMgr {
                 mapData.name = toContext.getConfigInRouteMap()?.name
                 interceptorInfo.data = mapData
               }
-              this.pageInfoFromStackTop = interceptorInfo
+              this.stackTopInfo = interceptorInfo
+              // let topName = this.stackTopInfo.data?.name
+              // if (this.redirectWithResultMode && ObjectUtil.isNotEmpty(topName)) {
+              //   const linkItem = new RedirectLinkItem(topName!, this.redirectedLink.length === 0)
+              //   this.redirectedLink.add(linkItem)
+              // }
             } catch (e) {
-              LogUtil.error('push: 页面配置错误，请检查是否正确配置')
+              // 检查route_map、装饰器Route、push三者的name值是否一致
+              LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
             } finally {
               this.interceptions.forEach((callback) => {
                 callback(interceptorInfo)
@@ -113,6 +122,7 @@ export class RouterMgr {
 
   /**
    * 页面跳转 可监听返回结果，需与popWithResult配合使用
+   * A>B 在A监听B的返回结果
    * @see {popWithResult}
    * @param name
    * @param param
@@ -122,7 +132,6 @@ export class RouterMgr {
     this.getNavStack().pushPath({
       name, param: param, onPop: (data) => {
         let r = callback?.(data)
-        // 默认实现逻辑，一般与登录配合使用
         if (typeof r === 'boolean' && r) {
           this.pushByTopName(param)
         }
@@ -132,6 +141,10 @@ export class RouterMgr {
 
   /**
    * 监听返回结果跳转，必须与popNavWithResult配合使用
+   * 当跳转多个页面，并且返回需要携带结果时使用
+   * 比如 A->B->C->D 当页面在D时，需要返回到A并携带结果，此时在A就可以监听D的返回结果
+   * pushNavForResult - popNavWithResult
+   * pushNavForResult - popToRootWithResult
    * @see {popNavWithResult}
    * @param name
    * @param param
@@ -139,6 +152,7 @@ export class RouterMgr {
    */
   public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
     const topName = this.getTopPathName()
+    let pushFromRoot = this.isStackEmpty()
     this.getNavStack().pushDestinationByName(name, param).then(() => {
       let eName = ''
       if (ObjectUtil.isNotEmpty(topName)) {
@@ -146,8 +160,9 @@ export class RouterMgr {
       } else {
         eName = NavRootEvent
       }
+      this.pushFromRoot = pushFromRoot
       this.unregisterEvent(eName)
-      this.registerEvent<T>(eName, callback)
+      this.registerEvent<T>(eName, param, callback)
     })
       .catch((e: Error) => {
         LogUtil.error('error: ', e)
@@ -156,7 +171,9 @@ export class RouterMgr {
   }
 
   /**
-   * 携带结果重定向页面
+   * 携带结果重定向到指定页面
+   * @deprecated
+   * @see {redirectForResult2}
    * @param name
    * @param param
    * @param callback
@@ -166,12 +183,28 @@ export class RouterMgr {
     this.pushForResult(name, param, callback)
   }
 
+
+  /**
+   * 携带结果重定向到指定页面
+   * @param name
+   * @param param
+   * @param callback
+   */
+  public redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
+    this.redirectInfo.name = this.stackTopInfo?.data?.name || ''
+    this.pop(false)
+    this.redirectWithResultMode = true
+    this.pushFromRoot = this.isStackEmpty()
+    this.pushNavForResult(name, param, callback)
+  }
+
   /**
    * 重定向页面
    * @param name
    */
   public redirect(name: string) {
-    this.redirectForResult(name)
+    this.pop(false)
+    this.pushForResult(name)
   }
 
   /**
@@ -184,7 +217,7 @@ export class RouterMgr {
   }
 
   /**
-   * 关闭当前页面
+   * 返回上一页
    * @param animated
    */
   public pop(animated: boolean = true) {
@@ -227,6 +260,19 @@ export class RouterMgr {
     }
     this.sendEvent<T>(name!,currentName!, result)
 
+  }
+
+  public popNavWithResult2<T>(name?: string, result?: T, animated: boolean = true) {
+    if (this.pushFromRoot) {
+      this.popToRootWithResult(result, animated)
+    } else {
+      if (ObjectUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
+        this.popNavWithResult(name!, result, animated)
+      } else {
+        this.popToRootWithResult(result, animated)
+      }
+
+    }
   }
 
 
@@ -283,16 +329,15 @@ export class RouterMgr {
   public  pushByTopName(param?: ObjectOrNull, remove: boolean = true) {
     try {
       let name = this.getTopPathName()
-      if (!name) {
-        name = this.pageInfoFromStackTop?.data?.name ?? null
+      if (this.redirectWithResultMode){
+        name = this.redirectInfo.name
+      }else {
+        if (ObjectUtil.isEmpty(name)) {
+          name = this.stackTopInfo?.data?.name ||  this.redirectInfo.name
+        }
       }
+
       if (name) {
-        // if (ObjectUtil.isEmpty(param)) {
-        //    param = this.getParamByName(name) as ObjectOrNull
-        //   if (ObjectUtil.isEmpty(param)) {
-        //     param = this.pageInfoFromStackTop?.toContext?.pathInfo?.param as ObjectOrNull
-        //   }
-        // }
         if (remove) {
           this.getNavStack().removeByName(name)
         }
@@ -319,7 +364,7 @@ export class RouterMgr {
   public getParam(): ObjectOrNull {
     let name = this.getTopPathName()
     if (!name) {
-      name = this.pageInfoFromStackTop?.data?.name ?? ""
+      name = this.stackTopInfo?.data?.name ?? ""
     }
     if (name) {
       try {
@@ -340,7 +385,7 @@ export class RouterMgr {
    * @returns
    */
   public getAnnotationParam(): RouteMetadata | undefined {
-    return this.pageInfoFromStackTop?.data
+    return this.stackTopInfo?.data
   }
 
   public removeByName(name: string) {
@@ -359,9 +404,14 @@ export class RouterMgr {
     return emitter.getListenerCount(name) > 0
   }
 
-  private registerEvent<T>(name: string, callback?: OnPopResultCallback<T>) {
+  private registerEvent<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
     emitter.on(name, (data: emitter.EventData) => {
-      callback?.(data.data as PopResult<T>)
+      let r = callback?.(data.data as PopResult<T>)
+      if (typeof r === 'boolean' && r) {
+        this.pushByTopName(param)
+        this.redirectWithResultMode = false
+        this.redirectInfo.name = ''
+      }
     })
   }
 
@@ -381,5 +431,9 @@ export class RouterMgr {
       r.from = from
       emitter.emit(name, { data: r })
     }
+  }
+
+  private isStackEmpty(): boolean {
+    return this.getAllPathName().length === 0
   }
 }

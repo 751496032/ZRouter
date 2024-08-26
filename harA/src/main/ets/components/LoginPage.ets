@@ -14,9 +14,13 @@ export struct LoginPage{
   build() {
     NavDestination(){
        Column({space:15}){
+         Button('填写登录验证码').onClick((event: ClickEvent) => {
+           ZRouter.push("loginVerifyCodePage")
+         })
+
          Button('登录成功').onClick((event: ClickEvent) => {
-           AppStorage.setOrCreate('isLogin', true)
-           ZRouter.popWithResult("login success")
+           AppStorage.set<boolean>('isLogin', true)
+           ZRouter.popNavWithResult2<boolean>(true)
          })
        }
        .width('100%')

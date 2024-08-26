@@ -57,13 +57,7 @@ export class ZRouter {
     ZRouter.getRouterMgr().push(name, param, animated)
   }
 
-  /**
-   * 跳转页面，可携带返回数据
-   * @see {popWithResult}
-   * @param name
-   * @param param
-   * @param callback
-   */
+
   public static pushForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
     ZRouter.getRouterMgr().pushForResult(name, param, callback)
   }
@@ -74,13 +68,17 @@ export class ZRouter {
   }
 
   /**
-   * 重定向页面，可携带返回数据
+   * @deprecated
+   * @see {redirectForResult2}
    * @param name
    * @param param
    * @param callback
    */
   public static redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
     ZRouter.getRouterMgr().redirectForResult(name, param, callback)
+  }
+  public static redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
+    ZRouter.getRouterMgr().redirectForResult2(name, param, callback)
   }
 
   public static redirect(name: string) {
@@ -102,6 +100,10 @@ export class ZRouter {
 
   public static popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
     ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
+  }
+
+  public static popNavWithResult2<T>(result?: T, name: string = '' , animated: boolean = true) {
+    ZRouter.getRouterMgr().popNavWithResult2<T>(name, result, animated)
   }
 
 

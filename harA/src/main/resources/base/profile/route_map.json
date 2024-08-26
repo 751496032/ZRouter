@@ -9,6 +9,14 @@
       }
     },
     {
+      "name": "loginVerifyCodePage",
+      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "buildFunction": "harALoginVerifyCodePageBuilder",
+      "data": {
+        "needLogin": "false"
+      }
+    },
+    {
       "name": "harAMainPage",
       "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
       "buildFunction": "harAMainPageBuilder",
@@ -39,7 +47,7 @@
       "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
       "buildFunction": "harAPage3Builder",
       "data": {
-        "needLogin": "false"
+        "needLogin": "true"
       }
     },
     {
