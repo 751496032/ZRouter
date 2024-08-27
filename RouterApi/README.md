@@ -172,12 +172,12 @@ ohpm install ../libs/RouterApi.har
 
 新建三个模块分别是harA、harB、hspC，三者之间没有依赖关系，entry模块依赖了这三个模块，通过ZRouter可以在四个模块间相互跳转，从而达到模块解耦效果。模块关系图如下图：
 
+
+
 <center>
 
-[模块依赖图](https://i-blog.csdnimg.cn/direct/213307fcfc9b4d6c9d39b67fbedc5355.png)
-
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/213307fcfc9b4d6c9d39b67fbedc5355.png)
 </center>
-
 
 
 1、在EntryAbility的onCreate()方法中初始化ZRouter
@@ -318,7 +318,7 @@ struct Index {
       let isLogin = AppStorage.get<Boolean>("isLogin")
       if (info.needLogin && !isLogin) {
         let param = ZRouter.getParamByName(info.data?.name ?? "")
-        ZRouter.redirectForResult("LoginPage", param, (data) => {
+        ZRouter.redirectForResult2("LoginPage", param, (data) => {
             if (data.result) {
               // 登录成功
               promptAction.showToast({ message: `登录成功` })
@@ -351,8 +351,8 @@ export struct LoginPage{
        Column({space:15}){
          Button('登录成功').onClick((event: ClickEvent) => {
             // 模拟登录
-           AppStorage.setOrCreate('isLogin', true)
-           ZRouter.popWithResult("login success")
+           AppStorage.setOrCreate<boolean>('isLogin', true)
+           ZRouter.finishWithResult<boolean>(true)
          })
        }
        .width('100%')
@@ -365,7 +365,7 @@ export struct LoginPage{
 }
 ```
 
-在登录成功后通过ZRouter.popWithResult()方法携带数据关闭页面，此时会将状态传递给redirectForResult()方法的回调函数。
+在登录成功后通过ZRouter.finishWithResult()方法携带数据关闭页面，此时会将状态传递给redirectForResult2()方法的回调函数。
 
 
 上面是全局拦截器，每个跳转都会触发。
@@ -388,7 +388,7 @@ aboutToDisappear(): void {
 
 ```
 
-
+关于其他API的使用请参考demo。
 
 ## 原理
 

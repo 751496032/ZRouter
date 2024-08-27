@@ -20,7 +20,7 @@ ZRouter是基于Navigation系统路由表和Hvigor插件实现的动态路由方
 
 <center>
 
-![img.png](img/img.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/201d21e432674db28b026d0af0341a2e.png)
 
 </center>
 
@@ -39,7 +39,7 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 
 <center>
 
-![img.png](img/img2.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/9e9b0e0732de42028807d0baa7f1d3d1.png)
 </center>
 
 在hvigor/hvigor-config.json5文件中进行依赖安装，如下：
@@ -67,7 +67,6 @@ router-register-plugin插件离线包可以在github或gitee上下载。
 
 > **[点击查看插件最新版本
 ](https://www.npmjs.com/package/router-register-plugin?activeTab=versions)**
-
 
 最后记得Sync Now或重新build让插件安装生效。
 
@@ -173,12 +172,12 @@ ohpm install ../libs/RouterApi.har
 
 新建三个模块分别是harA、harB、hspC，三者之间没有依赖关系，entry模块依赖了这三个模块，通过ZRouter可以在四个模块间相互跳转，从而达到模块解耦效果。模块关系图如下图：
 
+
+
 <center>
 
-![img.png](img/img3.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/213307fcfc9b4d6c9d39b67fbedc5355.png)
 </center>
-
-
 
 
 1、在EntryAbility的onCreate()方法中初始化ZRouter
@@ -319,7 +318,7 @@ struct Index {
       let isLogin = AppStorage.get<Boolean>("isLogin")
       if (info.needLogin && !isLogin) {
         let param = ZRouter.getParamByName(info.data?.name ?? "")
-        ZRouter.redirectForResult("LoginPage", param, (data) => {
+        ZRouter.redirectForResult2("LoginPage", param, (data) => {
             if (data.result) {
               // 登录成功
               promptAction.showToast({ message: `登录成功` })
@@ -352,8 +351,8 @@ export struct LoginPage{
        Column({space:15}){
          Button('登录成功').onClick((event: ClickEvent) => {
             // 模拟登录
-           AppStorage.setOrCreate('isLogin', true)
-           ZRouter.popWithResult("login success")
+           AppStorage.setOrCreate<boolean>('isLogin', true)
+           ZRouter.finishWithResult<boolean>(true)
          })
        }
        .width('100%')
@@ -366,7 +365,7 @@ export struct LoginPage{
 }
 ```
 
-在登录成功后通过ZRouter.popWithResult()方法携带数据关闭页面，此时会将状态传递给redirectForResult()方法的回调函数。
+在登录成功后通过ZRouter.finishWithResult()方法携带数据关闭页面，此时会将状态传递给redirectForResult2()方法的回调函数。
 
 
 上面是全局拦截器，每个跳转都会触发。
@@ -389,7 +388,7 @@ aboutToDisappear(): void {
 
 ```
 
-
+关于其他API的使用请参考demo。
 
 ## 原理
 
@@ -403,12 +402,8 @@ ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封
 
 <center>
 
-![img.png](img/img4.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/22886175c0e64a2abfc623e9ed0d052b.png)
 </center>
-
-## 交流
-
-如使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(v: 751496032)。
 
 
 ## 源码
@@ -416,11 +411,14 @@ ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封
 - ZRouter
   - github：https://github.com/751496032/ZRouter
   - gitee：https://gitee.com/common-apps/ZRouter
-
 - router-register-plugin插件
-    - github：https://github.com/751496032/RouterRegisterPlugin
-    - gitee：https://gitee.com/common-apps/RouterRegisterPlugin
+  - github：https://github.com/751496032/RouterRegisterPlugin
+  - gitee：https://gitee.com/common-apps/RouterRegisterPlugin
 
+
+## 交流
+
+如使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(+v: 751496032)。
 
 ## 参考
 

@@ -12,7 +12,6 @@ import { InterceptorInfo,
   RouteMetadata } from '../model/Model'
 import LogUtil from '../utlis/LogUtil'
 import { emitter } from '@kit.BasicServicesKit'
-import { ArrayList } from '@kit.ArkTS'
 import uiObserver from '@ohos.arkui.observer';
 import { RedirectInfo as RedirectInfo } from '../model/RedirectModel'
 
@@ -74,11 +73,6 @@ export class RouterMgr {
                 interceptorInfo.data = mapData
               }
               this.stackTopInfo = interceptorInfo
-              // let topName = this.stackTopInfo.data?.name
-              // if (this.redirectWithResultMode && ObjectUtil.isNotEmpty(topName)) {
-              //   const linkItem = new RedirectLinkItem(topName!, this.redirectedLink.length === 0)
-              //   this.redirectedLink.add(linkItem)
-              // }
             } catch (e) {
               // 检查route_map、装饰器Route、push三者的name值是否一致
               LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
@@ -122,7 +116,8 @@ export class RouterMgr {
 
   /**
    * 页面跳转 可监听返回结果，需与popWithResult配合使用
-   * A>B 在A监听B的返回结果
+   * pushForResult - popWithResult
+   * 场景 A->B， B->A ，A监听B的返回结果
    * @see {popWithResult}
    * @param name
    * @param param
@@ -131,10 +126,10 @@ export class RouterMgr {
   public pushForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
     this.getNavStack().pushPath({
       name, param: param, onPop: (data) => {
-        let r = callback?.(data)
-        if (typeof r === 'boolean' && r) {
-          this.pushByTopName(param)
-        }
+        callback?.(data)
+        // if (typeof r === 'boolean' && r) {
+        //   this.pushByTopName(param)
+        // }
       }
     })
   }
@@ -161,7 +156,9 @@ export class RouterMgr {
         eName = NavRootEvent
       }
       this.pushFromRoot = pushFromRoot
-      this.unregisterEvent(eName)
+      if (!this.redirectWithResultMode) {
+        this.unregisterEvent(eName)
+      }
       this.registerEvent<T>(eName, param, callback)
     })
       .catch((e: Error) => {
@@ -186,6 +183,8 @@ export class RouterMgr {
 
   /**
    * 携带结果重定向到指定页面
+   * redirectForResult2 - finishWithResult
+   * @see {finishWithResult}
    * @param name
    * @param param
    * @param callback
@@ -195,7 +194,9 @@ export class RouterMgr {
     this.pop(false)
     this.redirectWithResultMode = true
     this.pushFromRoot = this.isStackEmpty()
-    this.pushNavForResult(name, param, callback)
+    this.push(name, param, true)
+    this.unregisterEvent(this.redirectInfo.name)
+    this.registerEvent<T>(this.redirectInfo.name, param, callback)
   }
 
   /**
@@ -226,7 +227,9 @@ export class RouterMgr {
 
   /**
    * 带结果的关闭页面
-   * @see {popWithResult}
+   * pushForResult - popWithResult
+   * 场景 A->B， B->A ，A监听B的返回结果
+   * @see {pushForResult}
    * @param result
    * @param animated
    */
@@ -237,6 +240,7 @@ export class RouterMgr {
 
   /**
    * 带结果的关闭页面 ，必须与pushNavForResult配合使用
+   * 场景 A->B->C->D ，D->C->B->A ，A监听D的返回结果
    * @see {pushNavForResult}
    * @param name 路由名称
    * @param result
@@ -262,16 +266,17 @@ export class RouterMgr {
 
   }
 
-  public popNavWithResult2<T>(name?: string, result?: T, animated: boolean = true) {
-    if (this.pushFromRoot) {
-      this.popToRootWithResult(result, animated)
-    } else {
-      if (ObjectUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
-        this.popNavWithResult(name!, result, animated)
-      } else {
-        this.popToRootWithResult(result, animated)
-      }
-
+  /**
+   * 必须与redirectForResult2配合使用，用于回调redirectForResult2中的callback
+   * @see {redirectForResult2}
+   * @param result
+   * @param animated
+   */
+  public finishWithResult<T>(result?: T, animated: boolean = true) {
+    if (this.redirectWithResultMode && ObjectUtil.isNotEmpty(this.redirectInfo.name)) {
+      const topName =  this.getTopPathName()
+      this.sendEvent<T>(this.redirectInfo.name, topName!, result)
+      this.pop(animated)
     }
   }
 
@@ -326,7 +331,7 @@ export class RouterMgr {
   }
 
 
-  public  pushByTopName(param?: ObjectOrNull, remove: boolean = true) {
+  public pushByTopName(param?: ObjectOrNull, remove: boolean = true) {
     try {
       let name = this.getTopPathName()
       if (this.redirectWithResultMode){
@@ -341,7 +346,7 @@ export class RouterMgr {
         if (remove) {
           this.getNavStack().removeByName(name)
         }
-        this.push(name, param)
+        this.push(name, param, true)
       }
     } catch (e) {
       LogUtil.error('error: ', e)
@@ -381,7 +386,7 @@ export class RouterMgr {
   }
 
   /**
-   * 获取栈顶页面的装饰器参数
+   * 获取栈顶的装饰器参数
    * @returns
    */
   public getAnnotationParam(): RouteMetadata | undefined {
@@ -408,9 +413,14 @@ export class RouterMgr {
     emitter.on(name, (data: emitter.EventData) => {
       let r = callback?.(data.data as PopResult<T>)
       if (typeof r === 'boolean' && r) {
-        this.pushByTopName(param)
-        this.redirectWithResultMode = false
-        this.redirectInfo.name = ''
+        if (this.redirectWithResultMode) {
+          this.pushByTopName(param)
+          // 所有的状态复原，包括事件的注册
+          this.redirectWithResultMode = false
+          this.redirectInfo.name = ''
+          this.unregisterEvent(name)
+        }
+
       }
     })
   }

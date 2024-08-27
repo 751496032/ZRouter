@@ -102,8 +102,8 @@ export class ZRouter {
     ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
   }
 
-  public static popNavWithResult2<T>(result?: T, name: string = '' , animated: boolean = true) {
-    ZRouter.getRouterMgr().popNavWithResult2<T>(name, result, animated)
+  public static finishWithResult<T>(result?: T , animated: boolean = true) {
+    ZRouter.getRouterMgr().finishWithResult<T>( result, animated)
   }
 
 

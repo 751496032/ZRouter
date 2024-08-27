@@ -1,6 +1,11 @@
 
 ## 版本更新记录
 
+### 1.0.4
+
+- 修复getParam问题
+- 新增redirectForResult2、finishWithResult api，两者是配对使用，通常用于登录成功后，继续跳转的场景。
+
 ### 1.0.3
 
 - 新增日志开关，在init()初始化设置

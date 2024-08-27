@@ -7,6 +7,10 @@ import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil';
 export struct Page3 {
   @State message: string = 'Hello World';
 
+  aboutToAppear(): void {
+    this.message = ZRouter.getParam()?.toString() ?? ""
+  }
+
   build() {
     NavDestination(){
       Column({space:12}){

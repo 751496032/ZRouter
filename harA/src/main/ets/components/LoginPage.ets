@@ -19,8 +19,8 @@ export struct LoginPage{
          })
 
          Button('登录成功').onClick((event: ClickEvent) => {
-           AppStorage.set<boolean>('isLogin', true)
-           ZRouter.popNavWithResult2<boolean>(true)
+           AppStorage.setOrCreate<boolean>('isLogin', true)
+           ZRouter.finishWithResult<boolean>(true)
          })
        }
        .width('100%')

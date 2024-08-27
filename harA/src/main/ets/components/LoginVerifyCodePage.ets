@@ -22,6 +22,7 @@ export struct LoginVerifyCodePage {
           .onChange((v: string) => {
             this.code = v
           })
+
           .width('80%')
 
         Button('登录').onClick((event: ClickEvent) => {
@@ -30,7 +31,8 @@ export struct LoginVerifyCodePage {
             return
           }
           AppStorage.setOrCreate('isLogin', true)
-          ZRouter.popNavWithResult2<boolean>(true)
+          ZRouter.removeByName("LoginPage")
+          ZRouter.finishWithResult<boolean>(true)
 
         })
       }
