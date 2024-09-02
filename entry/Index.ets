@@ -1,1 +1,5 @@
-export * from './src/main/ets/_generated/builderRegister'
+/**
+ * @author: HZWei
+ * @date: 2024/9/3
+ * @desc:
+ */

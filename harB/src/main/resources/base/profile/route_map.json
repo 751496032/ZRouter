@@ -2,7 +2,7 @@
   "routerMap": [
     {
       "name": "harBMainPage",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/MainPage.ets",
       "buildFunction": "harBMainPageBuilder",
       "data": {
         "needLogin": "false"
@@ -10,7 +10,7 @@
     },
     {
       "name": "harBPage1",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page1.ets",
       "buildFunction": "harBPage1Builder",
       "data": {
         "needLogin": "true"
@@ -18,7 +18,7 @@
     },
     {
       "name": "harBPage2",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page2.ets",
       "buildFunction": "harBPage2Builder",
       "data": {
         "needLogin": "false"

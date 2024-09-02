@@ -2,7 +2,7 @@
   "routerMap": [
     {
       "name": "hspCIndex",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Index.ets",
       "buildFunction": "hspCIndexBuilder",
       "data": {
         "needLogin": "true",
@@ -11,7 +11,7 @@
     },
     {
       "name": "hspCPage1",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page1.ets",
       "buildFunction": "hspCPage1Builder",
       "data": {
         "needLogin": "true",
@@ -20,7 +20,7 @@
     },
     {
       "name": "hspCPage2",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page2.ets",
       "buildFunction": "hspCPage2Builder",
       "data": {
         "needLogin": "false"

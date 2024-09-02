@@ -2,7 +2,7 @@
   "routerMap": [
     {
       "name": "LoginPage",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/LoginPage.ets",
       "buildFunction": "harALoginPageBuilder",
       "data": {
         "needLogin": "false"
@@ -10,7 +10,7 @@
     },
     {
       "name": "loginVerifyCodePage",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/LoginVerifyCodePage.ets",
       "buildFunction": "harALoginVerifyCodePageBuilder",
       "data": {
         "needLogin": "false"
@@ -18,7 +18,7 @@
     },
     {
       "name": "harAMainPage",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/MainPage.ets",
       "buildFunction": "harAMainPageBuilder",
       "data": {
         "description": "测试",
@@ -27,7 +27,7 @@
     },
     {
       "name": "harAPage1",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page1.ets",
       "buildFunction": "harAPage1Builder",
       "data": {
         "needLogin": "true"
@@ -35,7 +35,7 @@
     },
     {
       "name": "harAPage2",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page2.ets",
       "buildFunction": "harAPage2Builder",
       "data": {
         "description": "测试",
@@ -44,7 +44,7 @@
     },
     {
       "name": "harAPage3",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page3.ets",
       "buildFunction": "harAPage3Builder",
       "data": {
         "needLogin": "true"
@@ -52,7 +52,7 @@
     },
     {
       "name": "harAPage4",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page4.ets",
       "buildFunction": "harAPage4Builder",
       "data": {
         "needLogin": "false"
@@ -60,7 +60,7 @@
     },
     {
       "name": "harAPage5",
-      "pageSourceFile": "src/main/ets/_generated/builderRegister.ets",
+      "pageSourceFile": "src/main/ets/_generated/Page5.ets",
       "buildFunction": "harAPage5Builder",
       "data": {
         "needLogin": "false"
