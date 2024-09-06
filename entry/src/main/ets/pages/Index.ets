@@ -1,5 +1,4 @@
 import { promptAction } from '@kit.ArkUI'
-import { List } from '@kit.ArkTS'
 import { PopResult, ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 
@@ -9,15 +8,15 @@ import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 struct Index {
   aboutToAppear(): void {
     ZRouter.addGlobalInterceptor((info) => {
-      console.log('GlobalInterceptor: ', JSON.stringify(info.data) , info.needLogin)
+      LogUtil.log('GlobalInterceptor: ', JSON.stringify(info.metadata) , info.isNeedLogin)
       if (info.notRegistered) {
         // 页面不存在，重定向到提示页 PageNotFound
         ZRouter.redirect("PageNotFound2")
         return
       }
       let isLogin = AppStorage.get<boolean>("isLogin")
-      if (info.needLogin && !isLogin) {
-        let param = ZRouter.getParamByName(info.data?.name ?? "")
+      if (info.isNeedLogin && !isLogin) {
+        let param = ZRouter.getParamByName(info.metadata?.name ?? "")
         ZRouter.redirectForResult2<boolean>("LoginPage", param, (data) => {
             if (data.data) {
               // 登录成功

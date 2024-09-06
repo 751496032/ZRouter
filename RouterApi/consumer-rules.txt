@@ -1,0 +1,8 @@
+# 关闭混淆
+# -disable-obfuscation
+# 保留model目录不被混淆
+-keep-file-name
+model
+# 保留所有属性不被混淆
+-keep-property-name
+*

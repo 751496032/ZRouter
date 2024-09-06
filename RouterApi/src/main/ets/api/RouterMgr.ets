@@ -68,13 +68,15 @@ export class RouterMgr {
               interceptorInfo.toContext = toContext
               const data = toContext.getConfigInRouteMap()?.data
               if (ObjectUtil.isObject(data)) {
-                const mapData: RouteMetadata = data as RouteMetadata
-                mapData.name = toContext.getConfigInRouteMap()?.name
-                interceptorInfo.data = mapData
+                const metadata: RouteMetadata = data as RouteMetadata
+                metadata.name = toContext.getConfigInRouteMap()?.name
+                interceptorInfo.metadata = metadata
               }
               this.stackTopInfo = interceptorInfo
+
             } catch (e) {
               // 检查route_map、装饰器Route、push三者的name值是否一致
+              LogUtil.error((e as Error).message)
               LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
             } finally {
               this.interceptions.forEach((callback) => {
@@ -190,7 +192,7 @@ export class RouterMgr {
    * @param callback
    */
   public redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
-    this.redirectInfo.name = this.stackTopInfo?.data?.name || ''
+    this.redirectInfo.name = this.stackTopInfo?.metadata?.name || ''
     this.pop(false)
     this.redirectWithResultMode = true
     this.pushFromRoot = this.isStackEmpty()
@@ -338,7 +340,7 @@ export class RouterMgr {
         name = this.redirectInfo.name
       }else {
         if (ObjectUtil.isEmpty(name)) {
-          name = this.stackTopInfo?.data?.name ||  this.redirectInfo.name
+          name = this.stackTopInfo?.metadata?.name ||  this.redirectInfo.name
         }
       }
 
@@ -369,7 +371,7 @@ export class RouterMgr {
   public getParam(): ObjectOrNull {
     let name = this.getTopPathName()
     if (!name) {
-      name = this.stackTopInfo?.data?.name ?? ""
+      name = this.stackTopInfo?.metadata?.name ?? ""
     }
     if (name) {
       try {
@@ -390,7 +392,7 @@ export class RouterMgr {
    * @returns
    */
   public getAnnotationParam(): RouteMetadata | undefined {
-    return this.stackTopInfo?.data
+    return this.stackTopInfo?.metadata
   }
 
   public removeByName(name: string) {

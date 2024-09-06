@@ -2,7 +2,14 @@
 ## 介绍
 
 
-ZRouter是基于Navigation系统路由表和Hvigor插件实现的动态路由方案。
+ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案。主要特性：
+
+- 路由API的简化，无需再关注路由表的配置，
+- 支持多级页面参数的传递；
+- 支持拦截器，可实现页面跳转前的拦截处理；
+- 支持单例页面
+
+> ZRouter侧重于路由的跳转和模块的解耦，以及组件化的通信；保持着对Navigation组件的零侵入，不做任何的限制把自主权交给开发者。
 
 系统路由表是API 12起开始支持的，可以帮助我们实现动态路由的功能，其目的是为了解决多个业务模块（HAR/HSP）之间解耦问题，从而实现业务的复用和功能的扩展。
 
@@ -29,37 +36,10 @@ ZRouter是基于Navigation系统路由表和Hvigor插件实现的动态路由方
 
 ### 下载安装
 
-router-register-plugin插件离线包可以在github或gitee上下载。
-
-- github：https://github.com/751496032/RouterRegisterPlugin/releases
-- gitee：https://gitee.com/common-apps/RouterRegisterPlugin/releases
-
-
-下载后建议放在项目根目录下的单个文件夹中，如下：
-
-<center>
-
-![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/9e9b0e0732de42028807d0baa7f1d3d1.png)
-</center>
-
-在hvigor/hvigor-config.json5文件中进行依赖安装，如下：
-
-
-
-```
-"dependencies": {
-  "router-register-plugin":"file:../plugins/router-register-plugin-1.0.1.tgz"
-    
-}
-```
-
-**或者安装远程包(建议使用远程包，离线包可能不是最新的)**
-
-
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.4"
+    "router-register-plugin":"1.0.6"
   },
 ```
 
@@ -389,6 +369,18 @@ aboutToDisappear(): void {
 ```
 
 关于其他API的使用请参考demo。
+
+## 混淆
+
+在混淆时需要在每个模块添加如下配置：
+
+```
+-keep-file-name
+_generated
+ZR*
+```
+
+**插件必须是1.0.6版本后才支持混淆，之前版本不支持混淆。**
 
 ## 原理
 
