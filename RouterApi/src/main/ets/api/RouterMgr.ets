@@ -54,13 +54,16 @@ export class RouterMgr {
     return RouterMgr.instance
   }
 
-  public registerNavStack(stackName: string = '', pathStack: NavPathStack): void {
+  public registerNavStack(stackName: string = '', pathStack: NavPathStack, willShow?: InterceptionShowCallback): void {
     if (!this.stackMap.has(stackName)) {
       this.stackMap.set(stackName, pathStack)
       pathStack.setInterception({
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
           LogUtil.log('operation: ', operation)
+          if (willShow !== undefined) {
+            willShow(from, to, operation, animated)
+          }
           if (operation === NavigationOperation.PUSH) {
             const interceptorInfo = new InterceptorInfo()
             try {
@@ -89,17 +92,25 @@ export class RouterMgr {
     }
   }
 
-  public getNavStack(): NavPathStack {
-    return this.getNavStackByName('')
+  public getNavStack(willShow?: InterceptionShowCallback): NavPathStack {
+    if (willShow !== undefined) {
+      return this.getNavStackByName('', willShow)
+    } else {
+      return this.getNavStackByName('')
+    }
   }
 
-  public getNavStackByName(stackName: string): NavPathStack {
+  public getNavStackByName(stackName: string, willShow?: InterceptionShowCallback): NavPathStack {
     let stack = this.stackMap.get(stackName)
     if (stack !== undefined && stack !== null) {
       return stack as NavPathStack
     }
     stack = new NavPathStack()
-    this.registerNavStack(stackName, stack)
+    if (willShow !== undefined) {
+      this.registerNavStack(stackName, stack, willShow)
+    } else {
+      this.registerNavStack(stackName, stack)
+    }
     return stack
   }
 
