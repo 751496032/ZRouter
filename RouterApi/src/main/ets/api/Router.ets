@@ -40,8 +40,12 @@ export class ZRouter {
     ZRouter.getRouterMgr().registerNavStack(stackName, pathStack)
   }
 
-  public static getNavStack(): NavPathStack {
-    return ZRouter.getRouterMgr().getNavStackByName('')
+  public static getNavStack(willShow?: InterceptionShowCallback): NavPathStack {
+    if (willShow !== undefined) {
+      return ZRouter.getRouterMgr().getNavStackByName('', willShow)
+    } else {
+      return ZRouter.getRouterMgr().getNavStackByName('')
+    }
   }
 
   public static getNavStackByName(stackName: string): NavPathStack {
