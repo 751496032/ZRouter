@@ -3,8 +3,18 @@
  * @date: 2024/9/10
  * @desc:
  */
+import { ObjectOrNull, OnPopResultCallback } from './Model';
 
-export class NavOptions {
+export interface  INavOptions<T> {
+  animated: boolean;
+  lunchMode: LaunchMode;
+  params?: ObjectOrNull;
+  onPopCallback?: OnPopResultCallback<T>;
+}
+
+export class NavOptionsImpl<T> implements  INavOptions<T> {
   animated: boolean = true;
-  lunchMode: string ='singleTop';
+  lunchMode: LaunchMode = LaunchMode.STANDARD;
+  onPopCallback?: OnPopResultCallback<T>;
+
 }

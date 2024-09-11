@@ -7,6 +7,7 @@ import { ObjectUtil } from '../utlis/ObjectUtil'
 import { InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopResultCallback } from '../model/Model'
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
+import { NavBuilder } from '../model/NavBuilder'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -172,6 +173,20 @@ export class ZRouter {
 
   public static replacePathByName(name: string, param?: ObjectOrNull, animated: boolean = true) {
     ZRouter.getRouterMgr().replacePathByName(name, param, animated)
+  }
+
+  public static getInstance<T>(): NavBuilder<T> {
+    if (ZRouter.routerMgr === undefined) {
+      ZRouter.routerMgr = ZRouter.getRouterMgr()
+    }
+    return new NavBuilder<T>(ZRouter.routerMgr)
+  }
+
+  public static create(): NavBuilder<ObjectOrNull> {
+    if (ZRouter.routerMgr === undefined) {
+      ZRouter.routerMgr = ZRouter.getRouterMgr()
+    }
+    return new NavBuilder<ObjectOrNull>(ZRouter.routerMgr)
   }
 
 }
