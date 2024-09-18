@@ -9,12 +9,13 @@ export interface  INavOptions<T> {
   animated: boolean;
   lunchMode: LaunchMode;
   params?: ObjectOrNull;
-  onPopCallback?: OnPopResultCallback<T>;
+  navStackName:string;
+  enableCrossPageParamReturn?: boolean;
+  onPopCallback?: OnPopResultCallback<T | ObjectOrNull>;
 }
 
 export class NavOptionsImpl<T> implements  INavOptions<T> {
   animated: boolean = true;
   lunchMode: LaunchMode = LaunchMode.STANDARD;
-  onPopCallback?: OnPopResultCallback<T>;
-
+  navStackName: string = ''
 }

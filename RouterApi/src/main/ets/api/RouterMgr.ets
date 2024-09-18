@@ -13,17 +13,14 @@ import { InterceptorInfo,
 import LogUtil from '../utlis/LogUtil'
 import { emitter } from '@kit.BasicServicesKit'
 import uiObserver from '@ohos.arkui.observer';
-import { RedirectInfo as RedirectInfo } from '../model/RedirectModel'
+import { InterceptorMgr } from '../interceptions/InterceptorMgr'
+import { IInterceptor } from '../interceptions/IInterceptor'
+import NavStackMgr from './NavStackMgr'
 
 
 export class RouterMgr {
-  private stackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
-  private interceptions: Map<string, OnInterceptorCallback> =
-    new Map<string, OnInterceptorCallback>()
-  private stackTopInfo: InterceptorInfo | undefined
-  private redirectWithResultMode: boolean = false
-  private pushFromRoot = false
-  private redirectInfo = new RedirectInfo()
+  private interceptorMgr = InterceptorMgr.getInstance()
+  private navStackMgr = NavStackMgr.getInstance()
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -54,68 +51,37 @@ export class RouterMgr {
     return RouterMgr.instance
   }
 
-  public registerNavStack(stackName: string = '', pathStack: NavPathStack, willShow?: InterceptionShowCallback): void {
-    if (!this.stackMap.has(stackName)) {
-      this.stackMap.set(stackName, pathStack)
-      pathStack.setInterception({
-        willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
-          operation: NavigationOperation, animated: boolean) => {
-          LogUtil.log('operation: ', operation)
-          if (willShow !== undefined) {
-            willShow(from, to, operation, animated)
-          }
-          if (operation === NavigationOperation.PUSH) {
-            const interceptorInfo = new InterceptorInfo()
-            try {
-              const toContext: NavDestinationContext = to as NavDestinationContext
-              interceptorInfo.toContext = toContext
-              const data = toContext.getConfigInRouteMap()?.data
-              if (ObjectUtil.isObject(data)) {
-                const metadata: RouteMetadata = data as RouteMetadata
-                metadata.name = toContext.getConfigInRouteMap()?.name
-                interceptorInfo.metadata = metadata
-              }
-              this.stackTopInfo = interceptorInfo
+  public setCurrentStackName(name: string) {
+    this.navStackMgr.currentStackName = name
+  }
 
-            } catch (e) {
-              // 检查route_map、装饰器Route、push三者的name值是否一致
-              LogUtil.error((e as Error).message)
-              LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
-            } finally {
-              this.interceptions.forEach((callback) => {
-                callback(interceptorInfo)
-              })
-            }
-          }
-        }
-      })
-    }
+
+  public registerNavStack(stackName: string = '', pathStack: NavPathStack, willShow?: InterceptionShowCallback): void {
+    this.navStackMgr.registerNavStack(stackName, pathStack, willShow)
   }
 
   public getNavStack(willShow?: InterceptionShowCallback): NavPathStack {
-    if (willShow !== undefined) {
-      return this.getNavStackByName('', willShow)
-    } else {
-      return this.getNavStackByName('')
-    }
+    return this.navStackMgr.getNavStack(this.navStackMgr.currentStackName, willShow)
   }
+
 
   public getNavStackByName(stackName: string, willShow?: InterceptionShowCallback): NavPathStack {
-    let stack = this.stackMap.get(stackName)
-    if (stack !== undefined && stack !== null) {
-      return stack as NavPathStack
-    }
-    stack = new NavPathStack()
-    if (willShow !== undefined) {
-      this.registerNavStack(stackName, stack, willShow)
-    } else {
-      this.registerNavStack(stackName, stack)
-    }
-    return stack
+    return this.navStackMgr.getNavStackByName(stackName, willShow)
   }
 
+  /**
+   * @deprecated
+   * @param stackName
+   * @param name
+   * @param param
+   * @param animated
+   */
   public pushByStackName(stackName: string, name: string, param?: ObjectOrNull, animated: boolean = false) {
     this.getNavStackByName(stackName).pushPathByName(name, param, animated)
+  }
+
+  private getCurrentState() {
+    return this.navStackMgr.getNavStackState()
   }
 
   /**
@@ -160,7 +126,6 @@ export class RouterMgr {
    */
   public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
     const topName = this.getTopPathName()
-    let pushFromRoot = this.isStackEmpty()
     this.getNavStack().pushDestinationByName(name, param).then(() => {
       let eName = ''
       if (ObjectUtil.isNotEmpty(topName)) {
@@ -168,8 +133,8 @@ export class RouterMgr {
       } else {
         eName = NavRootEvent
       }
-      this.pushFromRoot = pushFromRoot
-      if (!this.redirectWithResultMode) {
+      const state = this.getCurrentState()
+      if (!state.redirectWithResultMode) {
         this.unregisterEvent(eName)
       }
       this.registerEvent<T>(eName, param, callback)
@@ -203,13 +168,13 @@ export class RouterMgr {
    * @param callback
    */
   public redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
-    this.redirectInfo.name = this.stackTopInfo?.metadata?.name || ''
+    const state = this.getCurrentState()
+    state.redirectInfo.name = state.stackTopInfo?.metadata?.name || ''
     this.pop(false)
-    this.redirectWithResultMode = true
-    this.pushFromRoot = this.isStackEmpty()
+    state.redirectWithResultMode = true
     this.push(name, param, true)
-    this.unregisterEvent(this.redirectInfo.name)
-    this.registerEvent<T>(this.redirectInfo.name, param, callback)
+    this.unregisterEvent(state.redirectInfo.name)
+    this.registerEvent<T>(state.redirectInfo.name, param, callback)
   }
 
   /**
@@ -286,9 +251,10 @@ export class RouterMgr {
    * @param animated
    */
   public finishWithResult<T>(result?: T, animated: boolean = true) {
-    if (this.redirectWithResultMode && ObjectUtil.isNotEmpty(this.redirectInfo.name)) {
+    const state = this.getCurrentState()
+    if (state.redirectWithResultMode && ObjectUtil.isNotEmpty(state.redirectInfo.name)) {
       const topName =  this.getTopPathName()
-      this.sendEvent<T>(this.redirectInfo.name, topName!, result)
+      this.sendEvent<T>(state.redirectInfo.name, topName!, result)
       this.pop(animated)
     }
   }
@@ -311,14 +277,29 @@ export class RouterMgr {
     this.addInterceptor('', callback)
   }
 
+  /**
+   * @deprecated
+   * @param key
+   * @param callback
+   */
   public addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
-    this.interceptions.set(key, callback)
+    const state = this.getCurrentState()
+    state.interceptions.set(key, callback)
+  }
+
+  public setInterceptor<T extends IInterceptor>(id: string, interceptor: T) {
+    this.interceptorMgr.addInterceptor(id, interceptor)
   }
 
 
+  /**
+   * @deprecated
+   * @param key
+   */
   public removeInterceptor(key: string) {
+    const state = this.getCurrentState()
     if (!key && key.trim().length > 0) {
-      this.interceptions.delete(key)
+      state.interceptions.delete(key)
     }
   }
 
@@ -346,12 +327,13 @@ export class RouterMgr {
 
   public pushByTopName(param?: ObjectOrNull, remove: boolean = true) {
     try {
+      const state = this.getCurrentState()
       let name = this.getTopPathName()
-      if (this.redirectWithResultMode){
-        name = this.redirectInfo.name
+      if (state.redirectWithResultMode){
+        name = state.redirectInfo.name
       }else {
         if (ObjectUtil.isEmpty(name)) {
-          name = this.stackTopInfo?.metadata?.name ||  this.redirectInfo.name
+          name = state.stackTopInfo?.metadata?.name ||  state.redirectInfo.name
         }
       }
 
@@ -382,7 +364,8 @@ export class RouterMgr {
   public getParam(): ObjectOrNull {
     let name = this.getTopPathName()
     if (!name) {
-      name = this.stackTopInfo?.metadata?.name ?? ""
+      const state = this.getCurrentState()
+      name = state.stackTopInfo?.metadata?.name ?? ""
     }
     if (name) {
       try {
@@ -403,7 +386,8 @@ export class RouterMgr {
    * @returns
    */
   public getAnnotationParam(): RouteMetadata | undefined {
-    return this.stackTopInfo?.metadata
+    const state = this.getCurrentState()
+    return state.stackTopInfo?.metadata
   }
 
   public removeByName(name: string) {
@@ -426,11 +410,12 @@ export class RouterMgr {
     emitter.on(name, (data: emitter.EventData) => {
       let r = callback?.(data.data as PopResult<T>)
       if (typeof r === 'boolean' && r) {
-        if (this.redirectWithResultMode) {
+        const state = this.getCurrentState()
+        if (state.redirectWithResultMode) {
           this.pushByTopName(param)
           // 所有的状态复原，包括事件的注册
-          this.redirectWithResultMode = false
-          this.redirectInfo.name = ''
+          state.redirectWithResultMode = false
+          state.redirectInfo.name = ''
           this.unregisterEvent(name)
         }
 
@@ -456,7 +441,4 @@ export class RouterMgr {
     }
   }
 
-  private isStackEmpty(): boolean {
-    return this.getAllPathName().length === 0
-  }
 }

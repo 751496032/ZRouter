@@ -1,5 +1,7 @@
 {
   "src": [
-    "pages/Index"
+    "pages/Root",
+    "pages/Index",
+    "pages/NavIndex"
   ]
 }

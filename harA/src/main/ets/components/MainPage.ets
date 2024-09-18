@@ -16,13 +16,16 @@ export struct MainPage {
   aboutToDisappear(): void {
     // 移除拦截器
     ZRouter.removeInterceptor('key')
-    ZRouter.create()
-      .setLunchMode(LaunchMode.STANDARD)
-      .setAnimation(false)
-      .setParam("")
-      .setOnPopCallback((data)=>{
-      })
-      .navigation("555")
+    //
+    // ZRouter.getInstance()
+    //   .setLunchMode(LaunchMode.STANDARD)
+    //   .setAnimation(true)
+    //   .setParam("22")
+    //   .enableCrossPageParamReturn()
+    //   .setOnPopCallback((result)=>{
+    //
+    //   })
+    //   .navigation("harAPage1", false)
   }
 
   build() {

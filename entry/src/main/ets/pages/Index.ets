@@ -1,5 +1,5 @@
 import { promptAction } from '@kit.ArkUI'
-import { PopResult, ZRouter } from 'routerapi'
+import { ShowInterceptor, PopResult, ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 
 
@@ -35,15 +35,7 @@ struct Index {
 
 
   build() {
-    Navigation(ZRouter.getNavStack((from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar, operation: NavigationOperation, isAnimated: boolean)=> {
-      if (to === 'navBar') {
-        LogUtil.log('willShow: 即将显示首页', to)
-      } else if (to.pathInfo !== undefined) {
-        LogUtil.log('willShow:', to.pathInfo.name)
-      } else {
-        LogUtil.log('willShow: 重定向到不存在的页面', to)
-      }
-    })){
+    Navigation(ZRouter.getNavStack()){
       Column({space:12}){
         Button('toHarAMainPage').onClick((event: ClickEvent) => {
           ZRouter.push("harAMainPage")

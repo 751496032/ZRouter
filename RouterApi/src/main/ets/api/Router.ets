@@ -8,6 +8,7 @@ import { InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopResultCa
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
 import { NavBuilder } from '../model/NavBuilder'
+import { IInterceptor } from '../interceptions/IInterceptor'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -42,17 +43,20 @@ export class ZRouter {
   }
 
   public static getNavStack(willShow?: InterceptionShowCallback): NavPathStack {
-    if (willShow !== undefined) {
-      return ZRouter.getRouterMgr().getNavStackByName('', willShow)
-    } else {
-      return ZRouter.getRouterMgr().getNavStackByName('')
-    }
+    return ZRouter.getRouterMgr().getNavStackByName('', willShow)
   }
 
   public static getNavStackByName(stackName: string): NavPathStack {
     return ZRouter.getRouterMgr().getNavStackByName(stackName)
   }
 
+  /**
+   * @deprecated
+   * @param stackName
+   * @param name
+   * @param param
+   * @param animated
+   */
   public static pushByStackName(stackName: string, name: string, param?: ObjectOrNull,
   animated: boolean = true) {
     ZRouter.getRouterMgr().pushByStackName(stackName, name, param, animated)
@@ -120,11 +124,19 @@ export class ZRouter {
     ZRouter.getRouterMgr().addGlobalInterceptor(callback)
   }
 
+  /**
+   * @deprecated
+   * @param key
+   * @param callback
+   */
   public static addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
     ZRouter.getRouterMgr().addInterceptor(key, callback)
   }
 
-
+  /**
+   * @deprecated
+   * @param key
+   */
   public static removeInterceptor(key: string) {
     ZRouter.getRouterMgr().removeInterceptor(key)
   }
@@ -175,18 +187,24 @@ export class ZRouter {
     ZRouter.getRouterMgr().replacePathByName(name, param, animated)
   }
 
-  public static getInstance<T>(): NavBuilder<T> {
+  public static getInstance(stackName: string = ''): NavBuilder<ObjectOrNull> {
+    if (ZRouter.routerMgr === undefined) {
+      ZRouter.routerMgr = ZRouter.getRouterMgr()
+    }
+    return new NavBuilder<ObjectOrNull>(ZRouter.routerMgr)
+  }
+
+  public static createInstance<T>(stackName: string = ''): NavBuilder<T> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
     return new NavBuilder<T>(ZRouter.routerMgr)
   }
 
-  public static create(): NavBuilder<ObjectOrNull> {
-    if (ZRouter.routerMgr === undefined) {
-      ZRouter.routerMgr = ZRouter.getRouterMgr()
-    }
-    return new NavBuilder<ObjectOrNull>(ZRouter.routerMgr)
+
+  public static setInterceptor<T extends IInterceptor>(id: string, interceptor: T) {
+    ZRouter.getRouterMgr().setInterceptor(id, interceptor)
   }
+
 
 }
