@@ -97,6 +97,11 @@ struct Index {
         })
 
 
+        Button("自定义URL跳转").onClick((event: ClickEvent) => {
+          ZRouter.getInstance().navigation("URLPage")
+        })
+
+
         Button('退出登录').onClick((event: ClickEvent) => {
           AppStorage.set("isLogin", false)
 

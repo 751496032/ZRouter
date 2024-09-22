@@ -6,6 +6,7 @@
 import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IPageNavigateInterceptor, ZRouter,
    } from 'routerapi';
 import { promptAction } from '@kit.ArkUI';
+import { HashMap } from '@kit.ArkTS';
 
 export class CustomPageNavigateInterceptor implements  IPageNavigateInterceptor{
   onRootWillShow?: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
@@ -36,17 +37,46 @@ export class CustomPageNavigateInterceptor implements  IPageNavigateInterceptor{
 }
 
 export class UrlInterceptor implements IInterceptor {
-
-  // 设置优先级，数值越大则优先执行
+  // 设置拦截器优先级，数值越大则优先执行
   priority: number = 10000;
-
   process: (context: InterceptorInfo) => InterceptorInfoOrNull = (context) => {
     console.log("IInterceptor process: ", this.priority , context.name)
     if (context.notRegistered) {
-      ZRouter.getInstance().redirect("PageNotFound2")
-       return null // 返回null则拦截掉
+      if (this.isLink(context.name)) {
+        const map = this.parseQueryString(context.name)
+        const name = map.get('name')
+        if (name) {
+          ZRouter.getInstance()
+            .setParam(map.get("id"))
+            .navigation(name)
+        }
+      } else {
+        ZRouter.getInstance().redirect("PageNotFound2")
+      }
+      return null // 返回null则拦截掉
     }
     return context
   };
+
+   isLink(str: string): boolean {
+    const linkRegex = /^(hzw:\/\/|http:\/\/|https:\/\/|www\.).+/;
+    return linkRegex.test(str);
+  }
+
+
+  parseQueryString(queryString: string) {
+    let params = new HashMap<string, string>();
+    let queryStringWithoutQuestionMark = queryString.split('?')[1];
+    if (queryStringWithoutQuestionMark) {
+      let keyValues = queryStringWithoutQuestionMark.split('&');
+      keyValues.forEach((keyValue) => {
+        let pair = keyValue.split('=');
+        let key = decodeURIComponent(pair[0]);
+        let value = decodeURIComponent(pair[1]);
+        params.set(key, value)
+      })
+    }
+    return params;
+  }
 
 }
