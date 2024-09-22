@@ -4,8 +4,8 @@
 
 ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案。主要特性：
 
-- 对Navigation组件简化使用，封装一系列灵活API，无需再关注路由表的配置，保持着对Navigation组件零侵入零耦合；
-- 支持多个拦截器(可设优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
+- 对Navigation组件简化使用，封装一系列简单易用API，支持链式调用，无需再关注路由表的配置，保持着对Navigation组件零侵入零耦合；
+- 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
 - 支持自定义URL路径跳转配置，可以通过URL路径来跳转原生不同页面；
 - 支持第三方Navigation实例的系统路由表使用本库的API；
 - 支持跨多级页面参数的回传监听；
@@ -414,7 +414,7 @@ export struct LoginPage{
 
 上面是全局拦截器，每个跳转都会触发，如果需要添加多个拦截器，则可以使用setInterceptor()方法。
 
-### 多个拦截器
+#### 多个拦截器
 
 单个拦截器的使用方式和全局拦截器是类似的，只不过是在跳转时使用setInterceptor()方法，另外需要实现接口IInterceptor，代码示例如下：
 
@@ -574,7 +574,7 @@ export class UrlInterceptor implements IInterceptor {
       })
     }
 ```
-把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用该导航栈的API了。
+把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
 
 ## 混淆
 
@@ -594,7 +594,7 @@ ZR*
 
 > 这与Java 注解处理器APT原理是类似的
 
-ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封装的，NavPathStack简化方法的使用，在拦截器回调中会读取@Route装饰器上的参数并封装回调给外部拦截器使用，因此外部可以根据此信息来做重定向等其他一系列操作。
+ZRouter库是对NavPathStack对进行高度封装的，提供了更加简单易用的API。
 
 插件实现流程图：
 
@@ -612,7 +612,7 @@ ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封
 
 ## 交流
 
-如使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(+v: 751496032)。
+使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(+v: 751496032)。
 
 ## 参考
 
