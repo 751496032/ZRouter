@@ -3,7 +3,7 @@
  * @date: 2024/9/16
  * @desc:
  */
-import { IInterceptor, IPageNavigateInterceptor as IGlobalNavigateInterceptor } from './IInterceptor'
+import { IInterceptor, IGlobalNavigateInterceptor  } from './IInterceptor'
 import { List } from '@kit.ArkTS'
 import { InterceptorInfo } from '../model/Model'
 

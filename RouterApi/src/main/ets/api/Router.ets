@@ -10,7 +10,7 @@ import {
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
 import { NavBuilder } from '../model/NavBuilder'
-import { IInterceptor, IPageNavigateInterceptor } from '../interceptions/IInterceptor'
+import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -198,7 +198,7 @@ export class ZRouter {
   }
 
 
-  public static setGlobalInterceptor(interceptor: IPageNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
+  public static setGlobalInterceptor(interceptor: IGlobalNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
     ZRouter.getRouterMgr().setGlobalInterceptor(interceptor, stackName)
   }
 

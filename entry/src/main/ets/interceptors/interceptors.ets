@@ -3,12 +3,12 @@
  * @date: 2024/9/22
  * @desc:
  */
-import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IPageNavigateInterceptor, ZRouter,
+import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IGlobalNavigateInterceptor, ZRouter,
    } from 'routerapi';
 import { promptAction } from '@kit.ArkUI';
 import { HashMap } from '@kit.ArkTS';
 
-export class CustomPageNavigateInterceptor implements  IPageNavigateInterceptor{
+export class CustomPageNavigateInterceptor implements  IGlobalNavigateInterceptor{
   onRootWillShow?: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
     console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
   }

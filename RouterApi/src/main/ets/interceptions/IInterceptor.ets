@@ -10,9 +10,22 @@ export interface IInterceptor {
   priority: number;
 }
 
-export interface IPageNavigateInterceptor {
+export interface IGlobalNavigateInterceptor {
+  /**
+   * Navigation根视图显示时回调
+   * @param fromContext
+   */
   onRootWillShow?: (fromContext: NavDestinationContext) => void;
+  /**
+   * 页面显示时回调
+   * @param fromContext
+   * @param toContext
+   */
   onPageWillShow?: (fromContext: NavDestinationContext, toContext: NavDestinationContext) => void;
+  /**
+   * 页面跳转时回调
+   * @param context
+   */
   onNavigate?: (context: InterceptorInfo) => void;
   onShowCallback?: InterceptionShowCallback
 }

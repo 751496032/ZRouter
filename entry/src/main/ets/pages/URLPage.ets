@@ -11,12 +11,12 @@ export default struct URLPage {
   build() {
     NavDestination() {
       Column({space:20}) {
-        Button('URL1').onClick((event: ClickEvent) => {
+        Button('https://www.baidu.com?id=66&name=hspCIndex').onClick((event: ClickEvent) => {
            ZRouter.getInstance()
              .navigation("https://www.baidu.com?id=66&name=hspCIndex")
         })
 
-        Button('URL2').onClick((event: ClickEvent) => {
+        Button('hzw://hello?id=69&name=harAPage3').onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .navigation("hzw://hello?id=69&name=harAPage3")
         })

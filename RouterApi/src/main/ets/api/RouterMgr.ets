@@ -19,7 +19,7 @@ import LogUtil from '../utlis/LogUtil'
 import { BusinessError, emitter } from '@kit.BasicServicesKit'
 import uiObserver from '@ohos.arkui.observer';
 import { InterceptorMgr } from '../interceptions/InterceptorMgr'
-import { IInterceptor, IPageNavigateInterceptor } from '../interceptions/IInterceptor'
+import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import NavStackMgr from './NavStackMgr'
 import { NavBuilder } from '../model/NavBuilder'
 import { ErrorCode } from '../model/Const'
@@ -455,7 +455,7 @@ export class RouterMgr {
   }
 
 
-  public setGlobalInterceptor(interceptor: IPageNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
+  public setGlobalInterceptor(interceptor: IGlobalNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
     this.interceptorMgr.setGlobalInterceptor(stackName, interceptor)
   }
 
@@ -469,7 +469,7 @@ export class RouterMgr {
       onNavigate:(context) => {
         callback(context)
       }
-    } as IPageNavigateInterceptor)
+    } as IGlobalNavigateInterceptor)
   }
 
 
