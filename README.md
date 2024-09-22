@@ -414,7 +414,7 @@ export struct LoginPage{
 
 上面是全局拦截器，每个跳转都会触发，如果需要添加多个拦截器，则可以使用setInterceptor()方法。
 
-### 多个拦截器
+#### 多个拦截器
 
 单个拦截器的使用方式和全局拦截器是类似的，只不过是在跳转时使用setInterceptor()方法，另外需要实现接口IInterceptor，代码示例如下：
 
