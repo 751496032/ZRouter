@@ -78,6 +78,10 @@ export class RouterMgr {
     this.navStackMgr.registerNavStack(stackName, pathStack, willShow)
   }
 
+  public unregisterNavStack(stackName: string) {
+    this.navStackMgr.unregisterNavStack(stackName)
+  }
+
   public getNavStack(willShow?: InterceptionShowCallback): NavPathStack {
     return this.navStackMgr.getNavStack(this.navStackMgr.currentStackName, willShow)
   }

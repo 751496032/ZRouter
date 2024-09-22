@@ -27,15 +27,16 @@ export struct Root{
   }
   build() {
     Column({space : 15}){
-      Button('Navigation1').onClick((event: ClickEvent) => {
+      Button('Navigation').onClick((event: ClickEvent) => {
           router.pushUrl({url:'pages/Index'})
       })
 
-      Button('测试第三方的Navigation使用ZRouter的API').onClick((event: ClickEvent) => {
+      Button('模拟第三方的Navigation使用ZRouter的API').onClick((event: ClickEvent) => {
         router.pushUrl({url:'pages/Index2'})
 
       })
     }
+    .margin({top: 50})
     .width('100%')
     .height('100%')
   }

@@ -15,8 +15,12 @@ export struct Index2 {
 
   aboutToAppear(): void {
     // 在合适的时机注册导航栈
-    let s = ZRouter.getNavStackByName(NAV_STACK_NAME)
+    // let s = ZRouter.getNavStackByName(NAV_STACK_NAME)
     ZRouter.registerNavStack(NAV_STACK_NAME, this.stack)
+  }
+
+  aboutToDisappear(): void {
+    ZRouter.unregisterNavStack(NAV_STACK_NAME)
   }
 
   build() {

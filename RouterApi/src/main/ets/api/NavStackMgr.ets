@@ -68,6 +68,9 @@ export default class NavStackMgr {
         throw new Error(`current 【${this._currentStackName}】 state is null`)
     }
 
+    public unregisterNavStack(stackName: string): void {
+        this.navStackMap.delete(stackName)
+    }
 
     public registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack, willShow?: InterceptionShowCallback): void {
         if (!this.navStackMap.has(stackName) ) {

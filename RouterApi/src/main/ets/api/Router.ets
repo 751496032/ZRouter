@@ -40,12 +40,16 @@ export class ZRouter {
     return ZRouter.routerMgr
   }
 
-  public static registerNavStack(stackName: string = '', pathStack: NavPathStack): void {
+  public static registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack): void {
     ZRouter.getRouterMgr().registerNavStack(stackName, pathStack)
   }
 
+  public static unregisterNavStack(stackName: string){
+    ZRouter.getRouterMgr().unregisterNavStack(stackName)
+  }
+
   public static getNavStack(willShow?: InterceptionShowCallback): NavPathStack {
-    return ZRouter.getRouterMgr().getNavStackByName('', willShow)
+    return ZRouter.getRouterMgr().getNavStackByName(DEFAULT_STACK_NAME, willShow)
   }
 
   public static getNavStackByName(stackName: string): NavPathStack {
