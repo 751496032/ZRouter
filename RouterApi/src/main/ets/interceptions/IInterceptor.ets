@@ -16,12 +16,14 @@ export interface IGlobalNavigateInterceptor {
    * @param fromContext
    */
   onRootWillShow?: (fromContext: NavDestinationContext) => void;
+
   /**
    * 页面显示时回调
    * @param fromContext
    * @param toContext
    */
   onPageWillShow?: (fromContext: NavDestinationContext, toContext: NavDestinationContext) => void;
+
   /**
    * 页面跳转时回调
    * @param context

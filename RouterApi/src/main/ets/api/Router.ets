@@ -6,7 +6,12 @@
 import { ObjectUtil } from '../utlis/ObjectUtil'
 import {
   DEFAULT_STACK_NAME,
-  InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopResultCallback } from '../model/Model'
+  InitConfig,
+  InterceptorInfo,
+  ObjectOrNull,
+  OnPopCallback,
+  OnPopResultCallback
+} from '../model/Model'
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
 import { NavBuilder } from '../model/NavBuilder'
@@ -44,7 +49,7 @@ export class ZRouter {
     ZRouter.getRouterMgr().registerNavStack(stackName, pathStack)
   }
 
-  public static unregisterNavStack(stackName: string){
+  public static unregisterNavStack(stackName: string) {
     ZRouter.getRouterMgr().unregisterNavStack(stackName)
   }
 
@@ -81,7 +86,7 @@ export class ZRouter {
   }
 
 
-  public static popToName(name: string,animated: boolean = true) {
+  public static popToName(name: string, animated: boolean = true) {
     ZRouter.getRouterMgr().popToName(name, animated)
   }
 
@@ -101,10 +106,9 @@ export class ZRouter {
     ZRouter.getRouterMgr().popToRootWithResult<T>(result, animated)
   }
 
-  public static finishWithResult<T>(result?: T , animated: boolean = true) {
-    ZRouter.getRouterMgr().finishWithResult<T>( result, animated)
+  public static finishWithResult<T>(result?: T, animated: boolean = true) {
+    ZRouter.getRouterMgr().finishWithResult<T>(result, animated)
   }
-
 
 
   public static clear() {
@@ -120,7 +124,6 @@ export class ZRouter {
   }
 
 
-
   public static getParamByName(name: string): Record<string, ObjectOrNull>[] {
     return ZRouter.getRouterMgr().getParamByName(name)
   }
@@ -133,11 +136,11 @@ export class ZRouter {
     return ZRouter.getRouterMgr().getAnnotationParam()
   }
 
-  public static  removeByName(name: string) {
+  public static removeByName(name: string) {
     ZRouter.getRouterMgr().removeByName(name)
   }
 
-  public static  moveToTop(name: string) {
+  public static moveToTop(name: string) {
     ZRouter.getRouterMgr().moveToTop(name)
   }
 
@@ -156,7 +159,7 @@ export class ZRouter {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
-    return  NavBuilder.create<T>(ZRouter.routerMgr, stackName)
+    return NavBuilder.create<T>(ZRouter.routerMgr, stackName)
   }
 
 
@@ -167,7 +170,6 @@ export class ZRouter {
   public static getCurrentStackName(): string {
     return ZRouter.getRouterMgr().currentStackName
   }
-
 
 
   // region 废弃方法
@@ -183,7 +185,6 @@ export class ZRouter {
     animated: boolean = true) {
     ZRouter.getRouterMgr().pushByStackName(stackName, name, param, animated)
   }
-
 
 
   /**
@@ -213,7 +214,6 @@ export class ZRouter {
   }
 
 
-
   /**
    * @deprecated
    * @see {setInterceptor}
@@ -233,7 +233,6 @@ export class ZRouter {
   }
 
 
-
   /**
    * @deprecated
    * @param remove
@@ -243,9 +242,6 @@ export class ZRouter {
   }
 
   // endregion
-
-
-
 
 
 }

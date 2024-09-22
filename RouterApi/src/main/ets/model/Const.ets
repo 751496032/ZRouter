@@ -11,6 +11,6 @@ export enum ErrorCode {
   NOT_FOUND = 100006,
 }
 
-export class InterceptorNames {
-  public static readonly PageNavigateInterceptor: string = 'PageNavigateInterceptor'
-}
+// export class InterceptorNames {
+//   public static readonly PageNavigateInterceptor: string = 'PageNavigateInterceptor'
+// }

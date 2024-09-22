@@ -7,7 +7,7 @@
 import { InterceptorInfo, OnInterceptorCallback } from './Model'
 import { RedirectInfo } from './RedirectModel'
 
-export default  class NavStackState {
+export default class NavStackState {
   // private _interceptions: Map<string, OnInterceptorCallback> = new Map<string, OnInterceptorCallback>()
   private _stackTopInfo: InterceptorInfo | undefined
   private _redirectWithResultMode: boolean = false
@@ -59,7 +59,4 @@ export default  class NavStackState {
   public get redirectInfo() {
     return this._redirectInfo
   }
-
-
-
 }

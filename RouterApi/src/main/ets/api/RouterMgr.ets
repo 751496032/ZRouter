@@ -139,18 +139,18 @@ export class RouterMgr {
     builder?: NavBuilder<T>) {
     const topName = this.getTopPathName()
     this.pushDestination(name, param, undefined, builder).then(() => {
-        let eName = ''
-        if (ObjectUtil.isNotEmpty(topName)) {
-          eName = topName!
-        } else {
-          eName = NavRootEvent
-        }
-        const state = this.getCurrentState()
-        if (!state.redirectWithResultMode) {
-          this.unregisterEvent(eName)
-        }
-        this.registerEvent<T>(eName, param, callback)
-      })
+      let eName = ''
+      if (ObjectUtil.isNotEmpty(topName)) {
+        eName = topName!
+      } else {
+        eName = NavRootEvent
+      }
+      const state = this.getCurrentState()
+      if (!state.redirectWithResultMode) {
+        this.unregisterEvent(eName)
+      }
+      this.registerEvent<T>(eName, param, callback)
+    })
       .catch((e: Error) => {
         LogUtil.error('error: ', e)
       })
@@ -215,8 +215,8 @@ export class RouterMgr {
           let interceptorInfo = InterceptorInfo.create(true)
           interceptorInfo.name = name
           interceptorInfo.param = param
-          this.interceptorMgr.run(state.stackName, interceptorInfo,true, (it)=>{
-             it.onNavigate?.(interceptorInfo)
+          this.interceptorMgr.run(state.stackName, interceptorInfo, true, (it) => {
+            it.onNavigate?.(interceptorInfo)
           })
         }
       })
@@ -466,7 +466,7 @@ export class RouterMgr {
    */
   public addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
     this.setGlobalInterceptor({
-      onNavigate:(context) => {
+      onNavigate: (context) => {
         callback(context)
       }
     } as IGlobalNavigateInterceptor)

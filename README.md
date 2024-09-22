@@ -4,12 +4,16 @@
 
 ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案。主要特性：
 
-- 路由API的简化，无需再关注路由表的配置，
-- 支持多级页面参数的传递；
-- 支持拦截器，可实现页面跳转前的拦截处理；
-- 支持单例页面
+- 对Navigation组件简化使用，封装一系列灵活API，无需再关注路由表的配置，对Navigation组件零侵入零耦合；
+- 支持多个拦截器(可设优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
+- 支持自定义URL路径跳转配置，可以通过URL路径来跳转原生不同页面；
+- 支持第三方Navigation系统路由表使用本库的API；
+- 支持跨页面参数的回传；
+- 支持启动模式、以及混淆。
+- 后续支持生命周期的监听（待实现）
 
-> ZRouter侧重于路由的跳转和模块的解耦，以及组件化的通信；保持着对Navigation组件的零侵入，不做任何的限制把自主权交给开发者。
+
+> ZRouter侧重于路由跳转与模块解耦，以及组件化的通信(待实现)；对Navigation组件没有任何耦合，不做任何的限制把自主权交给开发者。
 
 系统路由表是API 12起开始支持的，可以帮助我们实现动态路由的功能，其目的是为了解决多个业务模块（HAR/HSP）之间解耦问题，从而实现业务的复用和功能的扩展。
 
@@ -21,7 +25,7 @@ ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和
 - 最后通过pushPathByName等路由接口进行页面跳转。
 
 
-上面的步骤虽然是很简单，但很繁琐；而ZRouter在router-register-plugin插件下支持下，让整个流程更简单化，开发者不用手动去配置，router-register-plugin插件已经将代码模板化，在编译阶段会自动生成配置，帮我们完成整个路由的注册流程。另外ZRouter提供了全局拦截器，可以在页面跳转时进行拦截处理，做重定向或者一些统一操作。
+上面的步骤虽然是很简单，但很繁琐；而ZRouter在router-register-plugin插件下支持下，让整个流程更简单化，开发者不用手动去配置，router-register-plugin插件已经将代码模板化，在编译阶段会自动生成配置，帮我们完成整个路由的注册流程。
 
 两行代码就可以完成页面的跳转，如下:
 
@@ -269,32 +273,42 @@ export struct Page1 {
 
 ```
 
-
 NavDestination是子页面的根容器，不需要在main_pages文件中注册页面路径。
 
+**建议通过ZRouter.getInstance()方式来操作路由的跳转与关闭，使用会更灵活，之前的ZRouter的静态方法依然保留着。**
+
+```typescript
+ ZRouter.getInstance()
+  .setParam("root data")
+  .setLunchMode(LaunchMode.STANDARD) // 启动模式
+  .enableCrossPageParamReturn() // 跨页面参数返回
+  .setAnimate(false)
+  .setPopListener((r) => {
+    LogUtil.log("index result: ", r.data ," from: ", r.from);
+  })
+  .navigation("harAPage3")
+```
 
 ### 拦截器
 
+ZRouter支持多个拦截器和全局拦截器，在拦截器中可以做页面跳转的拦截，比如登录拦截，404拦截、埋点、自定义URL路径跳转等。
 
 #### 全局拦截器
 
-ZRouter提供了拦截器，可以拦截页面进行重定向，可实现如下的效果：
+全局拦截器提供两种使用方式：
 
-- 在拦截器内可以根据@Route装饰器上的参数来判断是否需要登录，如果需要登录并且没有登录的情况下，可以重定向到登录页面，如果用户完成了登录在返回后，可以设置是否继续执行登录前的页面跳转；
-- 在拦截器内可以判断跳转页面是否存在，如果不存在（未注册），也可以进行拦截重定向到一个404页面；
+- 直接函数回调时的方式；
+- 类实现接口的方式（建议使用，功能更全面），支持字面量对象和new创建的对象。
 
-拦截器代码示例：
+函数回调的方式，代码示例：
 
 ```
 @Entry
 @Component
 struct Index {
   aboutToAppear(): void {
-    ZRouter.addGlobalInterceptor((info) => {
-      console.log('GlobalInterceptor: ', JSON.stringify(info.data) , info.needLogin)
+    ZRouter.setGlobalInterceptor((info) => {
       if (info.notRegistered) {
-        // 页面不存在，重定向到404页
-        ZRouter.redirect("PageNotFound")
         return
       }
       let isLogin = AppStorage.get<Boolean>("isLogin")
@@ -315,6 +329,54 @@ struct Index {
     
 }
   
+```
+
+
+类实现接口的方式，代码示例：
+
+```typescript
+
+export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
+  onRootWillShow?: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
+    console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
+  }
+  onPageWillShow?: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined = (from ,to)=>{
+    console.log("IInterceptor Global onPageWillShow: ", from, to.pathInfo.name, to.pathInfo.param)
+  }
+
+  onNavigate?: ((context: InterceptorInfo) => void) | undefined = (info)=>{
+    if (info.notRegistered) return
+    console.log("IInterceptor Global onNavigate: ", info.name)
+
+    let isLogin = AppStorage.get<boolean>("isLogin")
+    if (info.isNeedLogin && !isLogin) {
+      let param = info.param
+      ZRouter.redirectForResult2<boolean>("LoginPage", param, (data) => {
+        if (data.data) {
+          // 登录成功
+          promptAction.showToast({ message: `登录成功` })
+          return true // 返回true 则继续跳转登录前的页面
+        }
+        return false
+      })
+    }
+
+  }
+}
+
+// 添加拦截器
+ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())       
+
+// 或者字面量对象的方式
+ZRouter.setGlobalInterceptor({
+  onRootWillShow: (fromContext) => {
+    console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
+  },
+  onPageWillShow: (fromContext, toContext) => {
+    console.log("IInterceptor Global onPageWillShow: ", fromContext.pathInfo.name, toContext.pathInfo.name)
+  },
+} as IGlobalNavigateInterceptor)
+
 ```
 
 info.notRegistered()方法判断当前页面是否注册，如果没有注册，将使用ZRouter.redirect() 方法来重定向到404页面；通过ZRouter.redirectForResult() 方法来重定向到登录页面，这个方法接受一个回调函数，该回调函数会在用户登录成功或失败后被调用，在回调函数内部，使用 data.result判断是否登录 ，如果登录成功了给回调函数 return true 来指示继续执行登录前的页面跳转。如果登录失败，或者用户取消登录，回调函数将返回 false，表示不跳转。
@@ -347,30 +409,172 @@ export struct LoginPage{
 }
 ```
 
-在登录成功后通过ZRouter.finishWithResult()方法携带数据关闭页面，此时会将状态传递给redirectForResult2()方法的回调函数。
+在登录成功后通过ZRouter.finishWithResult()方法携带数据关闭页面，会将状态传递给redirectForResult2()方法的回调函数。
 
 
-上面是全局拦截器，每个跳转都会触发。
+上面是全局拦截器，每个跳转都会触发，如果需要添加多个拦截器，则可以使用setInterceptor()方法。
 
-#### 添加与移除拦截器
+### 多个拦截器
 
+单个拦截器的使用方式和全局拦截器是类似的，只不过是在跳转时使用setInterceptor()方法，另外需要实现接口IInterceptor，代码示例如下：
 
+```typescript
+export interface IInterceptor {
+  process: ProcessCallback;
+  // 优先级，数字越大优先级越高
+  priority: number;
+}
+export type ProcessCallback = (context: InterceptorInfo) => InterceptorInfoOrNull;
 ```
+
+**在IInterceptor的process()方法中进行页面跳转的拦截，process()方法返回null会中断后面的拦截器逻辑，返回context则继续执行后面的拦截器逻辑。**
+
+代码示例：
+
+```typescript
+
 aboutToAppear(): void {
-    // 添加拦截器
-    ZRouter.addInterceptor('key',(info)=>{
-      
-    })
+  // 第一种方式设置拦截器，字面量对象的形式
+  ZRouter.setInterceptor({
+    priority: 100,
+    process: (context: InterceptorInfo) => {
+      console.log("IInterceptor process: ", 100, context.name)
+      return context
+    }
+  } as IInterceptor)
+  // 第二种方式设置拦截器，类的实例对象的形式
+  ZRouter.setInterceptor(new UrlInterceptor())
 }
 
-aboutToDisappear(): void {
-    // 移除拦截器
-    ZRouter.removeInterceptor('key')
+export class UrlInterceptor implements IInterceptor {
+  // 设置拦截器优先级，数值越大则优先执行
+  priority: number = 10000;
+  process: (context: InterceptorInfo) => InterceptorInfoOrNull = (context) => {
+    return context
+  }
 }
-
 ```
 
 关于其他API的使用请参考demo。
+
+
+## 自定义URL路径跳转
+
+在项目中一般设计一套统一的URL路径跳转规范，通过URL路径跳转到不同原生页面。比如下面的URL路径：
+
+```typescript
+hzw://hello?id=69&name=harAPage3
+```
+获取URL路径上的name参数进行跳转原生页面，可以设置一个拦截器来拦截URL路径跳转。代码示例：
+
+跳转：
+
+```typescript
+Button('https://www.baidu.com?id=66&name=hspCIndex').onClick((event: ClickEvent) => {
+       ZRouter.getInstance()
+         .navigation("https://www.baidu.com?id=66&name=hspCIndex")
+    })
+
+Button('hzw://hello?id=69&name=harAPage3').onClick((event: ClickEvent) => {
+  ZRouter.getInstance()
+    .navigation("hzw://hello?id=69&name=harAPage3")
+})
+```
+
+
+拦截器：
+
+```typescript
+export class UrlInterceptor implements IInterceptor {
+  // 设置拦截器优先级，数值越大则优先执行
+  priority: number = 10000;
+  process: (context: InterceptorInfo) => InterceptorInfoOrNull = (context) => {
+    console.log("IInterceptor process: ", this.priority , context.name)
+    // 自定义URL路径是没有注册的
+    if (context.notRegistered) {
+      // 如果是URL路径跳转
+      if (this.isLink(context.name)) {
+        // 拦截到URL路径跳转，进行处理
+        const map = this.parseQueryString(context.name)
+        const name = map.get('name')
+        if (name) {
+          // 跳转原生页面
+          ZRouter.getInstance()
+            .setParam(map.get("id"))
+            .navigation(name)
+        }
+      } else {
+        ZRouter.getInstance().redirect("PageNotFound2")
+      }
+      return null // 返回null则拦截掉
+    }
+    return context
+  };
+
+   isLink(str: string): boolean {
+    const linkRegex = /^(hzw:\/\/|http:\/\/|https:\/\/|www\.).+/;
+    return linkRegex.test(str);
+  }
+
+
+  parseQueryString(queryString: string) {
+    let params = new HashMap<string, string>();
+    let queryStringWithoutQuestionMark = queryString.split('?')[1];
+    if (queryStringWithoutQuestionMark) {
+      let keyValues = queryStringWithoutQuestionMark.split('&');
+      keyValues.forEach((keyValue) => {
+        let pair = keyValue.split('=');
+        let key = decodeURIComponent(pair[0]);
+        let value = decodeURIComponent(pair[1]);
+        params.set(key, value)
+      })
+    }
+    return params;
+  }
+
+}
+```
+
+## 第三方Navigation实例使用本库的API
+
+如果第三方Navigation实例使用本库的API，需要在第三方Navigation的NavPathStack实例注册到ZRouter中，代码示例：
+
+```typescript
+  aboutToAppear(): void {
+    // 在合适的时机注册导航栈
+    // let s = ZRouter.getNavStackByName(NAV_STACK_NAME)
+    ZRouter.registerNavStack(NAV_STACK_NAME, this.stack)
+  }
+
+  aboutToDisappear(): void {
+    ZRouter.unregisterNavStack(NAV_STACK_NAME)
+  }
+
+```
+
+上面是模拟代码，具体注册的时机需要根据实际情况来定。NAV_STACK_NAME是一个自定义常量，用于标识导航栈的名称。
+
+页面跳转：
+
+
+```typescript
+  Column({ space: 15 }) {
+      Text(this.msg)
+      Button("EmptyPage").onClick((event: ClickEvent) => {
+        ZRouter.getInstance(NAV_STACK_NAME).push("PageNotFound")
+      })
+
+      Button("harAMainPage").onClick((event: ClickEvent) => {
+        ZRouter.getInstance(NAV_STACK_NAME)
+          .setAnimate(true)
+          .setPopListener((v) => {
+            this.msg = v.data?.toString() + ' ' + v.from?.toString()
+          })
+          .navigation("harAMainPage")
+      })
+    }
+```
+把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用该导航栈的API了。
 
 ## 混淆
 
@@ -405,10 +609,6 @@ ZRouter库是基于NavPathStack的push，pop以及拦截器等接口上进行封
 - ZRouter
   - github：https://github.com/751496032/ZRouter
   - gitee：https://gitee.com/common-apps/ZRouter
-- router-register-plugin插件
-  - github：https://github.com/751496032/RouterRegisterPlugin
-  - gitee：https://gitee.com/common-apps/RouterRegisterPlugin
-
 
 ## 交流
 

@@ -8,7 +8,7 @@ import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IGlobalNavigateIn
 import { promptAction } from '@kit.ArkUI';
 import { HashMap } from '@kit.ArkTS';
 
-export class CustomPageNavigateInterceptor implements  IGlobalNavigateInterceptor{
+export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
   onRootWillShow?: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
     console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
   }

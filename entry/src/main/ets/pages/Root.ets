@@ -6,7 +6,7 @@
 import { router } from '@kit.ArkUI'
 import { it } from '@ohos/hypium'
 import { IInterceptor, InterceptorInfo, ZRouter } from 'routerapi'
-import { CustomPageNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
+import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
 
 @Entry
 @Component
@@ -14,7 +14,6 @@ export struct Root{
 
   aboutToAppear(): void {
     // 第一种方式设置拦截器，字面量对象的形式
-
     ZRouter.setInterceptor({
       priority: 100,
       process: (info: InterceptorInfo) => {

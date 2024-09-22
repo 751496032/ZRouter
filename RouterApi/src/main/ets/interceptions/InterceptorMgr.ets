@@ -3,13 +3,13 @@
  * @date: 2024/9/16
  * @desc:
  */
-import { IInterceptor, IGlobalNavigateInterceptor  } from './IInterceptor'
+import { IInterceptor, IGlobalNavigateInterceptor } from './IInterceptor'
 import { List } from '@kit.ArkTS'
 import { InterceptorInfo } from '../model/Model'
 
 export class InterceptorMgr {
   private interceptions = new Map<string, List<IInterceptor>>()
-  private static  instance : InterceptorMgr
+  private static instance: InterceptorMgr
   private globalInterceptors = new  Map<string, IGlobalNavigateInterceptor>();
 
   public static getInstance(): InterceptorMgr {
@@ -21,17 +21,17 @@ export class InterceptorMgr {
   }
 
 
-  public addInterceptorToAllStack(interceptor: IInterceptor){
+  public addInterceptorToAllStack(interceptor: IInterceptor) {
     this.interceptions.forEach((value, key) => {
-       this.addInterceptor(key, interceptor)
+      this.addInterceptor(key, interceptor)
     })
   }
 
 
   public addInterceptor(stackName: string, interceptor: IInterceptor) {
     if (this.interceptions.has(stackName)) {
-      let  interceptors = this.interceptions.get(stackName)
-      if (interceptors === undefined){
+      let interceptors = this.interceptions.get(stackName)
+      if (interceptors === undefined) {
         interceptors = new List()
       }
       if (!interceptors.has(interceptor)) {
@@ -50,9 +50,9 @@ export class InterceptorMgr {
     if (this.interceptions.has(stackName)) {
       const interceptors = this.interceptions.get(stackName)
       if (interceptors?.has(interceptor)) {
-         interceptors.remove(interceptor)
+        interceptors.remove(interceptor)
       }
-    } 
+    }
   }
 
   public setGlobalInterceptor(stackName: string, interceptor: IGlobalNavigateInterceptor) {
@@ -89,6 +89,4 @@ export class InterceptorMgr {
 
     return context
   }
-
-
 }

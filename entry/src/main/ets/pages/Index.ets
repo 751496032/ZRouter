@@ -1,7 +1,7 @@
 import { promptAction } from '@kit.ArkUI'
 import {  ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
-import { CustomPageNavigateInterceptor } from '../interceptors/interceptors'
+import { GlobalNavigateInterceptor } from '../interceptors/interceptors'
 
 
 @Entry
@@ -29,7 +29,7 @@ struct Index {
     //   }
     // })
 
-    ZRouter.setGlobalInterceptor(new CustomPageNavigateInterceptor())
+    ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
 
   }
 
@@ -88,7 +88,8 @@ struct Index {
 
           ZRouter.getInstance()
             .setParam("root data")
-            .enableCrossPageParamReturn()
+            .setLunchMode(LaunchMode.STANDARD) // 启动模式
+            .enableCrossPageParamReturn() // 跨页面参数返回
             .setAnimate(false)
             .setPopListener((r) => {
                 LogUtil.log("index result: ", r.data ," from: ", r.from);
