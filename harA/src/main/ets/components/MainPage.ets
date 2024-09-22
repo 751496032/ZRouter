@@ -1,50 +1,48 @@
 import { Route, ZRouter } from 'routerapi';
 
 
-@Route({ name: "harAMainPage", description: "测试",needLogin: true })
+@Route({ name: "harAMainPage", description: "测试", needLogin: true })
 @Component
 export struct MainPage {
   @State message: string = 'Hello World';
+  @State isNewStack: boolean = ZRouter.getCurrentStackName() == "newNavStack";
 
   aboutToAppear(): void {
-    // 添加拦截器
-    ZRouter.addInterceptor('key',(info)=>{
 
-    })
   }
 
   aboutToDisappear(): void {
-    // 移除拦截器
-    ZRouter.removeInterceptor('key')
-    //
-    // ZRouter.getInstance()
-    //   .setLunchMode(LaunchMode.STANDARD)
-    //   .setAnimation(true)
-    //   .setParam("22")
-    //   .enableCrossPageParamReturn()
-    //   .setOnPopCallback((result)=>{
-    //
-    //   })
-    //   .navigation("harAPage1", false)
   }
 
   build() {
-    NavDestination(){
-      Column({space:12}){
-        Button('toHarAPage1').onClick((event: ClickEvent) => {
-          ZRouter.push("harAPage1")
-        })
+    NavDestination() {
+      Column({ space: 12 }) {
 
-        Button('toHarAPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harAPage2")
-        })
+        Column({ space: 12 }) {
+          Button('toHarAPage1').onClick((event: ClickEvent) => {
+            // ZRouter.push("harAPage1")
+            ZRouter.getInstance().push("harAPage1")
+          })
 
-        Button('toHarBPage1').onClick((event: ClickEvent) => {
-          ZRouter.push("harBPage1")
-        })
+          Button('toHarAPage2').onClick((event: ClickEvent) => {
+            // ZRouter.push("harAPage2")
+            ZRouter.getInstance().push("harAPage2")
+          })
 
-        Button('toHarBPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harBPage2")
+          Button('toHarBPage1').onClick((event: ClickEvent) => {
+            // ZRouter.push("harBPage1")
+            ZRouter.getInstance().push("harBPage1")
+          })
+
+          Button('toHarBPage2').onClick((event: ClickEvent) => {
+            // ZRouter.push("harBPage2")
+            ZRouter.getInstance().push("harBPage2")
+          })
+
+        }.visibility(this.isNewStack ? Visibility.Hidden : Visibility.Visible)
+
+        Button('back newNavStack').onClick((event: ClickEvent) => {
+          ZRouter.getInstance('newNavStack').popWithResult(Math.random() + 10)
         })
       }
 

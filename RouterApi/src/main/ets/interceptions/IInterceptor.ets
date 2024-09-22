@@ -3,17 +3,19 @@
  * @date: 2024/9/15
  * @desc:
  */
+import { InterceptorInfo, InterceptorInfoOrNull } from '../model/Model';
 
 export interface IInterceptor {
-
+  process: ProcessCallback;
+  priority: number;
 }
 
-export class ShowInterceptor implements IInterceptor {
-    onRootWillShow?: (fromContext: NavDestinationContext) => void;
-    onPageWillShow?: (fromContext: NavDestinationContext, toContext: NavDestinationContext) => void;
-    onShowCallback?: InterceptionShowCallback
+export interface IPageNavigateInterceptor {
+  onRootWillShow?: (fromContext: NavDestinationContext) => void;
+  onPageWillShow?: (fromContext: NavDestinationContext, toContext: NavDestinationContext) => void;
+  onNavigate?: (context: InterceptorInfo) => void;
+  onShowCallback?: InterceptionShowCallback
 }
 
-export enum InterceptorTypes{
-    PAGE_SHOW
-}
+export type ProcessCallback = (context: InterceptorInfo) => InterceptorInfoOrNull;
+

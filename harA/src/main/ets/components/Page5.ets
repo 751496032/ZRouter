@@ -13,11 +13,11 @@ export struct Page5 {
       Column({space:12}){
 
         Button('popNavWithResult').onClick((event: ClickEvent) => {
-          ZRouter.popNavWithResult<string>('harAPage3', 'result data 11 ' + systemDateTime.getTime())
+          ZRouter.getInstance().popNavWithResult<string>('harAPage3', 'result data 11 ' + systemDateTime.getTime())
         })
 
         Button('popRoot').onClick((event: ClickEvent) => {
-          ZRouter.popToRootWithResult<string>('result data 22 ' + + systemDateTime.getTime())
+          ZRouter.getInstance().popToRootWithResult<string>('result data 22 ' + + systemDateTime.getTime())
         })
 
       }

@@ -3,19 +3,19 @@
  * @date: 2024/9/18
  * @desc:
  */
-import { ShowInterceptor } from '../interceptions/IInterceptor';
 import { InterceptorMgr } from '../interceptions/InterceptorMgr';
-import { InterceptorInfo, RouteMetadata } from '../model/Model';
+import { DEFAULT_STACK_NAME, InterceptorInfo, RouteMetadata } from '../model/Model';
 import LogUtil from '../utlis/LogUtil';
 import { ObjectUtil } from '../utlis/ObjectUtil';
 import { HashMap } from '@kit.ArkTS';
 import NavStackState from '../model/NavStackState';
+import { ZRouter } from './Router';
 
 export default class NavStackMgr {
     private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
     private interceptorMgr = InterceptorMgr.getInstance()
     private navStackStateMap = new HashMap<string, NavStackState>()
-    private _currentStackName = ''
+    private _currentStackName = DEFAULT_STACK_NAME
     private constructor() {
     }
 
@@ -27,7 +27,7 @@ export default class NavStackMgr {
         return NavStackMgr._instance;
     }
 
-    public  set  currentStackName(name: string) {
+    public set currentStackName(name: string) {
         let has = false
         this.navStackStateMap.forEach((item) => {
             if (name === item?.stackName) {
@@ -35,9 +35,9 @@ export default class NavStackMgr {
             }
         })
         if (!has) {
-            throw new Error(`stack name does not exist: 【${this._currentStackName}】`)
+            throw new Error(`stack name does not exist: 【 ${name} 】`)
         } else {
-            this.currentStackName = name
+            this._currentStackName = name
         }
     }
 
@@ -69,32 +69,24 @@ export default class NavStackMgr {
     }
 
 
-    public registerNavStack(stackName: string = '', pathStack: NavPathStack, willShow?: InterceptionShowCallback): void {
-        if (!this.navStackMap.has(stackName)) {
+    public registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack, willShow?: InterceptionShowCallback): void {
+        if (!this.navStackMap.has(stackName) ) {
             this.navStackMap.set(stackName, pathStack)
             this.navStackStateMap.set(stackName, NavStackState.create(stackName))
             pathStack.setInterception({
                 willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
                     operation: NavigationOperation, animated: boolean) => {
-                    this.interceptorMgr.run<ShowInterceptor>(stackName, (it) => {
-                        if (to === 'navBar') {
-                            const fromContext = from as NavDestinationContext
-                            it.onRootWillShow?.(fromContext)
-                        }
-                        if (ObjectUtil.isObject(from)) {
-                            const fromContext = from as NavDestinationContext
-                            const toContext = to as NavDestinationContext
-                            it.onPageWillShow?.(fromContext, toContext)
-                        }
-                        it.onShowCallback?.(from, to, operation, animated)
-                    })
+                    const state = this.getNavStackState()
                     LogUtil.log('operation: ', operation)
                     if (willShow !== undefined) {
                         willShow(from, to, operation, animated)
                     }
-
+                    let isShowRoot = false
+                    let isShowPage = false
+                    let fromContext: NavDestinationContext
+                    let toContext: NavDestinationContext
+                    const interceptorInfo = InterceptorInfo.create(false)
                     if (operation === NavigationOperation.PUSH) {
-                        const interceptorInfo = new InterceptorInfo()
                         try {
                             const toContext: NavDestinationContext = to as NavDestinationContext
                             interceptorInfo.toContext = toContext
@@ -102,22 +94,45 @@ export default class NavStackMgr {
                             if (ObjectUtil.isObject(data)) {
                                 const metadata: RouteMetadata = data as RouteMetadata
                                 metadata.name = toContext.getConfigInRouteMap()?.name
+                                interceptorInfo.name = metadata.name
+                                interceptorInfo.param = ZRouter.getParam()
                                 interceptorInfo.metadata = metadata
                             }
-                            const state = this.getNavStackState()
-                            state.stackTopInfo = interceptorInfo
 
+                            state.stackTopInfo = interceptorInfo
                         } catch (e) {
                             // 检查route_map、装饰器Route、push三者的name值是否一致
                             LogUtil.error((e as Error).message)
                             LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
-                        } finally {
-                            const state = this.getNavStackState()
-                            state.interceptions.forEach((callback) => {
-                                callback(interceptorInfo)
-                            })
+                        }
+                    } else {
+                        if (to === 'navBar') {
+                            isShowRoot = true
+                            fromContext = from as NavDestinationContext
                         }
                     }
+                    if (ObjectUtil.isObject(from) && !isShowRoot) {
+                        fromContext = from as NavDestinationContext
+                        toContext = to as NavDestinationContext
+                        isShowPage = true
+                    }
+
+                    this.interceptorMgr.run(state.stackName, interceptorInfo, operation == NavigationOperation.PUSH,
+                        (interceptor) => {
+                        if (operation == NavigationOperation.PUSH) {
+                            interceptor.onNavigate?.(interceptorInfo)
+                        }
+                        if (isShowRoot) {
+                            interceptor.onRootWillShow?.(fromContext)
+                        }
+                        if (isShowPage) {
+                            interceptor.onPageWillShow?.(fromContext, toContext)
+                        }
+                        interceptor.onShowCallback?.(from, to, operation, animated)
+                    })
+
+
+
                 }
             })
         }

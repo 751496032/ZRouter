@@ -16,19 +16,23 @@ export struct Page1 {
     NavDestination(){
       Column({space:12}){
         Button('toHarAPage1').onClick((event: ClickEvent) => {
-          ZRouter.push("harAPage1")
+          // ZRouter.push("harAPage1")
+          ZRouter.getInstance().push("harAPage1")
         })
 
         Button('toHarAPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harAPage2")
+          // ZRouter.push("harAPage2")
+          ZRouter.getInstance().push("harAPage2")
         })
 
         Button('toHarBPage1').onClick((event: ClickEvent) => {
-          ZRouter.push("harBPage1")
+          // ZRouter.push("harBPage1")
+          ZRouter.getInstance().push("harBPage1")
         })
 
         Button('toHarBPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harBPage2")
+          // ZRouter.push("harBPage2")
+          ZRouter.getInstance().push("harBPage2")
         })
       }
 

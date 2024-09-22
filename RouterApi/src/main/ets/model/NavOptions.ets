@@ -3,7 +3,7 @@
  * @date: 2024/9/10
  * @desc:
  */
-import { ObjectOrNull, OnPopResultCallback } from './Model';
+import { DEFAULT_STACK_NAME, ObjectOrNull, OnPopResultCallback } from './Model';
 
 export interface  INavOptions<T> {
   animated: boolean;
@@ -11,11 +11,11 @@ export interface  INavOptions<T> {
   params?: ObjectOrNull;
   navStackName:string;
   enableCrossPageParamReturn?: boolean;
-  onPopCallback?: OnPopResultCallback<T | ObjectOrNull>;
+  onPopListener?: OnPopResultCallback<T | ObjectOrNull>;
 }
 
 export class NavOptionsImpl<T> implements  INavOptions<T> {
   animated: boolean = true;
   lunchMode: LaunchMode = LaunchMode.STANDARD;
-  navStackName: string = ''
+  navStackName: string = DEFAULT_STACK_NAME
 }

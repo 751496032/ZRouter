@@ -4,18 +4,25 @@
  * @desc:
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
-import { InterceptorInfo,
+import {
+  DEFAULT_STACK_NAME,
+  InterceptorInfo,
   NavRootEvent,
-  ObjectOrNull, OnInterceptorCallback, OnPopCallback,
+  ObjectOrNull,
+  OnInterceptorCallback,
+  OnPopCallback,
   OnPopResultCallback,
   PopResult,
-  RouteMetadata } from '../model/Model'
+  RouteMetadata
+} from '../model/Model'
 import LogUtil from '../utlis/LogUtil'
-import { emitter } from '@kit.BasicServicesKit'
+import { BusinessError, emitter } from '@kit.BasicServicesKit'
 import uiObserver from '@ohos.arkui.observer';
 import { InterceptorMgr } from '../interceptions/InterceptorMgr'
-import { IInterceptor } from '../interceptions/IInterceptor'
+import { IInterceptor, IPageNavigateInterceptor } from '../interceptions/IInterceptor'
 import NavStackMgr from './NavStackMgr'
+import { NavBuilder } from '../model/NavBuilder'
+import { ErrorCode } from '../model/Const'
 
 
 export class RouterMgr {
@@ -24,7 +31,7 @@ export class RouterMgr {
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
-       const name =  info.name.toString()
+      const name = info.name.toString()
       switch (info.state) {
         case uiObserver.NavDestinationState.ON_WILL_DISAPPEAR:
           LogUtil.log(name, 'onWillDisappear')
@@ -55,8 +62,19 @@ export class RouterMgr {
     this.navStackMgr.currentStackName = name
   }
 
+  public get currentStackName(): string {
+    return this.navStackMgr.currentStackName
+  }
 
-  public registerNavStack(stackName: string = '', pathStack: NavPathStack, willShow?: InterceptionShowCallback): void {
+
+  /**
+   * 只能注册一次
+   * @param stackName
+   * @param pathStack
+   * @param willShow
+   */
+  public registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack,
+    willShow?: InterceptionShowCallback): void {
     this.navStackMgr.registerNavStack(stackName, pathStack, willShow)
   }
 
@@ -69,16 +87,6 @@ export class RouterMgr {
     return this.navStackMgr.getNavStackByName(stackName, willShow)
   }
 
-  /**
-   * @deprecated
-   * @param stackName
-   * @param name
-   * @param param
-   * @param animated
-   */
-  public pushByStackName(stackName: string, name: string, param?: ObjectOrNull, animated: boolean = false) {
-    this.getNavStackByName(stackName).pushPathByName(name, param, animated)
-  }
 
   private getCurrentState() {
     return this.navStackMgr.getNavStackState()
@@ -89,8 +97,8 @@ export class RouterMgr {
    * @param name 是Route装饰器上的name属性值
    * @param param 携带的参数
    */
-  public push(name: string, param?: ObjectOrNull, animated: boolean = false) {
-    this.getNavStack().pushPathByName(name, param, animated)
+  public push<T>(name: string, param?: ObjectOrNull, animated: boolean = false, builder?: NavBuilder<T>) {
+    this.pushDestination<T>(name, param, undefined, builder)
   }
 
   /**
@@ -102,15 +110,14 @@ export class RouterMgr {
    * @param param
    * @param callback
    */
-  public pushForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
-    this.getNavStack().pushPath({
-      name, param: param, onPop: (data) => {
-        callback?.(data)
-        // if (typeof r === 'boolean' && r) {
-        //   this.pushByTopName(param)
-        // }
-      }
-    })
+  public pushForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
+    builder?: NavBuilder<T>) {
+    // this.getNavStack().pushDestination({
+    //   name, param: param, onPop: (data) => {
+    //     callback?.(data)
+    //   }
+    // }, { launchMode: builder?.options?.lunchMode, animated: builder?.options.animated ?? true })
+    this.pushDestination<T>(name, param, callback, builder)
   }
 
   /**
@@ -124,21 +131,22 @@ export class RouterMgr {
    * @param param
    * @param callback
    */
-  public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
+  public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>,
+    builder?: NavBuilder<T>) {
     const topName = this.getTopPathName()
-    this.getNavStack().pushDestinationByName(name, param).then(() => {
-      let eName = ''
-      if (ObjectUtil.isNotEmpty(topName)) {
-        eName = topName!
-      } else {
-        eName = NavRootEvent
-      }
-      const state = this.getCurrentState()
-      if (!state.redirectWithResultMode) {
-        this.unregisterEvent(eName)
-      }
-      this.registerEvent<T>(eName, param, callback)
-    })
+    this.pushDestination(name, param, undefined, builder).then(() => {
+        let eName = ''
+        if (ObjectUtil.isNotEmpty(topName)) {
+          eName = topName!
+        } else {
+          eName = NavRootEvent
+        }
+        const state = this.getCurrentState()
+        if (!state.redirectWithResultMode) {
+          this.unregisterEvent(eName)
+        }
+        this.registerEvent<T>(eName, param, callback)
+      })
       .catch((e: Error) => {
         LogUtil.error('error: ', e)
       })
@@ -155,7 +163,7 @@ export class RouterMgr {
    */
   public redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
     this.pop(false)
-    this.pushForResult(name, param, callback)
+    this.pushForResult<ObjectOrNull>(name, param, callback)
   }
 
 
@@ -167,12 +175,13 @@ export class RouterMgr {
    * @param param
    * @param callback
    */
-  public redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
+  public redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>,
+    builder?: NavBuilder<T>) {
     const state = this.getCurrentState()
     state.redirectInfo.name = state.stackTopInfo?.metadata?.name || ''
     this.pop(false)
     state.redirectWithResultMode = true
-    this.push(name, param, true)
+    this.push<T>(name, param, true)
     this.unregisterEvent(state.redirectInfo.name)
     this.registerEvent<T>(state.redirectInfo.name, param, callback)
   }
@@ -181,9 +190,32 @@ export class RouterMgr {
    * 重定向页面
    * @param name
    */
-  public redirect(name: string) {
+  public redirect<T>(name: string, builder?: NavBuilder<T>) {
     this.pop(false)
-    this.pushForResult(name)
+    this.pushForResult<ObjectOrNull>(name, builder)
+  }
+
+
+  private pushDestination<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
+    builder?: NavBuilder<T>) {
+    return this.getNavStack()
+      .pushDestination({
+        name, param: param, onPop: (data) => {
+          callback?.(data)
+        }
+      }, { launchMode: builder?.options?.lunchMode, animated: builder?.options.animated ?? true })
+      .catch((err: BusinessError) => {
+        LogUtil.error('error: ', err.code, err.message)
+        if (err.code == ErrorCode.NOT_REGISTERED) {
+          const state = this.getCurrentState()
+          let interceptorInfo = InterceptorInfo.create(true)
+          interceptorInfo.name = name
+          interceptorInfo.param = param
+          this.interceptorMgr.run(state.stackName, interceptorInfo,true, (it)=>{
+             it.onNavigate?.(interceptorInfo)
+          })
+        }
+      })
   }
 
   /**
@@ -236,11 +268,11 @@ export class RouterMgr {
       } else {
         LogUtil.error('不支持关闭当前页， 请使用popWithResult')
       }
-    }else {
+    } else {
       LogUtil.error(name + " 不存在路由栈中")
       return
     }
-    this.sendEvent<T>(name!,currentName!, result)
+    this.sendEvent<T>(name!, currentName!, result)
 
   }
 
@@ -253,14 +285,14 @@ export class RouterMgr {
   public finishWithResult<T>(result?: T, animated: boolean = true) {
     const state = this.getCurrentState()
     if (state.redirectWithResultMode && ObjectUtil.isNotEmpty(state.redirectInfo.name)) {
-      const topName =  this.getTopPathName()
+      const topName = this.getTopPathName()
       this.sendEvent<T>(state.redirectInfo.name, topName!, result)
       this.pop(animated)
     }
   }
 
 
-  public popToRootWithResult<T>(result?: T, animated: boolean = true){
+  public popToRootWithResult<T>(result?: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
     if (ObjectUtil.isEmpty(currentName)) {
       LogUtil.error(currentName + " 不存在路由栈顶中")
@@ -268,40 +300,14 @@ export class RouterMgr {
     }
     this.getNavStack().clear(animated)
     const name = NavRootEvent
-    this.sendEvent<T>(name!,currentName!, result)
+    this.sendEvent<T>(name!, currentName!, result)
   }
 
 
-
-  public addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
-    this.addInterceptor('', callback)
+  public setInterceptor<T extends IInterceptor>(interceptor: T, stackName: string = DEFAULT_STACK_NAME) {
+    this.interceptorMgr.addInterceptor(stackName, interceptor)
   }
 
-  /**
-   * @deprecated
-   * @param key
-   * @param callback
-   */
-  public addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
-    const state = this.getCurrentState()
-    state.interceptions.set(key, callback)
-  }
-
-  public setInterceptor<T extends IInterceptor>(id: string, interceptor: T) {
-    this.interceptorMgr.addInterceptor(id, interceptor)
-  }
-
-
-  /**
-   * @deprecated
-   * @param key
-   */
-  public removeInterceptor(key: string) {
-    const state = this.getCurrentState()
-    if (!key && key.trim().length > 0) {
-      state.interceptions.delete(key)
-    }
-  }
 
   /**
    * 清空页面栈，返回Navigation主页
@@ -329,11 +335,11 @@ export class RouterMgr {
     try {
       const state = this.getCurrentState()
       let name = this.getTopPathName()
-      if (state.redirectWithResultMode){
+      if (state.redirectWithResultMode) {
         name = state.redirectInfo.name
-      }else {
+      } else {
         if (ObjectUtil.isEmpty(name)) {
-          name = state.stackTopInfo?.metadata?.name ||  state.redirectInfo.name
+          name = state.stackTopInfo?.metadata?.name || state.redirectInfo.name
         }
       }
 
@@ -341,7 +347,7 @@ export class RouterMgr {
         if (remove) {
           this.getNavStack().removeByName(name)
         }
-        this.push(name, param, true)
+        this.push<ObjectOrNull>(name, param, true)
       }
     } catch (e) {
       LogUtil.error('error: ', e)
@@ -398,8 +404,11 @@ export class RouterMgr {
     this.getNavStack().moveToTop(name)
   }
 
-  public replacePathByName(name: string, param?: ObjectOrNull,animated: boolean = true) {
-    this.getNavStack().replacePathByName(name, param, animated)
+  public replacePathByName<T>(name: string, param?: ObjectOrNull, animated: boolean = true,
+    builder?: NavBuilder<T>) {
+    this.getNavStack()
+      .replacePath({ name, param },
+        { launchMode: builder?.options?.lunchMode, animated: builder?.options.animated ?? animated })
   }
 
   private isRegisterEvent(name: string) {
@@ -425,7 +434,7 @@ export class RouterMgr {
 
   private unregisterEvent(name: string) {
     if (this.isRegisterEvent(name)) {
-     let n =  emitter.getListenerCount(name);
+      let n = emitter.getListenerCount(name);
       for (let i = 0; i < n; i++) {
         emitter.off(name)
       }
@@ -441,4 +450,56 @@ export class RouterMgr {
     }
   }
 
+
+  public setGlobalInterceptor(interceptor: IPageNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
+    this.interceptorMgr.setGlobalInterceptor(stackName, interceptor)
+  }
+
+  /**
+   * @deprecated
+   * @see {setInterceptor}
+   * @param callback
+   */
+  public addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
+    this.setGlobalInterceptor({
+      onNavigate:(context) => {
+        callback(context)
+      }
+    } as IPageNavigateInterceptor)
+  }
+
+
+  /**
+   * @deprecated
+   * @param key
+   * @param callback
+   */
+  public addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
+    // const state = this.getCurrentState()
+    // state.interceptions.set(key, callback)
+  }
+
+
+  /**
+   * @deprecated
+   * @param key
+   */
+  public removeInterceptor(key: string) {
+    // const state = this.getCurrentState()
+    // if (!key && key.trim().length > 0) {
+    //   state.interceptions.delete(key)
+    // }
+  }
+
+
+  /**
+   * @deprecated
+   * @param stackName
+   * @param name
+   * @param param
+   * @param animated
+   */
+  public pushByStackName(stackName: string, name: string, param?: ObjectOrNull, animated: boolean = false) {
+    this.getNavStackByName(stackName).pushPathByName(name, param, animated)
+  }
 }

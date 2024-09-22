@@ -4,11 +4,13 @@
  * @desc:
  */
 import { ObjectUtil } from '../utlis/ObjectUtil'
-import { InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopResultCallback } from '../model/Model'
+import {
+  DEFAULT_STACK_NAME,
+  InitConfig, InterceptorInfo, ObjectOrNull, OnPopCallback, OnPopResultCallback } from '../model/Model'
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
 import { NavBuilder } from '../model/NavBuilder'
-import { IInterceptor } from '../interceptions/IInterceptor'
+import { IInterceptor, IPageNavigateInterceptor } from '../interceptions/IInterceptor'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -50,25 +52,14 @@ export class ZRouter {
     return ZRouter.getRouterMgr().getNavStackByName(stackName)
   }
 
-  /**
-   * @deprecated
-   * @param stackName
-   * @param name
-   * @param param
-   * @param animated
-   */
-  public static pushByStackName(stackName: string, name: string, param?: ObjectOrNull,
-  animated: boolean = true) {
-    ZRouter.getRouterMgr().pushByStackName(stackName, name, param, animated)
-  }
 
   public static push(name: string, param?: ObjectOrNull, animated: boolean = true) {
-    ZRouter.getRouterMgr().push(name, param, animated)
+    ZRouter.getRouterMgr().push<ObjectOrNull>(name, param, animated)
   }
 
 
   public static pushForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
-    ZRouter.getRouterMgr().pushForResult(name, param, callback)
+    ZRouter.getRouterMgr().pushForResult<ObjectOrNull>(name, param, callback)
   }
 
 
@@ -76,22 +67,13 @@ export class ZRouter {
     ZRouter.getRouterMgr().pushNavForResult<T>(name, param, callback)
   }
 
-  /**
-   * @deprecated
-   * @see {redirectForResult2}
-   * @param name
-   * @param param
-   * @param callback
-   */
-  public static redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
-    ZRouter.getRouterMgr().redirectForResult(name, param, callback)
-  }
+
   public static redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
     ZRouter.getRouterMgr().redirectForResult2(name, param, callback)
   }
 
   public static redirect(name: string) {
-    ZRouter.getRouterMgr().redirect(name)
+    ZRouter.getRouterMgr().redirect<ObjectOrNull>(name)
   }
 
 
@@ -103,7 +85,7 @@ export class ZRouter {
     ZRouter.getRouterMgr().pop(animated)
   }
 
-  public static popWithResult(result?: Object,animated: boolean = true) {
+  public static popWithResult(result?: Object, animated: boolean = true) {
     ZRouter.getRouterMgr().popWithResult(result, animated)
   }
 
@@ -111,35 +93,15 @@ export class ZRouter {
     ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
   }
 
+  public static popToRootWithResult<T>(result?: T, animated: boolean = true) {
+    ZRouter.getRouterMgr().popToRootWithResult<T>(result, animated)
+  }
+
   public static finishWithResult<T>(result?: T , animated: boolean = true) {
     ZRouter.getRouterMgr().finishWithResult<T>( result, animated)
   }
 
 
-  public static popToRootWithResult<T>(result?: T, animated: boolean = true) {
-    ZRouter.getRouterMgr().popToRootWithResult<T>(result, animated)
-  }
-
-  public static addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
-    ZRouter.getRouterMgr().addGlobalInterceptor(callback)
-  }
-
-  /**
-   * @deprecated
-   * @param key
-   * @param callback
-   */
-  public static addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
-    ZRouter.getRouterMgr().addInterceptor(key, callback)
-  }
-
-  /**
-   * @deprecated
-   * @param key
-   */
-  public static removeInterceptor(key: string) {
-    ZRouter.getRouterMgr().removeInterceptor(key)
-  }
 
   public static clear() {
     ZRouter.getRouterMgr().clear()
@@ -153,14 +115,6 @@ export class ZRouter {
     return ZRouter.getRouterMgr().getTopPathName()
   }
 
-
-  /**
-   * @deprecated
-   * @param remove
-   */
-  public static pushByTopName(remove: boolean = true) {
-    ZRouter.getRouterMgr().pushByTopName(remove)
-  }
 
 
   public static getParamByName(name: string): Record<string, ObjectOrNull>[] {
@@ -184,27 +138,110 @@ export class ZRouter {
   }
 
   public static replacePathByName(name: string, param?: ObjectOrNull, animated: boolean = true) {
-    ZRouter.getRouterMgr().replacePathByName(name, param, animated)
+    ZRouter.getRouterMgr().replacePathByName<ObjectOrNull>(name, param, animated)
   }
 
-  public static getInstance(stackName: string = ''): NavBuilder<ObjectOrNull> {
+  public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavBuilder<ObjectOrNull> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
-    return new NavBuilder<ObjectOrNull>(ZRouter.routerMgr)
+    return NavBuilder.create<ObjectOrNull>(ZRouter.routerMgr, stackName)
   }
 
-  public static createInstance<T>(stackName: string = ''): NavBuilder<T> {
+  public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavBuilder<T> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
-    return new NavBuilder<T>(ZRouter.routerMgr)
+    return  NavBuilder.create<T>(ZRouter.routerMgr, stackName)
   }
 
 
-  public static setInterceptor<T extends IInterceptor>(id: string, interceptor: T) {
-    ZRouter.getRouterMgr().setInterceptor(id, interceptor)
+  public static setInterceptor<T extends IInterceptor>(interceptor: T, stackName: string = DEFAULT_STACK_NAME) {
+    ZRouter.getRouterMgr().setInterceptor<T>(interceptor, stackName)
   }
+
+  public static getCurrentStackName(): string {
+    return ZRouter.getRouterMgr().currentStackName
+  }
+
+
+
+  // region 废弃方法
+
+  /**
+   * @deprecated
+   * @param stackName
+   * @param name
+   * @param param
+   * @param animated
+   */
+  public static pushByStackName(stackName: string, name: string, param?: ObjectOrNull,
+    animated: boolean = true) {
+    ZRouter.getRouterMgr().pushByStackName(stackName, name, param, animated)
+  }
+
+
+
+  /**
+   * @deprecated
+   * @see {redirectForResult2}
+   * @param name
+   * @param param
+   * @param callback
+   */
+  public static redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
+    ZRouter.getRouterMgr().redirectForResult(name, param, callback)
+  }
+
+
+  public static setGlobalInterceptor(interceptor: IPageNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
+    ZRouter.getRouterMgr().setGlobalInterceptor(interceptor, stackName)
+  }
+
+
+  /**
+   * @deprecated
+   * @see {setGlobalInterceptor}
+   * @param callback
+   */
+  public static addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
+    ZRouter.getRouterMgr().addGlobalInterceptor(callback)
+  }
+
+
+
+  /**
+   * @deprecated
+   * @see {setInterceptor}
+   * @param key
+   * @param callback
+   */
+  public static addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
+    ZRouter.getRouterMgr().addInterceptor(key, callback)
+  }
+
+  /**
+   * @deprecated
+   * @param key
+   */
+  public static removeInterceptor(key: string) {
+    ZRouter.getRouterMgr().removeInterceptor(key)
+  }
+
+
+
+  /**
+   * @deprecated
+   * @param remove
+   */
+  public static pushByTopName(remove: boolean = true) {
+    ZRouter.getRouterMgr().pushByTopName(remove)
+  }
+
+  // endregion
+
+
+
 
 
 }

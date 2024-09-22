@@ -8,7 +8,7 @@ import { InterceptorInfo, OnInterceptorCallback } from './Model'
 import { RedirectInfo } from './RedirectModel'
 
 export default  class NavStackState {
-  private _interceptions: Map<string, OnInterceptorCallback> = new Map<string, OnInterceptorCallback>()
+  // private _interceptions: Map<string, OnInterceptorCallback> = new Map<string, OnInterceptorCallback>()
   private _stackTopInfo: InterceptorInfo | undefined
   private _redirectWithResultMode: boolean = false
   private _redirectInfo = new RedirectInfo()
@@ -27,13 +27,13 @@ export default  class NavStackState {
   }
 
 
-  public set interceptions(value: Map<string, OnInterceptorCallback>) {
-    this._interceptions = value
-  }
-
-  public get interceptions(): Map<string, OnInterceptorCallback> {
-    return this._interceptions
-  }
+  // public set interceptions(value: Map<string, OnInterceptorCallback>) {
+  //   this._interceptions = value
+  // }
+  //
+  // public get interceptions(): Map<string, OnInterceptorCallback> {
+  //   return this._interceptions
+  // }
 
   public set stackTopInfo(value: InterceptorInfo | undefined) {
     this._stackTopInfo = value
