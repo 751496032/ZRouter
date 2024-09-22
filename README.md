@@ -36,6 +36,8 @@ ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和
 
 ### 下载安装
 
+在项目根目录的hvigor目录的hvigor-config.json5文件中配置安装
+
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
