@@ -7,9 +7,9 @@ ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和
 - 对Navigation组件简化使用，封装一系列简单易用API，支持链式调用，无需再关注路由表的配置，保持着对Navigation组件零侵入零耦合；
 - 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
 - 支持自定义URL路径跳转配置，可以通过URL路径来跳转原生不同页面；
-- 支持第三方Navigation实例的系统路由表使用本库的API；
+- 支持第三方Navigation的系统路由表使用本库API；
 - 支持跨多级页面参数的回传监听；
-- 支持启动模式、混淆；
+- 支持启动模式、混淆、嵌套Navigation；
 - 后续会支持生命周期的监听、组件化通信（待实现）。
 
 
@@ -416,7 +416,7 @@ export struct LoginPage{
 
 #### 多个拦截器
 
-单个拦截器的使用方式和全局拦截器是类似的，只不过是在跳转时使用setInterceptor()方法，另外需要实现接口IInterceptor，代码示例如下：
+单个拦截器的使用方式和全局拦截器是类似的，首先实现接口IInterceptor，然后使用setInterceptor()方法注册拦截器，，代码示例如下：
 
 ```typescript
 export interface IInterceptor {
@@ -537,7 +537,7 @@ export class UrlInterceptor implements IInterceptor {
 
 ## 第三方Navigation实例使用本库的API
 
-如果第三方Navigation实例使用本库的API，需要在第三方Navigation的NavPathStack实例注册到ZRouter中，代码示例：
+如果第三方Navigation实例使用本库的API，需要将第三方Navigation的NavPathStack实例注册到ZRouter中，代码示例：
 
 ```typescript
   aboutToAppear(): void {
