@@ -182,6 +182,7 @@ onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
 
 
 ```
+// Index 中使用 aboutToAppear 生命周期函数会因为 Navigation 还没初始化完成导致无法有效跳转,可使用替换成 onPageShow
 @Entry
 @Component
 struct Index {
