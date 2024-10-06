@@ -3,9 +3,13 @@
  * @date: 2024/9/22
  * @desc:
  */
-import { Route, ZRouter } from 'routerapi';
+import { Route, ZRouter,Const } from 'routerapi';
 
-@Route({name: 'URLPage'})
+// export class Const {
+//   public static readonly URL_PAGE = "URL_PAGE"
+// }
+
+@Route({name: Const.TEST})
 @Component
 export default struct URLPage {
   build() {

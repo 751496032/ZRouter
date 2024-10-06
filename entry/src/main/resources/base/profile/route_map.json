@@ -15,14 +15,6 @@
       "data": {
         "needLogin": "false"
       }
-    },
-    {
-      "name": "URLPage",
-      "pageSourceFile": "src/main/ets/_generated/ZRURLPage.ets",
-      "buildFunction": "entryURLPageBuilder",
-      "data": {
-        "needLogin": "false"
-      }
     }
   ]
 }

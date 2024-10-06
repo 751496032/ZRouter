@@ -2,7 +2,7 @@ import { hapTasks } from '@ohos/hvigor-ohos-plugin';
 import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
 const config: PluginConfig = {
     scanDir: 'src/main/ets/pages',
-    logEnabled: false,
+    logEnabled: true,
     viewNodeInfo: false,
 
 }

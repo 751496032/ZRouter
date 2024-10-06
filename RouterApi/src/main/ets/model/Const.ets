@@ -14,3 +14,8 @@ export enum ErrorCode {
 // export class InterceptorNames {
 //   public static readonly PageNavigateInterceptor: string = 'PageNavigateInterceptor'
 // }
+
+export  class Const {
+  public static readonly TEST: string = "routerBB"
+  public static readonly NEW_TEST = "routerBBcc"
+}
