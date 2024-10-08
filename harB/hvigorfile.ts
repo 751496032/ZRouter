@@ -3,7 +3,7 @@ import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
 
 const config: PluginConfig = {
     scanDir: "src/main/ets/components",
-    logEnabled: true ,
+    logEnabled: false ,
     viewNodeInfo:false
 }
 

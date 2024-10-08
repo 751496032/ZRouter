@@ -1,7 +1,8 @@
+import { RouterConstants } from 'common_library';
 import { Route, ZRouter } from 'routerapi';
 
 
-@Route({ name: "harAMainPage", description: "测试", needLogin: true })
+@Route({ name: RouterConstants.HARA_MAIN_PAGE, description: "测试", needLogin: true })
 @Component
 export struct MainPage {
   @State message: string = 'Hello World';

@@ -3,6 +3,7 @@
  * @date: 2024/9/17
  * @desc:
  */
+import { RouterConstants } from 'common_library'
 import { ZRouter } from 'routerapi'
 
 const NAV_STACK_NAME = "newNavStack"
@@ -31,13 +32,13 @@ export struct Index2 {
           ZRouter.getInstance(NAV_STACK_NAME).push("PageNotFound")
         })
 
-        Button("harAMainPage").onClick((event: ClickEvent) => {
+        Button(RouterConstants.HARA_MAIN_PAGE).onClick((event: ClickEvent) => {
           ZRouter.getInstance(NAV_STACK_NAME)
             .setAnimate(true)
             .setPopListener((v) => {
               this.msg = v.data?.toString() + ' ' + v.from?.toString()
             })
-            .navigation("harAMainPage")
+            .navigation(RouterConstants.HARA_MAIN_PAGE)
         })
       }
 

@@ -1,4 +1,5 @@
 import { promptAction } from '@kit.ArkUI'
+import { RouterConstants } from 'common_library'
 import {  ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 import { GlobalNavigateInterceptor } from '../interceptors/interceptors'
@@ -47,8 +48,8 @@ struct Index {
         })
 
         Button('toHarBMainPage').onClick((event: ClickEvent) => {
-          // ZRouter.push("harBMainPage")
-          ZRouter.getInstance().navigation("harBMainPage")
+          ZRouter.push("harBMainPage")
+          // ZRouter.getInstance().navigation("harBMainPage")
 
         })
 
@@ -99,7 +100,7 @@ struct Index {
 
 
         Button("自定义URL跳转").onClick((event: ClickEvent) => {
-          ZRouter.getInstance().navigation("URLPage")
+          ZRouter.getInstance().navigation(RouterConstants.URL_TEST_PAGE)
         })
 
 

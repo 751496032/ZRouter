@@ -55,6 +55,10 @@
           ]
         }
       ]
+    },
+    {
+      "name": "common_library",
+      "srcPath": "./library/common_library"
     }
   ]
 }
