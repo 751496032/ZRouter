@@ -578,6 +578,20 @@ export class UrlInterceptor implements IInterceptor {
 ```
 把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
 
+## @Route装饰器上使用常量
+
+router-register-plugin插件1.0.7版本起，@Route装饰器上的name属性支持使用静态常量，方便统一管理路由名称；静态常量支持当前模块或跨模块定义，常量的定义模版如下：
+
+```typescript
+export class RouterConstants {
+  public static readonly URL_TEST_PAGE: string = "url_test";
+  public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
+}
+```
+> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
+
+
+
 ## 混淆
 
 在混淆时需要在每个模块添加如下配置：

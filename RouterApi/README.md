@@ -10,6 +10,7 @@ ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和
 - 支持第三方Navigation的系统路由表使用本库API；
 - 支持跨多级页面参数的回传监听；
 - 支持启动模式、混淆、嵌套Navigation；
+- @Route装饰器上的name属性支持使用静态常量；
 - 后续会支持生命周期的监听、组件化通信（待实现）。
 
 
@@ -182,6 +183,7 @@ onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
 
 
 ```
+// Index 中使用 aboutToAppear 生命周期函数会因为 Navigation 还没初始化完成导致无法有效跳转,可使用替换成 onPageShow
 @Entry
 @Component
 struct Index {
@@ -576,6 +578,20 @@ export class UrlInterceptor implements IInterceptor {
 ```
 把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
 
+## @Route装饰器上使用常量
+
+router-register-plugin插件1.0.7版本起，@Route装饰器上的name属性支持使用静态常量，方便统一管理路由名称；静态常量支持当前模块或跨模块定义，常量的定义模版如下：
+
+```typescript
+export class RouterConstants {
+  public static readonly URL_TEST_PAGE: string = "url_test";
+  public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
+}
+```
+> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
+
+
+
 ## 混淆
 
 在混淆时需要在每个模块添加如下配置：
@@ -612,7 +628,7 @@ ZRouter库是对NavPathStack对进行高度封装的，提供了更加简单易�
 
 ## 交流
 
-使用有疑问或建议，请在github或gitee上提交issue，或者在微信群中交流(+v: 751496032)。
+使用有疑问或建议， **请在github或gitee上提交issues（可以有效收集大家的问题，会在第一时间处理）** ，或者在微信群中交流(+v: 751496032)。
 
 ## 参考
 
