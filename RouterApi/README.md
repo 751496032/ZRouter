@@ -32,9 +32,13 @@ ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和
 
 <center>
 
-![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/201d21e432674db28b026d0af0341a2e.png)
+![在这里插入图片描述](https://gitee.com/common-apps/images/raw/master/img.png)
 
 </center>
+
+ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://developer.huawei.com/consumer/cn/market/landing/component)
+
+![鸿蒙生态市场](https://gitee.com/common-apps/images/raw/master/oh.png)
 
 
 ## router-register-plugin插件的使用
@@ -622,9 +626,8 @@ ZRouter库是对NavPathStack对进行高度封装的，提供了更加简单易�
 
 ## 源码
 
-- ZRouter
-  - github：https://github.com/751496032/ZRouter
-  - gitee：https://gitee.com/common-apps/ZRouter
+- github：https://github.com/751496032/ZRouter
+- gitee：https://gitee.com/common-apps/ZRouter
 
 ## 交流
 
