@@ -17,6 +17,14 @@
       }
     },
     {
+      "name": "splash_page",
+      "pageSourceFile": "src/main/ets/_generated/ZRSplashPage.ets",
+      "buildFunction": "entrySplashPageBuilder",
+      "data": {
+        "needLogin": "false"
+      }
+    },
+    {
       "name": "url_test",
       "pageSourceFile": "src/main/ets/_generated/ZRURLPage.ets",
       "buildFunction": "entryURLPageBuilder",

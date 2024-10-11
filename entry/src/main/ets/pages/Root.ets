@@ -13,16 +13,16 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 export struct Root{
 
   aboutToAppear(): void {
-    // 第一种方式设置拦截器，字面量对象的形式
-    ZRouter.setInterceptor({
-      priority: 100,
-      process: (info: InterceptorInfo) => {
-        console.log("IInterceptor process: ", 100, info.name)
-        return info
-      }
-    } as IInterceptor)
-    // 第二种方式设置拦截器，类的实例对象的形式
-    ZRouter.setInterceptor(new UrlInterceptor())
+    // // 第一种方式设置拦截器，字面量对象的形式
+    // ZRouter.setInterceptor({
+    //   priority: 100,
+    //   process: (info: InterceptorInfo) => {
+    //     console.log("IInterceptor process: ", 100, info.name)
+    //     return info
+    //   }
+    // } as IInterceptor)
+    // // 第二种方式设置拦截器，类的实例对象的形式
+    // ZRouter.setInterceptor(new UrlInterceptor())
   }
   build() {
     Column({space : 15}){

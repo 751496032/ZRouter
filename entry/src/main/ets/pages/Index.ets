@@ -1,8 +1,9 @@
-import { promptAction } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import { RouterConstants } from 'common_library'
-import {  ZRouter } from 'routerapi'
+import { IInterceptor, InterceptorInfo, ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
-import { GlobalNavigateInterceptor } from '../interceptors/interceptors'
+import { RouterConst } from '../constants/RouterConst'
+import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
 
 
 @Entry
@@ -29,7 +30,16 @@ struct Index {
     //       })
     //   }
     // })
-
+    // 第一种方式设置拦截器，字面量对象的形式
+    ZRouter.setInterceptor({
+      priority: 100,
+      process: (info: InterceptorInfo) => {
+        console.log("IInterceptor process: ", 100, info.name)
+        return info
+      }
+    } as IInterceptor)
+    // 第二种方式设置拦截器，类的实例对象的形式
+    ZRouter.setInterceptor(new UrlInterceptor())
     ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
 
   }
@@ -49,8 +59,6 @@ struct Index {
 
         Button('toHarBMainPage').onClick((event: ClickEvent) => {
           ZRouter.push("harBMainPage")
-          // ZRouter.getInstance().navigation("harBMainPage")
-
         })
 
         Button('toHspCIndex(携带参数)').onClick((event: ClickEvent) => {
@@ -109,8 +117,22 @@ struct Index {
 
         })
 
+        Button("模拟第三方Navigation使用ZRouter的API").onClick((event: ClickEvent) => {
+          router.pushUrl({url:'pages/Index2'})
+        }).margin({top:30})
+
+
       }
     }
+    .onAppear(()=>{
+      let isStarted= AppStorage.get<boolean>(RouterConst.SPLASH_TAG)
+      if (!isStarted) {
+        ZRouter.getInstance()
+          .setAnimate(false)
+          .navigation(RouterConst.SPLASH_PAGE)
+      }
+
+    })
     .title('Main')
     .height('100%')
     .width('100%')
