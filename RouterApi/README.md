@@ -2,9 +2,9 @@
 ## 介绍
 
 
-ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案。主要特性：
+ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦问题，从而实现业务复用和功能扩展。主要特性：
 
-- 对Navigation组件简化使用，封装一系列简单易用API，支持链式调用，无需再关注路由表的配置，保持着对Navigation组件零侵入零耦合；
+- 对Navigation简化使用，封装一系列简单易用的API，支持链式调用，无需再关注路由表的配置，对Navigation组件保持着零侵入零耦合；
 - 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
 - 支持自定义URL路径跳转配置，可以通过URL路径来跳转原生不同页面；
 - 支持第三方Navigation的系统路由表使用本库API；
@@ -16,30 +16,16 @@ ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和
 
 > ZRouter侧重于路由跳转与模块解耦，以及组件化的通信(待实现)；对Navigation组件没有任何耦合，不做任何的限制把自主权交给开发者。
 
-系统路由表是API 12起开始支持的，可以帮助我们实现动态路由的功能，其目的是为了解决多个业务模块（HAR/HSP）之间解耦问题，从而实现业务的复用和功能的扩展。
-
-我们先回顾下系统路由表的使用步骤：
-
-- 首先在目标模块中的module.json5文件中配置路由表文件route_map.json的指引；
-- 然后在resources/base/profile目录下创建route_map.json文件，用于配置每个页面路由的信息；
-- 接着定义每个页面对应的Builder函数，用此作为页面入口，函数名必须与route_map.json文件中buildFunction字段一一对应，否则会跳转异常。
-- 最后通过pushPathByName等路由接口进行页面跳转。
-
-
-上面的步骤虽然是很简单，但很繁琐；而ZRouter在router-register-plugin插件下支持下，让整个流程更简单化，开发者不用手动去配置，router-register-plugin插件已经将代码模板化，在编译阶段会自动生成配置，帮我们完成整个路由的注册流程。
-
-两行代码就可以完成页面的跳转，如下:
+**使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
 
 <center>
-
-![在这里插入图片描述](https://gitee.com/common-apps/images/raw/master/img.png)
+[![a1.png](https://www.z4a.net/images/2024/10/12/a1.png)](https://www.z4a.net/image/yUNrzw)
 
 </center>
 
 ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://developer.huawei.com/consumer/cn/market/landing/component)
 
-![鸿蒙生态市场](https://gitee.com/common-apps/images/raw/master/oh.png)
-
+![a2.png](https://www.z4a.net/images/2024/10/12/a2.png)
 
 ## router-register-plugin插件的使用
 
@@ -50,14 +36,13 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.6"
+    "router-register-plugin":"1.0.7"
   },
 ```
 
+![Static Badge](https://img.shields.io/badge/router-register-plugin?link=https%3A%2F%2Fgithub.com%2F751496032%2FRouterRegisterPlugin)
+[![npm](https://img.shields.io/npm/v/router-register-plugin)](https://www.npmjs.com/package/router-register-plugin)
 
-
-> **[点击查看插件最新版本
-](https://www.npmjs.com/package/router-register-plugin?activeTab=versions)**
 
 最后记得Sync Now或重新build让插件安装生效。
 
@@ -185,6 +170,7 @@ onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
 
 2、在Index页面使用Navigation作为根视图，通过ZRouter的getNavStack()方法获取NavPathStack实例。
 
+> 如果在Index入口文件中启动Splash页面，建议放在Navigation的onAppear方法中进行启动，或者组件的onPageShow方法，具体可参考demo
 
 ```
 // Index 中使用 aboutToAppear 生命周期函数会因为 Navigation 还没初始化完成导致无法有效跳转,可使用替换成 onPageShow
