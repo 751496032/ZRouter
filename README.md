@@ -2,7 +2,7 @@
 ## 介绍
 
 
-ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦问题，从而实现业务的复用和功能的扩展。主要特性：
+ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦问题，从而实现业务复用和功能扩展。主要特性：
 
 - 对Navigation组件简化使用，封装一系列简单易用API，支持链式调用，无需再关注路由表的配置，保持着对Navigation组件零侵入零耦合；
 - 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
@@ -38,14 +38,13 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.6"
+    "router-register-plugin":"1.0.7"
   },
 ```
 
+![Static Badge](https://img.shields.io/badge/router-register-plugin?link=https%3A%2F%2Fgithub.com%2F751496032%2FRouterRegisterPlugin)
+[![npm](https://img.shields.io/npm/v/router-register-plugin)](https://www.npmjs.com/package/router-register-plugin)
 
-
-> **[点击查看插件最新版本
-](https://www.npmjs.com/package/router-register-plugin?activeTab=versions)**
 
 最后记得Sync Now或重新build让插件安装生效。
 
