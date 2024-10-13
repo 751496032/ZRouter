@@ -1,5 +1,6 @@
-import { RouterConstants } from 'common_library';
+import { RouterConstants,commonTest} from 'common_library';
 import { Route, ZRouter } from 'routerapi';
+
 
 
 @Route({ name: RouterConstants.HARA_MAIN_PAGE, description: "测试", needLogin: true })
@@ -9,7 +10,7 @@ export struct MainPage {
   @State isNewStack: boolean = ZRouter.getCurrentStackName() == "newNavStack";
 
   aboutToAppear(): void {
-
+    console.log("harA MainPage aboutToAppear")
   }
 
   aboutToDisappear(): void {

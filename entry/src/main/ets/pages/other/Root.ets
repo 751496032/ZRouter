@@ -6,7 +6,8 @@
 import { router } from '@kit.ArkUI'
 import { it } from '@ohos/hypium'
 import { IInterceptor, InterceptorInfo, ZRouter } from 'routerapi'
-import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
+import { GlobalNavigateInterceptor, UrlInterceptor } from '../../interceptors/interceptors'
+import { util } from '@kit.ArkTS'
 
 @Entry
 @Component

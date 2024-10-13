@@ -1,6 +1,6 @@
 
-import EmptyPage from "../pages/EmptyPage";
-import { EmptyPage2 } from "../pages/EmptyPage";
+import EmptyPage from "../pages/empty/EmptyPage";
+import { EmptyPage2 } from "../pages/empty/EmptyPage";
 
 @Builder
 function entryEmptyPageBuilder() {

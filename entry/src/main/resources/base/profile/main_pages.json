@@ -1,7 +1,7 @@
 {
   "src": [
-    "pages/Root",
+    "pages/other/Root",
     "pages/Index",
-    "pages/Index2"
+    "pages/other/Index2"
   ]
 }

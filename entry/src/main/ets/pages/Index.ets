@@ -4,6 +4,7 @@ import { IInterceptor, InterceptorInfo, ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 import { RouterConst } from '../constants/RouterConst'
 import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
+import { util } from '@kit.ArkTS'
 
 
 @Entry
@@ -41,6 +42,7 @@ struct Index {
     // 第二种方式设置拦截器，类的实例对象的形式
     ZRouter.setInterceptor(new UrlInterceptor())
     ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
+
 
   }
 

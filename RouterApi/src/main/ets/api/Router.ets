@@ -31,6 +31,19 @@ export class ZRouter {
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
     LogUtil.config = config
+
+    setTimeout(()=> {
+      const harA = "hara"
+      const harB = "harb"
+      import(harA).then((ns:ESObject) => {
+        console.log("CommonTest harA动态 import 成功")
+        ns.commonTest2.test()
+      })
+      import(harB).then((ns:ESObject) => {
+        console.log("CommonTest harB动态 import 成功")
+      })
+    },3000)
+
   }
 
   private static getRouterMgr(): RouterMgr {

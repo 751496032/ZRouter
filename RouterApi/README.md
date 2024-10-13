@@ -19,6 +19,7 @@ ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和
 **使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
 
 <center>
+
 [![a1.png](https://www.z4a.net/images/2024/10/12/a1.png)](https://www.z4a.net/image/yUNrzw)
 
 </center>

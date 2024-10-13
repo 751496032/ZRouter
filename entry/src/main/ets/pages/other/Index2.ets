@@ -5,11 +5,12 @@
  */
 import { RouterConstants } from 'common_library'
 import { ZRouter } from 'routerapi'
+import { RouterConst } from '../../constants/RouterConst'
 
 const NAV_STACK_NAME = "newNavStack"
 
 @Component
-@Entry
+@Entry({routeName:RouterConst.INDEX2_NAME})
 export struct Index2 {
   @Provide stack: NavPathStack = new NavPathStack()
   @State msg: string = "hello world"
