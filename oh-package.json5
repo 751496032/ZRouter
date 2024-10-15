@@ -2,7 +2,7 @@
   "modelVersion": "5.0.0",
   "description": "Please describe the basic information.",
   "dependencies": {
-    "common_library": "file:./library/common_library"
+//    "common_library": "file:./library/common_library"
   },
   "devDependencies": {
     "@ohos/hypium": "1.0.18",

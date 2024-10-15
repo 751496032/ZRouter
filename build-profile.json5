@@ -57,7 +57,7 @@
       ]
     },
     {
-      "name": "common_library",
+      "name": "common",
       "srcPath": "./library/common_library"
     }
   ]

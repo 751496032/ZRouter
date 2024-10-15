@@ -3,7 +3,7 @@
  * @date: 2024/9/22
  * @desc:
  */
-import { RouterConstants } from 'common_library'
+import { RouterConstants } from '@hzw/common_library';
 import {  Route, ZRouter } from 'routerapi';
 
 import { RouterConst } from '../constants/RouterConst';

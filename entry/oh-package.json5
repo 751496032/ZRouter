@@ -9,7 +9,8 @@
     "routerapi": "file:../RouterApi",
     "hara": "file:../harA",
     "harb": "file:../harB",
-    "hspc": "file:../hspC"
+    "hspc": "file:../hspC",
+    "@hzw/common_library": "file:../library/common_library"
   },
   "devDependencies": {},
   "dynamicDependencies": {}

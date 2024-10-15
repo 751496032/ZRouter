@@ -1,10 +1,9 @@
+import { RouterConstants } from '@hzw/common_library'
 import { promptAction, router } from '@kit.ArkUI'
-import { RouterConstants } from 'common_library'
 import { IInterceptor, InterceptorInfo, ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 import { RouterConst } from '../constants/RouterConst'
 import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
-import { util } from '@kit.ArkTS'
 
 
 @Entry
