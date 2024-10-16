@@ -7,6 +7,7 @@
   "license": "Apache-2.0",
   "packageType": "InterfaceHar",
   "dependencies": {
-    "routerapi": "file:../RouterApi"
+    "routerapi": "file:../RouterApi",
+    "@hzw/common_library": "file:../library/common_library"
   }
 }

@@ -1,6 +1,7 @@
+import { RouterConstants } from '@hzw/common_library';
 import { Route, ZRouter } from 'routerapi';
 
-@Route({ name: "hspCIndex", needLogin: true, extra: 'hsp' })
+@Route({ name: RouterConstants.HSPC_INDEX_PAGE, needLogin: true, extra: 'hsp' })
 @Entry
 @Component
 struct Index {

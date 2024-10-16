@@ -1,9 +1,10 @@
 import { promptAction } from '@kit.ArkUI';
+import { RouterConstants } from 'common_library';
 import { Route, ZRouter } from 'routerapi';
 import { ObjectOrNull } from 'routerapi/src/main/ets/model/Model';
 
 
-@Route({name:'harBMainPage'})
+@Route({ name: RouterConstants.HARB_MAIN_PAGE })
 @Component
 export struct MainPage {
   @State message: string = 'Hello World';
@@ -11,8 +12,6 @@ export struct MainPage {
   build() {
     NavDestination(){
       Column({space:12}){
-
-
 
         Button('toHarAPage1').onClick((event: ClickEvent) => {
           ZRouter.push("harAPage1")

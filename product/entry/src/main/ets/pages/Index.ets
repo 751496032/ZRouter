@@ -54,33 +54,26 @@ struct Index {
       Column({space:12}){
         Button('toHarAMainPage').onClick((event: ClickEvent) => {
           // ZRouter.push("harAMainPage")
-          ZRouter.getInstance().navigation("harAMainPage")
+          ZRouter.getInstance().navigation(RouterConstants.HARA_MAIN_PAGE)
 
         })
-
         Button('toHarBMainPage').onClick((event: ClickEvent) => {
-          ZRouter.push("harBMainPage")
+          ZRouter.push(RouterConstants.HARB_MAIN_PAGE)
         })
-
         Button('toHspCIndex(携带参数)').onClick((event: ClickEvent) => {
-          // let data = 'hello ZRouter'
-          // let data = 100
-          // let data : List<string> = new List<string>()
-          // data.add('hello ZRouter')
-          // data.add('100')
+
           let data: Record<string, string | number> = { "msg": "hello ZRouter", "num": 100 }
           // ZRouter.pushForResult("hspCIndex", data, (info) => {
           //   console.log('hspCIndex 返回携带的数据：', info.result)
           //   promptAction.showDialog({message: `返回携带的数据：${JSON.stringify(info.result)}`})
           // })
-
           ZRouter.getInstance()
             .setParam(data)
             .setPopListener((info) => {
               console.log('hspCIndex 返回携带的数据：', info.data)
               promptAction.showDialog({ message: `返回携带的数据：${JSON.stringify(info.data)}` })
             })
-            .navigation("hspCIndex")
+            .navigation(RouterConstants.HSPC_INDEX_PAGE)
 
         })
 
@@ -119,8 +112,8 @@ struct Index {
         })
 
         Button("模拟第三方Navigation使用ZRouter的API").onClick((event: ClickEvent) => {
-          router.pushUrl({url:'pages/Index2'})
-        }).margin({top:30})
+          router.pushUrl({ url: RouterConst.INDEX2_NAME })
+        }).margin({ top: 30 })
 
 
       }

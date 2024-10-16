@@ -1,7 +1,7 @@
 {
   "modelVersion": "5.0.0",
   "dependencies": {
-    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.8-alpha.4.tgz"
+    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.8-alpha.5.tgz"
 //    "router-register-plugin":"1.0.7"
   },
   "execution": {
