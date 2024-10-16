@@ -1,6 +1,22 @@
 {
   "routerMap": [
     {
+      "name": "splash_page",
+      "pageSourceFile": "src/main/ets/_generated/ZRSplashPage.ets",
+      "buildFunction": "entrySplashPageBuilder",
+      "data": {
+        "needLogin": "false"
+      }
+    },
+    {
+      "name": "url_test",
+      "pageSourceFile": "src/main/ets/_generated/ZRURLPage.ets",
+      "buildFunction": "entryURLPageBuilder",
+      "data": {
+        "needLogin": "false"
+      }
+    },
+    {
       "name": "PageNotFound",
       "pageSourceFile": "src/main/ets/_generated/ZREmptyPage.ets",
       "buildFunction": "entryEmptyPageBuilder",
@@ -12,14 +28,6 @@
       "name": "PageNotFound2",
       "pageSourceFile": "src/main/ets/_generated/ZREmptyPage.ets",
       "buildFunction": "entryEmptyPage2Builder",
-      "data": {
-        "needLogin": "false"
-      }
-    },
-    {
-      "name": "splash_page",
-      "pageSourceFile": "src/main/ets/_generated/ZRSplashPage.ets",
-      "buildFunction": "entrySplashPageBuilder",
       "data": {
         "needLogin": "false"
       }
