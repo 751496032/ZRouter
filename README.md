@@ -63,7 +63,7 @@ hvigorw --sync
 import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
 
 const config: PluginConfig = {
-  scanDir: "src/main/ets/components",
+  scanDir: "src/main/ets/components",  
   logEnabled: false,
   viewNodeInfo: false,
 }
@@ -618,7 +618,7 @@ ZRouter库是对NavPathStack对进行高度封装的，提供了更加简单易�
 
 ## 交流
 
-使用有疑问或建议， **请在github或gitee上提交issues（可以有效收集大家的问题，会在第一时间处理）** ，或者在微信群中交流(+v: 751496032)。
+使用有疑问或建议， **请在github或gitee上提交issues（可以有效收集大家的问题，会在第一时间处理）** ，或者在进群交流(+v: 751496032)。
 
 ## 参考
 

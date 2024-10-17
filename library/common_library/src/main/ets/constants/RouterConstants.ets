@@ -4,4 +4,5 @@ export class RouterConstants {
   public static readonly HARB_MAIN_PAGE :string = "harBMainPage"
   public static readonly HSPC_INDEX_PAGE: string = "hspCIndex"
   public static readonly ORDER_PAGE: string = "orderPage"
+  public static readonly ORDER_DETAILS_PAGE: string = "orderDetailsPage"
 }
