@@ -56,42 +56,46 @@ hvigorw --sync
 
 ### 初始配置
 
-在每个模块中的hvigorfile.ts文件导入router-register-plugin插件模块的routerRegisterPlugin函数和PluginConfig 接口，routerRegisterPlugin 函数是自定义Hvigor插件的入口函数，PluginConfig是一个配置对象，用于定义插件的行为。
+在每个模块中的hvigorfile.ts文件导入router-register-plugin插件模块，如下：
 
 
 ```
+// 1、导入
 import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
 
+// 2、初始化配置
 const config: PluginConfig = {
-  scanDir: "src/main/ets/components",  
-  logEnabled: false,
-  viewNodeInfo: false,
+    scanDirs: ['src/main/ets/pages', 'src/main/ets/views'], // 扫描的目录，如果不设置，默认是扫描src/main/ets目录
+    logEnabled: true, // 查看日志
+    viewNodeInfo: false, // 查看节点信息
+    isAutoDeleteHistoryFiles: true // 删除无用编译产物
+
 }
 export default {
     system: harTasks,  
+    // 3、添加插件
     plugins:[routerRegisterPlugin(config)] 
 }
 
 ```
 
-上面代码初始化PluginConfig配置对象，包括要扫描的目录（scanDir）和两个布尔属性（logEnabled 和 viewNodeInfo），用于控制日志记录和查看节点信息的功能；然后将配置对象作为参数传入到routerRegisterPlugin入口函数中，最后将routerRegisterPlugin()函数添加到plugins数组中。
+常用的配置字段：
 
-- scanDir：建议是页面目录，这样可以更精准扫描目标文件。
+- scanDirs：扫描的目录，建议是页面目录，这样可以更精准扫描目标文件，如果不设置，默认是扫描src/main/ets目录
 - logEnabled：日志记录开关。
-- viewNodeInfo：查看节点信息的开关，只有logEnabled和viewNodeInfo同时开启才会生效。
+- viewNodeInfo：查看节点信息的开关，只有logEnabled和viewNodeInfo同时开启才会生效
+- isAutoDeleteHistoryFiles：是否删除无用编译产物。
 
 PluginConfig配置对象还有其他属性，但不建议使用，使用默认值即可。如下:
-
-
 
 
 ```
 export class PluginConfig {
     /**
      * 扫描的目录
-     * src/main/ets/
+     * 默认是 src/main/ets/
      */
-    scanDir: string = ''
+    scanDirs: string[] = []
     /**
      * builder函数注册代码生成的目录
      * src/main/ets/_generated/
@@ -121,7 +125,11 @@ export class PluginConfig {
      * 查看节点信息，只有与logEnable同时为true才会打印输出
      */
     viewNodeInfo: boolean = false
-
+    
+    /**
+     * 是否启用删除无用编译产物
+     */
+    isAutoDeleteHistoryFiles: Boolean = false
 }
 
 ```
@@ -138,12 +146,6 @@ export class PluginConfig {
 ohpm install @hzw/zrouter
 ```
 
-或者安装本地har包：
-
-
-```
-ohpm install ../libs/RouterApi.har
-```
 
 ### 页面跳转
 
@@ -153,7 +155,7 @@ ohpm install ../libs/RouterApi.har
 
 <center>
 
-![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/213307fcfc9b4d6c9d39b67fbedc5355.png)
+![6a594e11394c60d93983297a1e5322db.png](https://www.z4a.net/images/2024/10/17/6a594e11394c60d93983297a1e5322db.png)
 </center>
 
 
@@ -607,22 +609,20 @@ ZRouter库是对NavPathStack对进行高度封装的，提供了更加简单易�
 
 <center>
 
-![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/22886175c0e64a2abfc623e9ed0d052b.png)
+![84fbcf502ec66b87981622eaf57499e4.png](https://www.z4a.net/images/2024/10/17/84fbcf502ec66b87981622eaf57499e4.png)
+
 </center>
 
 
 ## 源码
 
-- github：https://github.com/751496032/ZRouter
 - gitee：https://gitee.com/common-apps/ZRouter
+- github：https://github.com/751496032/ZRouter
 
 ## 交流
 
 使用有疑问或建议， **请在github或gitee上提交issues（可以有效收集大家的问题，会在第一时间处理）** ，或者在进群交流(+v: 751496032)。
 
-## 参考
-
--  https://gitee.com/harmonyos-cases/cases/tree/master/CommonAppDevelopment/feature/routermodule
 
 
 
