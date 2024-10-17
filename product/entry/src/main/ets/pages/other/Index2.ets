@@ -10,7 +10,7 @@ import { RouterConst } from '../../constants/RouterConst'
 const NAV_STACK_NAME = "newNavStack"
 
 @Component
-@Entry({routeName:RouterConst.INDEX2_NAME})
+@Entry
 export struct Index2 {
   @Provide stack: NavPathStack = new NavPathStack()
   @State msg: string = "hello world"
