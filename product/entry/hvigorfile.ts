@@ -4,7 +4,7 @@ const config: PluginConfig = {
     scanDirs: ['src/main/ets/pages', 'src/main/ets/views'], // 扫描的目录，如果不设置，默认是扫描src/main/ets目录
     logEnabled: true, // 查看日志
     viewNodeInfo: false, // 查看节点信息
-    isAutoDeleteHistoryFiles: true // 删除历史无用文件
+    isAutoDeleteHistoryFiles: false // 删除无用的编译产物
 
 }
 export default {

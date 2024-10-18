@@ -1,1 +1,1 @@
-export { MainPage } from './src/main/ets/components/MainPage'// export { commonTest } from './src/main/ets/test/Test'// export { commonTest2 } from './src/main/ets/test/Test2'
+export { MainPage } from './src/main/ets/components/MainPage'// export { commonTest } from './src/main/ets/test/Test'// export { commonTest2 } from './src/main/ets/test/Test2'export * from './src/main/ets/service/ZRTestService'
