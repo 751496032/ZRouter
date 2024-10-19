@@ -86,54 +86,16 @@ export default {
 - viewNodeInfo：查看节点信息的开关，只有logEnabled和viewNodeInfo同时开启才会生效
 - isAutoDeleteHistoryFiles：是否删除无用编译产物。
 
-PluginConfig配置对象还有其他属性，但不建议使用，使用默认值即可。如下:
+PluginConfig配置对象还有其他属性，但不建议使用，使用默认值即可。
 
-
-```
-export class PluginConfig {
-    /**
-     * 扫描的目录
-     * 默认是 src/main/ets/
-     */
-    scanDirs: string[] = []
-    /**
-     * builder函数注册代码生成的目录
-     * src/main/ets/_generated/
-     */
-    generatedDir: string = ''
-    /**
-     * Index.ets目录
-     * 模块下目录下
-     */
-    indexDir: string = ''
-    /**
-     * module.json5文件路径
-     * src/main/ets/module.json5
-     */
-    moduleJsonPath: string = ''
-    /**
-     * 路由表路径
-     * src/main/ets/resources/base/profile/route_map.json
-     */
-    routerMapPath: string = ''
-    /**
-     * 是否打印日志
-     */
-    logEnabled: boolean = true
-
-    /**
-     * 查看节点信息，只有与logEnable同时为true才会打印输出
-     */
-    viewNodeInfo: boolean = false
-    
-    /**
-     * 是否启用删除无用编译产物
-     */
-    isAutoDeleteHistoryFiles: Boolean = false
-}
-
-```
 > 上面所有路径都是相对模块的src目录而言的，是相对路径。最后记得Sync Now或重新build让配置生效。
+
+其中`_generated`目录和`route_map.json`文件在编译阶段自动生成的，建议在git的`.gitignore`忽略改两个文件。
+
+```gitignore
+_generated
+route_map.json
+```
 
 ## ZRouter的基本使用
 

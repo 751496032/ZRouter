@@ -4,3 +4,4 @@ export { PopResult,RouteMetadata , InterceptorInfoOrNull, InterceptorInfo } from
 export * from './src/main/ets/interceptions/IInterceptor'
 export { IProvider } from './src/main/ets/service/IProvider'
 export { ServiceMgr } from './src/main/ets/service/ServiceMgr'
+export { Service } from './src/main/ets/annotation/Service'

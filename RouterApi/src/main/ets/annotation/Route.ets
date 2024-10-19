@@ -1,14 +1,14 @@
 /**
  * @author: HZWei
  * @date: 2024/7/15
- * @desc:
+ * @desc: NavDestination页面的注解
  */
 
 export function Route(param: Param) {
   return Object
 }
 
-export interface Param {
+interface Param {
   name: string,
   description?: string
   extra?: string
