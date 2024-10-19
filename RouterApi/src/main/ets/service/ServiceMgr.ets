@@ -24,9 +24,9 @@ export class ServiceMgr {
         }
     }
 
-    public getService(name: string): IProvider | null {
+    public getService<T extends IProvider | null>(name: string): T | null {
         if (this._services.has(name)) {
-            return this._services.get(name) as IProvider
+            return this._services.get(name) as T
         }
         return null
     }

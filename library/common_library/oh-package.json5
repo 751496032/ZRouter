@@ -5,5 +5,8 @@
   "main": "Index.ets",
   "author": "hzw",
   "license": "Apache-2.0",
-  "dependencies": {}
+  "dependencies": {
+    "@hzw/zrouter": "file:../../RouterApi"
+  },
+  "devDependencies": {}
 }

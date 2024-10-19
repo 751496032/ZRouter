@@ -16,6 +16,8 @@ import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
 import { NavBuilder } from '../model/NavBuilder'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
+import { ServiceMgr } from '../service/ServiceMgr'
+import { IProvider } from '../service/IProvider'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -32,17 +34,17 @@ export class ZRouter {
     }
     LogUtil.config = config
 
-    // setTimeout(()=> {
-    //   const harA = "hara"
-    //   const harB = "harb"
-    //   import(harA).then((ns:ESObject) => {
-    //     console.log("CommonTest harA动态 import 成功")
-    //     ns.commonTest2.test()
-    //   })
-    //   import(harB).then((ns:ESObject) => {
-    //     console.log("CommonTest harB动态 import 成功")
-    //   })
-    // },3000)
+    setTimeout(()=> {
+      const harA = "hara"
+      const harB = "harb"
+      import(harA).then((ns:ESObject) => {
+        console.log("CommonTest harA动态 import 成功")
+        ns.commonTest2.test()
+      })
+      import(harB).then((ns:ESObject) => {
+        console.log("CommonTest harB动态 import 成功")
+      })
+    },3000)
 
   }
 
@@ -56,6 +58,26 @@ export class ZRouter {
       }
     }
     return ZRouter.routerMgr
+  }
+
+
+  public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavBuilder<ObjectOrNull> {
+    if (ZRouter.routerMgr === undefined) {
+      ZRouter.routerMgr = ZRouter.getRouterMgr()
+    }
+    return NavBuilder.create<ObjectOrNull>(ZRouter.routerMgr, stackName)
+  }
+
+  public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavBuilder<T> {
+    if (ZRouter.routerMgr === undefined) {
+      ZRouter.routerMgr = ZRouter.getRouterMgr()
+    }
+    return NavBuilder.create<T>(ZRouter.routerMgr, stackName)
+  }
+
+
+  public static getService<T extends IProvider | null>(name: string): T | null {
+    return ServiceMgr.instance.getService<T>(name)
   }
 
   public static registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack): void {
@@ -161,20 +183,10 @@ export class ZRouter {
     ZRouter.getRouterMgr().replacePathByName<ObjectOrNull>(name, param, animated)
   }
 
-  public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavBuilder<ObjectOrNull> {
-    if (ZRouter.routerMgr === undefined) {
-      ZRouter.routerMgr = ZRouter.getRouterMgr()
-    }
-    return NavBuilder.create<ObjectOrNull>(ZRouter.routerMgr, stackName)
-  }
 
-  public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavBuilder<T> {
-    if (ZRouter.routerMgr === undefined) {
-      ZRouter.routerMgr = ZRouter.getRouterMgr()
-    }
-    return NavBuilder.create<T>(ZRouter.routerMgr, stackName)
+  public static setGlobalInterceptor(interceptor: IGlobalNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
+    ZRouter.getRouterMgr().setGlobalInterceptor(interceptor, stackName)
   }
-
 
   public static setInterceptor<T extends IInterceptor>(interceptor: T, stackName: string = DEFAULT_STACK_NAME) {
     ZRouter.getRouterMgr().setInterceptor<T>(interceptor, stackName)
@@ -212,9 +224,7 @@ export class ZRouter {
   }
 
 
-  public static setGlobalInterceptor(interceptor: IGlobalNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
-    ZRouter.getRouterMgr().setGlobalInterceptor(interceptor, stackName)
-  }
+
 
 
   /**
