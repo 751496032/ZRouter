@@ -3,13 +3,12 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { ZRouter } from 'routerapi';
 import { util } from '@kit.ArkTS';
+import BuildProfile from 'BuildProfile';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
-    ZRouter.init(true, {isShowLog: true})
-
-
+    ZRouter.init(true, {isShowLog: BuildProfile.DEBUG})
 
   }
 

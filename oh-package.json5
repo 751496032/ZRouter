@@ -1,9 +1,7 @@
 {
   "modelVersion": "5.0.0",
   "description": "Please describe the basic information.",
-  "dependencies": {
-//    "common_library": "file:./library/common_library"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@ohos/hypium": "1.0.18",
     "@ohos/hamock": "1.0.0"

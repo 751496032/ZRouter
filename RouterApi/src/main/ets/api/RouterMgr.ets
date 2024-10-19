@@ -116,11 +116,6 @@ export class RouterMgr {
    */
   public pushForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
     builder?: NavBuilder<T>) {
-    // this.getNavStack().pushDestination({
-    //   name, param: param, onPop: (data) => {
-    //     callback?.(data)
-    //   }
-    // }, { launchMode: builder?.options?.lunchMode, animated: builder?.options.animated ?? true })
     this.pushDestination<T>(name, param, callback, builder)
   }
 

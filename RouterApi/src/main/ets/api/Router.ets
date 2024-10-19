@@ -33,18 +33,18 @@ export class ZRouter {
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
     LogUtil.config = config
-
-    setTimeout(()=> {
-      const harA = "hara"
-      const harB = "harb"
-      import(harA).then((ns:ESObject) => {
-        console.log("CommonTest harA动态 import 成功")
-        ns.commonTest2.test()
-      })
-      import(harB).then((ns:ESObject) => {
-        console.log("CommonTest harB动态 import 成功")
-      })
-    },3000)
+    // setTimeout(()=> {
+    //   const harA = "hara"
+    //   const harB = "harb"
+    //   import(harA).then((ns:ESObject) => {
+    //     console.log("CommonTest harA动态 import 成功")
+    //     ns.commonTest.test()
+    //     ns.commonTest2.test()
+    //   })
+    //   import(harB).then((ns:ESObject) => {
+    //     console.log("CommonTest harB动态 import 成功")
+    //   })
+    // },3000)
 
   }
 
@@ -54,8 +54,11 @@ export class ZRouter {
       if (!ObjectUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
-        throw new Error('请在EntryAbility调用 ZRouter.init 初始化')
+         ZRouter.init(true)
       }
+    }
+    if (!ZRouter.routerMgr) {
+      throw new Error('请在EntryAbility调用 ZRouter.init 初始化')
     }
     return ZRouter.routerMgr
   }

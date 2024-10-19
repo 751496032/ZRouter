@@ -1,7 +1,7 @@
 /**
  * @author: HZWei
  * @date: 2024/7/15
- * @desc: NavDestination页面的注解
+ * @desc: NavDestination页面注解
  */
 
 export function Route(param: Param) {

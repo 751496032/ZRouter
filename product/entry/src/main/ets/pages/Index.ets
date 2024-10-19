@@ -108,7 +108,8 @@ struct Index {
 
         Button('退出登录').onClick((event: ClickEvent) => {
           AppStorage.set("isLogin", false)
-          ZRouter.getInstance().navigation(RouterConstants.ORDER_PAGE)
+          promptAction.showToast({ message: "已退出登录" })
+          // ZRouter.getInstance().navigation(RouterConstants.ORDER_PAGE)
 
         })
 
