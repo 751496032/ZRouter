@@ -1,8 +1,9 @@
-import { ServiceMgr } from "routerapi";
+import { RouterConstants } from 'common_library';
+import { ZRouter } from "routerapi";
 import { HarAServiceImpl } from './HarAServiceImpl';
 
 // import { TestService } from "./TestService";
 // name对应注解的name值
-ServiceMgr.instance.addService("HarAServiceImpl", new HarAServiceImpl())
+ZRouter.addService(RouterConstants.SERVICE_HARA_IMPL, new HarAServiceImpl())
 
-console.log("服务已注册")
+console.log("harA服务已注册")

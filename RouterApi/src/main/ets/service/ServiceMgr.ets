@@ -1,4 +1,5 @@
 import { IProvider } from "./IProvider";
+import LogUtil from "../utlis/LogUtil";
 
 /**
  * @author: HZWei
@@ -11,6 +12,9 @@ export class ServiceMgr {
 
     private _services: Map<string, IProvider> = new Map();
 
+    private constructor() {
+    }
+
     public static get instance(): ServiceMgr {
         if (!this._instance) {
             this._instance = new ServiceMgr();
@@ -21,12 +25,18 @@ export class ServiceMgr {
     public addService(name: string, service: IProvider) {
         if (!this._services.has(name)) {
             this._services.set(name, service)
+        } else {
+            LogUtil.error(`已存在[${name}]服务`)
         }
     }
 
     public getService<T extends IProvider | null>(name: string): T | null {
-        if (this._services.has(name)) {
-            return this._services.get(name) as T
+        try {
+            if (this._services.has(name)) {
+                return this._services.get(name) as T
+            }
+        } catch (e) {
+            LogUtil.error(e)
         }
         return null
     }

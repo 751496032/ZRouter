@@ -23,11 +23,13 @@ import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInte
 import NavStackMgr from './NavStackMgr'
 import { NavBuilder } from '../model/NavBuilder'
 import { ErrorCode } from '../model/Const'
+import { ServiceMgr } from '../service/ServiceMgr';
 
 
 export class RouterMgr {
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStackMgr = NavStackMgr.getInstance()
+  private serviceMgr = ServiceMgr.instance
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -56,6 +58,10 @@ export class RouterMgr {
       return RouterMgr.instance
     }
     return RouterMgr.instance
+  }
+
+  public getServiceMgr(): ServiceMgr {
+    return this.serviceMgr
   }
 
   public setCurrentStackName(name: string) {

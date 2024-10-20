@@ -45,7 +45,7 @@ export struct MainPage {
 
         Button('back newNavStack').onClick((event: ClickEvent) => {
           ZRouter.getInstance('newNavStack').popWithResult(Math.random() + 10)
-        })
+        }).visibility( this.isNewStack ? Visibility.Visible : Visibility.Hidden)
       }
 
     }

@@ -33,18 +33,22 @@ export class ZRouter {
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
     LogUtil.config = config
-    // setTimeout(()=> {
-    //   const harA = "hara"
-    //   const harB = "harb"
-    //   import(harA).then((ns:ESObject) => {
-    //     console.log("CommonTest harA动态 import 成功")
-    //     ns.commonTest.test()
-    //     ns.commonTest2.test()
-    //   })
-    //   import(harB).then((ns:ESObject) => {
-    //     console.log("CommonTest harB动态 import 成功")
-    //   })
-    // },3000)
+    setTimeout(()=> {
+      const harA = "hara"
+      const harB = "harb"
+      const hspc = "hspc"
+      import(harA).then((ns:ESObject) => {
+        LogUtil.log("harA动态 import 成功")
+        ns.commonTest.test()
+        ns.commonTest2.test()
+      })
+      import(harB).then((ns:ESObject) => {
+        LogUtil.log("harB动态 import 成功")
+      })
+      import(hspc).then((ns:ESObject) => {
+        LogUtil.log("hspC动态 import 成功")
+      })
+    },3000)
 
   }
 
@@ -78,9 +82,17 @@ export class ZRouter {
     return NavBuilder.create<T>(ZRouter.routerMgr, stackName)
   }
 
+  private static getServiceMgr(): ServiceMgr {
+    return ZRouter.getRouterMgr().getServiceMgr()
+  }
+
+  public static addService(name: string, service: IProvider) {
+    ZRouter.getServiceMgr().addService(name, service)
+  }
+
 
   public static getService<T extends IProvider | null>(name: string): T | null {
-    return ServiceMgr.instance.getService<T>(name)
+    return ZRouter.getServiceMgr().getService<T>(name)
   }
 
   public static registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack): void {

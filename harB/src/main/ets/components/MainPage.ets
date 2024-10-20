@@ -1,5 +1,5 @@
 import { promptAction } from '@kit.ArkUI';
-import { IHarAService, RouterConstants } from 'common_library';
+import { IHarAService, IHspCService, RouterConstants } from 'common_library';
 import { Route, ZRouter } from 'routerapi';
 import { ObjectOrNull } from 'routerapi/src/main/ets/model/Model';
 
@@ -38,13 +38,20 @@ export struct MainPage {
         })
 
         Button('模块间通信-调用harA模块的异步方法').onClick((event: ClickEvent) => {
-          ZRouter.getService<IHarAService>("HarAServiceImpl")?.getUserInfo().then((r)=>{
+          ZRouter.getService<IHarAService>(RouterConstants.SERVICE_HARA_IMPL)?.getUserInfo().then((r)=>{
             console.log("调用harA模块的异步方法:  ", r)
+            promptAction.showToast({ message: "来自harA的数据： " + r })
           })
         })
 
         Button('模块间通信-调用harA模块的同步方法').onClick((event: ClickEvent) => {
-          ZRouter.getService<IHarAService>("HarAServiceImpl")?.showToast("hello ZRouter!")
+          ZRouter.getService<IHarAService>(RouterConstants.SERVICE_HARA_IMPL)?.showToast("hello ZRouter!")
+        })
+
+        Button('模块间通信-调用hspC模块的异步方法').onClick((event: ClickEvent) => {
+          ZRouter.getService<IHspCService>(RouterConstants.SERVICE_HSPC_IMPL)?.getDataFromHspC().then((r) => {
+            promptAction.showToast({ message: r })
+          })
         })
       }
 
