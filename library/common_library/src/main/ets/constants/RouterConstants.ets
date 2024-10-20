@@ -5,6 +5,6 @@ export class RouterConstants {
   public static readonly HSPC_INDEX_PAGE: string = "hspCIndex"
   public static readonly ORDER_PAGE: string = "orderPage"
   public static readonly ORDER_DETAILS_PAGE: string = "orderDetailsPage"
-  public static readonly SERVICE_HSPC_IMPL: string = "HspCServiceImpl"
-  public static readonly SERVICE_HARA_IMPL: string = "HarAServiceImpl"
+  public static readonly SERVICE_HSPC_IMPL: string = "HspCService"
+  public static readonly SERVICE_HARA_IMPL: string = "HarAService"
 }
