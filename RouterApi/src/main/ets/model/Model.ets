@@ -66,7 +66,10 @@ export class RouteMetadata {
   needLogin: string = ''
 }
 
-
+/**
+ * @deprecated
+ * @class ConfigInitializer
+ */
 export class InitConfig {
   isShowLog: boolean = true
 }

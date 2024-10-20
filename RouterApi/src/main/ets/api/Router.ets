@@ -18,6 +18,7 @@ import { NavBuilder } from '../model/NavBuilder'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import { ServiceMgr } from '../service/ServiceMgr'
 import { IProvider } from '../service/IProvider'
+import { ConfigInitializer } from '../model/ConfigInitializer'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -27,6 +28,25 @@ export class ZRouter {
   private constructor() {
   }
 
+  public static initialize(invoke: ((config: ConfigInitializer) => void) = (config) => {
+    config.isLoggingEnabled = true
+  }) {
+    const config = new ConfigInitializer()
+    invoke(config)
+    ZRouter.routerMgr = RouterMgr.getInstance()
+    if (config.isHSPModuleDependent) {
+      AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
+    }
+    LogUtil.config = { isShowLog: config.isLoggingEnabled }
+
+  }
+
+  /**
+   * @deprecated
+   * @see ZRouter.initialize
+   * @param isDependHspModule
+   * @param config
+   */
   public static init(isDependHspModule: boolean = false, config: InitConfig = { isShowLog: true }) {
     ZRouter.routerMgr = RouterMgr.getInstance()
     if (isDependHspModule) {
@@ -62,7 +82,7 @@ export class ZRouter {
       }
     }
     if (!ZRouter.routerMgr) {
-      throw new Error('请在EntryAbility调用 ZRouter.init 初始化')
+      throw new Error('请在EntryAbility调用 ZRouter.initialize 初始化')
     }
     return ZRouter.routerMgr
   }

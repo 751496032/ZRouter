@@ -8,7 +8,12 @@ import BuildProfile from 'BuildProfile';
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
-    ZRouter.init(true, {isShowLog: BuildProfile.DEBUG})
+    // ZRouter.init(true, {isShowLog: BuildProfile.DEBUG})
+    ZRouter.initialize((config)=>{
+      config.isLoggingEnabled = BuildProfile.DEBUG
+      config.isHSPModuleDependent = true
+      config.loadDynamicModule = ['hara', 'harb', 'hspc']
+    })
 
   }
 
