@@ -32,12 +32,7 @@ export class ZRouter {
     const config = new ConfigInitializer()
     invoke?.(config)
     LogUtil.config = { isShowLog: config.isLoggingEnabled }
-    ZRouter.routerMgr = RouterMgr.getInstance()
-    if (config.isHSPModuleDependent) {
-      AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
-    }
-
-
+    ZRouter.setup(config.isHSPModuleDependent)
   }
 
   /**
@@ -47,13 +42,15 @@ export class ZRouter {
    * @param config
    */
   public static init(isDependHspModule: boolean = false, config: InitConfig = { isShowLog: true }) {
+    LogUtil.config = config
+    ZRouter.setup(isDependHspModule)
+  }
+
+  private static setup(isHSPModuleDependent: boolean) {
     ZRouter.routerMgr = RouterMgr.getInstance()
-    if (isDependHspModule) {
+    if (isHSPModuleDependent) {
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
-    LogUtil.config = config
-
-
   }
 
   private static getRouterMgr(): RouterMgr {

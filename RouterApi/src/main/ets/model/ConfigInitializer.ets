@@ -30,29 +30,8 @@ export class ConfigInitializer implements IConfigOptions {
     this._dynamicLoadDelayTime = value
   }
 
-  public get dynamicLoadDelayTime(): number {
-    return this._dynamicLoadDelayTime
-  }
-
   public set isLoadModulesThreadEnabled(value: boolean) {
     this._isLoadModulesThreadEnabled = value
-  }
-
-  public get isLoadModulesThreadEnabled(): boolean {
-    return this._isLoadModulesThreadEnabled
-  }
-
-  public get isHSPModuleDependent(): boolean {
-    return this._isHSPModuleDependent
-  }
-
-  public get isLoggingEnabled(): boolean {
-    return this._isLoggingEnabled
-  }
-
-
-  public get loadDynamicModule(): string[] {
-    return this._loadDynamicModule
   }
 
   public set isHSPModuleDependent(value: boolean) {
