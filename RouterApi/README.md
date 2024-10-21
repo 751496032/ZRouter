@@ -2,19 +2,20 @@
 ## 介绍
 
 
-ZRouter是一款轻量级的动态路由库，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦问题，从而实现业务复用和功能扩展。主要特性：
+ZRouter是一款轻量级的动态路由框架，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦和通信问题，从而实现业务复用和功能扩展。主要特性：
 
 - 对Navigation简化使用，封装一系列简单易用的API，支持链式调用，无需再关注路由表的配置，对Navigation组件保持着零侵入零耦合；
 - 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
-- 支持自定义URL路径跳转配置，可以通过URL路径来跳转原生不同页面；
+- 支持自定义URL路径跳转，可以通过拦截URL路径来跳转原生不同页面；
 - 支持第三方Navigation的系统路由表使用本库API；
 - 支持跨多级页面参数的回传监听；
 - 支持启动模式、混淆、嵌套Navigation；
-- @Route装饰器上的name属性支持使用静态常量；
-- 后续会支持生命周期的监听、组件化通信（待实现）。
+- 支持@Route和@Service注解上使用静态常量；
+- 支持服务路由，可用于相互独立的Har/Hsp模块之间的通信
+- 支持生命周期的监听(开发中)。
 
 
-> ZRouter侧重于路由跳转与模块解耦，以及组件化的通信(待实现)；对Navigation组件没有任何耦合，不做任何的限制把自主权交给开发者。
+> ZRouter侧重于路由跳转与模块解耦，以及组件化通信；对Navigation组件没有任何耦合，不做任何的限制把自主权交给开发者。
 
 **使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
 
@@ -56,76 +57,46 @@ hvigorw --sync
 
 ### 初始配置
 
-在每个模块中的hvigorfile.ts文件导入router-register-plugin插件模块的routerRegisterPlugin函数和PluginConfig 接口，routerRegisterPlugin 函数是自定义Hvigor插件的入口函数，PluginConfig是一个配置对象，用于定义插件的行为。
+在每个模块中的hvigorfile.ts文件导入router-register-plugin插件模块，如下：
 
 
 ```
+// 1、导入
 import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
 
+// 2、初始化配置
 const config: PluginConfig = {
-  scanDir: "src/main/ets/components",
-  logEnabled: false,
-  viewNodeInfo: false,
+    scanDirs: ['src/main/ets/pages', 'src/main/ets/views'], // 扫描的目录，如果不设置，默认是扫描src/main/ets目录
+    logEnabled: true, // 查看日志
+    viewNodeInfo: false, // 查看节点信息
+    isAutoDeleteHistoryFiles: true // 删除无用编译产物
+
 }
 export default {
     system: harTasks,  
+    // 3、添加插件
     plugins:[routerRegisterPlugin(config)] 
 }
 
 ```
 
-上面代码初始化PluginConfig配置对象，包括要扫描的目录（scanDir）和两个布尔属性（logEnabled 和 viewNodeInfo），用于控制日志记录和查看节点信息的功能；然后将配置对象作为参数传入到routerRegisterPlugin入口函数中，最后将routerRegisterPlugin()函数添加到plugins数组中。
+常用的配置字段：
 
-- scanDir：建议是页面目录，这样可以更精准扫描目标文件。
+- scanDirs：扫描的目录，建议是页面目录，这样可以更精准扫描目标文件，如果不设置，默认是扫描src/main/ets目录
 - logEnabled：日志记录开关。
-- viewNodeInfo：查看节点信息的开关，只有logEnabled和viewNodeInfo同时开启才会生效。
+- viewNodeInfo：查看节点信息的开关，只有logEnabled和viewNodeInfo同时开启才会生效
+- isAutoDeleteHistoryFiles：是否删除无用编译产物。
 
-PluginConfig配置对象还有其他属性，但不建议使用，使用默认值即可。如下:
+PluginConfig配置对象还有其他属性，但不建议使用，使用默认值即可。
 
-
-
-
-```
-export class PluginConfig {
-    /**
-     * 扫描的目录
-     * src/main/ets/
-     */
-    scanDir: string = ''
-    /**
-     * builder函数注册代码生成的目录
-     * src/main/ets/_generated/
-     */
-    generatedDir: string = ''
-    /**
-     * Index.ets目录
-     * 模块下目录下
-     */
-    indexDir: string = ''
-    /**
-     * module.json5文件路径
-     * src/main/ets/module.json5
-     */
-    moduleJsonPath: string = ''
-    /**
-     * 路由表路径
-     * src/main/ets/resources/base/profile/route_map.json
-     */
-    routerMapPath: string = ''
-    /**
-     * 是否打印日志
-     */
-    logEnabled: boolean = true
-
-    /**
-     * 查看节点信息，只有与logEnable同时为true才会打印输出
-     */
-    viewNodeInfo: boolean = false
-
-}
-
-```
 > 上面所有路径都是相对模块的src目录而言的，是相对路径。最后记得Sync Now或重新build让配置生效。
+
+其中`_generated`目录和`route_map.json`文件在编译阶段自动生成的，建议在git的`.gitignore`忽略掉这两个文件。
+
+```gitignore
+_generated
+route_map.json
+```
 
 ## ZRouter的基本使用
 
@@ -138,12 +109,6 @@ export class PluginConfig {
 ohpm install @hzw/zrouter
 ```
 
-或者安装本地har包：
-
-
-```
-ohpm install ../libs/RouterApi.har
-```
 
 ### 页面跳转
 
@@ -153,17 +118,22 @@ ohpm install ../libs/RouterApi.har
 
 <center>
 
-![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/213307fcfc9b4d6c9d39b67fbedc5355.png)
+![6a594e11394c60d93983297a1e5322db.png](https://www.z4a.net/images/2024/10/17/6a594e11394c60d93983297a1e5322db.png)
 </center>
 
 
-1、在EntryAbility的onCreate()方法中初始化ZRouter
+1、在EntryAbility的onCreate()方法中初始化ZRouter，**建议使用initialize()方法进行初始化，init()方法已弃用**
 
 
 ```
 onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     // 如果项目中存在hsp模块则传入true
-    ZRouter.init(true)
+    // ZRouter.init(true)
+    
+      ZRouter.initialize((config) => {
+          config.isLoggingEnabled = BuildProfile.DEBUG
+          config.isHSPModuleDependent = true
+    })
 }
 
 ```
@@ -217,7 +187,7 @@ struct Index {
 - needLogin：如果页面需要登录，可以将值设置为true，然后在拦截器中做页面重定向到登录页；
 - extra：额外的值可以通过该属性设置
 
-> 自定义@Route装饰器参数只支持字面量值，不支持表达式方式赋值。
+> @Route和@Service注解的name属性值是支持使用常量，具体使用在下面有介绍
 
 代码如下：
 
@@ -569,7 +539,7 @@ export class UrlInterceptor implements IInterceptor {
 ```
 把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
 
-## @Route装饰器上使用常量
+## @Route等注解上使用常量
 
 router-register-plugin插件1.0.7版本起，@Route装饰器上的name属性支持使用静态常量，方便统一管理路由名称；静态常量支持当前模块或跨模块定义，常量的定义模版如下：
 
@@ -582,6 +552,11 @@ export class RouterConstants {
 > 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
 
 
+## 服务路由-模块间通信
+
+服务路由主要用于实现模块之间的通信，模块间是相互独立且不直接依赖于彼此。
+
+具体使用可见[这篇文档](https://gitee.com/common-apps/ZRouter/wikis/%E6%9C%8D%E5%8A%A1%E8%B7%AF%E7%94%B1%E2%80%94%E6%A8%A1%E5%9D%97%E9%97%B4%E9%80%9A%E4%BF%A1) 或者参考demo
 
 ## 混淆
 
@@ -593,36 +568,34 @@ _generated
 ZR*
 ```
 
-**插件必须是1.0.6版本后才支持混淆，之前版本不支持混淆。**
+**插件必须是1.0.6版本后才支持混淆，之前版本不支持混淆。如果在release环境不添加混淆配置，会跳转失败。**
 
 ## 原理
 
-路由注册流程的代码自动化生成，其原理是不难的，就是通过自定义Hvigor插件扫描指定目录的ets文件，递归解析ets文件的语法树节点，查找出自定义装饰器@Route对应的文件，然后解析出装饰器和页面上的信息，最后将这些信息通过模板引擎在编译阶段生成Builder注册函数，路由表配置通过文件读写来写入数据。
+路由注册流程代码是由插件自动化生成，其原理是不难的，通过Hvigor插件扫描指定目录的ets文件，递归解析ets文件的语法树节点，查找解析注解上的参数，然后将这些信息通过模板引擎在编译阶段生成对应的代码逻辑。
 
-> 这与Java 注解处理器APT原理是类似的
+> 与Java注解处理器原理是类似的
 
-ZRouter库是对NavPathStack对进行高度封装的，提供了更加简单易用的API。
+ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、拦截器、服务路由、页面显示管理、生命周期等功能，提供了更加简单易用的API，部分思想参考了Android [ARouter](https://github.com/alibaba/ARouter)路由框架。
 
-插件实现流程图：
+插件工作流程图：
 
 <center>
 
-![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/22886175c0e64a2abfc623e9ed0d052b.png)
+![84fbcf502ec66b87981622eaf57499e4.png](https://www.z4a.net/images/2024/10/17/84fbcf502ec66b87981622eaf57499e4.png)
+
 </center>
 
 
 ## 源码
 
-- github：https://github.com/751496032/ZRouter
 - gitee：https://gitee.com/common-apps/ZRouter
+- github：https://github.com/751496032/ZRouter
 
 ## 交流
 
-使用有疑问或建议， **请在github或gitee上提交issues（可以有效收集大家的问题，会在第一时间处理）** ，或者在微信群中交流(+v: 751496032)。
+使用有疑问或建议， **请提交issue（这样可以统一收集问题，方便更多人查阅，另外会也第一时间回复处理）** ，或者在进群交流(+v: 751496032)。
 
-## 参考
-
--  https://gitee.com/harmonyos-cases/cases/tree/master/CommonAppDevelopment/feature/routermodule
 
 
 

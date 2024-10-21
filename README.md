@@ -6,12 +6,12 @@ ZRouter是一款轻量级的动态路由框架，基于Navigation系统路由表
 
 - 对Navigation简化使用，封装一系列简单易用的API，支持链式调用，无需再关注路由表的配置，对Navigation组件保持着零侵入零耦合；
 - 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
-- 支持自定义URL路径跳转配置，可以通过URL路径来跳转原生不同页面；
+- 支持自定义URL路径跳转，可以通过拦截URL路径来跳转原生不同页面；
 - 支持第三方Navigation的系统路由表使用本库API；
 - 支持跨多级页面参数的回传监听；
 - 支持启动模式、混淆、嵌套Navigation；
 - 支持@Route和@Service注解上使用静态常量；
-- 支持服务路由，可用于相互不依赖的Har/Hsp模块进行通信；
+- 支持服务路由，可用于相互独立的Har/Hsp模块之间的通信；
 - 支持生命周期的监听(开发中)。
 
 
@@ -122,13 +122,18 @@ ohpm install @hzw/zrouter
 </center>
 
 
-1、在EntryAbility的onCreate()方法中初始化ZRouter
+1、在EntryAbility的onCreate()方法中初始化ZRouter，**建议使用initialize()方法进行初始化，init()方法已弃用**
 
 
 ```
 onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     // 如果项目中存在hsp模块则传入true
-    ZRouter.init(true)
+    // ZRouter.init(true)
+    
+      ZRouter.initialize((config) => {
+          config.isLoggingEnabled = BuildProfile.DEBUG
+          config.isHSPModuleDependent = true
+    })
 }
 
 ```
@@ -547,6 +552,11 @@ export class RouterConstants {
 > 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
 
 
+## 服务路由-模块间通信
+
+服务路由主要用于实现模块之间的通信，模块间是相互独立且不直接依赖于彼此。
+
+> 1.0.9版本开始支持，具体使用可见[这篇文档](https://gitee.com/common-apps/ZRouter/wikis/%E6%9C%8D%E5%8A%A1%E8%B7%AF%E7%94%B1%E2%80%94%E6%A8%A1%E5%9D%97%E9%97%B4%E9%80%9A%E4%BF%A1) 或者参考demo
 
 ## 混淆
 
@@ -566,7 +576,7 @@ ZR*
 
 > 与Java注解处理器原理是类似的
 
-ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、拦截器、服务路由、页面显示管理、生命周期等功能，提供了更加简单易用的API。
+ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、拦截器、服务路由、页面显示管理、生命周期等功能，提供了更加简单易用的API，部分思想参考了Android [ARouter](https://github.com/alibaba/ARouter)路由框架。
 
 插件工作流程图：
 

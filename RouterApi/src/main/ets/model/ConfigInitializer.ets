@@ -82,7 +82,7 @@ export class ConfigInitializer implements IConfigOptions {
 
 }
 
-export interface IConfigOptions {
+ interface IConfigOptions {
   /**
    * 是否有依赖hsp模块
    */
@@ -105,8 +105,6 @@ export interface IConfigOptions {
    * 动态加载完成后回调函数
    */
   onDynamicLoadComplete?: () => void
-
-
 
 }
 
