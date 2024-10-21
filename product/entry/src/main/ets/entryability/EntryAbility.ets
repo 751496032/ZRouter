@@ -9,9 +9,6 @@ export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
     // ZRouter.init(true, {isShowLog: BuildProfile.DEBUG})
-    // import('hspc').then((ns: ESObject) => {
-    //   console.log("hspC动态 import 成功")
-    // })
     ZRouter.initialize((config) => {
       config.isLoggingEnabled = BuildProfile.DEBUG
       config.isHSPModuleDependent = true
