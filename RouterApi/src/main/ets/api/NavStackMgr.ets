@@ -16,6 +16,7 @@ export default class NavStackMgr {
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStackStateMap = new HashMap<string, NavStackState>()
   private _currentStackName = DEFAULT_STACK_NAME
+  private onBeforeNavStackRegisterCallback?: Function
 
   private constructor() {
   }

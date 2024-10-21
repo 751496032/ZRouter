@@ -45,7 +45,7 @@
       "srcPath": "./harB",
     },
     {
-      "name": "hspC",
+      "name": "hspc",
       "srcPath": "./hspC",
       "targets": [
         {

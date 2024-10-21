@@ -3,7 +3,7 @@
     {
       "name": "hspCIndex",
       "pageSourceFile": "src/main/ets/_generated/ZRIndex.ets",
-      "buildFunction": "hspCIndexBuilder",
+      "buildFunction": "hspcIndexBuilder",
       "data": {
         "needLogin": "true",
         "extra": "hsp"
@@ -12,7 +12,7 @@
     {
       "name": "hspCPage1",
       "pageSourceFile": "src/main/ets/_generated/ZRPage1.ets",
-      "buildFunction": "hspCPage1Builder",
+      "buildFunction": "hspcPage1Builder",
       "data": {
         "needLogin": "true",
         "extra": "hsp"
@@ -21,7 +21,7 @@
     {
       "name": "hspCPage2",
       "pageSourceFile": "src/main/ets/_generated/ZRPage2.ets",
-      "buildFunction": "hspCPage2Builder",
+      "buildFunction": "hspcPage2Builder",
       "data": {
         "needLogin": "false"
       }

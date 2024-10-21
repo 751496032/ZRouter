@@ -28,16 +28,15 @@ export class ZRouter {
   private constructor() {
   }
 
-  public static initialize(invoke: ((config: ConfigInitializer) => void) = (config) => {
-    config.isLoggingEnabled = true
-  }) {
+  public static initialize(invoke?: ((config: ConfigInitializer) => void)) {
     const config = new ConfigInitializer()
-    invoke(config)
+    invoke?.(config)
+    LogUtil.config = { isShowLog: config.isLoggingEnabled }
     ZRouter.routerMgr = RouterMgr.getInstance()
     if (config.isHSPModuleDependent) {
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
-    LogUtil.config = { isShowLog: config.isLoggingEnabled }
+
 
   }
 
@@ -53,22 +52,7 @@ export class ZRouter {
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
     LogUtil.config = config
-    setTimeout(()=> {
-      const harA = "hara"
-      const harB = "harb"
-      const hspc = "hspc"
-      import(harA).then((ns:ESObject) => {
-        LogUtil.log("harA动态 import 成功")
-        ns.commonTest.test()
-        ns.commonTest2.test()
-      })
-      import(harB).then((ns:ESObject) => {
-        LogUtil.log("harB动态 import 成功")
-      })
-      import(hspc).then((ns:ESObject) => {
-        LogUtil.log("hspC动态 import 成功")
-      })
-    },3000)
+
 
   }
 
