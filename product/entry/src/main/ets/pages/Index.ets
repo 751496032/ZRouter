@@ -50,7 +50,7 @@ struct Index {
 
 
   build() {
-    Navigation(ZRouter.getNavStack()){
+    Navigation(){
       Column({space:12}){
         Button('toHarAMainPage').onClick((event: ClickEvent) => {
           // ZRouter.push("harAMainPage")
