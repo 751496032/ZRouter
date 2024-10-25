@@ -73,7 +73,6 @@ const config: PluginConfig = {
 
 }
 export default {
-    system: harTasks,  
     // 3、添加插件
     plugins:[routerRegisterPlugin(config)] 
 }
