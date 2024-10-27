@@ -67,7 +67,7 @@ export class RouteMetadata {
 }
 
 /**
- * @deprecated
+ *
  * @class ConfigInitializer
  */
 export class InitConfig {

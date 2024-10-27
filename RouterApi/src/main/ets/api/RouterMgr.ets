@@ -24,12 +24,14 @@ import NavStackMgr from './NavStackMgr'
 import { NavBuilder } from '../model/NavBuilder'
 import { ErrorCode } from '../model/Const'
 import { ServiceMgr } from '../service/ServiceMgr';
+import { LifecycleEventMgr } from '../lifecycle/LifecycleEventMgr';
 
 
 export class RouterMgr {
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStackMgr = NavStackMgr.getInstance()
   private serviceMgr = ServiceMgr.instance
+  private _lifecycleEventMgr = LifecycleEventMgr.getInstance()
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -62,6 +64,10 @@ export class RouterMgr {
 
   public getServiceMgr(): ServiceMgr {
     return this.serviceMgr
+  }
+
+  public get lifecycleEventMgr(): LifecycleEventMgr {
+    return this._lifecycleEventMgr
   }
 
   public setCurrentStackName(name: string) {

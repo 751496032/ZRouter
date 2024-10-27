@@ -5,6 +5,7 @@
  */
 import { Route, ZRouter } from 'routerapi';
 import { RouterConst } from '../constants/RouterConst';
+import { util } from '@kit.ArkTS';
 
 @Route({ name: RouterConst.SPLASH_PAGE })
 @Component

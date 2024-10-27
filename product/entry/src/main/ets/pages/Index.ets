@@ -1,6 +1,8 @@
 import { RouterConstants } from '@hzw/common_library'
 import { promptAction, router } from '@kit.ArkUI'
-import { IInterceptor, InterceptorInfo, ZRouter } from 'routerapi'
+import { IInterceptor, ILifecycleObserver, InterceptorInfo, Lifecycle,
+  LifecycleEvent,
+  LifecycleRegistry, ZRouter } from 'routerapi'
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil'
 import { RouterConst } from '../constants/RouterConst'
 import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
@@ -9,6 +11,9 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Entry
 @Component
 struct Index {
+
+  @Lifecycle() lifecycle: LifecycleRegistry = new LifecycleRegistry()
+
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {
     //   // LogUtil.log('GlobalInterceptor: ', JSON.stringify(info.metadata) , info.isNeedLogin)
@@ -41,6 +46,26 @@ struct Index {
     // 第二种方式设置拦截器，类的实例对象的形式
     ZRouter.setInterceptor(new UrlInterceptor())
     ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
+    const that = this
+    this.lifecycle.addObserver({
+      aboutToAppear(): void {
+        console.log('addObserver  aboutToAppear ' + that.lifecycle)
+      },
+      onPageShow(): void {
+        console.log('addObserver  onPageShow')
+      },
+
+      onPageHide(): void {
+        console.log('addObserver  onPageHide')
+      }
+
+    } as ILifecycleObserver)
+
+    this.lifecycle.addListener((e) => {
+      if (e == LifecycleEvent.ON_PAGE_SHOW) {
+
+      }
+    })
 
 
   }
@@ -48,9 +73,13 @@ struct Index {
   aboutToDisappear(): void {
   }
 
+  // onPageShow(): void {
+  //   console.log('Index  onPageShow')
+  // }
+
 
   build() {
-    Navigation(){
+    Navigation(ZRouter.getNavStack()){
       Column({space:12}){
         Button('toHarAMainPage').onClick((event: ClickEvent) => {
           // ZRouter.push("harAMainPage")
