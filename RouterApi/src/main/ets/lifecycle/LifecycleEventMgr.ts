@@ -6,14 +6,13 @@
 import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState } from "./ObserverState";
-import { ArrayList } from "@kit.ArkTS";
 
 export class LifecycleEventMgr {
 
     private static _instance: LifecycleEventMgr;
     private _observerMap: Map<ILifecycleObserver, ObserverState> = new Map();
     private _listenerMap: Map<(event: LifecycleEvent) => void, ObserverState> = new Map();
-    private _observers = new ArrayList<string>()
+    private _observers = new Array<string>()
 
     private constructor() {
     }
