@@ -12,7 +12,7 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Component
 struct Index {
 
-  @Lifecycle() lifecycle: LifecycleRegistry = new LifecycleRegistry()
+  @Lifecycle() lifecycle = new LifecycleRegistry()
 
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {
@@ -46,6 +46,8 @@ struct Index {
     // 第二种方式设置拦截器，类的实例对象的形式
     ZRouter.setInterceptor(new UrlInterceptor())
     ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
+
+    // 生命周期监听
     const that = this
     this.lifecycle.addObserver({
       aboutToAppear(): void {
@@ -63,7 +65,6 @@ struct Index {
 
     this.lifecycle.addListener((e) => {
       if (e == LifecycleEvent.ON_PAGE_SHOW) {
-
       }
     })
 

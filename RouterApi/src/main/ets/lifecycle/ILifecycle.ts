@@ -10,11 +10,11 @@ export interface IPageLifeCycle extends ILifeCycle {
 
   aboutToAppear?(): void
 
-
   /**
    * 页面每次显示时触发一次，包括路由过程、应用进入前台等场景，仅@Entry装饰的自定义组件生效。
    */
   onPageShow?(): void
+
   /**
    * 页面每次隐藏时触发一次，包括路由过程、应用进入后台等场景，仅@Entry装饰的自定义组件生效。
    */
@@ -26,7 +26,7 @@ export interface IPageLifeCycle extends ILifeCycle {
    */
   // onBackPress?(): void | boolean
 
-  aboutToDisappear? (): void
+  aboutToDisappear?(): void
 
 }
 
@@ -34,42 +34,42 @@ export interface INavLifeCycle extends ILifeCycle {
   /**
    * 当该NavDestination页面显示时触发此回调
    */
-  onShown?(): void
+  onShown?: RouterFunc
 
   /**
    * 当该NavDestination页面隐藏时触发此回调
    */
-  onHidden?(): void
+  onHidden?: RouterFunc
 
-/**
- * 当该NavDestination挂载之前触发此回调
- */
-  onWillAppear?(): void
+  /**
+   * 当该NavDestination挂载之前触发此回调
+   */
+  onWillAppear?: RouterFunc
 
   /**
    * 当该Destination显示之前触发此回调
    */
-  onWillShow?(): void
+  onWillShow?: RouterFunc
 
   /**
    * 当该Destination隐藏之前触发此回调
    */
-  onWillHide?(): void
+  onWillHide?: RouterFunc
 
   /**
    * 当该Destination卸载之前触发的生命周期(有转场动画时，在转场动画开始之前触发)
    */
-  onWillDisappear?():void
+  onWillDisappear?: RouterFunc
 
   /**
    * NavDestination在组件树上挂载时触发此回调
    */
-  onAppear?(): void
+  onAppear?: RouterFunc
 
   /**
    * NavDestination从组件树上卸载时触发此回调
    */
-  onDisappear?(): void
+  onDisappear?: RouterFunc
 
   /**
    * NavDestination组件返回时触发此回调
@@ -81,5 +81,6 @@ export interface INavLifeCycle extends ILifeCycle {
    */
   // onReady?(): void
 
-
 }
+
+export type RouterFunc = (name?: string) => void

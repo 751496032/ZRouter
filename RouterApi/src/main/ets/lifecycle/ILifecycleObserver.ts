@@ -5,4 +5,6 @@ import { INavLifeCycle, IPageLifeCycle } from "./ILifecycle";
  * @date: 2024/10/26
  * @desc:
  */
-export interface ILifecycleObserver extends INavLifeCycle, IPageLifeCycle {}
+export interface ILifecycleObserver extends INavLifeCycle, IPageLifeCycle {
+  routerName?: string
+}
