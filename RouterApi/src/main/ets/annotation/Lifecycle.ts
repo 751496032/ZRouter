@@ -7,7 +7,7 @@
 import { LifecycleEvent } from "../lifecycle/LifecycleEvent";
 import { LifecycleEventMgr } from "../lifecycle/LifecycleEventMgr";
 
-export function Lifecycle(routerName?: string): PropertyDecorator {
+export function Lifecycle(...routerName: string[]): PropertyDecorator {
   return (target: any, propertyKey: string) => {
     hooks(target,
       propertyKey,
@@ -17,7 +17,7 @@ export function Lifecycle(routerName?: string): PropertyDecorator {
   }
 }
 
-function hooks(target: any, propertyKey: string, routerName: string, ...events: LifecycleEvent[]) {
+function hooks(target: any, propertyKey: string, routerNames: string[], ...events: LifecycleEvent[]) {
   let propertyInstance = target[propertyKey]
   // 给LifecycleRegistry属性赋值
   Reflect.defineProperty(target, propertyKey, {
@@ -27,11 +27,11 @@ function hooks(target: any, propertyKey: string, routerName: string, ...events: 
     configurable: true
   })
   for (const event of events) {
-    hook(target, routerName,event)
+    hook(target, routerNames,event)
   }
 }
 
-function hook(target: any,routerName: string, event: LifecycleEvent) {
+function hook(target: any,routerNames: string[], event: LifecycleEvent) {
   if (!target[event]) {
     // 给页面的生命周期函数赋值
     let propertyInstance = target[event]
