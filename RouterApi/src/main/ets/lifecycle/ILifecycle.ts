@@ -4,6 +4,8 @@
  * @desc: 生命周期抽象接口
  */
 
+import { RouterInfo } from "../model/RouterInfo"
+
 export interface ILifeCycle {}
 
 export interface IPageLifeCycle extends ILifeCycle {
@@ -83,4 +85,4 @@ export interface INavLifeCycle extends ILifeCycle {
 
 }
 
-export type RouterFunc = (name?: string) => void
+export type RouterFunc = (info?: RouterInfo) => void

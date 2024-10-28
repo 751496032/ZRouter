@@ -3,6 +3,7 @@
  * @date: 2024/10/27
  * @desc:
  */
+import { RouterInfo } from "../model/RouterInfo";
 import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState } from "./ObserverState";
@@ -54,36 +55,35 @@ export class LifecycleEventMgr {
     }
 
 
-
-    public dispatchEvent(event: LifecycleEvent) {
+    public dispatchEvent(event: LifecycleEvent, routerInfo?: RouterInfo) {
         this._listenerMap.forEach((value, callback: (event: LifecycleEvent) => void) => {
             callback(event);
         })
         this._observerMap.forEach((value, observer: ILifecycleObserver) => {
             switch (event){
                 case LifecycleEvent.ON_SHOWN:
-                    observer.onShown?.();
+                    observer.onShown?.(routerInfo);
                     break;
                 case LifecycleEvent.ON_HIDDEN:
-                    observer.onHidden?.();
+                    observer.onHidden?.(routerInfo);
                     break;
                 case LifecycleEvent.ON_APPEAR:
-                    observer.onAppear?.();
+                    observer.onAppear?.(routerInfo);
                     break;
                 case LifecycleEvent.ON_DISAPPEAR:
-                    observer.onDisappear?.();
+                    observer.onDisappear?.(routerInfo);
                     break;
                 case LifecycleEvent.ON_WILL_SHOW:
-                    observer.onWillShow?.();
+                    observer.onWillShow?.(routerInfo);
                     break;
                 case LifecycleEvent.ON_WILL_HIDE:
-                    observer.onWillHide?.();
+                    observer.onWillHide?.(routerInfo);
                     break;
                 case LifecycleEvent.ON_WILL_APPEAR:
-                    observer.onWillAppear?.();
+                    observer.onWillAppear?.(routerInfo);
                     break;
                 case LifecycleEvent.ON_WILL_DISAPPEAR:
-                    observer.onWillDisappear?.();
+                    observer.onWillDisappear?.(routerInfo);
                     break;
                 // case LifecycleEvent.ON_BACKPRESS:
                 //     observer.onBackPress?.();
