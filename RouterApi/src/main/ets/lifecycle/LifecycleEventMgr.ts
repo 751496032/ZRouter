@@ -12,8 +12,8 @@ export class LifecycleEventMgr {
 
     private static _instance: LifecycleEventMgr;
     private _observerMap: Map<ILifecycleObserver, ObserverState> = new Map();
-    private _listenerMap: Map<(event: LifecycleEvent) => void, ObserverState> = new Map();
-    private _observers = new Array<string>()
+    private _listenerMap: Map<LifecycleCallback, ObserverState> = new Map();
+    private _targets = new Array<string>()
 
     private constructor() {
     }
@@ -40,26 +40,63 @@ export class LifecycleEventMgr {
         this._observerMap.delete(observer);
     }
 
-    public addListener(callback:(event: LifecycleEvent) => void) {
+    public addListener(callback:LifecycleCallback) {
         if (this._listenerMap.has(callback)) {
             return;
         }
         this._listenerMap.set(callback, new ObserverState());
     }
 
-    public removeListener(callback:(event: LifecycleEvent) => void) {
+    public removeListener(callback:LifecycleCallback) {
         if (!this._listenerMap.has(callback)) {
             return;
         }
         this._listenerMap.delete(callback);
     }
 
+    public addAllTarget(targets: string[]) {
+        targets.forEach((target) => {
+            this.addTarget(target);
+        })
+    }
+
+
+    private addTarget(target: string) {
+        if (this._targets.includes(target)) {
+            return;
+        }
+        this._targets.push(target);
+    }
+
+    private remove(observer?: ILifecycleObserver, callback?: LifecycleCallback, routerInfo?: RouterInfo) {
+
+        if (routerInfo) {
+            let index = this._targets.indexOf(routerInfo.name)
+            if (index !== -1) {
+                if (observer) {
+                    this.removeObserver(observer)
+                }
+                if (callback) {
+                    this.removeListener(callback)
+                }
+                this._targets.splice(index, 1)
+
+            }
+        }
+    }
+
 
     public dispatchEvent(event: LifecycleEvent, routerInfo?: RouterInfo) {
-        this._listenerMap.forEach((value, callback: (event: LifecycleEvent) => void) => {
+        this._listenerMap.forEach((value, callback: LifecycleCallback) => {
             callback(event);
+            if (event === LifecycleEvent.ON_DISAPPEAR || event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
+                this.remove(undefined, callback,routerInfo)
+            }
         })
         this._observerMap.forEach((value, observer: ILifecycleObserver) => {
+            if (this._targets.length > 0 && !this._targets.includes(observer.routerName)) {
+                return;
+            }
             switch (event){
                 case LifecycleEvent.ON_SHOWN:
                     observer.onShown?.(routerInfo);
@@ -72,6 +109,7 @@ export class LifecycleEventMgr {
                     break;
                 case LifecycleEvent.ON_DISAPPEAR:
                     observer.onDisappear?.(routerInfo);
+                    this.remove(observer, undefined, routerInfo)
                     break;
                 case LifecycleEvent.ON_WILL_SHOW:
                     observer.onWillShow?.(routerInfo);
@@ -99,6 +137,7 @@ export class LifecycleEventMgr {
                     break;
                 case LifecycleEvent.ABOUT_TO_DISAPPEAR:
                     observer.aboutToDisappear?.();
+                    this.remove(observer, undefined, routerInfo)
                     break;
             }
 
@@ -106,4 +145,5 @@ export class LifecycleEventMgr {
     }
 
 }
+type LifecycleCallback = (event: LifecycleEvent) => void;
 

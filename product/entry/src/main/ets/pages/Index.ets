@@ -12,7 +12,7 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Component
 struct Index {
 
-  @Lifecycle() lifecycle = new LifecycleRegistry()
+  @Lifecycle() lifecycle:LifecycleRegistry = new LifecycleRegistry()
 
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {
@@ -59,12 +59,20 @@ struct Index {
 
       onPageHide(): void {
         console.log('addObserver  onPageHide')
+      },
+      aboutToDisappear(): void {
+        console.log('addObserver  aboutToDisappear')
       }
 
     } as ILifecycleObserver)
 
     this.lifecycle.addListener((e) => {
       if (e == LifecycleEvent.ON_PAGE_SHOW) {
+        console.log('addListener  onPageShow')
+      } else if (e == LifecycleEvent.ON_PAGE_HIDE) {
+        console.log('addListener  onPageHide')
+      }else if (e == LifecycleEvent.ABOUT_TO_DISAPPEAR) {
+        console.log('addListener  aboutToDisappear')
       }
     })
 

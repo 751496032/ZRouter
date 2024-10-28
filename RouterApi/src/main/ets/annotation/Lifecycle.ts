@@ -32,26 +32,24 @@ function hooks(target: any, propertyKey: string, routerNames: string[], ...event
 }
 
 function hook(target: any,routerNames: string[], event: LifecycleEvent) {
-  if (!target[event]) {
-    // 给页面的生命周期函数赋值
-    let propertyInstance = target[event]
-    Reflect.defineProperty(target, event, {
-      set: (newValue) => propertyInstance = newValue,
-      get: () => propertyInstance,
-      enumerable: true,
-      configurable: true
-    })
-  }
+  // 给页面的生命周期函数赋值
+  let lifecycleFun = target[event]
+  Reflect.defineProperty(target, event, {
+    set: (newValue) => lifecycleFun = newValue,
+    get: () => lifecycleFun,
+    enumerable: true,
+    configurable: true
+  })
 
-  const lifecycleFun = target[event]
   Reflect.defineProperty(target, event, {
     value: () => {
       try {
-        lifecycleFun.call(target)
+        LifecycleEventMgr.getInstance().addAllTarget(routerNames)
+        LifecycleEventMgr.getInstance().dispatchEvent(event)
+        lifecycleFun?.call(target)
       } catch (e) {
         console.error(e)
       }
-      LifecycleEventMgr.getInstance().dispatchEvent(event)
     },
     enumerable: true,
     configurable: true
