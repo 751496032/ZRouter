@@ -44,9 +44,9 @@ function hook(target: any,routerNames: string[], event: LifecycleEvent) {
   Reflect.defineProperty(target, event, {
     value: () => {
       try {
+        lifecycleFun?.call(target)
         LifecycleEventMgr.getInstance().addAllTarget(routerNames)
         LifecycleEventMgr.getInstance().dispatchEvent(event)
-        lifecycleFun?.call(target)
       } catch (e) {
         console.error(e)
       }

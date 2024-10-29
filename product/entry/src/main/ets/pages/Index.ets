@@ -12,7 +12,7 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Component
 struct Index {
 
-  @Lifecycle() lifecycle:LifecycleRegistry = new LifecycleRegistry()
+  @Lifecycle(RouterConstants.HARA_MAIN_PAGE) lifecycle:LifecycleRegistry = new LifecycleRegistry()
 
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {
@@ -62,19 +62,37 @@ struct Index {
       },
       aboutToDisappear(): void {
         console.log('addObserver  aboutToDisappear')
+      },
+      onShown(r): void{
+        console.log('addObserver  onShown' , r?.name)
+      },
+
+      onHidden(r): void{
+        console.log('addObserver  onHidden',r?.name)
+      },
+      onDisappear(r): void{
+        console.log('addObserver  onDisappear',r?.name)
       }
+
 
     } as ILifecycleObserver)
 
-    this.lifecycle.addListener((e) => {
-      if (e == LifecycleEvent.ON_PAGE_SHOW) {
-        console.log('addListener  onPageShow')
-      } else if (e == LifecycleEvent.ON_PAGE_HIDE) {
-        console.log('addListener  onPageHide')
-      }else if (e == LifecycleEvent.ABOUT_TO_DISAPPEAR) {
-        console.log('addListener  aboutToDisappear')
-      }
-    })
+    // this.lifecycle.addListener((e) => {
+    //   if (e == LifecycleEvent.ON_PAGE_SHOW) {
+    //     console.log('addListener  onPageShow')
+    //   } else if (e == LifecycleEvent.ON_PAGE_HIDE) {
+    //     console.log('addListener  onPageHide')
+    //   }else if (e == LifecycleEvent.ABOUT_TO_DISAPPEAR) {
+    //     console.log('addListener  aboutToDisappear')
+    //   }else if (e == LifecycleEvent.ON_SHOWN) {
+    //     console.log('addListener  onShown')
+    //   }else if (e == LifecycleEvent.ON_HIDDEN) {
+    //     console.log('addListener  onHidden')
+    //   }else if (e == LifecycleEvent.ON_DISAPPEAR) {
+    //     console.log('addListener  onDisappear')
+    //   }
+    //
+    // })
 
 
   }
