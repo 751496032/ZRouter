@@ -14,6 +14,8 @@ export class LifecycleEventMgr {
     private _observerMap: Map<ILifecycleObserver, ObserverState> = new Map();
     private _listenerMap: Map<LifecycleCallback, ObserverState> = new Map();
     private _targets = new Array<string>()
+    private _targetMap: Map<string, Array<string>> = new Map()
+    private _currentRoute: RouterInfo | undefined
 
     private constructor() {
     }
@@ -29,7 +31,9 @@ export class LifecycleEventMgr {
         if (this._observerMap.has(observer)) {
             return;
         }
+        console.log("ILifecycleObserver 添加前: ", this._observerMap.size)
         this._observerMap.set(observer, new ObserverState());
+        console.log("ILifecycleObserver 添加后: ", this._observerMap.size)
     }
 
 
@@ -54,33 +58,41 @@ export class LifecycleEventMgr {
         this._listenerMap.delete(callback);
     }
 
-    public addAllTarget(targets: string[]) {
-        targets.forEach((target) => {
-            this.addTarget(target);
-        })
-    }
 
 
-    private addTarget(target: string) {
-        if (this._targets.includes(target)) {
-            return;
+    public setTarget(name: string, lifecycleNames: string[]) {
+        if (this._targetMap.has(name)) {
+            let list: string[] = this._targetMap.get(name) ?? []
+            let targets = lifecycleNames.filter((item) => !list.includes(item))
+            list.push(...targets)
+        } else {
+            this._targetMap.set(name, lifecycleNames)
         }
-        this._targets.push(target);
     }
 
-    private remove(observer?: ILifecycleObserver, callback?: LifecycleCallback, routerInfo?: RouterInfo) {
 
-        if (routerInfo) {
-            let index = this._targets.indexOf(routerInfo.name)
+    /**
+     *
+     * @param className
+     * @param observer
+     * @param callback
+     */
+    private remove(className: string, observer?: ILifecycleObserver, callback?: LifecycleCallback) {
+
+        if (this._targetMap.has(className) && this._currentRoute) {
+            let list: string[] = this._targetMap.get(className) ?? []
+            let index = list.indexOf(this._currentRoute?.name)
             if (index !== -1) {
+                list.splice(index, 1)
                 if (observer) {
-                    this.removeObserver(observer)
+                    console.log("ILifecycleObserver 删除前: ", this._observerMap.size)
+                  let success =   this._observerMap.delete(observer)
+                    console.log("ILifecycleObserver 删除后：",className, this._currentRoute.name, success)
+                    console.log("ILifecycleObserver 删除后: ", this._observerMap.size)
                 }
                 if (callback) {
-                    this.removeListener(callback)
+                    this._listenerMap.delete(callback)
                 }
-                this._targets.splice(index, 1)
-
             }
         }
     }
@@ -89,20 +101,30 @@ export class LifecycleEventMgr {
         if (!routerInfo) {
             return false;
         }
-        return this._targets.length === 0 || this._targets.includes(routerInfo?.name ?? "")
+        let isNav = false
+        const values = this._targetMap.values()
+        for (const value of values) {
+            if (!isNav) {
+                isNav = value.includes(routerInfo.name)
+            } else {
+                break
+            }
+        }
+        return isNav
     }
 
 
-    public dispatchEvent(event: LifecycleEvent, routerInfo?: RouterInfo) {
+    public dispatchEvent(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string) {
         // this._listenerMap.forEach((value, callback: LifecycleCallback) => {
         //     callback(event);
         //     if (event === LifecycleEvent.ON_DISAPPEAR || event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
         //         this.remove(undefined, callback,routerInfo)
         //     }
         // })
-
+        if (routerInfo){
+            this._currentRoute = routerInfo
+        }
         this._observerMap.forEach((value, observer: ILifecycleObserver) => {
-
             switch (event){
                 case LifecycleEvent.ON_SHOWN:
                     if (this.isNavEvent(routerInfo)) {
@@ -123,7 +145,6 @@ export class LifecycleEventMgr {
                 case LifecycleEvent.ON_DISAPPEAR:
                     if (this.isNavEvent(routerInfo)) {
                         observer.onDisappear?.(routerInfo);
-                        this.remove(observer, undefined, routerInfo)
                     }
                     break;
                 case LifecycleEvent.ON_WILL_SHOW:
@@ -146,9 +167,6 @@ export class LifecycleEventMgr {
                         observer.onWillDisappear?.(routerInfo);
                     }
                     break;
-                // case LifecycleEvent.ON_BACKPRESS:
-                //     observer.onBackPress?.();
-                //     break;
                 case LifecycleEvent.ABOUT_TO_APPEAR:
                     observer.aboutToAppear?.();
                     break;
@@ -160,7 +178,7 @@ export class LifecycleEventMgr {
                     break;
                 case LifecycleEvent.ABOUT_TO_DISAPPEAR:
                     observer.aboutToDisappear?.();
-                    this.remove(observer, undefined, routerInfo)
+                    this.remove(className, observer, undefined)
                     break;
             }
 

@@ -12,6 +12,10 @@ export class LifecycleRegistry{
   constructor() {
   }
 
+  public static create(): LifecycleRegistry {
+    return new LifecycleRegistry();
+  }
+
 
   public addObserver<T extends ILifecycleObserver>(observer: T) {
     RouterMgr.getInstance().lifecycleEventMgr.addObserver(observer);

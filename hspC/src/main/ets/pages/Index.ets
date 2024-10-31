@@ -23,16 +23,18 @@ struct Index {
       Column({space:15}) {
         Text(this.message)
         Button('toHspCPage1').onClick((event: ClickEvent) => {
-          ZRouter.push('hspCPage1')
-          // this.pathStack.pushPathByName('hspCPage1',null)
+          // ZRouter.push('hspCPage1')
+          ZRouter.getInstance().push("hspCPage1")
         })
 
         Button('toHspCPage2').onClick((event: ClickEvent) => {
-          ZRouter.push('hspCPage2')
+          // ZRouter.push('hspCPage2')
+          ZRouter.getInstance().push("hspCPage2")
         })
 
         Button('pop(携带参数返回)').onClick((event: ClickEvent) => {
-          ZRouter.popWithResult('hspCIndex data')
+          // ZRouter.popWithResult('hspCIndex data')
+          ZRouter.getInstance().popWithResult("from hspC index data")
         })
       }
       .width('100%')

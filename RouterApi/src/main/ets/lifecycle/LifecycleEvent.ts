@@ -6,7 +6,6 @@
  */
 
 
-
 export enum LifecycleEvent {
   ON_SHOWN = "onShown",
   ON_HIDDEN = "onHidden",
@@ -16,6 +15,9 @@ export enum LifecycleEvent {
   ON_WILL_HIDE = "onWillHide",
   ON_WILL_APPEAR = "onWillAppear",
   ON_WILL_DISAPPEAR = "onWillDisappear",
+  /**
+   * @deprecated
+   */
   ON_BACKPRESS = "onBackPress",
   ABOUT_TO_APPEAR = "aboutToAppear",
   ON_PAGE_SHOW = "onPageShow",
