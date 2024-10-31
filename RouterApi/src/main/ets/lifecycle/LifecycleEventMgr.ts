@@ -85,43 +85,66 @@ export class LifecycleEventMgr {
         }
     }
 
+    private isNavEvent(routerInfo?: RouterInfo) {
+        if (!routerInfo) {
+            return false;
+        }
+        return this._targets.length === 0 || this._targets.includes(routerInfo?.name ?? "")
+    }
+
 
     public dispatchEvent(event: LifecycleEvent, routerInfo?: RouterInfo) {
-        this._listenerMap.forEach((value, callback: LifecycleCallback) => {
-            callback(event);
-            if (event === LifecycleEvent.ON_DISAPPEAR || event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
-                this.remove(undefined, callback,routerInfo)
-            }
-        })
+        // this._listenerMap.forEach((value, callback: LifecycleCallback) => {
+        //     callback(event);
+        //     if (event === LifecycleEvent.ON_DISAPPEAR || event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
+        //         this.remove(undefined, callback,routerInfo)
+        //     }
+        // })
+
         this._observerMap.forEach((value, observer: ILifecycleObserver) => {
-            if (this._targets.length > 0 && !this._targets.includes(observer.routerName)) {
-                return;
-            }
+
             switch (event){
                 case LifecycleEvent.ON_SHOWN:
-                    observer.onShown?.(routerInfo);
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onShown?.(routerInfo);
+                    }
+
                     break;
                 case LifecycleEvent.ON_HIDDEN:
-                    observer.onHidden?.(routerInfo);
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onHidden?.(routerInfo);
+                    }
                     break;
                 case LifecycleEvent.ON_APPEAR:
-                    observer.onAppear?.(routerInfo);
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onAppear?.(routerInfo);
+                    }
                     break;
                 case LifecycleEvent.ON_DISAPPEAR:
-                    observer.onDisappear?.(routerInfo);
-                    this.remove(observer, undefined, routerInfo)
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onDisappear?.(routerInfo);
+                        this.remove(observer, undefined, routerInfo)
+                    }
                     break;
                 case LifecycleEvent.ON_WILL_SHOW:
-                    observer.onWillShow?.(routerInfo);
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onWillShow?.(routerInfo);
+                    }
                     break;
                 case LifecycleEvent.ON_WILL_HIDE:
-                    observer.onWillHide?.(routerInfo);
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onWillHide?.(routerInfo);
+                    }
                     break;
                 case LifecycleEvent.ON_WILL_APPEAR:
-                    observer.onWillAppear?.(routerInfo);
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onWillAppear?.(routerInfo);
+                    }
                     break;
                 case LifecycleEvent.ON_WILL_DISAPPEAR:
-                    observer.onWillDisappear?.(routerInfo);
+                    if (this.isNavEvent(routerInfo)) {
+                        observer.onWillDisappear?.(routerInfo);
+                    }
                     break;
                 // case LifecycleEvent.ON_BACKPRESS:
                 //     observer.onBackPress?.();

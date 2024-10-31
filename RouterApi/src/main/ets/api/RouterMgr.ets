@@ -51,7 +51,6 @@ export class RouterMgr {
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
           const indexList = this.getNavStack().getIndexByName(name)
-          LogUtil.log(name, 'onDisappear: ' + indexList.length)
           if (indexList.length == 0) {
             this.unregisterEvent(name)
           }
