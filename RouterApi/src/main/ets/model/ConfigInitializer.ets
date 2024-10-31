@@ -10,10 +10,14 @@ import { RouterMgr } from "../api/RouterMgr"
 export class ConfigInitializer implements IConfigOptions {
   private _onDynamicLoadComplete?: () => void
   private _dynamicLoadDelayTime: number = 0
-  private _isLoadModulesThreadEnabled: boolean = false
+
   private _isHSPModuleDependent: boolean = false
+
   private _isLoggingEnabled: boolean = true
+
   private _loadDynamicModule: string[] = []
+
+
   private _isLoaded = false
 
   constructor() {
@@ -30,9 +34,6 @@ export class ConfigInitializer implements IConfigOptions {
     this._dynamicLoadDelayTime = value
   }
 
-  public set isLoadModulesThreadEnabled(value: boolean) {
-    this._isLoadModulesThreadEnabled = value
-  }
 
   public set isHSPModuleDependent(value: boolean) {
     this._isHSPModuleDependent = value
@@ -45,6 +46,23 @@ export class ConfigInitializer implements IConfigOptions {
   public set loadDynamicModule(value: string[]) {
     this._loadDynamicModule = value
   }
+
+  public get loadDynamicModule(): string[] {
+    return this._loadDynamicModule
+  }
+
+  public get isLoggingEnabled(): boolean {
+    return this._isLoggingEnabled
+  }
+
+  public get isHSPModuleDependent(): boolean {
+    return this._isHSPModuleDependent
+  }
+
+  public get dynamicLoadDelayTime(): number {
+    return this._dynamicLoadDelayTime
+  }
+
 
   private dynamicImportModule() {
     if (this._loadDynamicModule.length == 0 && this._isLoaded) {
