@@ -26,8 +26,8 @@ function hooks(target: any, propertyKey: string, routerNames: string[], ...event
     set: (newValue) => {
       propertyInstance = newValue
       try {
-        util.getHash(target)
-        console.log("")
+        const hash = util.getHash(target)
+        console.log("hash: ", hash)
         const key = target.constructor.name + "_" + propertyKey
         if (!Reflect.hasMetadata(key, target,propertyKey)) {
           Reflect.defineMetadata(key, routerNames, target,propertyKey)

@@ -11,8 +11,8 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Entry
 @Component
 struct Index {
-  // @Lifecycle(RouterConstants.HARA_MAIN_PAGE,RouterConstants.URL_TEST_PAGE)
-  // lifecycle:LifecycleRegistry = LifecycleRegistry.create()
+  @Lifecycle(RouterConstants.HARA_MAIN_PAGE,RouterConstants.URL_TEST_PAGE)
+  lifecycle:LifecycleRegistry = LifecycleRegistry.create()
 
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {
@@ -48,34 +48,34 @@ struct Index {
     ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
 
     // 生命周期监听
-    // const that = this
-    // this.lifecycle.addObserver({
-    //   aboutToAppear(): void {
-    //     console.log('addObserver  aboutToAppear ' + that.lifecycle)
-    //   },
-    //   onPageShow(): void {
-    //     console.log('addObserver  onPageShow')
-    //   },
-    //
-    //   onPageHide(): void {
-    //     console.log('addObserver  onPageHide')
-    //   },
-    //   aboutToDisappear(): void {
-    //     console.log('addObserver  aboutToDisappear')
-    //   },
-    //   onShown(r): void{
-    //     console.log('addObserver  onShown' , r?.name)
-    //   },
-    //
-    //   onHidden(r): void{
-    //     console.log('addObserver  onHidden',r?.name)
-    //   },
-    //   onDisappear(r): void{
-    //     console.log('addObserver  onDisappear',r?.name)
-    //   }
-    //
-    //
-    // } as ILifecycleObserver)
+    const that = this
+    this.lifecycle.addObserver({
+      aboutToAppear(): void {
+        console.log('addObserver  aboutToAppear ' + that.lifecycle)
+      },
+      onPageShow(): void {
+        console.log('addObserver  onPageShow')
+      },
+
+      onPageHide(): void {
+        console.log('addObserver  onPageHide')
+      },
+      aboutToDisappear(): void {
+        console.log('addObserver  aboutToDisappear')
+      },
+      onShown(r): void{
+        console.log('addObserver  onShown' , r?.name)
+      },
+
+      onHidden(r): void{
+        console.log('addObserver  onHidden',r?.name)
+      },
+      onDisappear(r): void{
+        console.log('addObserver  onDisappear',r?.name)
+      }
+
+
+    } as ILifecycleObserver)
 
     // this.lifecycle.addListener((e) => {
     //   if (e == LifecycleEvent.ON_PAGE_SHOW) {
