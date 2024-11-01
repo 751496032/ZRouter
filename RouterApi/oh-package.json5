@@ -1,11 +1,13 @@
 {
   "name": "@hzw/zrouter",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "ZRouter是一款轻量级的鸿蒙动态路由框架，基于Navigation系统路由表和Hvigor插件实现的方案，可实现模块解耦与通信",
   "main": "Index.ets",
   "author": "HZWei",
   "license": "Apache-2.0",
-  "dependencies": {},
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
   "devDependencies": {},
   "repository": "https://gitee.com/common-apps/ZRouter.git",
   "homepage": "https://github.com/751496032/ZRouter.git",
@@ -20,5 +22,6 @@
     "系统路由表",
     "动态路由",
     "页面跳转"
-  ]
+  ],
+  "dynamicDependencies": {}
 }

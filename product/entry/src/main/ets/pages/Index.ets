@@ -11,8 +11,8 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Entry
 @Component
 struct Index {
-
-  @Lifecycle(RouterConstants.HARA_MAIN_PAGE) lifecycle:LifecycleRegistry = new LifecycleRegistry()
+  @Lifecycle(RouterConstants.HARA_MAIN_PAGE,RouterConstants.URL_TEST_PAGE)
+  lifecycle:LifecycleRegistry = LifecycleRegistry.create()
 
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {

@@ -5,13 +5,14 @@
 ZRouter是一款轻量级的动态路由框架，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦和通信问题，从而实现业务复用和功能扩展。主要特性：
 
 - 对Navigation简化使用，封装一系列简单易用的API，支持链式调用，无需再关注路由表的配置，对Navigation组件保持着零侵入零耦合；
+- 注解(Route/Service/Lifecycle)支持使用静态常量，常量可在当前模块或跨模块定义；
 - 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
 - 支持自定义URL路径跳转，可以通过拦截URL路径来跳转原生不同页面；
-- 支持第三方Navigation的系统路由表使用本库API；
-- 支持跨多级页面参数的回传监听；
-- 支持启动模式、混淆、嵌套Navigation；
-- 支持@Route和@Service注解上使用静态常量；
 - 支持服务路由，可用于相互独立的Har/Hsp模块之间的通信；
+- 支持组件生命周期的监听；
+- 支持跨多级页面参数回传接收；
+- 支持第三方Navigation的使用本库API；
+- 支持启动模式、混淆、嵌套Navigation；
 - 未来计划：支持生命周期的监听、转场动画。
 
 
@@ -73,7 +74,6 @@ const config: PluginConfig = {
 
 }
 export default {
-    system: harTasks,  
     // 3、添加插件
     plugins:[routerRegisterPlugin(config)] 
 }

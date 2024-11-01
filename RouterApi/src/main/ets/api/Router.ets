@@ -49,6 +49,7 @@ export class ZRouter {
   private static setup(isHSPModuleDependent: boolean) {
     ZRouter.routerMgr = RouterMgr.getInstance()
     if (isHSPModuleDependent) {
+      LogUtil.log("isHSPModuleDependent ")
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
   }
@@ -59,7 +60,7 @@ export class ZRouter {
       if (!ObjectUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
-         ZRouter.init(true)
+         // ZRouter.init(true)
       }
     }
     if (!ZRouter.routerMgr) {
