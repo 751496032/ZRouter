@@ -11,8 +11,8 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Entry
 @Component
 struct Index {
-  @Lifecycle(RouterConstants.HARA_MAIN_PAGE,RouterConstants.URL_TEST_PAGE)
-  lifecycle:LifecycleRegistry = LifecycleRegistry.create()
+  @Lifecycle(RouterConstants.HARA_MAIN_PAGE, RouterConstants.URL_TEST_PAGE)
+  lifecycle: LifecycleRegistry = LifecycleRegistry.create()
 
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {
@@ -96,14 +96,6 @@ struct Index {
 
 
   }
-
-  aboutToDisappear(): void {
-  }
-
-  // onPageShow(): void {
-  //   console.log('Index  onPageShow')
-  // }
-
 
   build() {
     Navigation(ZRouter.getNavStack()){

@@ -1,6 +1,6 @@
 import { RouterMgr } from "../api/RouterMgr";
 import { ILifecycleObserver } from "./ILifecycleObserver";
-import { LifecycleEvent } from "./LifecycleEvent";
+import { LifecycleCallback } from "./LifecycleEventMgr";
 
 /**
  * @author: HZWei
@@ -8,7 +8,6 @@ import { LifecycleEvent } from "./LifecycleEvent";
  * @desc:
  */
 export class LifecycleRegistry{
-
   constructor() {
   }
 
@@ -17,7 +16,7 @@ export class LifecycleRegistry{
   }
 
 
-  public addObserver<T extends ILifecycleObserver>(observer: T) {
+  public addObserver<T extends ILifecycleObserver>( observer: T) {
     RouterMgr.getInstance().lifecycleEventMgr.addObserver(observer);
   }
 
@@ -25,19 +24,14 @@ export class LifecycleRegistry{
     RouterMgr.getInstance().lifecycleEventMgr.removeObserver(observer);
   }
 
-  public addListener(callback: (event: LifecycleEvent) => void) {
+  public addListener(callback: LifecycleCallback) {
     RouterMgr.getInstance().lifecycleEventMgr.addListener(callback);
   }
 
-  public removeListener(callback: (event: LifecycleEvent) => void) {
+  public removeListener(callback: LifecycleCallback) {
     RouterMgr.getInstance().lifecycleEventMgr.removeListener(callback);
   }
 
 
 }
 
-// interface ILifecycleRegistry {
-//   addObserver(observer: ILifecycleObserver): void;
-//
-//   addObserver(callback: (event: LifecycleEvent) => void): void;
-// }

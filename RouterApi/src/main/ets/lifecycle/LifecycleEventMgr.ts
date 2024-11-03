@@ -7,15 +7,16 @@ import { RouterInfo } from "../model/RouterInfo";
 import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState } from "./ObserverState";
+import { util } from "@kit.ArkTS";
 
 export class LifecycleEventMgr {
 
     private static _instance: LifecycleEventMgr;
     private _observerMap: Map<ILifecycleObserver, ObserverState> = new Map();
     private _listenerMap: Map<LifecycleCallback, ObserverState> = new Map();
-    private _targets = new Array<string>()
     private _targetMap: Map<string, Array<string>> = new Map()
     private _currentRoute: RouterInfo | undefined
+    private _currentObject: object
 
     private constructor() {
     }
@@ -60,40 +61,41 @@ export class LifecycleEventMgr {
 
 
 
-    public setTarget(name: string, lifecycleNames: string[]) {
-        if (this._targetMap.has(name)) {
-            let list: string[] = this._targetMap.get(name) ?? []
+    public setTarget(className: string, lifecycleNames: string[]) {
+        if (this._targetMap.has(className)) {
+            let list: string[] = this._targetMap.get(className) ?? []
             let targets = lifecycleNames.filter((item) => !list.includes(item))
             list.push(...targets)
         } else {
-            this._targetMap.set(name, lifecycleNames)
+            this._targetMap.set(className, lifecycleNames)
         }
     }
 
 
     /**
-     *
+     * 回收释放资源
      * @param className
      * @param observer
      * @param callback
      */
     private remove(className: string, observer?: ILifecycleObserver, callback?: LifecycleCallback) {
-
-        if (this._targetMap.has(className) && this._currentRoute) {
+        if (this._targetMap.has(className)) {
             let list: string[] = this._targetMap.get(className) ?? []
-            let index = list.indexOf(this._currentRoute?.name)
-            if (index !== -1) {
-                list.splice(index, 1)
-                if (observer) {
-                    console.log("ILifecycleObserver 删除前: ", this._observerMap.size)
-                  let success =   this._observerMap.delete(observer)
-                    console.log("ILifecycleObserver 删除后：",className, this._currentRoute.name, success)
-                    console.log("ILifecycleObserver 删除后: ", this._observerMap.size)
-                }
-                if (callback) {
-                    this._listenerMap.delete(callback)
+            if (this._currentRoute) {
+                let index = list.indexOf(this._currentRoute?.name)
+                if (index !== -1) {
+                    list.splice(index, 1)
                 }
             }
+            if (observer) {
+                let success = this._observerMap.delete(observer)
+                console.log(className, 'observer: ', success)
+            }
+            if (callback) {
+                let success = this._listenerMap.delete(callback)
+                console.log(className, 'callback: ', success)
+            }
+
         }
     }
 
@@ -115,15 +117,16 @@ export class LifecycleEventMgr {
 
 
     public dispatchEvent(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string) {
-        // this._listenerMap.forEach((value, callback: LifecycleCallback) => {
-        //     callback(event);
-        //     if (event === LifecycleEvent.ON_DISAPPEAR || event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
-        //         this.remove(undefined, callback,routerInfo)
-        //     }
-        // })
-        if (routerInfo){
+        if (this.isNavEvent(routerInfo)){
             this._currentRoute = routerInfo
         }
+        this._listenerMap.forEach((value, callback: LifecycleCallback) => {
+            callback(event);
+            if (event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
+                this.remove(className, undefined, callback)
+            }
+        })
+
         this._observerMap.forEach((value, observer: ILifecycleObserver) => {
             switch (event){
                 case LifecycleEvent.ON_SHOWN:
@@ -186,5 +189,6 @@ export class LifecycleEventMgr {
     }
 
 }
-type LifecycleCallback = (event: LifecycleEvent) => void;
+
+export type LifecycleCallback = (event: LifecycleEvent, router?: RouterInfo) => void;
 

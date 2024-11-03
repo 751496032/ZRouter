@@ -6,79 +6,67 @@
 
 import { LifecycleEvent } from "../lifecycle/LifecycleEvent";
 import { LifecycleEventMgr } from "../lifecycle/LifecycleEventMgr";
-import 'reflect-metadata';
 import { util } from "@kit.ArkTS";
 
-export function Lifecycle(...routerName: string[]): PropertyDecorator {
+export function Lifecycle(...router: string[]): PropertyDecorator {
+  if (!router || router.length <= 0) {
+    throw new Error('Add monitored route names in @Lifecycle')
+  }
   return (target: any, propertyKey: string) => {
+    Reflect.defineProperty(target, `${propertyKey}_router`, {
+      value: router,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
     hooks(target,
       propertyKey,
-      routerName,
       LifecycleEvent.ABOUT_TO_DISAPPEAR, LifecycleEvent.ABOUT_TO_APPEAR,
       LifecycleEvent.ON_PAGE_SHOW, LifecycleEvent.ON_PAGE_HIDE)
   }
 }
 
-function hooks(target: any, propertyKey: string, routerNames: string[], ...events: LifecycleEvent[]) {
-  let propertyInstance = target[propertyKey]
-  // 给LifecycleRegistry属性赋值
-  Reflect.defineProperty(target, propertyKey, {
-    set: (newValue) => {
-      propertyInstance = newValue
-      try {
-        const hash = util.getHash(target)
-        console.log("hash: ", hash)
-        const key = target.constructor.name + "_" + propertyKey
-        if (!Reflect.hasMetadata(key, target,propertyKey)) {
-          Reflect.defineMetadata(key, routerNames, target,propertyKey)
-          console.log("set hooks: ", routerNames," key: "+key)
-          target.routerNames = routerNames
-          LifecycleEventMgr.getInstance().setTarget(target.constructor.name, routerNames)
-        }else {
-          let p = Reflect.getMetadata(key, target,propertyKey)
-          console.log("set hooks: ", `p：${p}`, Reflect.hasMetadata(key, target), " key: " + key)
-          console.log("set hooks: " ,target.routerNames)
-        }
-
-      }catch (e) {
-        console.error("hooks err: ",e)
-      }
-
-    },
-    get: () => {
-      return propertyInstance
-    },
-    enumerable: true,
-    configurable: true
-  })
+function hooks(target: any, propertyKey: string, ...events: LifecycleEvent[]) {
+  const className = `${target.constructor.name}_${util.getHash(target)}`
+  console.log("hook className: " , className ,this)
+  LifecycleEventMgr.getInstance().setTarget(className, target[`${propertyKey}_router`])
   for (const event of events) {
-    hook(target, routerNames, event)
+    hook(target, className, event)
   }
 }
 
-function hook(target: any,routerNames: string[], event: LifecycleEvent) {
-  // 给页面的生命周期函数赋值
+export function hook(target: any, className: string, event: LifecycleEvent) {
   let lifecycleFun = target[event]
-  Reflect.defineProperty(target, event, {
-    set: (newValue) => lifecycleFun = newValue,
-    get: () => lifecycleFun,
-    enumerable: true,
-    configurable: true
-  })
-
-  Reflect.defineProperty(target, event, {
-    value: () => {
-      try {
-        if (event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
-          console.log("class name: ", target.constructor.name, "  event name: ", event)
+  if (!lifecycleFun){
+    Reflect.defineProperty(target, event, {
+      set: (newValue) => {
+        lifecycleFun = newValue
+      },
+      get: () => lifecycleFun,
+      enumerable: true,
+      configurable: true
+    })
+    Reflect.defineProperty(target, event, {
+      value: () => {
+        try {
+          lifecycleFun?.call(target)
+          LifecycleEventMgr.getInstance().dispatchEvent(event, undefined, className)
+        } catch (e) {
+          console.error(e)
         }
-        lifecycleFun?.call(target)
-        LifecycleEventMgr.getInstance().dispatchEvent(event, undefined, target.constructor.name)
-      } catch (e) {
-        console.error(e)
-      }
-    },
-    enumerable: true,
-    configurable: true
-  });
+      },
+      writable:true,
+      enumerable: true,
+      configurable: true
+    });
+  }else {
+    function newFun() {
+      lifecycleFun.call(this)
+      LifecycleEventMgr.getInstance().dispatchEvent(event, undefined, className)
+    }
+    target[event] = newFun
+  }
+
+
+
 }
