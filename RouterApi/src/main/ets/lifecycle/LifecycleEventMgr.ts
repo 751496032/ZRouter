@@ -61,6 +61,11 @@ export class LifecycleEventMgr {
 
 
 
+    /**
+     * todo： 待解决的问题，如果打开一个类的组件，生命周期会重复监听
+     * @param className
+     * @param lifecycleNames
+     */
     public setTarget(className: string, lifecycleNames: string[]) {
         if (this._targetMap.has(className)) {
             let list: string[] = this._targetMap.get(className) ?? []
