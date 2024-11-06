@@ -27,7 +27,6 @@ export function Lifecycle(target: any, propertyKey: string) {
 function hooks(target: any, propertyKey: string, ...events: LifecycleEvent[]) {
   const className = `${target.constructor.name}`
   // console.log("hook className: " , className ,this)
-  // LifecycleEventMgr.getInstance().setTarget(className, target[`${propertyKey}_router`])
   for (const event of events) {
     hook(target, className, event)
   }

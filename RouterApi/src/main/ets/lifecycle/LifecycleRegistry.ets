@@ -8,7 +8,7 @@ import { util } from "@kit.ArkTS";
  * @date: 2024/10/26
  * @desc:
  */
-export class LifecycleRegistry{
+export class LifecycleRegistry {
   private targetClassName: string
 
   private constructor(className: string) {
@@ -21,22 +21,20 @@ export class LifecycleRegistry{
   }
 
 
-  public addObserver<T extends ILifecycleObserver>( observer: T) {
+  public addObserver<T extends ILifecycleObserver>(observer: T) {
     RouterMgr.getInstance().lifecycleEventMgr.addObserver(observer, this.targetClassName);
   }
 
   public removeObserver(observer: ILifecycleObserver): boolean {
-   return RouterMgr.getInstance().lifecycleEventMgr.removeObserver(observer);
+    return RouterMgr.getInstance().lifecycleEventMgr.removeObserver(observer);
   }
 
   public addListener(callback: LifecycleCallback) {
     RouterMgr.getInstance().lifecycleEventMgr.addListener(callback, this.targetClassName);
   }
 
-  public removeListener(callback: LifecycleCallback) :boolean{
+  public removeListener(callback: LifecycleCallback): boolean {
     return RouterMgr.getInstance().lifecycleEventMgr.removeListener(callback);
   }
-
-
 }
 
