@@ -4,6 +4,7 @@
  * @desc:
  */
 import { RouterInfo } from "../model/RouterInfo";
+import Logger from "../utlis/Logger";
 import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState } from "./ObserverState";
@@ -29,11 +30,11 @@ export class LifecycleEventMgr {
     if (this._observerMap.has(observer)) {
       return;
     }
-    console.log("ILifecycleObserver _observerMap 添加前: ", this._observerMap.size)
+    Logger.log("ILifecycleObserver _observerMap 添加前: ", this._observerMap.size)
     const state = new ObserverState()
     state.className = targetClassName
     this._observerMap.set(observer, state);
-    console.log("ILifecycleObserver _observerMap 添加后: ", this._observerMap.size)
+    Logger.log("ILifecycleObserver _observerMap 添加后: ", this._observerMap.size)
   }
 
 
@@ -48,11 +49,11 @@ export class LifecycleEventMgr {
     if (this._listenerMap.has(callback)) {
       return;
     }
-    console.log("ILifecycleObserver _listenerMap 添加前: ", this._listenerMap.size)
+    Logger.log("ILifecycleObserver _listenerMap 添加前: ", this._listenerMap.size)
     const state = new ObserverState()
     state.className = targetClassName
     this._listenerMap.set(callback, state);
-    console.log("ILifecycleObserver _listenerMap 添加后: ", this._listenerMap.size)
+    Logger.log("ILifecycleObserver _listenerMap 添加后: ", this._listenerMap.size)
   }
 
   public removeListener(callback: LifecycleCallback) {
@@ -72,12 +73,12 @@ export class LifecycleEventMgr {
   private remove(className: string, observer?: ILifecycleObserver, callback?: LifecycleCallback) {
     if (observer) {
       let success = this.removeObserver(observer)
-      console.log(className, 'observer: ', success)
+      Logger.log(className, 'observer: ', success)
       this._lifecycleObserver = undefined
     }
     if (callback) {
       let success = this.removeListener(callback)
-      console.log(className, 'callback: ', success)
+      Logger.log(className, 'callback: ', success)
       this._lifecycleCallback = undefined
     }
 
@@ -174,7 +175,7 @@ export class LifecycleEventMgr {
         case LifecycleEvent.ABOUT_TO_DISAPPEAR:
           if (isCurrentPage) {
             observer.aboutToDisappear?.();
-            console.log('ILifecycleObserver remove observer:  ', this._lifecycleObserver !== undefined)
+            Logger.log('ILifecycleObserver remove observer:  ', this._lifecycleObserver !== undefined)
             this.remove(className, this._lifecycleObserver ?? observer, undefined)
             return
           }
@@ -264,7 +265,7 @@ export class LifecycleEventMgr {
         case LifecycleEvent.ABOUT_TO_DISAPPEAR:
           if (isCurrentPage) {
             callback(event, routerInfo)
-            console.log('ILifecycleObserver remove callback:  ', this._lifecycleCallback !== undefined)
+            Logger.log('ILifecycleObserver remove callback:  ', this._lifecycleCallback !== undefined)
             this.remove(className, undefined, this._lifecycleCallback ?? callback)
             return
           }
