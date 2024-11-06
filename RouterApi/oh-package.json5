@@ -12,10 +12,8 @@
   "repository": "https://gitee.com/common-apps/ZRouter.git",
   "homepage": "https://github.com/751496032/ZRouter.git",
   "keywords": [
-    "harmony",
     "router",
     "navigation",
-    "zrouter",
     "URLRouter",
     "路由框架",
     "路由插件",

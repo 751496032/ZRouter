@@ -1,6 +1,5 @@
-import { RouterConstants,commonTest} from 'common_library';
-import { Route, ZRouter } from 'routerapi';
-
+import { RouterConstants, commonTest } from 'common_library';
+import { ILifecycleObserver, Lifecycle, LifecycleRegistry, Route, ZRouter } from 'routerapi';
 
 
 @Route({ name: RouterConstants.HARA_MAIN_PAGE, description: "测试", needLogin: true })
@@ -8,9 +7,41 @@ import { Route, ZRouter } from 'routerapi';
 export struct MainPage {
   @State message: string = 'Hello World';
   @State isNewStack: boolean = ZRouter.getCurrentStackName() == "newNavStack";
+  @Lifecycle
+  lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
 
   aboutToAppear(): void {
     console.log("harA MainPage aboutToAppear")
+
+    // 生命周期监听
+    const that = this
+    this.lifecycle.addObserver({
+      aboutToAppear(): void {
+        console.log('MainPage  aboutToAppear ' + that.lifecycle)
+      },
+      onPageShow(): void {
+        console.log('MainPage  onPageShow')
+      },
+
+      onPageHide(): void {
+        console.log('MainPage  onPageHide')
+      },
+      aboutToDisappear(): void {
+        console.log('MainPage  aboutToDisappear')
+      },
+      onShown(r): void {
+        console.log('MainPage  onShown', r?.name)
+      },
+
+      onHidden(r): void {
+        console.log('MainPage  onHidden', r?.name)
+      },
+      onDisappear(r): void {
+        console.log('MainPage  onDisappear', r?.name)
+      }
+
+
+    } as ILifecycleObserver)
   }
 
   aboutToDisappear(): void {
@@ -45,7 +76,7 @@ export struct MainPage {
 
         Button('back newNavStack').onClick((event: ClickEvent) => {
           ZRouter.getInstance('newNavStack').popWithResult(Math.random() + 10)
-        }).visibility( this.isNewStack ? Visibility.Visible : Visibility.Hidden)
+        }).visibility(this.isNewStack ? Visibility.Visible : Visibility.Hidden)
       }
 
     }

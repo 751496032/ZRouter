@@ -38,7 +38,11 @@ export class RouterMgr {
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
       const name = info.name.toString()
+      if (ObjectUtil.isEmpty(name)) {
+        return
+      }
       const routerInfo = RouterInfo.create(name, info.navigationId.toString(), info.param, info.navDestinationId)
+      const className = this._lifecycleEventMgr.getTopClassName()
       switch (info.state) {
         case uiObserver.NavDestinationState.ON_SHOWN:
           this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_SHOWN, routerInfo)
@@ -47,6 +51,7 @@ export class RouterMgr {
           this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_HIDDEN, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_APPEAR:
+          // this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_WILL_APPEAR, routerInfo,className)
           this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:

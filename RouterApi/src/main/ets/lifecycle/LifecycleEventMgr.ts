@@ -7,16 +7,14 @@ import { RouterInfo } from "../model/RouterInfo";
 import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState } from "./ObserverState";
-import { util } from "@kit.ArkTS";
 
 export class LifecycleEventMgr {
 
     private static _instance: LifecycleEventMgr;
     private _observerMap: Map<ILifecycleObserver, ObserverState> = new Map();
     private _listenerMap: Map<LifecycleCallback, ObserverState> = new Map();
-    private _targetMap: Map<string, Array<string>> = new Map()
-    private _currentRoute: RouterInfo | undefined
-    private _currentObject: object
+    private _lifecycleObserver: ILifecycleObserver | undefined
+    private _lifecycleCallback: LifecycleCallback | undefined
 
     private constructor() {
     }
@@ -28,53 +26,43 @@ export class LifecycleEventMgr {
         return LifecycleEventMgr._instance;
     }
 
-    public addObserver(observer: ILifecycleObserver) {
+    public addObserver(observer: ILifecycleObserver, targetClassName: string) {
         if (this._observerMap.has(observer)) {
             return;
         }
-        console.log("ILifecycleObserver 添加前: ", this._observerMap.size)
-        this._observerMap.set(observer, new ObserverState());
-        console.log("ILifecycleObserver 添加后: ", this._observerMap.size)
+        console.log("ILifecycleObserver _observerMap 添加前: ", this._observerMap.size)
+        const state = new ObserverState()
+        state.className = targetClassName
+        this._observerMap.set(observer, state);
+        console.log("ILifecycleObserver _observerMap 添加后: ", this._observerMap.size)
     }
 
 
     public removeObserver(observer: ILifecycleObserver) {
         if (!this._observerMap.has(observer)) {
-            return;
+            return false
         }
-        this._observerMap.delete(observer);
+       return this._observerMap.delete(observer);
     }
 
-    public addListener(callback:LifecycleCallback) {
+    public addListener(callback:LifecycleCallback,targetClassName: string) {
         if (this._listenerMap.has(callback)) {
             return;
         }
-        this._listenerMap.set(callback, new ObserverState());
+        console.log("ILifecycleObserver _listenerMap 添加前: ", this._listenerMap.size)
+        const state = new ObserverState()
+        state.className = targetClassName
+        this._listenerMap.set(callback, state);
+        console.log("ILifecycleObserver _listenerMap 添加后: ", this._listenerMap.size)
     }
 
     public removeListener(callback:LifecycleCallback) {
         if (!this._listenerMap.has(callback)) {
-            return;
+            return false
         }
-        this._listenerMap.delete(callback);
+       return this._listenerMap.delete(callback);
     }
 
-
-
-    /**
-     * todo： 待解决的问题，如果打开一个类的组件，生命周期会重复监听
-     * @param className
-     * @param lifecycleNames
-     */
-    public setTarget(className: string, lifecycleNames: string[]) {
-        if (this._targetMap.has(className)) {
-            let list: string[] = this._targetMap.get(className) ?? []
-            let targets = lifecycleNames.filter((item) => !list.includes(item))
-            list.push(...targets)
-        } else {
-            this._targetMap.set(className, lifecycleNames)
-        }
-    }
 
 
     /**
@@ -84,115 +72,218 @@ export class LifecycleEventMgr {
      * @param callback
      */
     private remove(className: string, observer?: ILifecycleObserver, callback?: LifecycleCallback) {
-        if (this._targetMap.has(className)) {
-            let list: string[] = this._targetMap.get(className) ?? []
-            if (this._currentRoute) {
-                let index = list.indexOf(this._currentRoute?.name)
-                if (index !== -1) {
-                    list.splice(index, 1)
-                }
-            }
-            if (observer) {
-                let success = this._observerMap.delete(observer)
-                console.log(className, 'observer: ', success)
-            }
-            if (callback) {
-                let success = this._listenerMap.delete(callback)
-                console.log(className, 'callback: ', success)
-            }
-
+        if (observer) {
+            let success = this.removeObserver(observer)
+            console.log(className, 'observer: ', success)
+            this._lifecycleObserver = undefined
         }
+        if (callback) {
+            let success = this.removeListener(callback)
+            console.log(className, 'callback: ', success)
+            this._lifecycleCallback = undefined
+        }
+
+
     }
 
-    private isNavEvent(routerInfo?: RouterInfo) {
-        if (!routerInfo) {
-            return false;
-        }
-        let isNav = false
-        const values = this._targetMap.values()
-        for (const value of values) {
-            if (!isNav) {
-                isNav = value.includes(routerInfo.name)
-            } else {
-                break
-            }
-        }
-        return isNav
-    }
 
+
+    public getTopClassName(): string {
+        let lastKV = Array.from(this._observerMap.entries()).pop()
+        return  lastKV && lastKV[1].className
+    }
 
     public dispatchEvent(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string) {
-        if (this.isNavEvent(routerInfo)){
-            this._currentRoute = routerInfo
-        }
-        this._listenerMap.forEach((value, callback: LifecycleCallback) => {
-            callback(event);
-            if (event === LifecycleEvent.ABOUT_TO_DISAPPEAR) {
-                this.remove(className, undefined, callback)
-            }
-        })
+        this.handleCallbackEvent(event, routerInfo, className)
+        this.handleObserverEvent(event, routerInfo, className)
+    }
 
-        this._observerMap.forEach((value, observer: ILifecycleObserver) => {
+    private handleObserverEvent(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string){
+        const observerMap =  Array.from(this._observerMap.entries()).reverse()
+        for (const [observer, value] of observerMap) {
+            // console.log(`Key: ${observer}, Value: ${value}`);
+            const isCurrentPage = className && value.className?.includes(className)
+            const isCurrentNavDestination =  value.navDestinationId == routerInfo?.navDestinationId
             switch (event){
                 case LifecycleEvent.ON_SHOWN:
-                    if (this.isNavEvent(routerInfo)) {
+                    if (isCurrentNavDestination) {
                         observer.onShown?.(routerInfo);
+                        return
                     }
-
                     break;
                 case LifecycleEvent.ON_HIDDEN:
-                    if (this.isNavEvent(routerInfo)) {
+                    if (isCurrentNavDestination) {
                         observer.onHidden?.(routerInfo);
+                        return
                     }
                     break;
-                case LifecycleEvent.ON_APPEAR:
-                    if (this.isNavEvent(routerInfo)) {
-                        observer.onAppear?.(routerInfo);
-                    }
-                    break;
-                case LifecycleEvent.ON_DISAPPEAR:
-                    if (this.isNavEvent(routerInfo)) {
-                        observer.onDisappear?.(routerInfo);
-                    }
-                    break;
+
                 case LifecycleEvent.ON_WILL_SHOW:
-                    if (this.isNavEvent(routerInfo)) {
+                    if (isCurrentNavDestination) {
                         observer.onWillShow?.(routerInfo);
+                        return
                     }
                     break;
                 case LifecycleEvent.ON_WILL_HIDE:
-                    if (this.isNavEvent(routerInfo)) {
+                    if (isCurrentNavDestination) {
                         observer.onWillHide?.(routerInfo);
+                        return
                     }
                     break;
+
                 case LifecycleEvent.ON_WILL_APPEAR:
-                    if (this.isNavEvent(routerInfo)) {
+                    if (this.isEmpty(value.navDestinationId)) {
+                        value.navDestinationId = routerInfo?.navDestinationId
                         observer.onWillAppear?.(routerInfo);
+                        return
                     }
                     break;
                 case LifecycleEvent.ON_WILL_DISAPPEAR:
-                    if (this.isNavEvent(routerInfo)) {
+                    if (isCurrentNavDestination) {
                         observer.onWillDisappear?.(routerInfo);
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_APPEAR:
+                    if (isCurrentNavDestination) {
+                        observer.onAppear?.(routerInfo);
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_DISAPPEAR:
+                    if (isCurrentNavDestination) {
+                        observer.onDisappear?.(routerInfo);
+                        this._lifecycleObserver = observer
+                        return
                     }
                     break;
                 case LifecycleEvent.ABOUT_TO_APPEAR:
-                    observer.aboutToAppear?.();
+                    if (isCurrentPage) {
+                        observer.aboutToAppear?.();
+                        return
+                    }
                     break;
                 case LifecycleEvent.ON_PAGE_SHOW:
-                    observer.onPageShow?.();
+                    if (isCurrentPage) {
+                        observer.onPageShow?.();
+                        return
+                    }
                     break;
                 case LifecycleEvent.ON_PAGE_HIDE:
-                    observer.onPageHide?.();
+                    if (isCurrentPage) {
+                        observer.onPageHide?.();
+                        return
+                    }
                     break;
                 case LifecycleEvent.ABOUT_TO_DISAPPEAR:
-                    observer.aboutToDisappear?.();
-                    this.remove(className, observer, undefined)
+                    if (isCurrentPage) {
+                        observer.aboutToDisappear?.();
+                        console.log('ILifecycleObserver remove observer:  ', this._lifecycleObserver !== undefined)
+                        this.remove(className, this._lifecycleObserver ?? observer, undefined)
+                        return
+                    }
+
                     break;
             }
 
-        })
+        }
     }
 
+    private handleCallbackEvent(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string){
+        const listenerMap =  Array.from(this._listenerMap.entries()).reverse()
+        for (const [callback, value] of listenerMap) {
+            const isCurrentPage = className && value.className?.includes(className)
+            const isCurrentNavDestination =  value.navDestinationId == routerInfo?.navDestinationId
+            switch (event){
+                case LifecycleEvent.ON_SHOWN:
+                    if (isCurrentNavDestination) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_HIDDEN:
+                    if (isCurrentNavDestination) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+
+                case LifecycleEvent.ON_WILL_SHOW:
+                    if (isCurrentNavDestination) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_WILL_HIDE:
+                    if (isCurrentNavDestination) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+
+                case LifecycleEvent.ON_WILL_APPEAR:
+                    if (this.isEmpty(value.navDestinationId)) {
+                        value.navDestinationId = routerInfo?.navDestinationId
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_WILL_DISAPPEAR:
+                    if (isCurrentNavDestination) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_APPEAR:
+                    if (isCurrentNavDestination) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_DISAPPEAR:
+                    if (isCurrentNavDestination) {
+                        callback(event, routerInfo)
+                        this._lifecycleCallback = callback
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ABOUT_TO_APPEAR:
+                    if (isCurrentPage) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_PAGE_SHOW:
+                    if (isCurrentPage) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ON_PAGE_HIDE:
+                    if (isCurrentPage) {
+                        callback(event, routerInfo)
+                        return
+                    }
+                    break;
+                case LifecycleEvent.ABOUT_TO_DISAPPEAR:
+                    if (isCurrentPage) {
+                        callback(event, routerInfo)
+                        console.log('ILifecycleObserver remove callback:  ', this._lifecycleCallback !==undefined)
+                        this.remove(className, undefined, this._lifecycleCallback ?? callback)
+                        return
+                    }
+
+                    break;
+            }
+        }
+    }
+
+
+
+
+    private isEmpty(str: string) {
+        return str === undefined || str === null || str.length === 0
+    }
 }
 
 export type LifecycleCallback = (event: LifecycleEvent, router?: RouterInfo) => void;

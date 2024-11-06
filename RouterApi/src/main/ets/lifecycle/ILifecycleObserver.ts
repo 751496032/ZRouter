@@ -6,5 +6,4 @@ import { INavLifeCycle, IPageLifeCycle } from "./ILifecycle";
  * @desc:
  */
 export interface ILifecycleObserver extends INavLifeCycle, IPageLifeCycle {
-  routerName?: string
 }

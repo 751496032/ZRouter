@@ -11,8 +11,8 @@ import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/inter
 @Entry
 @Component
 struct Index {
-  @Lifecycle(RouterConstants.HARA_MAIN_PAGE, RouterConstants.URL_TEST_PAGE)
-  lifecycle: LifecycleRegistry = LifecycleRegistry.create()
+  @Lifecycle
+  lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
 
   aboutToAppear(): void {
     // ZRouter.addGlobalInterceptor((info) => {
@@ -51,48 +51,20 @@ struct Index {
     const that = this
     this.lifecycle.addObserver({
       aboutToAppear(): void {
-        console.log('addObserver  aboutToAppear ' + that.lifecycle)
+        console.log('Index  aboutToAppear ' + that.lifecycle)
       },
       onPageShow(): void {
-        console.log('addObserver  onPageShow')
+        console.log('Index  onPageShow')
       },
 
       onPageHide(): void {
-        console.log('addObserver  onPageHide')
+        console.log('Index  onPageHide')
       },
       aboutToDisappear(): void {
-        console.log('addObserver  aboutToDisappear')
+        console.log('Index  aboutToDisappear')
       },
-      onShown(r): void{
-        console.log('addObserver  onShown' , r?.name)
-      },
-
-      onHidden(r): void{
-        console.log('addObserver  onHidden',r?.name)
-      },
-      onDisappear(r): void{
-        console.log('addObserver  onDisappear',r?.name)
-      }
-
-
     } as ILifecycleObserver)
 
-    // this.lifecycle.addListener((e) => {
-    //   if (e == LifecycleEvent.ON_PAGE_SHOW) {
-    //     console.log('addListener  onPageShow')
-    //   } else if (e == LifecycleEvent.ON_PAGE_HIDE) {
-    //     console.log('addListener  onPageHide')
-    //   }else if (e == LifecycleEvent.ABOUT_TO_DISAPPEAR) {
-    //     console.log('addListener  aboutToDisappear')
-    //   }else if (e == LifecycleEvent.ON_SHOWN) {
-    //     console.log('addListener  onShown')
-    //   }else if (e == LifecycleEvent.ON_HIDDEN) {
-    //     console.log('addListener  onHidden')
-    //   }else if (e == LifecycleEvent.ON_DISAPPEAR) {
-    //     console.log('addListener  onDisappear')
-    //   }
-    //
-    // })
 
 
   }

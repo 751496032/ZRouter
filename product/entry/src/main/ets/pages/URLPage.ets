@@ -6,49 +6,55 @@
 import { RouterConstants } from '@hzw/common_library';
 import { ILifecycleObserver, Lifecycle, LifecycleEvent, LifecycleRegistry, Route, ZRouter } from 'routerapi';
 
-import { RouterConst } from '../constants/RouterConst';
-import { util } from '@kit.ArkTS';
+
 
 
 @Route({name: RouterConstants.URL_TEST_PAGE})
 @Component
 export default struct URLPage {
-  @Lifecycle(RouterConstants.URL_TEST_PAGE)
-  lifecycle: LifecycleRegistry = LifecycleRegistry.create();
+  @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this);
   @State counter: number = 0
 
   aboutToAppear(): void {
+    console.log('URLPage  getParam: ' + ZRouter.getInstance().getParam())
     this.lifecycle.addListener((e, router) => {
-      if (e == LifecycleEvent.ON_SHOWN) {
+      if (e == LifecycleEvent.ON_APPEAR) {
         this.counter++
       }
     })
     let that = this
     this.lifecycle.addObserver<ILifecycleObserver>({
       aboutToAppear: () => {
-        console.log('URLPage aboutToAppear')
+        console.log('URLPage lifecycle aboutToAppear')
       },
       onPageShow(){
-        console.log('URLPage onPageShow')
+        console.log('URLPage lifecycle onPageShow')
       },
       onPageHide(){
-        console.log('URLPage onPageHide')
+        console.log('URLPage lifecycle onPageHide')
       },
       aboutToDisappear: () => {
-        console.log('URLPage aboutToDisappear')
+        console.log('URLPage lifecycle aboutToDisappear')
+      },
+      onWillAppear(r){
+        console.log('URLPage lifecycle onWillAppear ',r?.name,r?.navDestinationId)
       },
       onAppear(r){
-        console.log('URLPage onAppear ',r?.name)
+        console.log('URLPage lifecycle onAppear ',r?.name,r?.navDestinationId)
+        that.counter++
       },
       onShown(r){
-        that.counter++
-        console.log('URLPage onShown ',r?.name)
+
+        console.log('URLPage lifecycle onShown ',r?.name,r?.navDestinationId)
       },
       onHidden(r){
-        console.log('URLPage onHidden ',r?.name)
+        console.log('URLPage lifecycle  onHidden ',r?.name,r?.navDestinationId)
+      },
+      onWillDisappear(r){
+        console.log('URLPage lifecycle  onWillDisappear ',r?.name,r?.navDestinationId)
       },
       onDisappear(r){
-        console.log('URLPage onDisappear ',r?.name)
+        console.log('URLPage lifecycle onDisappear ',r?.name,r?.navDestinationId)
       }
     })
   }
@@ -73,7 +79,8 @@ export default struct URLPage {
         Button("URLPage")
           .onClick(() => {
             ZRouter.getInstance()
-              .setLunchMode(LaunchMode.NEW_INSTANCE)
+              .setLunchMode(LaunchMode.STANDARD)
+              .setParam(999)
               .navigation(RouterConstants.URL_TEST_PAGE)
           })
 

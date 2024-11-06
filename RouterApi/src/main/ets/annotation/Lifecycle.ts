@@ -6,30 +6,28 @@
 
 import { LifecycleEvent } from "../lifecycle/LifecycleEvent";
 import { LifecycleEventMgr } from "../lifecycle/LifecycleEventMgr";
-import { util } from "@kit.ArkTS";
 
-export function Lifecycle(...router: string[]): PropertyDecorator {
-  if (!router || router.length <= 0) {
-    throw new Error('Add monitored route names in @Lifecycle')
-  }
-  return (target: any, propertyKey: string) => {
-    Reflect.defineProperty(target, `${propertyKey}_router`, {
-      value: router,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    });
-    hooks(target,
-      propertyKey,
-      LifecycleEvent.ABOUT_TO_DISAPPEAR, LifecycleEvent.ABOUT_TO_APPEAR,
-      LifecycleEvent.ON_PAGE_SHOW, LifecycleEvent.ON_PAGE_HIDE)
-  }
+export function Lifecycle(target: any, propertyKey: string) {
+  // if (!target['build']) {
+  //   throw new Error('@Lifecycle only for UI components')
+  // }
+
+  // Reflect.defineProperty(target, `${propertyKey}_router`, {
+  //   value: router,
+  //   writable: false,
+  //   enumerable: false,
+  //   configurable: false
+  // });
+  hooks(target,
+    propertyKey,
+    LifecycleEvent.ABOUT_TO_DISAPPEAR, LifecycleEvent.ABOUT_TO_APPEAR,
+    LifecycleEvent.ON_PAGE_SHOW, LifecycleEvent.ON_PAGE_HIDE)
 }
 
 function hooks(target: any, propertyKey: string, ...events: LifecycleEvent[]) {
-  const className = `${target.constructor.name}_${util.getHash(target)}`
-  console.log("hook className: " , className ,this)
-  LifecycleEventMgr.getInstance().setTarget(className, target[`${propertyKey}_router`])
+  const className = `${target.constructor.name}`
+  // console.log("hook className: " , className ,this)
+  // LifecycleEventMgr.getInstance().setTarget(className, target[`${propertyKey}_router`])
   for (const event of events) {
     hook(target, className, event)
   }
