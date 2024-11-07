@@ -22,7 +22,7 @@
   "modules": [
     {
       "name": "entry",
-      "srcPath": "./product/entry",
+      "srcPath": "./products/entry",
       "targets": [
         {
           "name": "default",
@@ -38,15 +38,15 @@
     },
     {
       "name": "harA",
-      "srcPath": "./harA",
+      "srcPath": "./features/harA"
     },
     {
       "name": "harB",
-      "srcPath": "./harB",
+      "srcPath": "./features/harB"
     },
     {
       "name": "hspc",
-      "srcPath": "./hspC",
+      "srcPath": "./features/hspC",
       "targets": [
         {
           "name": "default",
@@ -58,7 +58,7 @@
     },
     {
       "name": "common",
-      "srcPath": "./library/common_library"
+      "srcPath": "./library/common"
     }
   ]
 }
