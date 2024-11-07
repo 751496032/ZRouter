@@ -16,7 +16,7 @@ struct Index {
   aboutToAppear(): void {
     AddInterceptor()
 
-    // 生命周期监听
+    // @Entry页面生命周期监听
     const that = this
     this.lifecycle.addObserver({
       aboutToAppear(): void {
