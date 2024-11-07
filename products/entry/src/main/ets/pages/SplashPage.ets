@@ -1,12 +1,11 @@
+
+import { Route, ZRouter } from 'routerapi';
+import { RouterConst } from '../constants/RouterConst';
 /**
  * @author: HZWei
  * @date: 2024/10/12
  * @desc:
  */
-import { Route, ZRouter } from 'routerapi';
-import { RouterConst } from '../constants/RouterConst';
-import { util } from '@kit.ArkTS';
-
 @Route({ name: RouterConst.SPLASH_PAGE })
 @Component
 export struct SplashPage {

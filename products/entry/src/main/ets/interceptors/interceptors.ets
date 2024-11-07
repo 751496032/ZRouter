@@ -1,7 +1,7 @@
 /**
  * @author: HZWei
  * @date: 2024/9/22
- * @desc:
+ * @desc:  拦截器案例
  */
 import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IGlobalNavigateInterceptor, ZRouter,
    } from 'routerapi';
@@ -40,7 +40,7 @@ export class UrlInterceptor implements IInterceptor {
   // 设置拦截器优先级，数值越大则优先执行
   priority: number = 10000;
   process: (context: InterceptorInfo) => InterceptorInfoOrNull = (context) => {
-    console.log("IInterceptor process: ", this.priority , context.name)
+    // console.log("IInterceptor process: ", this.priority , context.name)
     if (context.notRegistered) {
       if (this.isLink(context.name)) {
         const map = this.parseQueryString(context.name)
