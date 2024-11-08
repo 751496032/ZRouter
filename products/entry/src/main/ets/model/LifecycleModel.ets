@@ -4,7 +4,7 @@ import { ILifecycleObserver, RouterInfo } from "routerapi";
 /**
  * @author: HZWei
  * @date: 2024/11/8
- * @desc:  让一个类具有生命周期能力
+ * @desc:  让一个类具有生命周期能力，实现ILifecycleObserver接口
  */
 
 @Observed

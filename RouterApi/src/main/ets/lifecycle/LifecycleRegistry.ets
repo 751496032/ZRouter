@@ -2,6 +2,7 @@ import { RouterMgr } from "../api/RouterMgr";
 import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleCallback } from "./LifecycleEventMgr";
 import { util } from "@kit.ArkTS";
+import { SPLIT_SYMBOL } from "./ObserverState";
 
 /**
  * @author: HZWei
@@ -16,7 +17,7 @@ export class LifecycleRegistry {
   }
 
   public static create(component: object): LifecycleRegistry {
-    const className = `${component.constructor.name}_${util.getHash(component)}`
+    const className = `${component.constructor.name}${SPLIT_SYMBOL}${util.getHash(component)}`
     return new LifecycleRegistry(className);
   }
 

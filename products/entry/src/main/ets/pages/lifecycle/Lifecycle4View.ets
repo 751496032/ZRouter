@@ -13,17 +13,15 @@ import { Lifecycle2Model } from '../../model/Lifecycle2Model';
 @Route({ name: RouterConstants.LIFECYCLE4_VIEW })
 @Component
 export struct Lifecycle4View {
-  /**
-   * 一个页面只能addObserver注册一次
-   */
+
   @State viewModel : LifecycleModel = new LifecycleModel()
-  // @State viewModel2 : Lifecycle2Model = new Lifecycle2Model()
+  @State viewModel2 : Lifecycle2Model = new Lifecycle2Model()
   @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this);
 
   aboutToAppear(): void {
     this.lifecycle.addObserver(this.viewModel)
 
-    // this.viewModel2.register(this.lifecycle)
+    this.viewModel2.register(this.lifecycle)
   }
 
   build() {

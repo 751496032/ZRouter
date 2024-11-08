@@ -42,8 +42,14 @@ export struct Lifecycle1View {
         console.log(`${that.tag}onAppear`, r?.name, r?.navDestinationId)
         that.counter++
       },
+      onWillShow(r) {
+        console.log(`${that.tag}onWillShow `, r?.name, r?.navDestinationId)
+      },
       onShown(r) {
         console.log(`${that.tag}onShown `,r?.name, r?.navDestinationId)
+      },
+      onWillHide(r){
+        console.log(`${that.tag}onWillHide `, r?.name, r?.navDestinationId)
       },
       onHidden(r) {
         console.log(`${that.tag}onHidden `, r?.name, r?.navDestinationId)

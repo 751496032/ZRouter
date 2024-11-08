@@ -21,11 +21,14 @@ export struct Lifecycle3View {
   aboutToAppear(): void {
     // 2、使用addListener设置生命周期函数监听
     this.lifecycle.addListener((e, r) => {
-      console.log(this.tag, e, r?.name ?? "", r?.navDestinationId ?? "")
+      console.log(this.tag, '--1--',e, r?.name ?? "", r?.navDestinationId ?? "")
       switch (e) {
         case LifecycleEvent.ABOUT_TO_APPEAR:
           break
       }
+    })
+    this.lifecycle.addListener((e, r) => {
+      console.log(this.tag ,'--2--' , e, r?.name ?? "", r?.navDestinationId ?? "")
     })
   }
 
@@ -35,9 +38,9 @@ export struct Lifecycle3View {
         Text(this.counter.toString())
           .fontColor(Color.Black)
           .fontSize(25)
-        Button('Lifecycle1View').onClick((event: ClickEvent) => {
+        Button('Lifecycle3View').onClick((event: ClickEvent) => {
           ZRouter.getInstance()
-            .navigation(RouterConstants.LIFECYCLE1_VIEW)
+            .navigation(RouterConstants.LIFECYCLE3_VIEW)
         })
         Button("+1")
           .onClick(() => {
