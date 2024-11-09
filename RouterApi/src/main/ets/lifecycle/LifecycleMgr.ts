@@ -9,8 +9,8 @@ import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState, SPLIT_SYMBOL } from "./ObserverState";
 
-export class LifecycleEventMgr {
-  private static _instance: LifecycleEventMgr;
+export class LifecycleMgr {
+  private static _instance: LifecycleMgr;
   private _observerMap: Map<ILifecycleObserver, ObserverState> = new Map();
   private _listenerMap: Map<LifecycleCallback, ObserverState> = new Map();
   private removableObservers: ILifecycleObserver[] | undefined
@@ -20,11 +20,11 @@ export class LifecycleEventMgr {
   private constructor() {
   }
 
-  public static getInstance(): LifecycleEventMgr {
-    if (!LifecycleEventMgr._instance) {
-      LifecycleEventMgr._instance = new LifecycleEventMgr();
+  public static getInstance(): LifecycleMgr {
+    if (!LifecycleMgr._instance) {
+      LifecycleMgr._instance = new LifecycleMgr();
     }
-    return LifecycleEventMgr._instance;
+    return LifecycleMgr._instance;
   }
 
   public addObserver(observer: ILifecycleObserver, targetClassName: string) {

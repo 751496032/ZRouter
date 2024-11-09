@@ -1,6 +1,6 @@
 import { RouterMgr } from "../api/RouterMgr";
 import { ILifecycleObserver } from "./ILifecycleObserver";
-import { LifecycleCallback } from "./LifecycleEventMgr";
+import { LifecycleCallback } from "./LifecycleMgr";
 import { util } from "@kit.ArkTS";
 import { SPLIT_SYMBOL } from "./ObserverState";
 

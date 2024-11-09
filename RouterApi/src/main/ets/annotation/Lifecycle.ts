@@ -5,7 +5,7 @@
  */
 
 import { LifecycleEvent } from "../lifecycle/LifecycleEvent";
-import { LifecycleEventMgr } from "../lifecycle/LifecycleEventMgr";
+import { LifecycleMgr } from "../lifecycle/LifecycleMgr";
 
 export function Lifecycle(target: any, propertyKey: string) {
   // if (!target['build']) {
@@ -46,7 +46,7 @@ export function hook(target: any, className: string, event: LifecycleEvent) {
       value: () => {
         try {
           lifecycleFun?.call(target)
-          LifecycleEventMgr.getInstance().notifyObservers(event, undefined, className)
+          LifecycleMgr.getInstance().notifyObservers(event, undefined, className)
         } catch (e) {
           console.error(e)
         }
@@ -58,7 +58,7 @@ export function hook(target: any, className: string, event: LifecycleEvent) {
   }else {
     function newFun() {
       lifecycleFun.call(this)
-      LifecycleEventMgr.getInstance().notifyObservers(event, undefined, className)
+      LifecycleMgr.getInstance().notifyObservers(event, undefined, className)
     }
     target[event] = newFun
   }
