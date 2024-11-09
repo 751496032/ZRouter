@@ -1,6 +1,6 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { window } from '@kit.ArkUI';
+import { uiObserver, window } from '@kit.ArkUI';
 import { ZRouter } from 'routerapi';
 import { util } from '@kit.ArkTS';
 import BuildProfile from 'BuildProfile';

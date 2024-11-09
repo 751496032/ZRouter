@@ -20,6 +20,7 @@ import { ServiceMgr } from '../service/ServiceMgr'
 import { IProvider } from '../service/IProvider'
 import { ConfigInitializer } from '../model/ConfigInitializer'
 import Logger from '../utlis/Logger'
+import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -216,6 +217,10 @@ export class ZRouter {
     return ZRouter.getRouterMgr().currentStackName
   }
 
+  public static addGlobalLifecycleObserver<T extends ILifecycleObserver>(observer: T) {
+
+  }
+
 
   // region 废弃方法
 
@@ -241,38 +246,6 @@ export class ZRouter {
    */
   public static redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
     ZRouter.getRouterMgr().redirectForResult(name, param, callback)
-  }
-
-
-
-
-
-  /**
-   * @deprecated
-   * @see {setGlobalInterceptor}
-   * @param callback
-   */
-  public static addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
-    ZRouter.getRouterMgr().addGlobalInterceptor(callback)
-  }
-
-
-  /**
-   * @deprecated
-   * @see {setInterceptor}
-   * @param key
-   * @param callback
-   */
-  public static addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
-    ZRouter.getRouterMgr().addInterceptor(key, callback)
-  }
-
-  /**
-   * @deprecated
-   * @param key
-   */
-  public static removeInterceptor(key: string) {
-    ZRouter.getRouterMgr().removeInterceptor(key)
   }
 
 
