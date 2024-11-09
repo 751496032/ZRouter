@@ -6,6 +6,7 @@
 import LogUtil from "../utlis/LogUtil"
 import { util } from "@kit.ArkTS"
 import { RouterMgr } from "../api/RouterMgr"
+import { ZRouter } from "../api/Router"
 
 export class ConfigInitializer implements IConfigOptions {
   private _onDynamicLoadComplete?: () => void
@@ -42,7 +43,7 @@ export class ConfigInitializer implements IConfigOptions {
 
 
   constructor() {
-    util.Aspect.addBefore(RouterMgr, "getInstance", true, () => {
+    util.Aspect.addAfter(ZRouter, "setup", true, () => {
       this.dynamicImportModule()
     })
   }

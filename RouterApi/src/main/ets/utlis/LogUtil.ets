@@ -10,16 +10,16 @@ export default class LogUtil {
   static config : InitConfig
 
   static log(msg: string, ...args: ObjectOrNull[]) {
-    if (LogUtil.closeLog()) return
+    if (LogUtil.hide()) return
     console.log("ZRouter -> " + msg, ...args)
   }
 
   static error(msg: string, ...args: ObjectOrNull[]) {
-    if (LogUtil.closeLog()) return
+    if (LogUtil.hide()) return
     console.error("ZRouter -> " + msg, ...args)
   }
 
-  private static closeLog(): boolean {
+  private static hide(): boolean {
     return ObjectUtil.isEmpty(LogUtil.config) || !LogUtil.config.isShowLog
   }
 }

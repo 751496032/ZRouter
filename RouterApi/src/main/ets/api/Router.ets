@@ -19,6 +19,7 @@ import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInte
 import { ServiceMgr } from '../service/ServiceMgr'
 import { IProvider } from '../service/IProvider'
 import { ConfigInitializer } from '../model/ConfigInitializer'
+import Logger from '../utlis/Logger'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -32,6 +33,7 @@ export class ZRouter {
     const config = new ConfigInitializer()
     invoke?.(config)
     LogUtil.config = { isShowLog: config.isLoggingEnabled }
+    Logger.isShowLog = config.isLoggingEnabled
     ZRouter.setup(config.isHSPModuleDependent)
   }
 
@@ -43,6 +45,7 @@ export class ZRouter {
    */
   public static init(isDependHspModule: boolean = false, config: InitConfig = { isShowLog: true }) {
     LogUtil.config = config
+    Logger.isShowLog = config.isShowLog
     ZRouter.setup(isDependHspModule)
   }
 

@@ -1,0 +1,17 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "routerapi": "file:../../RouterApi",
+    "hara": "file:../../features/harA",
+    "harb": "file:../../features/harB",
+    "hspc": "file:../../features/hspC",
+    "@hzw/common_library": "file:../../library/common"
+  },
+  "devDependencies": {},
+  "dynamicDependencies": {}
+}

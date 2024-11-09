@@ -38,38 +38,43 @@ export class RouterMgr {
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
       const name = info.name.toString()
+      if (ObjectUtil.isEmpty(name)) {
+        return
+      }
       const routerInfo = RouterInfo.create(name, info.navigationId.toString(), info.param, info.navDestinationId)
+      const className = this._lifecycleEventMgr.getTopClassName()
       switch (info.state) {
         case uiObserver.NavDestinationState.ON_SHOWN:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_SHOWN, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_SHOWN, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_HIDDEN:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_HIDDEN, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_HIDDEN, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_APPEAR:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_APPEAR, routerInfo)
+          // this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_WILL_APPEAR, routerInfo,className)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
           const indexList = this.getNavStack().getIndexByName(name)
           if (indexList.length == 0) {
             this.unregisterEvent(name)
           }
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_DISAPPEAR, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_DISAPPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_WILL_SHOW:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_WILL_SHOW, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_WILL_SHOW, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_WILL_HIDE:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_WILL_HIDE, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_WILL_HIDE, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_WILL_APPEAR:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_WILL_APPEAR, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_WILL_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_WILL_DISAPPEAR:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_WILL_DISAPPEAR, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_WILL_DISAPPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_BACKPRESS:
-          this._lifecycleEventMgr.dispatchEvent(LifecycleEvent.ON_BACKPRESS, routerInfo)
+          this._lifecycleEventMgr.notifyObservers(LifecycleEvent.ON_BACKPRESS, routerInfo)
           break
 
       }

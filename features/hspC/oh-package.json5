@@ -1,0 +1,13 @@
+{
+  "name": "hspc",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "Index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "packageType": "InterfaceHar",
+  "dependencies": {
+    "routerapi": "file:../../RouterApi",
+    "@hzw/common_library": "file:../../library/common"
+  }
+}

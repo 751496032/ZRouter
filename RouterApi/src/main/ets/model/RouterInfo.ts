@@ -1,3 +1,4 @@
+
 export class RouterInfo {
   name: string
   navigationId: string

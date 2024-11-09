@@ -36,42 +36,42 @@ export interface INavLifeCycle extends ILifeCycle {
   /**
    * 当该NavDestination页面显示时触发此回调
    */
-  onShown?: RouterFunc
+  onShown?(info: RouterInfo): void
 
   /**
    * 当该NavDestination页面隐藏时触发此回调
    */
-  onHidden?: RouterFunc
+  onHidden?(info: RouterInfo): void
 
   /**
    * 当该NavDestination挂载之前触发此回调
    */
-  onWillAppear?: RouterFunc
+  onWillAppear?(info: RouterInfo): void
 
   /**
    * 当该Destination显示之前触发此回调
    */
-  onWillShow?: RouterFunc
+  onWillShow?(info: RouterInfo): void
 
   /**
    * 当该Destination隐藏之前触发此回调
    */
-  onWillHide?: RouterFunc
+  onWillHide?(info: RouterInfo): void
 
   /**
    * 当该Destination卸载之前触发的生命周期(有转场动画时，在转场动画开始之前触发)
    */
-  onWillDisappear?: RouterFunc
+  onWillDisappear?(info: RouterInfo): void
 
   /**
    * NavDestination在组件树上挂载时触发此回调
    */
-  onAppear?: RouterFunc
+  onAppear?(info: RouterInfo): void
 
   /**
    * NavDestination从组件树上卸载时触发此回调
    */
-  onDisappear?: RouterFunc
+  onDisappear?(info: RouterInfo): void
 
   /**
    * NavDestination组件返回时触发此回调
@@ -85,4 +85,4 @@ export interface INavLifeCycle extends ILifeCycle {
 
 }
 
-export type RouterFunc = (info?: RouterInfo) => void
+// export type RouterFunc = (info?: RouterInfo) => void
