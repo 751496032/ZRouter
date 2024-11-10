@@ -13,13 +13,13 @@ import { util } from '@kit.ArkTS';
 export struct Lifecycle1View {
   private hash: number = util.getHash(this)
   private tag: string = `LifecycleMgr ${RouterConstants.LIFECYCLE1_VIEW} ${this.hash}: `
-  // 1、初始化生命周期注册对象，并使用@Lifecycle注解LifecycleRegistry实例
+  // 1、初始化生命周期注册对象，并使用@Lifecycle修饰
   @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this);
   @State counter: number = 0
 
   aboutToAppear(): void {
     // 2、使用addObserver设置生命周期函数监听
-    // 注意：如果addObserver是字面量对象注册的情况，将this设置局部变量，不然在对象内的this指向会不对
+    // 注意：如果addObserver是字面量对象注册的情况，将this设置局部变量，不然在对象内的this指向并不是组件的实例
     let that = this
     this.lifecycle.addObserver<ILifecycleObserver>({
       aboutToAppear: () => {

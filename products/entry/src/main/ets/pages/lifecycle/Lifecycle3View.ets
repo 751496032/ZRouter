@@ -13,7 +13,7 @@ import { util } from '@kit.ArkTS';
 export struct Lifecycle3View {
   private hash: number = util.getHash(this)
   private tag: string = `LifecycleMgr ${RouterConstants.LIFECYCLE3_VIEW} ${this.hash}: `
-  // 1、初始化生命周期注册对象，并使用@Lifecycle注解LifecycleRegistry实例
+  // 1、初始化生命周期注册对象，用@Lifecycle修饰
   @Lifecycle
   lifecycle: LifecycleRegistry = LifecycleRegistry.create(this);
   @State counter: number = 0

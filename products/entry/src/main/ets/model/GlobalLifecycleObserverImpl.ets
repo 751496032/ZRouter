@@ -6,9 +6,8 @@
 import { ILifecycleObserver, RouterInfo } from "routerapi";
 
 /**
- * 全局生命周期观察者 注意实现：
- * 1、其中通用组件的生命周期函数（aboutToAppear、aboutToDisAppear）未必会被调用，只有在NavDestination子页面初始化了LifecycleRegistry对象的情况下，才会被调用；
- * 可以不用addObserver方法注册到LifecycleRegistry对象中
+ * 全局生命周期观察者 注意：
+ * 其中组件的通用生命周期函数（aboutToAppear、aboutToDisAppear）未必一定会被调用，前提取决于NavDestination页面是否了初始化了LifecycleRegistry对象
  * 这个问题会在后续版本中优化。
  */
 export class GlobalLifecycleObserverImpl implements ILifecycleObserver {
