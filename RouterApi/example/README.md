@@ -1,10 +1,8 @@
 
 ## 仓库地址
 - ZRouter
-    - github：https://github.com/751496032/ZRouter
     - gitee：https://gitee.com/common-apps/ZRouter
 - router-register-plugin插件
-    - github：https://github.com/751496032/RouterRegisterPlugin
     - gitee：https://gitee.com/common-apps/RouterRegisterPlugin
 
 

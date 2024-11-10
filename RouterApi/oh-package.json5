@@ -1,6 +1,6 @@
 {
   "name": "@hzw/zrouter",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "ZRouter是一款轻量级的鸿蒙动态路由框架，基于Navigation系统路由表和Hvigor插件实现的方案，可实现模块解耦与通信",
   "main": "Index.ets",
   "author": "HZWei",
