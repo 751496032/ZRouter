@@ -5,7 +5,6 @@
  */
 
 export function Route(param: Param) {
-  console.log("hook route: ",JSON.stringify(param))
   return Object
 }
 

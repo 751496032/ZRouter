@@ -23,19 +23,19 @@ export class LifecycleRegistry {
 
 
   public addObserver<T extends ILifecycleObserver>(observer: T) {
-    RouterMgr.getInstance().lifecycleEventMgr.addObserver(observer, this.targetClassName);
+    RouterMgr.getInstance().lifecycleMgr.addObserver(observer, this.targetClassName);
   }
 
   public removeObserver(observer: ILifecycleObserver): boolean {
-    return RouterMgr.getInstance().lifecycleEventMgr.removeObserver(observer);
+    return RouterMgr.getInstance().lifecycleMgr.removeObserver(observer);
   }
 
   public addListener(callback: LifecycleCallback) {
-    RouterMgr.getInstance().lifecycleEventMgr.addListener(callback, this.targetClassName);
+    RouterMgr.getInstance().lifecycleMgr.addListener(callback, this.targetClassName);
   }
 
   public removeListener(callback: LifecycleCallback): boolean {
-    return RouterMgr.getInstance().lifecycleEventMgr.removeListener(callback);
+    return RouterMgr.getInstance().lifecycleMgr.removeListener(callback);
   }
 }
 

@@ -17,7 +17,6 @@ export struct Lifecycle1View {
   @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this);
   @State counter: number = 0
 
-
   aboutToAppear(): void {
     // 2、使用addObserver设置生命周期函数监听
     // 注意：如果addObserver是字面量对象注册的情况，将this设置局部变量，不然在对象内的this指向会不对
@@ -36,7 +35,7 @@ export struct Lifecycle1View {
         console.log(`${that.tag}aboutToDisappear`)
       },
       onWillAppear(r) {
-        console.log(`${that.tag}onWillAppear`,r?.name, r?.navDestinationId)
+        console.log(`${that.tag}onWillAppear`, r?.name, r?.navDestinationId)
       },
       onAppear(r) {
         console.log(`${that.tag}onAppear`, r?.name, r?.navDestinationId)
@@ -46,16 +45,16 @@ export struct Lifecycle1View {
         console.log(`${that.tag}onWillShow `, r?.name, r?.navDestinationId)
       },
       onShown(r) {
-        console.log(`${that.tag}onShown `,r?.name, r?.navDestinationId)
+        console.log(`${that.tag}onShown `, r?.name, r?.navDestinationId)
       },
-      onWillHide(r){
+      onWillHide(r) {
         console.log(`${that.tag}onWillHide `, r?.name, r?.navDestinationId)
       },
       onHidden(r) {
         console.log(`${that.tag}onHidden `, r?.name, r?.navDestinationId)
       },
       onWillDisappear(r) {
-        console.log(`${that.tag}onWillDisappear `,r?.name, r?.navDestinationId)
+        console.log(`${that.tag}onWillDisappear `, r?.name, r?.navDestinationId)
       },
       onDisappear(r) {
         console.log(`${that.tag}onDisappear `, r?.name, r?.navDestinationId)
@@ -80,8 +79,6 @@ export struct Lifecycle1View {
             .navigation(RouterConstants.LIFECYCLE2_VIEW)
         })
 
-
-
         Button("+1")
           .onClick(() => {
             this.counter++;
@@ -90,7 +87,20 @@ export struct Lifecycle1View {
       .height('100%')
       .alignItems(HorizontalAlign.Center)
 
-    }.width('100%')
+    }
+    .width('100%')
     .title('Lifecycle1View')
+    .onAppear(() => {
+      console.log('LifecycleMgr -- onAppear')
+    })
+    .onShown(() => {
+      console.log('LifecycleMgr -- onShown')
+    })
+    .onHidden(() => {
+      console.log('LifecycleMgr -- onHidden')
+    })
+    .onDisAppear(() => {
+      console.log('LifecycleMgr -- onDisAppear')
+    })
   }
 }

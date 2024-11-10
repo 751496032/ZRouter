@@ -33,6 +33,9 @@ struct Index {
         console.log('Index  aboutToDisappear')
       },
     } as ILifecycleObserver)
+    this.lifecycle.addListener((e)=>{
+
+    })
 
 
   }

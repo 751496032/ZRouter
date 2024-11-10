@@ -1,5 +1,6 @@
 import { RouterConstants } from "@hzw/common_library";
 import { Route, ZRouter } from "routerapi";
+import { GlobalLifecycleObserverImpl } from "../../model/GlobalLifecycleObserverImpl";
 
 /**
  * @author: HZWei
@@ -33,6 +34,10 @@ export struct LifecycleCaseView {
 
         Button('Lifecycle4View - ViewModel').onClick((event: ClickEvent) => {
           ZRouter.getInstance().navigation(RouterConstants.LIFECYCLE4_VIEW)
+        })
+
+        Button('添加全局生命周期监听').onClick((event: ClickEvent) => {
+          ZRouter.getInstance().addGlobalLifecycleObserver(new GlobalLifecycleObserverImpl())
         })
 
       }.justifyContent(FlexAlign.Center)

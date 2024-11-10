@@ -8,6 +8,7 @@ import Logger from "../utlis/Logger";
 import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState, SPLIT_SYMBOL } from "./ObserverState";
+import ArrayList from "@ohos.util.ArrayList";
 
 export class LifecycleMgr {
   private static _instance: LifecycleMgr;
@@ -15,6 +16,7 @@ export class LifecycleMgr {
   private _listenerMap: Map<LifecycleCallback, ObserverState> = new Map();
   private removableObservers: ILifecycleObserver[] | undefined
   private removableListeners: LifecycleCallback[] | undefined
+  private globalObservers: ArrayList<ILifecycleObserver> = new ArrayList()
 
 
   private constructor() {
@@ -25,6 +27,19 @@ export class LifecycleMgr {
       LifecycleMgr._instance = new LifecycleMgr();
     }
     return LifecycleMgr._instance;
+  }
+
+  public addGlobalObserver(observer: ILifecycleObserver){
+    if (this.globalObservers.has(observer)) {
+      return;
+    }
+    this.globalObservers.add(observer)
+  }
+
+  public removeGlobalObserver(observer: ILifecycleObserver){
+    if (this.globalObservers.has(observer)) {
+      this.globalObservers.remove(observer)
+    }
   }
 
   public addObserver(observer: ILifecycleObserver, targetClassName: string) {
@@ -140,6 +155,47 @@ export class LifecycleMgr {
   }
 
   private handleObserverEvent(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string) {
+    this.globalObservers.forEach((observer, index) => {
+      observer.pageClasName = className
+       switch (event){
+         case LifecycleEvent.ON_SHOWN:
+           observer.onShown(routerInfo)
+           break
+         case LifecycleEvent.ON_HIDDEN:
+           observer.onHidden(routerInfo)
+           break
+         case LifecycleEvent.ON_WILL_SHOW:
+           observer.onWillShow(routerInfo)
+           break
+         case LifecycleEvent.ON_WILL_HIDE:
+           observer.onWillHide(routerInfo)
+           break
+         case LifecycleEvent.ON_WILL_APPEAR:
+           observer.onWillAppear(routerInfo)
+           break
+         case LifecycleEvent.ON_WILL_DISAPPEAR:
+           observer.onWillDisappear(routerInfo)
+           break
+         case LifecycleEvent.ON_APPEAR:
+           observer.onAppear(routerInfo)
+           break
+         case LifecycleEvent.ON_DISAPPEAR:
+           observer.onDisappear(routerInfo)
+           break
+         case LifecycleEvent.ABOUT_TO_APPEAR:
+           observer.aboutToAppear()
+           break
+         case LifecycleEvent.ON_PAGE_SHOW:
+           observer.onPageShow()
+           break
+         case LifecycleEvent.ON_PAGE_HIDE:
+           observer.onPageShow()
+           break
+         case LifecycleEvent.ABOUT_TO_DISAPPEAR:
+           observer.aboutToDisappear()
+           break
+       }
+    })
     const observerMap = Array.from(this._observerMap.entries()).reverse()
     for (const [observer, state] of observerMap) {
       const isCurrentPage = this.isCurrentPage(state, className)

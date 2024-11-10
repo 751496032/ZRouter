@@ -217,9 +217,7 @@ export class ZRouter {
     return ZRouter.getRouterMgr().currentStackName
   }
 
-  public static addGlobalLifecycleObserver<T extends ILifecycleObserver>(observer: T) {
 
-  }
 
 
   // region 废弃方法

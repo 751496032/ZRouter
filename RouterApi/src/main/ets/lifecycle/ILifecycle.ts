@@ -6,9 +6,10 @@
 
 import { RouterInfo } from "../model/RouterInfo"
 
-export interface ILifeCycle {}
+export interface ILifecycle {}
 
-export interface IPageLifeCycle extends ILifeCycle {
+export interface IPageLifeCycle extends ILifecycle {
+  pageClasName?: string
 
   aboutToAppear?(): void
 
@@ -32,7 +33,7 @@ export interface IPageLifeCycle extends ILifeCycle {
 
 }
 
-export interface INavLifeCycle extends ILifeCycle {
+export interface INavLifeCycle extends ILifecycle {
   /**
    * 当该NavDestination页面显示时触发此回调
    */
