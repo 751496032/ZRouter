@@ -4,9 +4,11 @@
  * @desc:
  */
 import { DEFAULT_STACK_NAME, ObjectOrNull, OnPopResultCallback } from './Model';
+import { NavAnimationOptions } from './AnimationOptions';
 
 export interface  INavOptions<T> {
   animated: boolean;
+  animationOptions?: NavAnimationOptions;
   lunchMode: LaunchMode;
   params?: ObjectOrNull;
   navStackName:string;

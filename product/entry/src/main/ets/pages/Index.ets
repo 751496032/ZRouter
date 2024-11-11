@@ -104,6 +104,9 @@ struct Index {
         Button("自定义URL跳转").onClick((event: ClickEvent) => {
           ZRouter.getInstance().navigation(RouterConstants.URL_TEST_PAGE)
         })
+        Button("自定义动画转场").onClick((event: ClickEvent) => {
+          router.pushUrl({ url: "pages/anim/AnimTransitionDemo" })
+        })
 
 
         Button('退出登录').onClick((event: ClickEvent) => {

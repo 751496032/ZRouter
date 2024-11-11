@@ -4,6 +4,9 @@
  * @desc:
  */
 import { RouterMgr } from '../api/RouterMgr';
+import { NavAnimationOptions } from './AnimationOptions';
+import { AnimationOptionsBuilder as AnimationBuilder } from './AnimationOptionsBuilder';
+import { CustomTransition } from './AnimationUtils';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 
@@ -27,6 +30,34 @@ export class NavBuilder<T> {
   public setAnimate(animated: boolean): NavBuilder<T> {
     this.optionsImpl.animated = animated;
     return this;
+  }
+
+  public setAnimationOptions(options: NavAnimationOptions): NavBuilder<T> {
+    this.optionsImpl.animationOptions = options;
+    return this;
+  }
+
+  public getAnimCustomNavContentTransition() {
+    return AnimationBuilder.customNavContentTransition
+  }
+
+  /* 注册某个页面的动画回调
+   * name: 注册页面的唯一id
+   * startCallback：用来设置动画开始时页面的状态
+   * endCallback：用来设置动画结束时页面的状态
+   * onFinish：用来执行动画结束后页面的其他操作
+   * interactiveCallback: 注册的可交互转场的动效
+   * timeout：转场结束的超时时间
+   */
+  public registerNavParam(
+    name: string,
+    startCallback?: (operation: boolean, isExit: boolean) => void,
+    endCallback?: (operation: boolean, isExit: boolean) => void,
+    onFinish?: (operation: boolean, isExit: boolean) => void,
+    interactiveCallback?: (operation: NavigationOperation) => void,
+    timeout?: number): void {
+    CustomTransition.getInstance()
+      .registerNavParam(name, startCallback, endCallback, onFinish, interactiveCallback, timeout)
   }
 
   public setLunchMode(mode: LaunchMode): NavBuilder<T> {
