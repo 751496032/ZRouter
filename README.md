@@ -38,7 +38,7 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.7"
+    "router-register-plugin":"1.1.1"
   },
 ```
 
