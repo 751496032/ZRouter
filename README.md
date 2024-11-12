@@ -548,6 +548,9 @@ ZRouter的组件生命周期管理能力，主要有两个特点：
 ```
 把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
 
+## 在ArkUI-X项目上的使用
+
+router-register插件在ArkUI-X项目的配置有所不同，需要使用者自己手动修改下hvigorfile.ts文件，详细见[ArkuiX-ZRouter](https://gitee.com/common-apps/ArkuiX-ZRouter)，或者[issues IB35F5](https://gitee.com/common-apps/ZRouter/issues/IB35F5)
 
 
 ## 混淆
