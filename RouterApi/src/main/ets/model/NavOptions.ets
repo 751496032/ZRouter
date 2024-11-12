@@ -4,7 +4,7 @@
  * @desc:
  */
 import { DEFAULT_STACK_NAME, ObjectOrNull, OnPopResultCallback } from './Model';
-import { NavAnimationOptions } from './AnimationOptions';
+import { NavAnimationOptions } from '../animation/NavAnimationOptions';
 
 export interface  INavOptions<T> {
   animated: boolean;
