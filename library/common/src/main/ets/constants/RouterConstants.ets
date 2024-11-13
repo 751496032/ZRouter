@@ -14,4 +14,5 @@ export class RouterConstants {
   public static readonly LIFECYCLE2_VIEW = 'Lifecycle2_View'
   public static readonly LIFECYCLE3_VIEW = 'Lifecycle3_View'
   public static readonly LIFECYCLE4_VIEW = 'Lifecycle4_View'
+  public static readonly CUSTOM_COMPONENT_VIEW = 'Custom_Component_View'
 }
