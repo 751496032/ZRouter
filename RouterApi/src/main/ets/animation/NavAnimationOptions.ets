@@ -1,3 +1,5 @@
+import { NavAnimationBuilder } from "./NavAnimationMgr";
+
 /**
  * @author: HHBin
  * @date: 2024-11-01
@@ -15,15 +17,15 @@ export class NavAnimationOptions {
   /**
    * 用来设置动画开始时页面的状态
    */
-  startCallback?: (options: TranslateOptions, operation: boolean, isExit: boolean) => void;
+  startCallback?: (options: NavAnimationBuilder, operation: boolean, isExit: boolean) => void;
   /**
    * 用来设置动画结束时页面的状态
    */
-  endCallback?: (options: TranslateOptions, operation: boolean, isExit: boolean) => void;
+  endCallback?: (options: NavAnimationBuilder, operation: boolean, isExit: boolean) => void;
   /**
    * 用来执行动画结束后页面的其他操作
    */
-  onFinish?: (options: TranslateOptions, operation: boolean, isExit: boolean) => void;
+  onFinish?: (options: NavAnimationBuilder, operation: boolean, isExit: boolean) => void;
   /**
    * 更新坐标
    */
@@ -31,5 +33,5 @@ export class NavAnimationOptions {
   /**
    * 注册的可交互转场的动效
    */
-  interactiveCallback?: (options: TranslateOptions, operation: NavigationOperation) => void;
+  interactiveCallback?: (options: NavAnimationBuilder, operation: NavigationOperation) => void;
 }

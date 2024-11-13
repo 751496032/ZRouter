@@ -4,17 +4,22 @@
  * @desc:
  */
 // CustomNavigationUtils.ets
-import { NavAnimationOptions } from "./NavAnimationOptions";
+import { NavAnimationOptions } from './NavAnimationOptions';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
-  translateOptions: TranslateOptions
-  finish: ((options: TranslateOptions, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  start: ((options: TranslateOptions, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  onFinish: ((options: TranslateOptions, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  interactive: ((options: TranslateOptions, operation: NavigationOperation) => void | undefined) | undefined;
+  finish: ((options: NavAnimationBuilder, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
+  start: ((options: NavAnimationBuilder, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
+  onFinish: ((options: NavAnimationBuilder, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
+  interactive: ((options: NavAnimationBuilder, operation: NavigationOperation) => void | undefined) | undefined;
   update: ((options: TranslateOptions) => void | undefined) | undefined
   timeout: (number | undefined) | undefined;
+}
+
+export interface NavAnimationLocation {
+  x?: number | string;
+  y?: number | string;
+  z?: number | string;
 }
 
 const customTransitionMap: Map<string, AnimateCallback> = new Map();
@@ -23,8 +28,9 @@ export class NavAnimationBuilder {
   static delegate = new NavAnimationBuilder();
   interactive: boolean = false;
   proxy: NavigationTransitionProxy | undefined = undefined;
-  private animationId: number = 0;
   operation: NavigationOperation = NavigationOperation.PUSH
+  loc: NavAnimationLocation = {}
+  callback: AnimateCallback | undefined
 
   static getInstance() {
     return NavAnimationBuilder.delegate;
@@ -52,7 +58,6 @@ export class NavAnimationBuilder {
         }
       }
       let params: AnimateCallback = {
-        translateOptions: {},
         timeout: options.timeout,
         start: options.startCallback,
         finish: options.endCallback,
@@ -69,13 +74,26 @@ export class NavAnimationBuilder {
   }
 
   fireInteractiveAnimation(id: string, callback: AnimateCallback, operation: NavigationOperation) {
+    this.callback = callback
     let animation = customTransitionMap.get(id)?.interactive;
     if (!animation) {
       return;
     }
-    animation(callback.translateOptions, operation);
-    if (callback.update) {
-      callback.update(callback.translateOptions)
+    animation(this, operation);
+  }
+
+  public updateLocation(loc: NavAnimationLocation) {
+    if (loc.x) {
+      this.loc.x = loc.x
+    }
+    if (loc.y) {
+      this.loc.y = loc.y
+    }
+    if (loc.z) {
+      this.loc.z = loc.z
+    }
+    if (this.callback?.update) {
+      this.callback.update({ x: loc.x, y: loc.y, z: loc.z })
     }
   }
 
@@ -99,11 +117,11 @@ export class NavAnimationBuilder {
     }
     let fromParam = customTransitionMap.get(this.proxy.from.navDestinationId);
     if (fromParam?.onFinish) {
-      fromParam.onFinish(fromParam.translateOptions, false, false);
+      fromParam.onFinish(this, false, false);
     }
     let toParam = customTransitionMap.get(this.proxy?.to.navDestinationId);
     if (toParam?.onFinish) {
-      toParam.onFinish(toParam.translateOptions, true, true,);
+      toParam.onFinish(this, true, true,);
     }
   }
 
@@ -133,7 +151,6 @@ export class NavAnimationBuilder {
 
   getAnimateParam(name: string): AnimateCallback {
     let result: AnimateCallback = {
-      translateOptions: customTransitionMap.get(name)?.translateOptions ?? {},
       start: customTransitionMap.get(name)?.start,
       finish: customTransitionMap.get(name)?.finish,
       update: customTransitionMap.get(name)?.update,
@@ -149,29 +166,34 @@ export class NavAnimationBuilder {
       return undefined;
     }
 
-    NavAnimationBuilder.getInstance().operation = operation;
-    if (NavAnimationBuilder.getInstance().interactive) {
+    const builder = NavAnimationBuilder.getInstance()
+
+    builder.operation = operation;
+    if (builder.interactive) {
       let customAnimation: NavigationAnimatedTransition = {
         onTransitionEnd: (isSuccess: boolean) => {
           console.log("===== current transition is " + isSuccess);
-          NavAnimationBuilder.getInstance().recoverState();
-          NavAnimationBuilder.getInstance().proxy = undefined;
+          builder.recoverState();
+          builder.proxy = undefined;
         },
         transition: (transitionProxy: NavigationTransitionProxy) => {
-          NavAnimationBuilder.getInstance().proxy = transitionProxy;
+          builder.proxy = transitionProxy;
           let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
             (to.navDestinationId) : (from.navDestinationId);
 
           if (targetIndex) {
-            let fromParam: AnimateCallback | undefined =
-              from.navDestinationId ? NavAnimationBuilder.getInstance().getAnimateParam(targetIndex) : undefined;
-            if (fromParam) {
-              NavAnimationBuilder.getInstance()
-                .fireInteractiveAnimation(targetIndex, fromParam, operation);
+            builder.proxy = transitionProxy;
+            let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
+              (to.navDestinationId) : (from.navDestinationId);
+            if (targetIndex) {
+              const callback = builder.getAnimateParam(targetIndex)
+              if (callback) {
+                builder.fireInteractiveAnimation(targetIndex, callback, operation);
+              }
             }
           }
         },
-        isInteractive: NavAnimationBuilder.getInstance().interactive
+        isInteractive: builder.interactive
       }
       return customAnimation;
     }
@@ -184,15 +206,13 @@ export class NavAnimationBuilder {
       transition: (transitionProxy: NavigationTransitionProxy) => {
         // 从封装类CustomTransition中根据子页面的序列获取对应的转场动画回调
         let fromParam: AnimateCallback | undefined =
-          from.navDestinationId ? NavAnimationBuilder.getInstance().getAnimateParam(from.navDestinationId) : undefined;
+          from.navDestinationId ? builder.getAnimateParam(from.navDestinationId) : undefined;
         let toParam: AnimateCallback | undefined =
-          to.navDestinationId ? NavAnimationBuilder.getInstance().getAnimateParam(to.navDestinationId) : undefined;
+          to.navDestinationId ? builder.getAnimateParam(to.navDestinationId) : undefined;
         if (operation == NavigationOperation.PUSH) {
           if (toParam?.start) {
-            toParam.start(toParam.translateOptions, true, false);
-          }
-          if (toParam?.update) {
-            toParam.update(toParam.translateOptions);
+            builder.callback = toParam
+            toParam.start(builder, true, false);
           }
           animateTo({
             duration: 500, onFinish: () => {
@@ -200,18 +220,14 @@ export class NavAnimationBuilder {
             }
           }, () => {
             if (toParam?.finish) {
-              toParam.finish(toParam.translateOptions, true, false);
-            }
-            if (toParam?.update) {
-              toParam.update(toParam.translateOptions);
+              builder.callback = toParam
+              toParam.finish(builder, true, false);
             }
           })
         } else {
           if (fromParam?.start) {
-            fromParam.start(fromParam.translateOptions, false, true);
-          }
-          if (fromParam?.update) {
-            fromParam.update(fromParam.translateOptions);
+            builder.callback = fromParam
+            fromParam.start(builder, false, true);
           }
           animateTo({
             duration: 500, onFinish: () => {
@@ -219,10 +235,8 @@ export class NavAnimationBuilder {
             }
           }, () => {
             if (fromParam?.finish) {
-              fromParam.finish(fromParam.translateOptions, false, true);
-            }
-            if (fromParam?.update) {
-              fromParam.update(fromParam.translateOptions);
+              builder.callback = fromParam
+              fromParam.finish(builder, false, true);
             }
           })
         }

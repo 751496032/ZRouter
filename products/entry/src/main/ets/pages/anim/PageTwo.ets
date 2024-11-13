@@ -4,6 +4,7 @@
  * @desc:
  */
 import { Route, ZRouter } from 'routerapi';
+import { NavAnimationBuilder as NavAnimationMgr } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
 
 @Builder
 export function PageTwoBuilder(name: string, param: Object) {
@@ -25,43 +26,43 @@ export struct PageTwo {
       update: (o: TranslateOptions) => {
         this.translateOptions = o
       },
-      startCallback: (o: TranslateOptions, isPush: boolean, isExit: boolean) => {
+      startCallback: (mgr: NavAnimationMgr, isPush: boolean, isExit: boolean) => {
         if (isPush) {
-          o.x = '100%'
+          mgr.updateLocation({ x: '100%' })
         } else {
-          o.x = '0';
+          mgr.updateLocation({ x: '0' })
         }
       },
-      endCallback: (o: TranslateOptions, isPush: boolean, isExit: boolean) => {
+      endCallback: (mgr: NavAnimationMgr, isPush: boolean, isExit: boolean) => {
         if (isPush) {
-          o.x = '0';
+          mgr.updateLocation({ x: '0' })
         } else {
-          o.x = '100%'
+          mgr.updateLocation({ x: '100%' })
         }
       },
-      onFinish: (o: TranslateOptions, isPush: boolean, isExit: boolean) => {
-        o.x = '0';
+      onFinish: (mgr: NavAnimationMgr, isPush: boolean, isExit: boolean) => {
+        mgr.updateLocation({ x: '0' })
       },
-      interactiveCallback: (o: TranslateOptions, operation: NavigationOperation) => {
+      interactiveCallback: (mgr: NavAnimationMgr, operation: NavigationOperation) => {
         if (operation == NavigationOperation.PUSH) {
-          o.x = '100%';
+          mgr.updateLocation({ x: '100%' })
           animateTo({
             duration: 1000,
             onFinish: () => {
-              o.x = '0';
+              mgr.updateLocation({ x: '0' })
             }
           }, () => {
-            o.x = '0';
+            mgr.updateLocation({ x: '0' })
           })
         } else {
-          o.x = '0';
+          mgr.updateLocation({ x: '0' })
           animateTo({
             duration: 1000,
             onFinish: () => {
-              o.x = '0';
+              mgr.updateLocation({ x: '0' })
             }
           }, () => {
-            o.x = '100%';
+            mgr.updateLocation({ x: '100%' })
           })
         }
       }

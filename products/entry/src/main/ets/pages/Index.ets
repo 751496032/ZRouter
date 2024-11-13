@@ -92,6 +92,9 @@ struct Index {
           ZRouter.getInstance().navigation(RouterConstants.LIFECYCLE_CASE_VIEW)
         })
 
+        Button("转场动画").onClick((event: ClickEvent) => {
+          router.pushUrl({ url: RouterConst.ANIM_TRANSITION })
+        })
 
         Button('退出登录').onClick((event: ClickEvent) => {
           AppStorage.set<boolean>("isLogin", false)

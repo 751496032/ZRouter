@@ -6,7 +6,7 @@
 import { RouterMgr } from '../api/RouterMgr';
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
 import { NavAnimationOptions } from '../animation/NavAnimationOptions';
-import { NavAnimationBuilder } from '../animation/NavAnimationBuilder';
+import { NavAnimationBuilder } from '../animation/NavAnimationMgr';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 

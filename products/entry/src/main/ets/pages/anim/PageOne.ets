@@ -4,9 +4,7 @@
  * @desc:
  */
 import { Route, ZRouter } from 'routerapi';
-import { NavAnimationBuilder } from 'routerapi/src/main/ets/animation/NavAnimationBuilder';
-
-// import { NAV_STACK_NAME } from './AnimTransitionDemo';
+import { NavAnimationBuilder } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
 
 @Builder
 export function PageOneBuilder(name: string, param: Object) {
@@ -25,56 +23,51 @@ export struct PageOne {
     ZRouter.getInstance().setAnimationOptions({
       name: this.pageId,
       timeout: 200,
-      update: (o: TranslateOptions) => {
-        this.translateOptions = o
+      update: (mgr: TranslateOptions) => {
+        this.translateOptions = mgr
       },
-      startCallback: (o: TranslateOptions, isPush: boolean, isExit: boolean,) => {
+      startCallback: (mgr: NavAnimationBuilder, isPush: boolean, isExit: boolean,) => {
         if (isPush) {
-          o.y = '100%';
+          mgr.updateLocation({y: '100%'})
         } else {
-          o.y = '0';
+          mgr.updateLocation({y: '0'})
         }
       },
-      endCallback: (o: TranslateOptions, isPush: boolean, isExit: boolean) => {
+      endCallback: (mgr: NavAnimationBuilder, isPush: boolean, isExit: boolean) => {
         if (isPush) {
-          o.y = '0';
+          mgr.updateLocation({y: '0'})
         } else {
-          o.y = '100%';
+          mgr.updateLocation({y: '100%'})
         }
       },
-      onFinish: (o: TranslateOptions, isPush: boolean, isExit: boolean) => {
-        o.y = '0';
+      onFinish: (mgr: NavAnimationBuilder, isPush: boolean, isExit: boolean) => {
+        mgr.updateLocation({y: '0'})
       },
-      interactiveCallback: (o: TranslateOptions, operation: NavigationOperation) => {
+      interactiveCallback: (mgr: NavAnimationBuilder, operation: NavigationOperation) => {
         if (operation == NavigationOperation.PUSH) {
-          o.y = '100%';
+          mgr.updateLocation({y: '100%'})
           animateTo({
             duration: 1000,
             onFinish: () => {
-              o.y = '0';
+              mgr.updateLocation({y: '0'})
             }
           }, () => {
-            o.y = '0';
+            mgr.updateLocation({y: '0'})
           })
         } else {
-          o.y = '0';
+          mgr.updateLocation({y: '0'})
           animateTo({
             duration: 1000,
             onFinish: () => {
-              o.y = '0';
+              mgr.updateLocation({y: '0'})
             }
           }, () => {
-            o.y = '100%';
+            mgr.updateLocation({y: '100%'})
           })
         }
       }
     })
   }
-
-  // pageTransition() {
-  //   PageTransitionEnter({ duration: 500, curve: Curve.Linear }).slide(SlideEffect.Bottom)
-  //   PageTransitionExit({ duration: 500, curve: Curve.Ease }).slide(SlideEffect.Bottom)
-  // }
 
   build() {
     NavDestination() {

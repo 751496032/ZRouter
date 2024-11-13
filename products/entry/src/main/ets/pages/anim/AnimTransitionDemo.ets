@@ -3,26 +3,12 @@
  * @date: 2024-11-5
  * @desc:
  */
-import { Route, ZRouter } from 'routerapi'
-import { AnimateCallback, NavAnimationBuilder } from 'routerapi/src/main/ets/animation/NavAnimationBuilder'
-
-// export const NAV_STACK_NAME = "newNavStackAnim"
+import { ZRouter } from 'routerapi'
 
 @Entry
 @Component
 export struct AnimTransitionDemo {
-  // @Provide stack: NavPathStack = new NavPathStack()
   @State msg: string = "自定义动画转场"
-
-  aboutToAppear(): void {
-    // 在合适的时机注册导航栈
-    // let s = ZRouter.getNavStackByName(NAV_STACK_NAME)
-    // ZRouter.registerNavStack(NAV_STACK_NAME, this.stack)
-  }
-
-  aboutToDisappear(): void {
-    // ZRouter.unregisterNavStack(NAV_STACK_NAME)
-  }
 
   build() {
     Navigation(ZRouter.getNavStack()) {

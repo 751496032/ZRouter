@@ -1,6 +1,7 @@
 {
   "src": [
     "pages/Index",
-    "pages/nav/NavPage"
+    "pages/nav/NavPage",
+    "pages/anim/AnimTransitionDemo"
   ]
 }
