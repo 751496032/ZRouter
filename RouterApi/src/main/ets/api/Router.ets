@@ -19,6 +19,8 @@ import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInte
 import { ServiceMgr } from '../service/ServiceMgr'
 import { IProvider } from '../service/IProvider'
 import { ConfigInitializer } from '../model/ConfigInitializer'
+import Logger from '../utlis/Logger'
+import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -32,6 +34,7 @@ export class ZRouter {
     const config = new ConfigInitializer()
     invoke?.(config)
     LogUtil.config = { isShowLog: config.isLoggingEnabled }
+    Logger.isShowLog = config.isLoggingEnabled
     ZRouter.setup(config.isHSPModuleDependent)
   }
 
@@ -43,12 +46,14 @@ export class ZRouter {
    */
   public static init(isDependHspModule: boolean = false, config: InitConfig = { isShowLog: true }) {
     LogUtil.config = config
+    Logger.isShowLog = config.isShowLog
     ZRouter.setup(isDependHspModule)
   }
 
   private static setup(isHSPModuleDependent: boolean) {
     ZRouter.routerMgr = RouterMgr.getInstance()
     if (isHSPModuleDependent) {
+      LogUtil.log("isHSPModuleDependent ")
       AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
     }
   }
@@ -59,7 +64,7 @@ export class ZRouter {
       if (!ObjectUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
-         ZRouter.init(true)
+         // ZRouter.init(true)
       }
     }
     if (!ZRouter.routerMgr) {
@@ -213,6 +218,8 @@ export class ZRouter {
   }
 
 
+
+
   // region 废弃方法
 
   /**
@@ -237,38 +244,6 @@ export class ZRouter {
    */
   public static redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
     ZRouter.getRouterMgr().redirectForResult(name, param, callback)
-  }
-
-
-
-
-
-  /**
-   * @deprecated
-   * @see {setGlobalInterceptor}
-   * @param callback
-   */
-  public static addGlobalInterceptor(callback: (info: InterceptorInfo) => void) {
-    ZRouter.getRouterMgr().addGlobalInterceptor(callback)
-  }
-
-
-  /**
-   * @deprecated
-   * @see {setInterceptor}
-   * @param key
-   * @param callback
-   */
-  public static addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
-    ZRouter.getRouterMgr().addInterceptor(key, callback)
-  }
-
-  /**
-   * @deprecated
-   * @param key
-   */
-  public static removeInterceptor(key: string) {
-    ZRouter.getRouterMgr().removeInterceptor(key)
   }
 
 

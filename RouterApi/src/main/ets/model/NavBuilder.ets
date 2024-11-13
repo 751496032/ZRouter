@@ -4,6 +4,7 @@
  * @desc:
  */
 import { RouterMgr } from '../api/RouterMgr';
+import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
 import { NavAnimationOptions } from '../animation/NavAnimationOptions';
 import { NavAnimationBuilder } from '../animation/NavAnimationBuilder';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
@@ -180,6 +181,10 @@ export class NavBuilder<T> {
   public moveToTop(name: string) {
     this.updateCurrentStackName()
     this.routerMgr.moveToTop(name)
+  }
+
+  public addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL) {
+    this.routerMgr.lifecycleMgr.addGlobalObserver(observer)
   }
 
 }

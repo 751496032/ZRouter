@@ -1,8 +1,0 @@
-{
-  "src": [
-    "pages/other/Root",
-    "pages/Index",
-    "pages/other/Index2",
-    "pages/anim/AnimTransitionDemo"
-  ]
-}

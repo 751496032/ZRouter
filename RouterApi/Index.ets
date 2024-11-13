@@ -4,3 +4,8 @@ export { PopResult,RouteMetadata , InterceptorInfoOrNull, InterceptorInfo } from
 export * from './src/main/ets/interceptions/IInterceptor'
 export { IProvider } from './src/main/ets/service/IProvider'
 export { Service } from './src/main/ets/annotation/Service'
+export { Lifecycle } from './src/main/ets/annotation/Lifecycle'
+export { LifecycleRegistry } from './src/main/ets/lifecycle/LifecycleRegistry'
+export { ILifecycleObserver } from './src/main/ets/lifecycle/ILifecycleObserver'
+export { LifecycleEvent } from './src/main/ets/lifecycle/LifecycleEvent'
+export { RouterInfo } from './src/main/ets/model/RouterInfo'

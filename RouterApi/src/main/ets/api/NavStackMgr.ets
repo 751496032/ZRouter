@@ -38,7 +38,12 @@ export default class NavStackMgr {
       }
     })
     if (!has) {
-      throw new Error(`stack name does not exist: 【 ${name} 】`)
+      if (ObjectUtil.isEmpty(name)) {
+        throw new Error(`Initialize NavPathStack: 【 Navigation(ZRouter.getNavStack()){ } 】`)
+      }else {
+        throw new Error(`stack name does not exist: 【 ${name} 】，please call  method  register: 【 registerNavStack 】`)
+      }
+
     } else {
       this._currentStackName = name
     }

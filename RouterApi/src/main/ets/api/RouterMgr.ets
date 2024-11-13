@@ -24,26 +24,56 @@ import NavStackMgr from './NavStackMgr'
 import { NavBuilder } from '../model/NavBuilder'
 import { ErrorCode } from '../model/Const'
 import { ServiceMgr } from '../service/ServiceMgr';
+import { LifecycleMgr } from '../lifecycle/LifecycleMgr';
+import { RouterInfo } from '../model/RouterInfo';
+import { LifecycleEvent } from '../lifecycle/LifecycleEvent';
 
 
 export class RouterMgr {
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStackMgr = NavStackMgr.getInstance()
   private serviceMgr = ServiceMgr.instance
+  private _lifecycleMgr = LifecycleMgr.getInstance()
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
       const name = info.name.toString()
+      if (ObjectUtil.isEmpty(name)) {
+        return
+      }
+      const routerInfo = RouterInfo.create(name, info.navigationId.toString(), info.param, info.navDestinationId)
+      // const className = this._lifecycleEventMgr.getTopClassName()
       switch (info.state) {
-        case uiObserver.NavDestinationState.ON_WILL_DISAPPEAR:
-          LogUtil.log(name, 'onWillDisappear')
+        case uiObserver.NavDestinationState.ON_SHOWN:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_SHOWN, routerInfo)
+          break
+        case uiObserver.NavDestinationState.ON_HIDDEN:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_HIDDEN, routerInfo)
+          break
+        case uiObserver.NavDestinationState.ON_APPEAR:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
           const indexList = this.getNavStack().getIndexByName(name)
-          LogUtil.log(name, 'onDisappear: ' + indexList.length)
           if (indexList.length == 0) {
             this.unregisterEvent(name)
           }
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_DISAPPEAR, routerInfo)
+          break
+        case uiObserver.NavDestinationState.ON_WILL_SHOW:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_WILL_SHOW, routerInfo)
+          break
+        case uiObserver.NavDestinationState.ON_WILL_HIDE:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_WILL_HIDE, routerInfo)
+          break
+        case uiObserver.NavDestinationState.ON_WILL_APPEAR:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_WILL_APPEAR, routerInfo)
+          break
+        case uiObserver.NavDestinationState.ON_WILL_DISAPPEAR:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_WILL_DISAPPEAR, routerInfo)
+          break
+        case uiObserver.NavDestinationState.ON_BACKPRESS:
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_BACKPRESS, routerInfo)
           break
 
       }
@@ -62,6 +92,10 @@ export class RouterMgr {
 
   public getServiceMgr(): ServiceMgr {
     return this.serviceMgr
+  }
+
+  public get lifecycleMgr(): LifecycleMgr {
+    return this._lifecycleMgr
   }
 
   public setCurrentStackName(name: string) {
@@ -249,6 +283,10 @@ export class RouterMgr {
    * @param animated
    */
   public popWithResult(result?: Object, animated: boolean = true) {
+    // 路由栈处理结果不支持Boolean类型，转成字符串携带
+    if (typeof result == "boolean") {
+      result = result + ""
+    }
     this.getNavStack().pop(result, animated)
   }
 
@@ -471,29 +509,6 @@ export class RouterMgr {
         callback(context)
       }
     } as IGlobalNavigateInterceptor)
-  }
-
-
-  /**
-   * @deprecated
-   * @param key
-   * @param callback
-   */
-  public addInterceptor(key: string, callback: (info: InterceptorInfo) => void) {
-    // const state = this.getCurrentState()
-    // state.interceptions.set(key, callback)
-  }
-
-
-  /**
-   * @deprecated
-   * @param key
-   */
-  public removeInterceptor(key: string) {
-    // const state = this.getCurrentState()
-    // if (!key && key.trim().length > 0) {
-    //   state.interceptions.delete(key)
-    // }
   }
 
 

@@ -5,14 +5,14 @@
 ZRouter是一款轻量级的动态路由框架，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦和通信问题，从而实现业务复用和功能扩展。主要特性：
 
 - 对Navigation简化使用，封装一系列简单易用的API，支持链式调用，无需再关注路由表的配置，对Navigation组件保持着零侵入零耦合；
+- 注解参数支持使用静态常量，可跨模块定义；
 - 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
-- 支持自定义URL路径跳转，可以通过拦截URL路径来跳转原生不同页面；
-- 支持第三方Navigation的系统路由表使用本库API；
-- 支持跨多级页面参数的回传监听；
+- 支持服务路由，可在相互独立的Har/Hsp模块间通信；
+- 支持组件的生命周期管理，以及跨多级页面参数回传接收；
+- 支持自定义URL路径跳转，可通过拦截URL路径来跳转原生不同页面；
+- 支持第三方Navigation的使用本库API；
 - 支持启动模式、混淆、嵌套Navigation；
-- 支持@Route和@Service注解上使用静态常量；
-- 支持服务路由，可用于相互独立的Har/Hsp模块之间的通信；
-- 未来计划：支持生命周期的监听、转场动画。
+- 未来计划：支持转场动画、NavDestination代码模版化选项。
 
 
 > ZRouter侧重于路由跳转与模块解耦，以及组件化通信；对Navigation组件没有任何耦合，不做任何的限制把自主权交给开发者。
@@ -38,7 +38,7 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.7"
+    "router-register-plugin":"1.1.1"
   },
 ```
 
@@ -138,7 +138,8 @@ onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
 ```
 
 
-2、在Index页面使用Navigation作为根视图，通过ZRouter的getNavStack()方法获取NavPathStack实例。
+2、在Index页面**使用Navigation作为根视图，通过ZRouter的getNavStack()方法获取NavPathStack实例，将其传入到Navigation的构造函数中。**
+
 
 > 如果在Index入口文件中启动Splash页面，建议放在Navigation的onAppear方法中进行启动，或者组件的onPageShow方法，具体可参考demo
 
@@ -202,26 +203,6 @@ export struct Page1 {
       Column({space:12}){
         Button('toHarAPage1').onClick((event: ClickEvent) => {
           ZRouter.push("harAPage1")
-        })
-
-        Button('toHarAPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harAPage2")
-        })
-
-        Button('toHarBPage1').onClick((event: ClickEvent) => {
-          ZRouter.push("harBPage1")
-        })
-
-        Button('toHarBPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harBPage2")
-        })
-
-        Button('toHspCPage1').onClick((event: ClickEvent) => {
-          ZRouter.push("hspCPage1")
-        })
-
-        Button('toHspCPage2').onClick((event: ClickEvent) => {
-          ZRouter.push("harCPage2")
         })
       }
 
@@ -497,6 +478,35 @@ export class UrlInterceptor implements IInterceptor {
 }
 ```
 
+## 注解上使用静态常量
+
+router-register-plugin插件1.0.7版本起，@Route与@Service注解的name属性可使用静态常量，方便统一管理路由名称；静态常量支持当前模块或跨模块定义，常量的定义模版如下：
+
+```typescript
+export class RouterConstants {
+  public static readonly URL_TEST_PAGE: string = "url_test";
+  public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
+}
+```
+> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
+
+
+## 服务路由-模块间通信
+
+服务路由主要用于实现模块之间的通信，模块间是相互独立且不直接依赖于彼此。
+
+> 1.0.9版本开始支持，具体使用可见[这篇文档](https://gitee.com/common-apps/ZRouter/wikis/%E6%9C%8D%E5%8A%A1%E8%B7%AF%E7%94%B1%E2%80%94%E6%A8%A1%E5%9D%97%E9%97%B4%E9%80%9A%E4%BF%A1) 或者参考demo
+
+
+## 生命周期管理能力
+
+ZRouter的组件生命周期管理能力，主要有两个特点：
+
+- 不影响你原有的生命周期业务逻辑，对NavDestination页面保持着零侵入性，整合了组件通用生命周期函数和NavDestination生命周期函数
+- 可以让任何一个类具备有与组件的生命周期能力；
+
+详细见[wiki](https://gitee.com/common-apps/ZRouter/wikis/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86%E8%83%BD%E5%8A%9B)
+
 ## 第三方Navigation实例使用本库的API
 
 如果第三方Navigation实例使用本库的API，需要将第三方Navigation的NavPathStack实例注册到ZRouter中，代码示例：
@@ -538,24 +548,10 @@ export class UrlInterceptor implements IInterceptor {
 ```
 把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
 
-## @Route等注解上使用常量
+## 在ArkUI-X项目上的使用
 
-router-register-plugin插件1.0.7版本起，@Route装饰器上的name属性支持使用静态常量，方便统一管理路由名称；静态常量支持当前模块或跨模块定义，常量的定义模版如下：
+router-register插件在ArkUI-X项目的配置有所不同，需要使用者自己手动修改下hvigorfile.ts文件，详细见[ArkuiX-ZRouter](https://gitee.com/common-apps/ArkuiX-ZRouter)，或者[issues IB35F5](https://gitee.com/common-apps/ZRouter/issues/IB35F5)
 
-```typescript
-export class RouterConstants {
-  public static readonly URL_TEST_PAGE: string = "url_test";
-  public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
-}
-```
-> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
-
-
-## 服务路由-模块间通信
-
-服务路由主要用于实现模块之间的通信，模块间是相互独立且不直接依赖于彼此。
-
-> 1.0.9版本开始支持，具体使用可见[这篇文档](https://gitee.com/common-apps/ZRouter/wikis/%E6%9C%8D%E5%8A%A1%E8%B7%AF%E7%94%B1%E2%80%94%E6%A8%A1%E5%9D%97%E9%97%B4%E9%80%9A%E4%BF%A1) 或者参考demo
 
 ## 混淆
 
