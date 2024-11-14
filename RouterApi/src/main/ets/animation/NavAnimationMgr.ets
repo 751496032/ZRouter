@@ -4,15 +4,18 @@
  * @desc:
  */
 // CustomNavigationUtils.ets
-import { NavAnimationOptions } from './NavAnimationOptions';
+import { INavAnimationOptions } from './callback/INavAnimationOptions';
+import { NavDestinationModifier } from '@kit.ArkUI';
+import { NavAnimationModifier } from './modifier/NavAnimationModifier';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
-  finish: ((options: NavAnimationBuilder, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  start: ((options: NavAnimationBuilder, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  onFinish: ((options: NavAnimationBuilder, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  interactive: ((options: NavAnimationBuilder, operation: NavigationOperation) => void | undefined) | undefined;
-  update: ((options: TranslateOptions) => void | undefined) | undefined
+  modifier: NavDestinationModifier | undefined
+  finish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
+  start: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
+  onFinish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
+  interactive: ((options: AnimateCallback, operation: NavigationOperation) => void | undefined) | undefined;
+  update: ((options: NavDestinationModifier) => void | undefined) | undefined
   timeout: (number | undefined) | undefined;
 }
 
@@ -24,16 +27,17 @@ export interface NavAnimationLocation {
 
 const customTransitionMap: Map<string, AnimateCallback> = new Map();
 
-export class NavAnimationBuilder {
-  static delegate = new NavAnimationBuilder();
-  interactive: boolean = false;
+export class NavAnimationMgr {
+  static delegate = new NavAnimationMgr();
+  interactive: boolean = true;
   proxy: NavigationTransitionProxy | undefined = undefined;
   operation: NavigationOperation = NavigationOperation.PUSH
   loc: NavAnimationLocation = {}
   callback: AnimateCallback | undefined
+  private navContextMap: Map<object, NavDestinationContext> = new Map();
 
   static getInstance() {
-    return NavAnimationBuilder.delegate;
+    return NavAnimationMgr.delegate;
   }
 
   /* 注册某个页面的动画回调
@@ -44,33 +48,47 @@ export class NavAnimationBuilder {
    * interactiveCallback: 注册的可交互转场的动效
    * timeout：转场结束的超时时间
    */
-  public setAnimationOptions(options: NavAnimationOptions): void {
-    if (options.name) {
-      if (customTransitionMap.has(options.name)) {
-        let param = customTransitionMap.get(options.name);
-        if (param != undefined) {
-          param.start = options.startCallback;
-          param.finish = options.endCallback;
-          param.timeout = options.timeout;
-          param.onFinish = options.onFinish;
-          param.interactive = options.interactiveCallback;
-          return;
+  public registerAnim(component: object, ctx: NavDestinationContext, options: INavAnimationOptions): void {
+    if (ctx.navDestinationId && !this.navContextMap.has(component)) {
+      this.navContextMap.set(component, ctx)
+      options.name = ctx.navDestinationId;
+      if (options.name) {
+        if (customTransitionMap.has(options.name)) {
+          let param = customTransitionMap.get(options.name);
+          if (param !== undefined) {
+            param.modifier = options.modifier ?? new NavAnimationModifier(param)
+            param.start = options.startCallback;
+            param.finish = options.endCallback;
+            param.timeout = options.timeout;
+            param.update = options.update;
+            param.onFinish = options.onFinish;
+            param.interactive = options.interactiveCallback;
+            return;
+          }
         }
+        let params: AnimateCallback = {
+          modifier: undefined,
+          timeout: options.timeout,
+          start: options.startCallback,
+          finish: options.endCallback,
+          update: options.update,
+          onFinish: options.onFinish,
+          interactive: options.interactiveCallback
+        };
+        params.modifier = options.modifier ?? new NavAnimationModifier(params)
+        customTransitionMap.set(options.name, params);
       }
-      let params: AnimateCallback = {
-        timeout: options.timeout,
-        start: options.startCallback,
-        finish: options.endCallback,
-        update: options.update,
-        onFinish: options.onFinish,
-        interactive: options.interactiveCallback
-      };
-      customTransitionMap.set(options.name, params);
     }
   }
 
-  unRegisterNavParam(name: string): void {
-    customTransitionMap.delete(name);
+  unregisterAnim(component: object) {
+    if (this.navContextMap.has(component)) {
+      const navId = this.navContextMap.get(component)?.navDestinationId
+      if (navId) {
+        customTransitionMap.delete(navId);
+      }
+      this.navContextMap.delete(component)
+    }
   }
 
   fireInteractiveAnimation(id: string, callback: AnimateCallback, operation: NavigationOperation) {
@@ -79,7 +97,7 @@ export class NavAnimationBuilder {
     if (!animation) {
       return;
     }
-    animation(this, operation);
+    animation(callback, operation);
   }
 
   public updateLocation(loc: NavAnimationLocation) {
@@ -91,9 +109,6 @@ export class NavAnimationBuilder {
     }
     if (loc.z) {
       this.loc.z = loc.z
-    }
-    if (this.callback?.update) {
-      this.callback.update({ x: loc.x, y: loc.y, z: loc.z })
     }
   }
 
@@ -117,11 +132,11 @@ export class NavAnimationBuilder {
     }
     let fromParam = customTransitionMap.get(this.proxy.from.navDestinationId);
     if (fromParam?.onFinish) {
-      fromParam.onFinish(this, false, false);
+      fromParam.onFinish(fromParam, false, false);
     }
     let toParam = customTransitionMap.get(this.proxy?.to.navDestinationId);
     if (toParam?.onFinish) {
-      toParam.onFinish(this, true, true,);
+      toParam.onFinish(toParam, true, true,);
     }
   }
 
@@ -151,6 +166,7 @@ export class NavAnimationBuilder {
 
   getAnimateParam(name: string): AnimateCallback {
     let result: AnimateCallback = {
+      modifier: customTransitionMap.get(name)?.modifier,
       start: customTransitionMap.get(name)?.start,
       finish: customTransitionMap.get(name)?.finish,
       update: customTransitionMap.get(name)?.update,
@@ -166,7 +182,7 @@ export class NavAnimationBuilder {
       return undefined;
     }
 
-    const builder = NavAnimationBuilder.getInstance()
+    const builder = NavAnimationMgr.getInstance()
 
     builder.operation = operation;
     if (builder.interactive) {
@@ -212,7 +228,7 @@ export class NavAnimationBuilder {
         if (operation == NavigationOperation.PUSH) {
           if (toParam?.start) {
             builder.callback = toParam
-            toParam.start(builder, true, false);
+            toParam.start(toParam, true, false);
           }
           animateTo({
             duration: 500, onFinish: () => {
@@ -221,13 +237,13 @@ export class NavAnimationBuilder {
           }, () => {
             if (toParam?.finish) {
               builder.callback = toParam
-              toParam.finish(builder, true, false);
+              toParam.finish(toParam, true, false);
             }
           })
         } else {
           if (fromParam?.start) {
             builder.callback = fromParam
-            fromParam.start(builder, false, true);
+            fromParam.start(fromParam, false, true);
           }
           animateTo({
             duration: 500, onFinish: () => {
@@ -236,7 +252,7 @@ export class NavAnimationBuilder {
           }, () => {
             if (fromParam?.finish) {
               builder.callback = fromParam
-              fromParam.finish(builder, false, true);
+              fromParam.finish(fromParam, false, true);
             }
           })
         }

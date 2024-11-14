@@ -3,8 +3,9 @@
  * @date: 2024-11-01
  * @desc:
  */
-import { Route, ZRouter } from 'routerapi';
-import { NavAnimationBuilder } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
+import { NavAnimationXOptions, Route, ZRouter } from 'routerapi';
+import { NavAnimationMgr } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
+import { NavDestinationModifier } from '@kit.ArkUI';
 
 @Builder
 export function PageOneBuilder(name: string, param: Object) {
@@ -14,68 +15,17 @@ export function PageOneBuilder(name: string, param: Object) {
 @Route({ name: "PageOne" })
 @Component
 export struct PageOne {
-  @State translateOptions: TranslateOptions = {}
-  pageId: string = '';
+  @State modifier: NavDestinationModifier = new NavDestinationModifier()
   rectWidth: number = 0;
   interactive: boolean = false;
-
-  registerCallback() {
-    ZRouter.getInstance().setAnimationOptions({
-      name: this.pageId,
-      timeout: 200,
-      update: (mgr: TranslateOptions) => {
-        this.translateOptions = mgr
-      },
-      startCallback: (mgr: NavAnimationBuilder, isPush: boolean, isExit: boolean,) => {
-        if (isPush) {
-          mgr.updateLocation({y: '100%'})
-        } else {
-          mgr.updateLocation({y: '0'})
-        }
-      },
-      endCallback: (mgr: NavAnimationBuilder, isPush: boolean, isExit: boolean) => {
-        if (isPush) {
-          mgr.updateLocation({y: '0'})
-        } else {
-          mgr.updateLocation({y: '100%'})
-        }
-      },
-      onFinish: (mgr: NavAnimationBuilder, isPush: boolean, isExit: boolean) => {
-        mgr.updateLocation({y: '0'})
-      },
-      interactiveCallback: (mgr: NavAnimationBuilder, operation: NavigationOperation) => {
-        if (operation == NavigationOperation.PUSH) {
-          mgr.updateLocation({y: '100%'})
-          animateTo({
-            duration: 1000,
-            onFinish: () => {
-              mgr.updateLocation({y: '0'})
-            }
-          }, () => {
-            mgr.updateLocation({y: '0'})
-          })
-        } else {
-          mgr.updateLocation({y: '0'})
-          animateTo({
-            duration: 1000,
-            onFinish: () => {
-              mgr.updateLocation({y: '0'})
-            }
-          }, () => {
-            mgr.updateLocation({y: '100%'})
-          })
-        }
-      }
-    })
-  }
 
   build() {
     NavDestination() {
       Column() {
         Button(`setInteractive`)
           .onClick(() => {
-            NavAnimationBuilder.getInstance().interactive = !NavAnimationBuilder.getInstance().interactive;
-            this.interactive = NavAnimationBuilder.getInstance().interactive;
+            NavAnimationMgr.getInstance().interactive = !NavAnimationMgr.getInstance().interactive;
+            this.interactive = NavAnimationMgr.getInstance().interactive;
           })
 
         Button('PageTwo', { stateEffect: true, type: ButtonType.Capsule })
@@ -89,16 +39,13 @@ export struct PageOne {
       .size({ width: '100%', height: '100%' })
     }
     .title('pageOne')
-    .onDisAppear(() => {
-      ZRouter.getInstance().deleteAnimationOptions(this.pageId)
-    })
     .onReady((context: NavDestinationContext) => {
-      if (context.navDestinationId) {
-        this.pageId = context.navDestinationId;
-        this.registerCallback();
-      }
+      ZRouter.getInstance().registerAnim(this, context, new NavAnimationXOptions((m) => this.modifier = m))
     })
-    .translate(this.translateOptions)
+    .onDisAppear(() => {
+      ZRouter.getInstance().unregisterAnim(this)
+    })
+    .attributeModifier(this.modifier)
     .backgroundColor('#F1F3F5')
 
     // .gesture(PanGesture()

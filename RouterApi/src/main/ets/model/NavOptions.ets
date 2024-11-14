@@ -4,11 +4,11 @@
  * @desc:
  */
 import { DEFAULT_STACK_NAME, ObjectOrNull, OnPopResultCallback } from './Model';
-import { NavAnimationOptions } from '../animation/NavAnimationOptions';
+import { INavAnimationOptions } from '../animation/callback/INavAnimationOptions';
 
 export interface  INavOptions<T> {
   animated: boolean;
-  animationOptions?: NavAnimationOptions;
+  animationOptions?: INavAnimationOptions;
   lunchMode: LaunchMode;
   params?: ObjectOrNull;
   navStackName:string;

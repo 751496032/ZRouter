@@ -5,10 +5,10 @@
  */
 import { RouterMgr } from '../api/RouterMgr';
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
-import { NavAnimationOptions } from '../animation/NavAnimationOptions';
-import { NavAnimationBuilder } from '../animation/NavAnimationMgr';
+import { INavAnimationOptions } from '../animation/callback/INavAnimationOptions';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
+import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 
 export class NavBuilder<T> {
   private optionsImpl: INavOptions<T> = new NavOptionsImpl<T>();
@@ -32,18 +32,17 @@ export class NavBuilder<T> {
     return this;
   }
 
-  public setAnimationOptions(options: NavAnimationOptions): NavBuilder<T> {
-    this.optionsImpl.animationOptions = options;
-    NavAnimationBuilder.getInstance().setAnimationOptions(options)
+  public registerAnim(component: object, ctx: NavDestinationContext, options: INavAnimationOptions): NavBuilder<T> {
+    NavAnimationMgr.getInstance().registerAnim(component, ctx, options);
     return this;
   }
 
-  public deleteAnimationOptions(name: string) {
-    NavAnimationBuilder.getInstance().unRegisterNavParam(name);
+  public unregisterAnim(component: object) {
+    NavAnimationMgr.getInstance().unregisterAnim(component);
   }
 
   public getAnimCustomNavContentTransition() {
-    return NavAnimationBuilder.customNavContentTransition
+    return NavAnimationMgr.customNavContentTransition
   }
 
   public setLunchMode(mode: LaunchMode): NavBuilder<T> {

@@ -17,7 +17,6 @@ export struct AnimTransitionDemo {
         Button("PageOne").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
-            .setAnimationOptions({})
             .setPopListener((v) => {
               this.msg = v.data?.toString() + ' ' + v.from?.toString()
             })

@@ -3,72 +3,18 @@
  * @date: 2024-11-01
  * @desc:
  */
-import { Route, ZRouter } from 'routerapi';
-import { NavAnimationBuilder as NavAnimationMgr } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
+import { NavAnimationYOptions, Route, ZRouter } from 'routerapi';
+import { NavDestinationModifier } from '@kit.ArkUI';
 
 @Builder
 export function PageTwoBuilder(name: string, param: Object) {
-  PageTwo({ param: param as number })
+  PageTwo()
 }
 
 @Route({ name: "PageTwo" })
 @Component
 export struct PageTwo {
-  @State translateOptions: TranslateOptions = {}
-  pageId: string = '';
-  rectWidth: number = 0;
-  param: number = 0;
-
-  registerCallback() {
-    ZRouter.getInstance().setAnimationOptions({
-      name: this.pageId,
-      timeout: 200,
-      update: (o: TranslateOptions) => {
-        this.translateOptions = o
-      },
-      startCallback: (mgr: NavAnimationMgr, isPush: boolean, isExit: boolean) => {
-        if (isPush) {
-          mgr.updateLocation({ x: '100%' })
-        } else {
-          mgr.updateLocation({ x: '0' })
-        }
-      },
-      endCallback: (mgr: NavAnimationMgr, isPush: boolean, isExit: boolean) => {
-        if (isPush) {
-          mgr.updateLocation({ x: '0' })
-        } else {
-          mgr.updateLocation({ x: '100%' })
-        }
-      },
-      onFinish: (mgr: NavAnimationMgr, isPush: boolean, isExit: boolean) => {
-        mgr.updateLocation({ x: '0' })
-      },
-      interactiveCallback: (mgr: NavAnimationMgr, operation: NavigationOperation) => {
-        if (operation == NavigationOperation.PUSH) {
-          mgr.updateLocation({ x: '100%' })
-          animateTo({
-            duration: 1000,
-            onFinish: () => {
-              mgr.updateLocation({ x: '0' })
-            }
-          }, () => {
-            mgr.updateLocation({ x: '0' })
-          })
-        } else {
-          mgr.updateLocation({ x: '0' })
-          animateTo({
-            duration: 1000,
-            onFinish: () => {
-              mgr.updateLocation({ x: '0' })
-            }
-          }, () => {
-            mgr.updateLocation({ x: '100%' })
-          })
-        }
-      }
-    }
-    )
-  }
+  @State modifier: NavDestinationModifier = new NavDestinationModifier()
 
   build() {
     NavDestination() {
@@ -102,19 +48,16 @@ export struct PageTwo {
     //     let rate = event.fingerList[0].localX / this.rectWidth;
     //     CustomTransition.getInstance().finishInteractiveAnimation(rate);
     //   }))
-    .onAppear(() => {
-      this.registerCallback();
+    // .onAppear(() => {
+    //   this.registerCallback();
+    // })
+    .onReady((context: NavDestinationContext) => {
+      ZRouter.getInstance().registerAnim(this, context, new NavAnimationYOptions((m) => this.modifier = m))
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().deleteAnimationOptions(this.pageId)
+      ZRouter.getInstance().unregisterAnim(this)
     })
-    .onReady((context: NavDestinationContext) => {
-      if (context.navDestinationId) {
-        this.pageId = context.navDestinationId;
-        this.registerCallback();
-      }
-    })
-    .translate(this.translateOptions)
+    .attributeModifier(this.modifier)
     .backgroundColor(Color.Yellow)
   }
 }
