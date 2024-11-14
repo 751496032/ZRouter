@@ -1,5 +1,5 @@
 import { RouterConstants } from '@hzw/common_library';
-import { Lifecycle, LifecycleRegistry, Route } from 'routerapi';
+import { ILifecycleObserver, Lifecycle, LifecycleEvent, LifecycleRegistry, Route } from 'routerapi';
 
 /**
  * @author: HZWei
@@ -9,8 +9,16 @@ import { Lifecycle, LifecycleRegistry, Route } from 'routerapi';
 
 @Route({ name: RouterConstants.CUSTOM_COMPONENT_VIEW })
 @Component
-struct CustomComponentView {
+export struct CustomComponentView {
   @Lifecycle lifecycle : LifecycleRegistry = LifecycleRegistry.create(this)
+  aboutToAppear(): void {
+    console.log('CustomComponentView aboutToAppear')
+    this.lifecycle.addListener((e: LifecycleEvent, r?: RouteInfo) => {
+      console.log("CustomComponentView lifecycle: ", e, r?.name)
+    })
+    this.lifecycle.addObserver<ILifecycleObserver>({})
+  }
+
   build() {
     NavDestination(){
       ChildView({ lifecycle: this.lifecycle })
@@ -19,17 +27,29 @@ struct CustomComponentView {
 }
 
 @Component
-struct ChildView {
+export struct ChildView {
   lifecycle: LifecycleRegistry | undefined
+  // @Lifecycle lifecycle2 : LifecycleRegistry = LifecycleRegistry.create(this)
+
+  onDidBuild(): void {
+    console.log('CustomComponentView ChildView onDidBuild')
+  }
 
   aboutToAppear(): void {
-    this.lifecycle?.addListener(() => {
-
+    console.log('ChildView aboutToAppear')
+    console.log('CustomComponentView ChildView aboutToAppear')
+    // this.lifecycle2.addListener((e:LifecycleEvent,r?:RouteInfo)=>{
+    //   console.log("ChildView lifecycle2: ", e, r?.name)
+    // })
+    this.lifecycle?.addListener((e:LifecycleEvent,r?:RouteInfo) => {
+      console.log("CustomComponentView ChildView lifecycle: ", e, r?.name)
     })
   }
 
   build() {
-
+    Column(){
+      Text("测试")
+    }
   }
 }
 

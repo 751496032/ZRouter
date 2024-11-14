@@ -39,7 +39,7 @@ export struct SplashPage {
       setInterval(() => {
         this.countdown -= 1000
         if (this.countdown === 0) {
-          ZRouter.getInstance().pop()
+          ZRouter.getInstance().pop(false)
         }
       }, 1000)
     })
