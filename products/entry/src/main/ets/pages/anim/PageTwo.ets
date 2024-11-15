@@ -3,7 +3,7 @@
  * @date: 2024-11-01
  * @desc:
  */
-import { NavAnimationYOptions, Route, ZRouter } from 'routerapi';
+import { Route, ZRouter } from 'routerapi';
 import { NavDestinationModifier } from '@kit.ArkUI';
 
 @Builder
@@ -52,7 +52,41 @@ export struct PageTwo {
     //   this.registerCallback();
     // })
     .onReady((context: NavDestinationContext) => {
-      ZRouter.getInstance().registerAnim(this, context, new NavAnimationYOptions((m) => this.modifier = m))
+      ZRouter.getInstance()
+        .buildAnimParam(this, context, (m) => {
+          this.modifier = m
+        })
+        .setAnimateParam({
+          duration: 1000,
+          curve: Curve.EaseIn
+        })
+        .translateStart({ x: '100%', y: '0' })
+        .translateEnd({ x: '0', y: '0' })
+        .scaleStart({
+          x: 0,
+          y: 0,
+          centerX: "50%",
+          centerY: "50%"
+        })
+        .scaleEnd({
+          x: 1,
+          y: 1,
+          centerX: "50%",
+          centerY: "50%"
+        })
+        .rotateStart({
+          angle: 90,
+          centerX: "50%",
+          centerY: "50%"
+        })
+        .rotateEnd({
+          angle: 0,
+          centerX: "50%",
+          centerY: "50%"
+        })
+        .opacityStart(0.1)
+        .opacityEnd(1.0)
+        .build()
     })
     .onDisAppear(() => {
       ZRouter.getInstance().unregisterAnim(this)

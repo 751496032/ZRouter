@@ -3,11 +3,18 @@
  * @date: 2024-11-14
  * @desc: 动画转场参数
  */
-import { NavDestinationModifier } from '@kit.ArkUI';
-import { NavAnimationDirection } from '../NavSwipeDirection';
+import { NavAnimationModifier } from '../modifier/NavAnimationModifier';
 
 export interface INavAnimationParam {
+  timeout?: number
   animateParam?: AnimateParam
-  update: (options: NavDestinationModifier) => void;
-  direction?: NavAnimationDirection
+  update: (modifier: NavAnimationModifier) => void;
+  startTranslateOptions?: TranslateOptions
+  endTranslateOptions?: TranslateOptions
+  startScaleOptions?: ScaleOptions
+  endScaleOptions?: ScaleOptions
+  startRotateOptions?: RotateOptions
+  endRotateOptions?: RotateOptions
+  startOpacity?: number | Resource | undefined
+  endOpacity?: number | Resource | undefined
 }

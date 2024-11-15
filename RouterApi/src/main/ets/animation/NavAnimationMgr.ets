@@ -4,35 +4,34 @@
  * @desc:
  */
 // CustomNavigationUtils.ets
-import { INavAnimationOptions } from './callback/INavAnimationOptions';
-import { NavDestinationModifier } from '@kit.ArkUI';
+import { INavAnimationCallback } from './callback/INavAnimationCallback';
+import { NavAnimationCallback } from './callback/NavAnimationCallback';
 import { NavAnimationModifier } from './modifier/NavAnimationModifier';
+import { EmptyNavAnimationParam } from './param/EmptyNavAnimationParam';
+import { INavAnimationParam } from './param/INavAnimationParam';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
-  modifier: NavDestinationModifier | undefined
+  modifier: NavAnimationModifier
+  param: INavAnimationParam
   finish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
   start: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
   onFinish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
   interactive: ((options: AnimateCallback, operation: NavigationOperation) => void | undefined) | undefined;
-  update: ((options: NavDestinationModifier) => void | undefined) | undefined
+  update: ((options: NavAnimationModifier) => void | undefined) | undefined
   timeout: (number | undefined) | undefined;
-}
-
-export interface NavAnimationLocation {
-  x?: number | string;
-  y?: number | string;
-  z?: number | string;
 }
 
 const customTransitionMap: Map<string, AnimateCallback> = new Map();
 
+/**
+ * 路由转场动画管理
+ */
 export class NavAnimationMgr {
   static delegate = new NavAnimationMgr();
   interactive: boolean = true;
   proxy: NavigationTransitionProxy | undefined = undefined;
   operation: NavigationOperation = NavigationOperation.PUSH
-  loc: NavAnimationLocation = {}
   callback: AnimateCallback | undefined
   private navContextMap: Map<object, NavDestinationContext> = new Map();
 
@@ -40,34 +39,51 @@ export class NavAnimationMgr {
     return NavAnimationMgr.delegate;
   }
 
-  /* 注册某个页面的动画回调
-   * name: 注册页面的唯一id
-   * startCallback：用来设置动画开始时页面的状态
-   * endCallback：用来设置动画结束时页面的状态
-   * onFinish：用来执行动画结束后页面的其他操作
-   * interactiveCallback: 注册的可交互转场的动效
-   * timeout：转场结束的超时时间
+  /**
+   * 注册路由转场动画，设置相关参数（推荐）
+   * @param component
+   * @param ctx
+   * @param param
    */
-  public registerAnim(component: object, ctx: NavDestinationContext, options: INavAnimationOptions): void {
+  public registerAnimParam(component: object, ctx: NavDestinationContext, param: INavAnimationParam): void {
+    const options = new NavAnimationCallback(param.update)
+    options.param = param
+    if (param.timeout) {
+      options.timeout = options.timeout
+    }
+    this.registerAnimCallback(component, ctx, options);
+  }
+
+  /**
+   * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
+   * @param component
+   * @param ctx
+   * @param options
+   */
+  public registerAnimCallback(component: object, ctx: NavDestinationContext, options: INavAnimationCallback): void {
     if (ctx.navDestinationId && !this.navContextMap.has(component)) {
+      this.updateOptions(options)
       this.navContextMap.set(component, ctx)
       options.name = ctx.navDestinationId;
       if (options.name) {
         if (customTransitionMap.has(options.name)) {
           let param = customTransitionMap.get(options.name);
           if (param !== undefined) {
-            param.modifier = options.modifier ?? new NavAnimationModifier(param)
+            param.modifier = options.modifier ?? new NavAnimationModifier()
+            param.param = options.param ?? new EmptyNavAnimationParam()
             param.start = options.startCallback;
             param.finish = options.endCallback;
             param.timeout = options.timeout;
             param.update = options.update;
             param.onFinish = options.onFinish;
             param.interactive = options.interactiveCallback;
-            return;
+
+            param.modifier.callback = param
           }
         }
         let params: AnimateCallback = {
-          modifier: undefined,
+          modifier: new NavAnimationModifier(),
+          param: options.param ?? new EmptyNavAnimationParam(),
           timeout: options.timeout,
           start: options.startCallback,
           finish: options.endCallback,
@@ -75,8 +91,21 @@ export class NavAnimationMgr {
           onFinish: options.onFinish,
           interactive: options.interactiveCallback
         };
-        params.modifier = options.modifier ?? new NavAnimationModifier(params)
+
+        params.modifier.callback = params
         customTransitionMap.set(options.name, params);
+      }
+    }
+  }
+
+  private updateOptions(options: INavAnimationCallback) {
+    const param = options.param
+    if (param) {
+      if (param.timeout) {
+        options.timeout = param.timeout
+      }
+      if (param.update) {
+        options.update = param.update
       }
     }
   }
@@ -98,18 +127,6 @@ export class NavAnimationMgr {
       return;
     }
     animation(callback, operation);
-  }
-
-  public updateLocation(loc: NavAnimationLocation) {
-    if (loc.x) {
-      this.loc.x = loc.x
-    }
-    if (loc.y) {
-      this.loc.y = loc.y
-    }
-    if (loc.z) {
-      this.loc.z = loc.z
-    }
   }
 
   updateProgress(progress: number) {
@@ -166,7 +183,8 @@ export class NavAnimationMgr {
 
   getAnimateParam(name: string): AnimateCallback {
     let result: AnimateCallback = {
-      modifier: customTransitionMap.get(name)?.modifier,
+      modifier: customTransitionMap.get(name)?.modifier ?? new NavAnimationModifier(),
+      param: customTransitionMap.get(name)?.param ?? new EmptyNavAnimationParam(),
       start: customTransitionMap.get(name)?.start,
       finish: customTransitionMap.get(name)?.finish,
       update: customTransitionMap.get(name)?.update,
@@ -177,6 +195,7 @@ export class NavAnimationMgr {
     return result;
   }
 
+  // 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
   static customNavContentTransition = (from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
     if (from.mode == NavDestinationMode.DIALOG || to.mode == NavDestinationMode.DIALOG) {
       return undefined;
@@ -187,6 +206,7 @@ export class NavAnimationMgr {
     builder.operation = operation;
     if (builder.interactive) {
       let customAnimation: NavigationAnimatedTransition = {
+        timeout: 7000,
         onTransitionEnd: (isSuccess: boolean) => {
           console.log("===== current transition is " + isSuccess);
           builder.recoverState();
@@ -204,6 +224,9 @@ export class NavAnimationMgr {
             if (targetIndex) {
               const callback = builder.getAnimateParam(targetIndex)
               if (callback) {
+                if (callback.timeout) {
+                  customAnimation.timeout = callback.timeout
+                }
                 builder.fireInteractiveAnimation(targetIndex, callback, operation);
               }
             }
@@ -228,6 +251,9 @@ export class NavAnimationMgr {
         if (operation == NavigationOperation.PUSH) {
           if (toParam?.start) {
             builder.callback = toParam
+            if (toParam.timeout) {
+              customAnimation.timeout = toParam.timeout
+            }
             toParam.start(toParam, true, false);
           }
           animateTo({
@@ -243,6 +269,9 @@ export class NavAnimationMgr {
         } else {
           if (fromParam?.start) {
             builder.callback = fromParam
+            if (fromParam.timeout) {
+              customAnimation.timeout = fromParam.timeout
+            }
             fromParam.start(fromParam, false, true);
           }
           animateTo({

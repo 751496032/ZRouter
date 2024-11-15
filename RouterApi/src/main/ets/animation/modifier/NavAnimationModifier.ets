@@ -8,60 +8,51 @@ import { AnimateCallback } from "../NavAnimationMgr"
  */
 export class NavAnimationModifier extends NavDestinationModifier {
   callback: AnimateCallback | undefined
-  translateOptions: TranslateOptions | undefined
-  scaleOptions: ScaleOptions | undefined
-  rotateOptions: RotateOptions | undefined
-  transitionOptions: TransitionOptions | TransitionEffect | undefined
+  isUpdate: boolean = true
+  _translateOptions: TranslateOptions | undefined
+  _scaleOptions: ScaleOptions | undefined
+  _rotateOptions: RotateOptions | undefined
+  _opacity: number | Resource | undefined
 
-  constructor(callback: AnimateCallback) {
-    super()
-    this.callback = callback
-  }
-
-  translate(value: TranslateOptions): NavDestinationAttribute {
-    this.translateOptions = value
+  public update(): NavAnimationModifier {
     if (this.callback?.update) {
       this.callback.update(this)
     }
     return this
   }
 
-  scale(value: ScaleOptions): NavDestinationAttribute {
-    this.scaleOptions = value
-    if (this.callback?.update) {
-      this.callback.update(this)
-    }
+  public translate(value: TranslateOptions | undefined): NavAnimationModifier {
+    this._translateOptions = value
     return this
   }
 
-  rotate(value: RotateOptions): NavDestinationAttribute {
-    this.rotateOptions = value
-    if (this.callback?.update) {
-      this.callback.update(this)
-    }
+  public scale(value: ScaleOptions | undefined): NavAnimationModifier {
+    this._scaleOptions = value
     return this
   }
 
-  transition(value: TransitionOptions | TransitionEffect) {
-    this.transitionOptions = value
-    if (this.callback?.update) {
-      this.callback.update(this)
-    }
+  public rotate(value: RotateOptions | undefined): NavAnimationModifier {
+    this._rotateOptions = value
     return this
   }
 
-  applyNormalAttribute(instance: NavDestinationAttribute): void {
-    if (this.translateOptions) {
-      instance.translate(this.translateOptions)
+  public opacity(value: number | Resource | undefined): NavAnimationModifier {
+    this._opacity = value
+    return this
+  }
+
+  public applyNormalAttribute(instance: NavDestinationAttribute): void {
+    if (this._translateOptions) {
+      instance.translate(this._translateOptions)
     }
-    if (this.scaleOptions) {
-      instance.scale(this.scaleOptions)
+    if (this._scaleOptions) {
+      instance.scale(this._scaleOptions)
     }
-    if (this.rotateOptions) {
-      instance.rotate(this.rotateOptions)
+    if (this._rotateOptions) {
+      instance.rotate(this._rotateOptions)
     }
-    if (this.transitionOptions) {
-      instance.transition(this.transitionOptions)
+    if (this._opacity) {
+      instance.opacity(this._opacity)
     }
   }
 }

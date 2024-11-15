@@ -5,10 +5,13 @@
  */
 import { RouterMgr } from '../api/RouterMgr';
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
-import { INavAnimationOptions } from '../animation/callback/INavAnimationOptions';
+import { INavAnimationCallback } from '../animation/callback/INavAnimationCallback';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
+import { INavAnimationParam } from '../animation/param/INavAnimationParam';
+import { NavAnimParamBuilder } from '../animation/param/NavAnimParamBuilder';
+import { NavAnimationModifier } from '../animation/modifier/NavAnimationModifier';
 
 export class NavBuilder<T> {
   private optionsImpl: INavOptions<T> = new NavOptionsImpl<T>();
@@ -32,8 +35,36 @@ export class NavBuilder<T> {
     return this;
   }
 
-  public registerAnim(component: object, ctx: NavDestinationContext, options: INavAnimationOptions): NavBuilder<T> {
-    NavAnimationMgr.getInstance().registerAnim(component, ctx, options);
+  /**
+   * 注册路由转场动画，设置相关参数（推荐）
+   * @param component
+   * @param ctx
+   * @param param
+   */
+  public registerAnimParam(component: object, ctx: NavDestinationContext, param: INavAnimationParam): NavBuilder<T> {
+    NavAnimationMgr.getInstance().registerAnimParam(component, ctx, param)
+    return this;
+  }
+
+  /**
+   * 注册路由转场动画，相关参数构建（推荐）
+   * @param component
+   * @param ctx
+   * @param param
+   */
+  public buildAnimParam(component: object, ctx: NavDestinationContext,
+    update: (options: NavAnimationModifier) => void): NavAnimParamBuilder {
+    return NavAnimParamBuilder.builder(component, ctx, update);
+  }
+
+  /**
+   * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
+   * @param component
+   * @param ctx
+   * @param options
+   */
+  public registerAnimCallback(component: object, ctx: NavDestinationContext, options: INavAnimationCallback): NavBuilder<T> {
+    NavAnimationMgr.getInstance().registerAnimCallback(component, ctx, options);
     return this;
   }
 
@@ -41,6 +72,10 @@ export class NavBuilder<T> {
     NavAnimationMgr.getInstance().unregisterAnim(component);
   }
 
+  /**
+   * 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
+   * @returns
+   */
   public getAnimCustomNavContentTransition() {
     return NavAnimationMgr.customNavContentTransition
   }
