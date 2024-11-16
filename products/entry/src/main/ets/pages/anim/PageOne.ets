@@ -3,8 +3,7 @@
  * @date: 2024-11-01
  * @desc:
  */
-import { Route, ZRouter } from 'routerapi';
-import { NavDestinationModifier } from '@kit.ArkUI';
+import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 
 @Builder
 export function PageOneBuilder(name: string, param: Object) {
@@ -14,7 +13,7 @@ export function PageOneBuilder(name: string, param: Object) {
 @Route({ name: "PageOne" })
 @Component
 export struct PageOne {
-  @State modifier: NavDestinationModifier = new NavDestinationModifier()
+  modifier: NavAnimationModifier = new NavAnimationModifier()
   rectWidth: number = 0;
   interactive: boolean = false;
 
@@ -39,9 +38,7 @@ export struct PageOne {
     }
     .title('pageOne')
     .onReady((context: NavDestinationContext) => {
-      ZRouter.getInstance().registerAnimParam(this, context, {
-        // 通过更新modifier来更新动画，必传
-        update: (m) => this.modifier = m,
+      ZRouter.getInstance().registerAnimParam(this.modifier, context, {
         animateParam: {
           duration: 500,
           curve: Curve.Linear
@@ -75,7 +72,7 @@ export struct PageOne {
       })
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().unregisterAnim(this)
+      ZRouter.getInstance().unregisterAnim(this.modifier)
     })
     .attributeModifier(this.modifier)
     .backgroundColor('#F1F3F5')

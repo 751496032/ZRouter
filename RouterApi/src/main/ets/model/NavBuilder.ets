@@ -37,39 +37,44 @@ export class NavBuilder<T> {
 
   /**
    * 注册路由转场动画，设置相关参数（推荐）
-   * @param component
+   * @param modifier
    * @param ctx
    * @param param
    */
-  public registerAnimParam(component: object, ctx: NavDestinationContext, param: INavAnimationParam): NavBuilder<T> {
-    NavAnimationMgr.getInstance().registerAnimParam(component, ctx, param)
+  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext,
+    param: INavAnimationParam): NavBuilder<T> {
+    NavAnimationMgr.getInstance().registerAnimParam(modifier, ctx, param)
     return this;
   }
 
   /**
    * 注册路由转场动画，相关参数构建（推荐）
-   * @param component
+   * @param modifier
    * @param ctx
    * @param param
    */
-  public buildAnimParam(component: object, ctx: NavDestinationContext,
-    update: (options: NavAnimationModifier) => void): NavAnimParamBuilder {
-    return NavAnimParamBuilder.builder(component, ctx, update);
+  public buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimParamBuilder.builder(modifier, ctx);
   }
 
   /**
    * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
-   * @param component
+   * @param modifier
    * @param ctx
    * @param options
    */
-  public registerAnimCallback(component: object, ctx: NavDestinationContext, options: INavAnimationCallback): NavBuilder<T> {
-    NavAnimationMgr.getInstance().registerAnimCallback(component, ctx, options);
+  public registerAnimCallback(modifier: NavAnimationModifier, ctx: NavDestinationContext,
+    options: INavAnimationCallback): NavBuilder<T> {
+    NavAnimationMgr.getInstance().registerAnimCallback(modifier, ctx, options);
     return this;
   }
 
-  public unregisterAnim(component: object) {
-    NavAnimationMgr.getInstance().unregisterAnim(component);
+  /**
+   * 取消注册路由转场动画
+   * @param modifier
+   */
+  public unregisterAnim(modifier: NavAnimationModifier) {
+    NavAnimationMgr.getInstance().unregisterAnim(modifier);
   }
 
   /**

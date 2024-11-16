@@ -8,11 +8,6 @@ import { INavAnimationCallback } from './INavAnimationCallback';
 import { NavAnimationModifier } from '../modifier/NavAnimationModifier';
 
 export class NavAnimationCallback extends INavAnimationCallback {
-  constructor(update: ((modifier: NavAnimationModifier) => void) | undefined) {
-    super(update)
-  }
-
-  timeout?: number
   update?: ((modifier: NavAnimationModifier) => void) | undefined
   startCallback? =
     (callback: AnimateCallback, isPush: boolean, isExit: boolean) => {

@@ -1,6 +1,5 @@
 import { NavAnimationModifier } from '../modifier/NavAnimationModifier'
 import { NavAnimationMgr } from '../NavAnimationMgr'
-import { EmptyNavAnimationParam } from './EmptyNavAnimationParam'
 import { INavAnimationParam } from './INavAnimationParam'
 
 /**
@@ -9,12 +8,9 @@ import { INavAnimationParam } from './INavAnimationParam'
  * @desc: 路由动画转场参数建造器
  */
 export class NavAnimParamBuilder {
-  private _component: object
+  private _modifier: NavAnimationModifier
   private _ctx: NavDestinationContext
-  private _param: INavAnimationParam = new EmptyNavAnimationParam()
-  private _update: (modifier: NavAnimationModifier) => void = () => {
-  };
-  private _timeout?: number
+  private _param: INavAnimationParam = {}
   private _animateParam?: AnimateParam
   private _startTranslateOptions?: TranslateOptions
   private _endTranslateOptions?: TranslateOptions
@@ -25,20 +21,13 @@ export class NavAnimParamBuilder {
   private _startOpacity?: number | Resource | undefined
   private _endOpacity?: number | Resource | undefined
 
-  constructor(component: object, ctx: NavDestinationContext, update: (modifier: NavAnimationModifier) => void) {
-    this._component = component
+  constructor(modifier: NavAnimationModifier, ctx: NavDestinationContext) {
+    this._modifier = modifier
     this._ctx = ctx
-    this._update = update
   }
 
-  public static builder(component: object, ctx: NavDestinationContext,
-    update: (modifier: NavAnimationModifier) => void) {
-    return new NavAnimParamBuilder(component, ctx, update)
-  }
-
-  public setTimeout(param: number): NavAnimParamBuilder {
-    this._timeout = param
-    return this
+  public static builder(modifier: NavAnimationModifier, ctx: NavDestinationContext) {
+    return new NavAnimParamBuilder(modifier, ctx)
   }
 
   public setAnimateParam(param: AnimateParam): NavAnimParamBuilder {
@@ -87,8 +76,6 @@ export class NavAnimParamBuilder {
   }
 
   public build() {
-    this._param.update = this._update
-    this._param.timeout = this._timeout
     this._param.animateParam = this._animateParam
     this._param.startTranslateOptions = this._startTranslateOptions
     this._param.endTranslateOptions = this._endTranslateOptions
@@ -98,6 +85,6 @@ export class NavAnimParamBuilder {
     this._param.endRotateOptions = this._endRotateOptions
     this._param.startOpacity = this._startOpacity
     this._param.endOpacity = this._endOpacity
-    NavAnimationMgr.getInstance().registerAnimParam(this._component, this._ctx, this._param)
+    NavAnimationMgr.getInstance().registerAnimParam(this._modifier, this._ctx, this._param)
   }
 }

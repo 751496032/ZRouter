@@ -14,5 +14,3 @@ export { NavAnimationCallback } from './src/main/ets/animation/callback/NavAnima
 export { NavAnimationModifier } from './src/main/ets/animation/modifier/NavAnimationModifier'
 export { INavAnimationParam } from './src/main/ets/animation/param/INavAnimationParam'
 export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'
-export { EmptyNavAnimationParam } from './src/main/ets/animation/param/EmptyNavAnimationParam'
-export { NavAnimationMgr } from './src/main/ets/animation/NavAnimationMgr'

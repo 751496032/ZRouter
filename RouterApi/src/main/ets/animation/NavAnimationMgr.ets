@@ -7,7 +7,6 @@
 import { INavAnimationCallback } from './callback/INavAnimationCallback';
 import { NavAnimationCallback } from './callback/NavAnimationCallback';
 import { NavAnimationModifier } from './modifier/NavAnimationModifier';
-import { EmptyNavAnimationParam } from './param/EmptyNavAnimationParam';
 import { INavAnimationParam } from './param/INavAnimationParam';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
@@ -18,22 +17,18 @@ export interface AnimateCallback {
   start: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
   onFinish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
   interactive: ((options: AnimateCallback, operation: NavigationOperation) => void | undefined) | undefined;
-  update: ((options: NavAnimationModifier) => void | undefined) | undefined
-  timeout: (number | undefined) | undefined;
 }
-
-const customTransitionMap: Map<string, AnimateCallback> = new Map();
 
 /**
  * 路由转场动画管理
  */
 export class NavAnimationMgr {
-  static delegate = new NavAnimationMgr();
-  interactive: boolean = true;
-  proxy: NavigationTransitionProxy | undefined = undefined;
-  operation: NavigationOperation = NavigationOperation.PUSH
-  callback: AnimateCallback | undefined
+  private static delegate = new NavAnimationMgr();
+  private interactive: boolean = false;
+  private proxy: NavigationTransitionProxy | undefined = undefined;
+  private operation: NavigationOperation = NavigationOperation.PUSH
   private navContextMap: Map<object, NavDestinationContext> = new Map();
+  private customTransitionMap: Map<string, AnimateCallback> = new Map();
 
   static getInstance() {
     return NavAnimationMgr.delegate;
@@ -41,72 +36,52 @@ export class NavAnimationMgr {
 
   /**
    * 注册路由转场动画，设置相关参数（推荐）
-   * @param component
+   * @param modifier
    * @param ctx
    * @param param
    */
-  public registerAnimParam(component: object, ctx: NavDestinationContext, param: INavAnimationParam): void {
-    const options = new NavAnimationCallback(param.update)
+  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext,
+    param: INavAnimationParam): void {
+    const options = new NavAnimationCallback()
     options.param = param
-    if (param.timeout) {
-      options.timeout = options.timeout
-    }
-    this.registerAnimCallback(component, ctx, options);
+    this.registerAnimCallback(modifier, ctx, options);
   }
 
   /**
    * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
-   * @param component
+   * @param modifier
    * @param ctx
    * @param options
    */
-  public registerAnimCallback(component: object, ctx: NavDestinationContext, options: INavAnimationCallback): void {
-    if (ctx.navDestinationId && !this.navContextMap.has(component)) {
-      this.updateOptions(options)
-      this.navContextMap.set(component, ctx)
-      options.name = ctx.navDestinationId;
-      if (options.name) {
-        if (customTransitionMap.has(options.name)) {
-          let param = customTransitionMap.get(options.name);
-          if (param !== undefined) {
-            param.modifier = options.modifier ?? new NavAnimationModifier()
-            param.param = options.param ?? new EmptyNavAnimationParam()
-            param.start = options.startCallback;
-            param.finish = options.endCallback;
-            param.timeout = options.timeout;
-            param.update = options.update;
-            param.onFinish = options.onFinish;
-            param.interactive = options.interactiveCallback;
+  public registerAnimCallback(modifier: NavAnimationModifier, ctx: NavDestinationContext,
+    options: INavAnimationCallback): void {
+    if (ctx.navDestinationId && !this.navContextMap.has(modifier)) {
+      this.navContextMap.set(modifier, ctx)
+      const name = ctx.navDestinationId;
+      if (this.customTransitionMap.has(name)) {
+        let param = this.customTransitionMap.get(name);
+        if (param !== undefined) {
+          param.modifier = modifier
+          param.param = options.param ?? {}
+          param.start = options.startCallback;
+          param.finish = options.endCallback;
+          param.onFinish = options.onFinish;
+          param.interactive = options.interactiveCallback;
 
-            param.modifier.callback = param
-          }
+          param.modifier.callback = param
         }
-        let params: AnimateCallback = {
-          modifier: new NavAnimationModifier(),
-          param: options.param ?? new EmptyNavAnimationParam(),
-          timeout: options.timeout,
-          start: options.startCallback,
-          finish: options.endCallback,
-          update: options.update,
-          onFinish: options.onFinish,
-          interactive: options.interactiveCallback
-        };
+      }
+      let params: AnimateCallback = {
+        modifier: modifier,
+        param: options.param ?? {},
+        start: options.startCallback,
+        finish: options.endCallback,
+        onFinish: options.onFinish,
+        interactive: options.interactiveCallback
+      };
 
-        params.modifier.callback = params
-        customTransitionMap.set(options.name, params);
-      }
-    }
-  }
-
-  private updateOptions(options: INavAnimationCallback) {
-    const param = options.param
-    if (param) {
-      if (param.timeout) {
-        options.timeout = param.timeout
-      }
-      if (param.update) {
-        options.update = param.update
-      }
+      params.modifier.callback = params
+      this.customTransitionMap.set(name, params);
     }
   }
 
@@ -114,15 +89,14 @@ export class NavAnimationMgr {
     if (this.navContextMap.has(component)) {
       const navId = this.navContextMap.get(component)?.navDestinationId
       if (navId) {
-        customTransitionMap.delete(navId);
+        this.customTransitionMap.delete(navId);
       }
       this.navContextMap.delete(component)
     }
   }
 
   fireInteractiveAnimation(id: string, callback: AnimateCallback, operation: NavigationOperation) {
-    this.callback = callback
-    let animation = customTransitionMap.get(id)?.interactive;
+    let animation = this.customTransitionMap.get(id)?.interactive;
     if (!animation) {
       return;
     }
@@ -147,11 +121,11 @@ export class NavAnimationMgr {
     if (!this.proxy?.from.navDestinationId || !this.proxy?.to.navDestinationId) {
       return;
     }
-    let fromParam = customTransitionMap.get(this.proxy.from.navDestinationId);
+    let fromParam = this.customTransitionMap.get(this.proxy.from.navDestinationId);
     if (fromParam?.onFinish) {
       fromParam.onFinish(fromParam, false, false);
     }
-    let toParam = customTransitionMap.get(this.proxy?.to.navDestinationId);
+    let toParam = this.customTransitionMap.get(this.proxy?.to.navDestinationId);
     if (toParam?.onFinish) {
       toParam.onFinish(toParam, true, true,);
     }
@@ -183,14 +157,12 @@ export class NavAnimationMgr {
 
   getAnimateParam(name: string): AnimateCallback {
     let result: AnimateCallback = {
-      modifier: customTransitionMap.get(name)?.modifier ?? new NavAnimationModifier(),
-      param: customTransitionMap.get(name)?.param ?? new EmptyNavAnimationParam(),
-      start: customTransitionMap.get(name)?.start,
-      finish: customTransitionMap.get(name)?.finish,
-      update: customTransitionMap.get(name)?.update,
-      timeout: customTransitionMap.get(name)?.timeout,
-      onFinish: customTransitionMap.get(name)?.onFinish,
-      interactive: customTransitionMap.get(name)?.interactive,
+      modifier: this.customTransitionMap.get(name)?.modifier ?? new NavAnimationModifier(),
+      param: this.customTransitionMap.get(name)?.param ?? {},
+      start: this.customTransitionMap.get(name)?.start,
+      finish: this.customTransitionMap.get(name)?.finish,
+      onFinish: this.customTransitionMap.get(name)?.onFinish,
+      interactive: this.customTransitionMap.get(name)?.interactive,
     };
     return result;
   }
@@ -224,9 +196,6 @@ export class NavAnimationMgr {
             if (targetIndex) {
               const callback = builder.getAnimateParam(targetIndex)
               if (callback) {
-                if (callback.timeout) {
-                  customAnimation.timeout = callback.timeout
-                }
                 builder.fireInteractiveAnimation(targetIndex, callback, operation);
               }
             }
@@ -250,37 +219,49 @@ export class NavAnimationMgr {
           to.navDestinationId ? builder.getAnimateParam(to.navDestinationId) : undefined;
         if (operation == NavigationOperation.PUSH) {
           if (toParam?.start) {
-            builder.callback = toParam
-            if (toParam.timeout) {
-              customAnimation.timeout = toParam.timeout
-            }
             toParam.start(toParam, true, false);
           }
           animateTo({
-            duration: 500, onFinish: () => {
+            duration: toParam?.param?.animateParam?.duration,
+            tempo: toParam?.param?.animateParam?.tempo,
+            curve: toParam?.param?.animateParam?.curve,
+            delay: toParam?.param?.animateParam?.delay,
+            iterations: toParam?.param?.animateParam?.iterations,
+            playMode: toParam?.param?.animateParam?.playMode,
+            finishCallbackType: toParam?.param?.animateParam?.finishCallbackType,
+            expectedFrameRateRange: toParam?.param?.animateParam?.expectedFrameRateRange,
+            onFinish: () => {
               transitionProxy.finishTransition();
+              if (toParam?.param?.animateParam?.onFinish) {
+                toParam?.param?.animateParam?.onFinish()
+              }
             }
           }, () => {
             if (toParam?.finish) {
-              builder.callback = toParam
               toParam.finish(toParam, true, false);
             }
           })
         } else {
           if (fromParam?.start) {
-            builder.callback = fromParam
-            if (fromParam.timeout) {
-              customAnimation.timeout = fromParam.timeout
-            }
             fromParam.start(fromParam, false, true);
           }
           animateTo({
-            duration: 500, onFinish: () => {
+            duration: fromParam?.param?.animateParam?.duration,
+            tempo: fromParam?.param?.animateParam?.tempo,
+            curve: fromParam?.param?.animateParam?.curve,
+            delay: fromParam?.param?.animateParam?.delay,
+            iterations: fromParam?.param?.animateParam?.iterations,
+            playMode: fromParam?.param?.animateParam?.playMode,
+            finishCallbackType: fromParam?.param?.animateParam?.finishCallbackType,
+            expectedFrameRateRange: fromParam?.param?.animateParam?.expectedFrameRateRange,
+            onFinish: () => {
               transitionProxy.finishTransition();
+              if (fromParam?.param?.animateParam?.onFinish) {
+                fromParam?.param?.animateParam?.onFinish()
+              }
             }
           }, () => {
             if (fromParam?.finish) {
-              builder.callback = fromParam
               fromParam.finish(fromParam, false, true);
             }
           })

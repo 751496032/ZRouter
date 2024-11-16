@@ -6,9 +6,7 @@
 import { NavAnimationModifier } from '../modifier/NavAnimationModifier';
 
 export interface INavAnimationParam {
-  timeout?: number
   animateParam?: AnimateParam
-  update: (modifier: NavAnimationModifier) => void;
   startTranslateOptions?: TranslateOptions
   endTranslateOptions?: TranslateOptions
   startScaleOptions?: ScaleOptions
