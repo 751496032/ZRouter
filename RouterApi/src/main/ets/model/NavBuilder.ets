@@ -138,6 +138,7 @@ export class NavBuilder<T> {
   }
 
   public getTopPathName(): string | null {
+    this.updateCurrentStackName()
     return this.routerMgr.getTopPathName()
   }
 
