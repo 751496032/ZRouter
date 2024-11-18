@@ -1,5 +1,6 @@
 import { AttributeUpdater } from '@kit.ArkUI'
 import { AnimateCallback } from '../NavAnimationMgr'
+import { INavSingleAnimationParam } from '../param/INavAnimationParam'
 
 /**
  * @author: HHBin
@@ -15,40 +16,77 @@ export class NavAnimationModifier extends AttributeUpdater<NavDestinationAttribu
   _opacity: number | Resource | undefined
 
   public translate(value: TranslateOptions | undefined): NavAnimationModifier {
-    this._translateOptions = value
+    if (value) {
+      this.attribute?.translate(value)
+    }
     return this
   }
 
   public scale(value: ScaleOptions | undefined): NavAnimationModifier {
-    this._scaleOptions = value
+    if (value) {
+      this.attribute?.scale(value)
+    }
     return this
   }
 
   public rotate(value: RotateOptions | undefined): NavAnimationModifier {
-    this._rotateOptions = value
+    if (value) {
+      this.attribute?.rotate(value)
+    }
     return this
   }
 
   public opacity(value: number | Resource | undefined): NavAnimationModifier {
-    this._opacity = value
+    if (value) {
+      this.attribute?.opacity(value)
+    }
     return this
   }
 
-  public update(): NavAnimationModifier {
-    if (this.attribute) {
-      if (this._translateOptions) {
-        this.attribute.translate(this._translateOptions)
-      }
-      if (this._scaleOptions) {
-        this.attribute.scale(this._scaleOptions)
-      }
-      if (this._rotateOptions) {
-        this.attribute.rotate(this._rotateOptions)
-      }
-      if (this._opacity) {
-        this.attribute.opacity(this._opacity)
-      }
+  public update(param: INavSingleAnimationParam | undefined, onFinish?: (() => void )): NavAnimationModifier {
+    if (param) {
+      this.start(param)
+      animateTo({
+        duration: param?.animateParam?.duration,
+        tempo: param?.animateParam?.tempo,
+        curve: param?.animateParam?.curve,
+        delay: param?.animateParam?.delay,
+        iterations: param?.animateParam?.iterations,
+        playMode: param?.animateParam?.playMode,
+        finishCallbackType: param?.animateParam?.finishCallbackType,
+        expectedFrameRateRange: param?.animateParam?.expectedFrameRateRange,
+        onFinish: () => {
+          if (param?.animateParam?.onFinish) {
+            param?.animateParam.onFinish()
+          }
+          if (onFinish) {
+            onFinish()
+          }
+        }
+      }, () => {
+        this.end( param)
+      })
     }
     return this
+  }
+
+  private start(param: INavSingleAnimationParam | undefined) {
+    if (param) {
+      this
+        .opacity(param.startOpacity)
+        .translate(param.startTranslateOptions)
+        .scale(param.startScaleOptions)
+        .rotate(param.startRotateOptions)
+    }
+  }
+
+  private end(param: INavSingleAnimationParam | undefined) {
+    if (param) {
+      this
+        .opacity(param.endOpacity)
+        .translate(param.endTranslateOptions)
+        .scale(param.endScaleOptions)
+        .rotate(param.endRotateOptions)
+    }
   }
 }

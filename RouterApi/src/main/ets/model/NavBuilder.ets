@@ -5,11 +5,9 @@
  */
 import { RouterMgr } from '../api/RouterMgr';
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
-import { INavAnimationCallback } from '../animation/callback/INavAnimationCallback';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
-import { INavAnimationParam } from '../animation/param/INavAnimationParam';
 import { NavAnimParamBuilder } from '../animation/param/NavAnimParamBuilder';
 import { NavAnimationModifier } from '../animation/modifier/NavAnimationModifier';
 
@@ -36,37 +34,13 @@ export class NavBuilder<T> {
   }
 
   /**
-   * 注册路由转场动画，设置相关参数（推荐）
-   * @param modifier
-   * @param ctx
-   * @param param
-   */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    param: INavAnimationParam): NavBuilder<T> {
-    NavAnimationMgr.getInstance().registerAnimParam(modifier, ctx, param)
-    return this;
-  }
-
-  /**
-   * 注册路由转场动画，相关参数构建（推荐）
+   * 注册路由转场动画，相关参数构建
    * @param modifier
    * @param ctx
    * @param param
    */
   public buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
     return NavAnimParamBuilder.builder(modifier, ctx);
-  }
-
-  /**
-   * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
-   * @param modifier
-   * @param ctx
-   * @param options
-   */
-  public registerAnimCallback(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    options: INavAnimationCallback): NavBuilder<T> {
-    NavAnimationMgr.getInstance().registerAnimCallback(modifier, ctx, options);
-    return this;
   }
 
   /**

@@ -3,7 +3,7 @@
  * @date: 2024-11-01
  * @desc:
  */
-import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
+import { NavAnimationModifier, NavAnimSingleParamBuilder, Route, ZRouter } from 'routerapi';
 
 @Builder
 export function PageTwoBuilder(name: string, param: Object) {
@@ -53,37 +53,19 @@ export struct PageTwo {
     .onReady((context: NavDestinationContext) => {
       ZRouter.getInstance()
         .buildAnimParam(this.modifier, context)
-        .setAnimateParam({
-          duration: 1000,
-          curve: Curve.EaseIn
-        })
-        .translateStart({ x: '100%', y: '0' })
-        .translateEnd({ x: '0', y: '0' })
-        .scaleStart({
-          x: 0,
-          y: 0,
-          centerX: "50%",
-          centerY: "50%"
-        })
-        .scaleEnd({
-          x: 1,
-          y: 1,
-          centerX: "50%",
-          centerY: "50%"
-        })
-        .rotateStart({
-          angle: 90,
-          centerX: "50%",
-          centerY: "50%"
-        })
-        .rotateEnd({
-          angle: 0,
-          centerX: "50%",
-          centerY: "50%"
-        })
-        .opacityStart(0.1)
-        .opacityEnd(1.0)
-        .build()
+        .setPushEnterAnimate(
+          NavAnimSingleParamBuilder
+            .builder()
+            .setAnimateParam({
+              duration: 1000,
+              curve: Curve.EaseIn
+            })
+            .translateStart({ x: '100%', y: '0' })
+            .translateEnd({ x: '0', y: '0' })
+            .opacityStart(0.1)
+            .opacityEnd(1.0)
+            .build()
+        )
     })
     .onDisAppear(() => {
       ZRouter.getInstance().unregisterAnim(this.modifier)

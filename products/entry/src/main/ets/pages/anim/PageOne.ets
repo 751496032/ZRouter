@@ -13,7 +13,7 @@ export function PageOneBuilder(name: string, param: Object) {
 @Route({ name: "PageOne" })
 @Component
 export struct PageOne {
-  modifier: NavAnimationModifier = new NavAnimationModifier()
+  @State modifier: NavAnimationModifier = new NavAnimationModifier()
   rectWidth: number = 0;
   interactive: boolean = false;
 
@@ -38,38 +38,30 @@ export struct PageOne {
     }
     .title('pageOne')
     .onReady((context: NavDestinationContext) => {
-      ZRouter.getInstance().registerAnimParam(this.modifier, context, {
-        animateParam: {
-          duration: 500,
-          curve: Curve.Linear
-        },
-        startTranslateOptions: { x: '100%', y: '100%' },
-        endTranslateOptions: { x: '0', y: '0' },
-        startScaleOptions: {
-          x: 0,
-          y: 0,
-          centerX: "50%",
-          centerY: "50%"
-        },
-        endScaleOptions: {
-          x: 1,
-          y: 1,
-          centerX: "50%",
-          centerY: "50%"
-        },
-        startRotateOptions: {
-          angle: 90,
-          centerX: "50%",
-          centerY: "50%"
-        },
-        endRotateOptions: {
-          angle: 0,
-          centerX: "50%",
-          centerY: "50%"
-        },
-        startOpacity: 0.1,
-        endOpacity: 1.0,
-      })
+      ZRouter.getInstance()
+        .buildAnimParam(this.modifier, context)
+        .setPushEnterAnimate({
+          animateParam: {
+            duration: 500,
+            curve: Curve.Linear
+          },
+          startTranslateOptions: { x: '100%', y: '100%' },
+          endTranslateOptions: { x: '0', y: '0' },
+          startOpacity: 0.1,
+          endOpacity: 1.0,
+        })
+        .setPopExitAnimate({
+          startTranslateOptions: { x: '0', y: '0' },
+          endTranslateOptions: { x: '0', y: '100%' },
+        })
+        .setPopEnterAnimate({
+          startTranslateOptions: { x: '0', y: '100%' },
+          endTranslateOptions: { x: '0', y: '0' },
+        })
+        .setPushExitAnimate({
+          startTranslateOptions: { x: '0', y: '0' },
+          endTranslateOptions: { x: '0', y: '100%' },
+        })
     })
     .onDisAppear(() => {
       ZRouter.getInstance().unregisterAnim(this.modifier)

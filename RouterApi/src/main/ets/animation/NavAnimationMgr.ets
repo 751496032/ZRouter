@@ -3,20 +3,16 @@
  * @date: 2024-11-10
  * @desc:
  */
-// CustomNavigationUtils.ets
-import { INavAnimationCallback } from './callback/INavAnimationCallback';
-import { NavAnimationCallback } from './callback/NavAnimationCallback';
 import { NavAnimationModifier } from './modifier/NavAnimationModifier';
-import { INavAnimationParam } from './param/INavAnimationParam';
+import { INavAnimationParam, INavSingleAnimationParam } from './param/INavAnimationParam';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
-  modifier: NavAnimationModifier
-  param: INavAnimationParam
-  finish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  start: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  onFinish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  interactive: ((options: AnimateCallback, operation: NavigationOperation) => void | undefined) | undefined;
+  modifier: NavAnimationModifier | undefined
+  pushEnterParam: INavSingleAnimationParam | undefined
+  pushExitParam: INavSingleAnimationParam | undefined
+  popEnterParam: INavSingleAnimationParam | undefined
+  popExitParam: INavSingleAnimationParam | undefined
 }
 
 /**
@@ -41,48 +37,37 @@ export class NavAnimationMgr {
    * @param param
    */
   public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    param: INavAnimationParam): void {
-    const options = new NavAnimationCallback()
-    options.param = param
-    this.registerAnimCallback(modifier, ctx, options);
-  }
-
-  /**
-   * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
-   * @param modifier
-   * @param ctx
-   * @param options
-   */
-  public registerAnimCallback(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    options: INavAnimationCallback): void {
+    p?: INavAnimationParam): AnimateCallback | undefined {
     if (ctx.navDestinationId && !this.navContextMap.has(modifier)) {
       this.navContextMap.set(modifier, ctx)
       const name = ctx.navDestinationId;
+      let param: AnimateCallback | undefined
       if (this.customTransitionMap.has(name)) {
-        let param = this.customTransitionMap.get(name);
-        if (param !== undefined) {
+        param = this.customTransitionMap.get(name);
+        if (param) {
           param.modifier = modifier
-          param.param = options.param ?? {}
-          param.start = options.startCallback;
-          param.finish = options.endCallback;
-          param.onFinish = options.onFinish;
-          param.interactive = options.interactiveCallback;
-
+          param.pushEnterParam = p?.pushEnterParam
+          param.pushExitParam = p?.pushExitParam
+          param.popEnterParam = p?.popEnterParam
+          param.popExitParam = p?.popExitParam
           param.modifier.callback = param
         }
+      } else {
+        param = {
+          modifier: modifier,
+          pushEnterParam: p?.pushEnterParam,
+          pushExitParam: p?.pushExitParam,
+          popEnterParam: p?.popEnterParam,
+          popExitParam: p?.popExitParam,
+        };
+        if (param.modifier) {
+          param.modifier.callback = param
+        }
+        this.customTransitionMap.set(name, param);
       }
-      let params: AnimateCallback = {
-        modifier: modifier,
-        param: options.param ?? {},
-        start: options.startCallback,
-        finish: options.endCallback,
-        onFinish: options.onFinish,
-        interactive: options.interactiveCallback
-      };
-
-      params.modifier.callback = params
-      this.customTransitionMap.set(name, params);
+      return param
     }
+    return undefined
   }
 
   unregisterAnim(component: object) {
@@ -95,12 +80,52 @@ export class NavAnimationMgr {
     }
   }
 
-  fireInteractiveAnimation(id: string, callback: AnimateCallback, operation: NavigationOperation) {
-    let animation = this.customTransitionMap.get(id)?.interactive;
-    if (!animation) {
-      return;
+  startNavAnimPushEnter(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (id && callback) {
+      if (callback.pushEnterParam) {
+        callback.modifier?.update(callback.pushEnterParam, () => {
+          this.proxy?.finishTransition()
+        })
+      } else {
+        this.defaultPushEnterAnim(callback)
+      }
     }
-    animation(callback, operation);
+  }
+
+  startNavAnimPushExit(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (id && callback) {
+      if (callback.pushExitParam) {
+        callback.modifier?.update(callback.pushExitParam)
+      } else {
+        this.defaultPushExitAnim(callback)
+      }
+    }
+  }
+
+  startNavAnimPopEnter(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (id && callback) {
+      if (callback.popEnterParam) {
+        callback.modifier?.update(callback.popEnterParam)
+      } else {
+        this.defaultPopEnterAnim(callback)
+      }
+    }
+  }
+
+  startNavAnimPopExit(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (id && callback) {
+      if (callback.popExitParam) {
+        callback.modifier?.update(callback.popExitParam, () => {
+          this.proxy?.finishTransition()
+        })
+      } else {
+        this.defaultPopExitAnim(callback)
+      }
+    }
   }
 
   updateProgress(progress: number) {
@@ -114,20 +139,6 @@ export class NavAnimationMgr {
   cancelTransition() {
     if (this.proxy?.cancelTransition) {
       this.proxy.cancelTransition();
-    }
-  }
-
-  recoverState() {
-    if (!this.proxy?.from.navDestinationId || !this.proxy?.to.navDestinationId) {
-      return;
-    }
-    let fromParam = this.customTransitionMap.get(this.proxy.from.navDestinationId);
-    if (fromParam?.onFinish) {
-      fromParam.onFinish(fromParam, false, false);
-    }
-    let toParam = this.customTransitionMap.get(this.proxy?.to.navDestinationId);
-    if (toParam?.onFinish) {
-      toParam.onFinish(toParam, true, true,);
     }
   }
 
@@ -155,16 +166,91 @@ export class NavAnimationMgr {
     }
   }
 
-  getAnimateParam(name: string): AnimateCallback {
+  getAnimateParam(name: string | undefined): AnimateCallback | undefined {
+    if (!name) {
+      return undefined
+    }
+    if (!this.customTransitionMap.has(name)) {
+      return undefined
+    }
     let result: AnimateCallback = {
-      modifier: this.customTransitionMap.get(name)?.modifier ?? new NavAnimationModifier(),
-      param: this.customTransitionMap.get(name)?.param ?? {},
-      start: this.customTransitionMap.get(name)?.start,
-      finish: this.customTransitionMap.get(name)?.finish,
-      onFinish: this.customTransitionMap.get(name)?.onFinish,
-      interactive: this.customTransitionMap.get(name)?.interactive,
+      modifier: this.customTransitionMap.get(name)?.modifier,
+      pushEnterParam: this.customTransitionMap.get(name)?.pushEnterParam,
+      pushExitParam: this.customTransitionMap.get(name)?.pushExitParam,
+      popEnterParam: this.customTransitionMap.get(name)?.popEnterParam,
+      popExitParam: this.customTransitionMap.get(name)?.popExitParam,
     };
     return result;
+  }
+
+  private _defaultParam: INavAnimationParam = {}
+
+  setDefaultPushEnterAnimation(param: INavSingleAnimationParam) {
+    this._defaultParam.pushEnterParam = param
+  }
+
+  setDefaultPushExitAnimation(param: INavSingleAnimationParam) {
+    this._defaultParam.pushExitParam = param
+  }
+
+  setDefaultPopEnterAnimation(param: INavSingleAnimationParam) {
+    this._defaultParam.popEnterParam = param
+  }
+
+  setDefaultPopExitAnimation(param: INavSingleAnimationParam) {
+    this._defaultParam.popExitParam = param
+  }
+
+  defaultPushEnterAnim(callback: AnimateCallback) {
+    if (callback.modifier) {
+      if (this._defaultParam.pushEnterParam) {
+        callback.modifier.update(this._defaultParam.pushEnterParam)
+      } else {
+        callback.modifier?.translate({ x: '100%' })
+        animateTo({
+          duration: 200,
+          onFinish: () => {
+            this.proxy?.finishTransition()
+          }
+        }, () => {
+          callback.modifier?.translate({ x: '0' })
+        })
+      }
+    } else {
+      this.proxy?.finishTransition()
+    }
+  }
+
+  defaultPushExitAnim(callback: AnimateCallback) {
+    if (this._defaultParam.pushExitParam) {
+      callback.modifier?.update(this._defaultParam.pushExitParam)
+    }
+  }
+
+  defaultPopEnterAnim(callback: AnimateCallback) {
+    if (this._defaultParam.popEnterParam) {
+      callback.modifier?.update(this._defaultParam.popEnterParam)
+    }
+  }
+
+  defaultPopExitAnim(callback: AnimateCallback) {
+    if (callback.modifier) {
+      if (this._defaultParam.popExitParam) {
+        callback.modifier.update(this._defaultParam.popExitParam)
+      } else {
+        callback.modifier?.translate({ x: '0' })
+        animateTo({
+          duration: 200,
+          onFinish: () => {
+            this.proxy?.finishTransition()
+          }
+        }, () => {
+          callback.modifier?.translate({ x: '100%' })
+        })
+      }
+    } else {
+      this.proxy?.finishTransition()
+    }
   }
 
   // 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
@@ -175,99 +261,34 @@ export class NavAnimationMgr {
 
     const builder = NavAnimationMgr.getInstance()
 
-    builder.operation = operation;
-    if (builder.interactive) {
-      let customAnimation: NavigationAnimatedTransition = {
-        timeout: 7000,
-        onTransitionEnd: (isSuccess: boolean) => {
-          console.log("===== current transition is " + isSuccess);
-          builder.recoverState();
-          builder.proxy = undefined;
-        },
-        transition: (transitionProxy: NavigationTransitionProxy) => {
-          builder.proxy = transitionProxy;
-          let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
-            (to.navDestinationId) : (from.navDestinationId);
-
-          if (targetIndex) {
-            builder.proxy = transitionProxy;
-            let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
-              (to.navDestinationId) : (from.navDestinationId);
-            if (targetIndex) {
-              const callback = builder.getAnimateParam(targetIndex)
-              if (callback) {
-                builder.fireInteractiveAnimation(targetIndex, callback, operation);
-              }
-            }
-          }
-        },
-        isInteractive: builder.interactive
-      }
-      return customAnimation;
+    // 如果上一页和下一页都没有注册动画，则显示默认转场动画
+    if (!builder.getAnimateParam(from.navDestinationId) && !builder.getAnimateParam(to.navDestinationId)) {
+      return undefined
     }
+
+    builder.operation = operation;
     let customAnimation: NavigationAnimatedTransition = {
-      onTransitionEnd: (isSuccess: boolean) => {
-        console.log(`current transition result is ${isSuccess}`)
-      },
       timeout: 7000,
-      // 转场开始时系统调用该方法，并传入转场上下文代理对象
+      onTransitionEnd: (isSuccess: boolean) => {
+        console.log("===== current transition is " + isSuccess);
+        builder.proxy = undefined;
+      },
       transition: (transitionProxy: NavigationTransitionProxy) => {
-        // 从封装类CustomTransition中根据子页面的序列获取对应的转场动画回调
-        let fromParam: AnimateCallback | undefined =
-          from.navDestinationId ? builder.getAnimateParam(from.navDestinationId) : undefined;
-        let toParam: AnimateCallback | undefined =
-          to.navDestinationId ? builder.getAnimateParam(to.navDestinationId) : undefined;
+        builder.proxy = transitionProxy;
         if (operation == NavigationOperation.PUSH) {
-          if (toParam?.start) {
-            toParam.start(toParam, true, false);
-          }
-          animateTo({
-            duration: toParam?.param?.animateParam?.duration,
-            tempo: toParam?.param?.animateParam?.tempo,
-            curve: toParam?.param?.animateParam?.curve,
-            delay: toParam?.param?.animateParam?.delay,
-            iterations: toParam?.param?.animateParam?.iterations,
-            playMode: toParam?.param?.animateParam?.playMode,
-            finishCallbackType: toParam?.param?.animateParam?.finishCallbackType,
-            expectedFrameRateRange: toParam?.param?.animateParam?.expectedFrameRateRange,
-            onFinish: () => {
-              transitionProxy.finishTransition();
-              if (toParam?.param?.animateParam?.onFinish) {
-                toParam?.param?.animateParam?.onFinish()
-              }
-            }
-          }, () => {
-            if (toParam?.finish) {
-              toParam.finish(toParam, true, false);
-            }
-          })
+          // 从 A页 进入 B页 时 B页 的动画转场
+          builder.startNavAnimPushEnter(to.navDestinationId);
+          // 从 A页 进入 B页 时 A页 的动画转场
+          builder.startNavAnimPushExit(from.navDestinationId);
         } else {
-          if (fromParam?.start) {
-            fromParam.start(fromParam, false, true);
-          }
-          animateTo({
-            duration: fromParam?.param?.animateParam?.duration,
-            tempo: fromParam?.param?.animateParam?.tempo,
-            curve: fromParam?.param?.animateParam?.curve,
-            delay: fromParam?.param?.animateParam?.delay,
-            iterations: fromParam?.param?.animateParam?.iterations,
-            playMode: fromParam?.param?.animateParam?.playMode,
-            finishCallbackType: fromParam?.param?.animateParam?.finishCallbackType,
-            expectedFrameRateRange: fromParam?.param?.animateParam?.expectedFrameRateRange,
-            onFinish: () => {
-              transitionProxy.finishTransition();
-              if (fromParam?.param?.animateParam?.onFinish) {
-                fromParam?.param?.animateParam?.onFinish()
-              }
-            }
-          }, () => {
-            if (fromParam?.finish) {
-              fromParam.finish(fromParam, false, true);
-            }
-          })
+          // 从 B页 退回 A页 时 B页 的动画转场
+          builder.startNavAnimPopExit(from.navDestinationId);
+          // 从 B页 退回 A页 时 A页 的动画转场
+          builder.startNavAnimPopEnter(to.navDestinationId);
         }
-      }
-    };
+      },
+      isInteractive: builder.interactive
+    }
     return customAnimation;
   }
 }
