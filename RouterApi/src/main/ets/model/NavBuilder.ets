@@ -37,10 +37,17 @@ export class NavBuilder<T> {
    * 注册路由转场动画，相关参数构建
    * @param modifier
    * @param ctx
-   * @param param
    */
-  public buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
-    return NavAnimParamBuilder.builder(modifier, ctx);
+  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimationMgr.getInstance().buildAnimParam(modifier, ctx);
+  }
+
+  /**
+   * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
+   * @param modifier
+   */
+  public getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
+    return NavAnimationMgr.getInstance().getAnimParamBuilder(modifier);
   }
 
   /**

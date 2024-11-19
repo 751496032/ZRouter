@@ -4,6 +4,7 @@
  * @desc:
  */
 import { ZRouter } from 'routerapi'
+import { AnimConst } from './AnimConst'
 
 @Entry
 @Component
@@ -14,7 +15,43 @@ export struct AnimTransitionDemo {
     Navigation(ZRouter.getNavStack()) {
       Column({ space: 15 }) {
         Text(this.msg)
-        Button("PageOne").onClick((event: ClickEvent) => {
+        Button("平移").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setAnimate(true)
+            .setParam(AnimConst.TRANSLATE)
+            .setPopListener((v) => {
+              this.msg = v.data?.toString() + ' ' + v.from?.toString()
+            })
+            .navigation("PageOne")
+        })
+        Button("缩放").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setAnimate(true)
+            .setParam(AnimConst.SCALE)
+            .setPopListener((v) => {
+              this.msg = v.data?.toString() + ' ' + v.from?.toString()
+            })
+            .navigation("PageOne")
+        })
+        Button("渐变").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setAnimate(true)
+            .setParam(AnimConst.OPACITY)
+            .setPopListener((v) => {
+              this.msg = v.data?.toString() + ' ' + v.from?.toString()
+            })
+            .navigation("PageOne")
+        })
+        Button("旋转").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setAnimate(true)
+            .setParam(AnimConst.ROTATE)
+            .setPopListener((v) => {
+              this.msg = v.data?.toString() + ' ' + v.from?.toString()
+            })
+            .navigation("PageOne")
+        })
+        Button("组合").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
             .setPopListener((v) => {
@@ -22,7 +59,7 @@ export struct AnimTransitionDemo {
             })
             .navigation("PageOne")
         })
-        Button("PageTwo").onClick((event: ClickEvent) => {
+        Button("上一个页面的退场/进场动画").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
             .setPopListener((v) => {
@@ -35,7 +72,7 @@ export struct AnimTransitionDemo {
     }
     .width('100%')
     .height('100%')
-    .title("asd")
+    .title("自定义动画转场")
     .customNavContentTransition(ZRouter.getInstance().getAnimCustomNavContentTransition())
   }
 }

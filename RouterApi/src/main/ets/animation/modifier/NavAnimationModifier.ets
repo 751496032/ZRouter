@@ -73,7 +73,7 @@ export class NavAnimationModifier extends AttributeUpdater<NavDestinationAttribu
   private start(param: INavSingleAnimationParam | undefined) {
     if (param) {
       this
-        .opacity(param.startOpacity)
+        .opacity(param.startOpacity === 0 ? 0.01 : param.startOpacity)
         .translate(param.startTranslateOptions)
         .scale(param.startScaleOptions)
         .rotate(param.startRotateOptions)
@@ -83,7 +83,7 @@ export class NavAnimationModifier extends AttributeUpdater<NavDestinationAttribu
   private end(param: INavSingleAnimationParam | undefined) {
     if (param) {
       this
-        .opacity(param.endOpacity)
+        .opacity(param.endOpacity === 0 ? 0.01 : param.endOpacity)
         .translate(param.endTranslateOptions)
         .scale(param.endScaleOptions)
         .rotate(param.endRotateOptions)

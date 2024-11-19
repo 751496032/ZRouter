@@ -5,14 +5,15 @@
  */
 import { NavAnimationModifier } from './modifier/NavAnimationModifier';
 import { INavAnimationParam, INavSingleAnimationParam } from './param/INavAnimationParam';
+import { NavAnimParamBuilder } from './param/NavAnimParamBuilder';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
   modifier: NavAnimationModifier | undefined
-  pushEnterParam: INavSingleAnimationParam | undefined
-  pushExitParam: INavSingleAnimationParam | undefined
-  popEnterParam: INavSingleAnimationParam | undefined
-  popExitParam: INavSingleAnimationParam | undefined
+  pushEnterParam?: INavSingleAnimationParam | undefined
+  pushExitParam?: INavSingleAnimationParam | undefined
+  popEnterParam?: INavSingleAnimationParam | undefined
+  popExitParam?: INavSingleAnimationParam | undefined
 }
 
 /**
@@ -23,7 +24,7 @@ export class NavAnimationMgr {
   private interactive: boolean = false;
   private proxy: NavigationTransitionProxy | undefined = undefined;
   private operation: NavigationOperation = NavigationOperation.PUSH
-  private navContextMap: Map<object, NavDestinationContext> = new Map();
+  private navContextMap: Map<NavAnimationModifier, NavDestinationContext> = new Map();
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
 
   static getInstance() {
@@ -36,30 +37,15 @@ export class NavAnimationMgr {
    * @param ctx
    * @param param
    */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    p?: INavAnimationParam): AnimateCallback | undefined {
+  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): AnimateCallback | undefined {
     if (ctx.navDestinationId && !this.navContextMap.has(modifier)) {
       this.navContextMap.set(modifier, ctx)
       const name = ctx.navDestinationId;
       let param: AnimateCallback | undefined
-      if (this.customTransitionMap.has(name)) {
-        param = this.customTransitionMap.get(name);
-        if (param) {
-          param.modifier = modifier
-          param.pushEnterParam = p?.pushEnterParam
-          param.pushExitParam = p?.pushExitParam
-          param.popEnterParam = p?.popEnterParam
-          param.popExitParam = p?.popExitParam
-          param.modifier.callback = param
-        }
-      } else {
+      if (!this.customTransitionMap.has(name)) {
         param = {
           modifier: modifier,
-          pushEnterParam: p?.pushEnterParam,
-          pushExitParam: p?.pushExitParam,
-          popEnterParam: p?.popEnterParam,
-          popExitParam: p?.popExitParam,
-        };
+        }
         if (param.modifier) {
           param.modifier.callback = param
         }
@@ -67,17 +53,30 @@ export class NavAnimationMgr {
       }
       return param
     }
+    if (ctx.navDestinationId) {
+      return this.customTransitionMap.get(ctx.navDestinationId)
+    }
     return undefined
   }
 
-  unregisterAnim(component: object) {
-    if (this.navContextMap.has(component)) {
-      const navId = this.navContextMap.get(component)?.navDestinationId
-      if (navId) {
-        this.customTransitionMap.delete(navId);
-      }
-      this.navContextMap.delete(component)
+  buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimParamBuilder.builder(modifier, ctx)
+  }
+
+  getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
+    const ctx = this.navContextMap.get(modifier)
+    if (ctx?.navDestinationId) {
+      return NavAnimParamBuilder.builder(modifier, ctx)
     }
+    return undefined
+  }
+
+  unregisterAnim(modifier: NavAnimationModifier) {
+    const navId = this.navContextMap.get(modifier)?.navDestinationId
+    if (navId) {
+      this.customTransitionMap.delete(navId);
+    }
+    this.navContextMap.delete(modifier)
   }
 
   startNavAnimPushEnter(id: string | undefined) {
@@ -90,6 +89,8 @@ export class NavAnimationMgr {
       } else {
         this.defaultPushEnterAnim(callback)
       }
+    } else {
+      this.proxy?.finishTransition()
     }
   }
 
