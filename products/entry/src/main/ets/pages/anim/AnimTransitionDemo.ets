@@ -24,6 +24,15 @@ export struct AnimTransitionDemo {
             })
             .navigation("PageOne")
         })
+        Button("平移-延迟1S-播放2S-减速播放").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setAnimate(true)
+            .setParam(AnimConst.ANIM)
+            .setPopListener((v) => {
+              this.msg = v.data?.toString() + ' ' + v.from?.toString()
+            })
+            .navigation("PageOne")
+        })
         Button("缩放").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
@@ -54,6 +63,15 @@ export struct AnimTransitionDemo {
         Button("组合").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
+            .setPopListener((v) => {
+              this.msg = v.data?.toString() + ' ' + v.from?.toString()
+            })
+            .navigation("PageOne")
+        })
+        Button("自定义").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setAnimate(true)
+            .setParam(AnimConst.CUSTOM)
             .setPopListener((v) => {
               this.msg = v.data?.toString() + ' ' + v.from?.toString()
             })

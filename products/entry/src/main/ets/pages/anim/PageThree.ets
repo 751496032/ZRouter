@@ -29,14 +29,15 @@ export struct PageThree {
           animateParam: {
             duration: 1000,
           },
-          startTranslateOptions: {
-            x: '100%',
-            y: '0',
+          startCallback: (m) => m.attribute?.translate({ x: '100%' }),
+          endCallback: (m) => m.attribute?.translate({ x: '0' }),
+        })
+        .setPopExitAnimate({
+          animateParam: {
+            duration: 1000,
           },
-          endTranslateOptions: {
-            x: '0',
-            y: '0',
-          }
+          startCallback: (m) => m.attribute?.translate({ x: '0' }),
+          endCallback: (m) => m.attribute?.translate({ x: '100%' }),
         })
     })
     .onDisAppear(() => {

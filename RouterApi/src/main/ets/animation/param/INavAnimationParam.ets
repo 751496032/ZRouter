@@ -1,3 +1,5 @@
+import { NavAnimationModifier } from "../modifier/NavAnimationModifier"
+
 /**
  * @author: HHBin
  * @date: 2024-11-14
@@ -16,20 +18,24 @@ export interface INavAnimationParam {
 export interface INavSingleAnimationParam {
   // 转场动画函数参数
   animateParam?: AnimateParam
-  // 起点平移果参数
-  startTranslateOptions?: TranslateOptions
-  // 终点平移参数
-  endTranslateOptions?: TranslateOptions
-  // 起点缩放参数
-  startScaleOptions?: ScaleOptions
-  // 终点缩放参数
-  endScaleOptions?: ScaleOptions
-  // 起点旋转参数
-  startRotateOptions?: RotateOptions
-  // 终点旋转参数
-  endRotateOptions?: RotateOptions
-  // 起点透明度值参数
-  startOpacity?: number | Resource
-  // 终点透明度值参数
-  endOpacity?: number | Resource
+  // 起点回调
+  startCallback?: (modifier: NavAnimationModifier, proxy: NavigationTransitionProxy | undefined) => void
+  // 终点回调
+  endCallback?: (modifier: NavAnimationModifier, proxy: NavigationTransitionProxy | undefined) => void
+  // // 起点平移果参数
+  // startTranslateOptions?: TranslateOptions
+  // // 终点平移参数
+  // endTranslateOptions?: TranslateOptions
+  // // 起点缩放参数
+  // startScaleOptions?: ScaleOptions
+  // // 终点缩放参数
+  // endScaleOptions?: ScaleOptions
+  // // 起点旋转参数
+  // startRotateOptions?: RotateOptions
+  // // 终点旋转参数
+  // endRotateOptions?: RotateOptions
+  // // 起点透明度值参数
+  // startOpacity?: number | Resource
+  // // 终点透明度值参数
+  // endOpacity?: number | Resource
 }
