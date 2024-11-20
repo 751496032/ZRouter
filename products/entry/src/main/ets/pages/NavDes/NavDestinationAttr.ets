@@ -9,7 +9,7 @@ abstract class BaseModifier <T> implements AttributeModifier<T> {
   abstract applyNormalAttribute(instance: T): void
 }
 
-class NavDesModifier extends BaseModifier<NavDestinationModifier> {
+export class NavDesModifier extends BaseModifier<NavDestinationModifier> {
   applyNormalAttribute(instance: NavDestinationModifier): void {
 
   }

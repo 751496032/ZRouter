@@ -74,10 +74,13 @@ export interface INavLifecycle extends ILifecycle {
    */
   onDisappear?(info: RouterInfo): void
 
+
+  //—————————————————— onBackPress 和 onReady 方法只有在NavDestination模板模式下才会生效 ——————————————————
+
   /**
    * NavDestination组件返回时触发此回调
    */
-  // onBackPress?: () => void
+  // onBackPress? () : boolean
 
   /**
    * 当NavDestination即将构建子组件之前会触发此回调。

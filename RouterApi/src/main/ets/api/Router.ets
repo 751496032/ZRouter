@@ -21,6 +21,7 @@ import { IProvider } from '../service/IProvider'
 import { ConfigInitializer } from '../model/ConfigInitializer'
 import Logger from '../utlis/Logger'
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
+import { AbsLifecycleObserver } from '../lifecycle/template/AbsLifecycleObserver'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -215,6 +216,10 @@ export class ZRouter {
 
   public static getCurrentStackName(): string {
     return ZRouter.getRouterMgr().currentStackName
+  }
+
+  public static getLifecycleObserver<IL extends AbsLifecycleObserver>(navDestinationId: string | undefined){
+    return ZRouter.getInstance().getLifecycleObserver<IL>(navDestinationId)
   }
 
 

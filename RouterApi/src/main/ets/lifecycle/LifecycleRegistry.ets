@@ -25,7 +25,9 @@ export class LifecycleRegistry {
 
   public addObserver<T extends ILifecycleObserver>(observer: T) {
     RouterMgr.getInstance().lifecycleMgr.addObserver(observer, this.targetClassName);
-    this.currentLifecycleObserver = observer;
+    if (!this.currentLifecycleObserver) {
+      this.currentLifecycleObserver = observer;
+    }
   }
 
   public removeObserver(observer: ILifecycleObserver): boolean {
@@ -34,11 +36,11 @@ export class LifecycleRegistry {
     return isSuccess
   }
 
-  public getCurrentObserver<T extends ILifecycleObserver>(): T | null {
+  public getCurrentObserver<T extends ILifecycleObserver>(): T | undefined {
     try {
       return this.currentLifecycleObserver as T
     } catch (e) {
-      return null
+      return undefined
     }
 
   }
