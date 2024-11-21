@@ -53,7 +53,7 @@ export struct PageOne {
       }
       .size({ width: '100%', height: '100%' })
     }
-    .title('pageOne')
+    .title('PageOne')
     .onReady((context: NavDestinationContext) => {
       switch (ZRouter.getParam()) {
         case AnimConst.TRANSLATE:

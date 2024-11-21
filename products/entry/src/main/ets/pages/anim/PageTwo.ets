@@ -16,35 +16,40 @@ export function PageTwoBuilder(name: string, param: Object) {
 @Component
 export struct PageTwo {
   modifier: NavAnimationModifier = new NavAnimationModifier()
+  @State jumpIndex: number = 0
 
   build() {
     NavDestination() {
       Column({ space: 15 }) {
-        Text('进入新页面时，该页面的退场动画\n新页面退出时，该页面的进场动画')
+        Text('进入新页面时，该页面的退场动画' +
+          '\n新页面退出时，该页面的进场动画' +
+          '\n如果下一页无转场，则默认系统转场，当前转场效果不生效')
+        Text(this.jumpText())
+          .fontSize(21)
+          .fontColor(Color.Black)
+          .fontWeight(10)
+        Button("切换调整页面").backgroundColor(Color.Orange).onClick((event: ClickEvent) => {
+          this.jumpIndex++
+        })
         Button("平移").onClick((event: ClickEvent) => {
           this.setAnim(AnimConst.TRANSLATE)
-          ZRouter.getInstance()
-            .navigation(RouterConstants.PAGE_THREE)
+          this.jump()
         })
         Button("缩放").onClick((event: ClickEvent) => {
           this.setAnim(AnimConst.SCALE)
-          ZRouter.getInstance()
-            .navigation(RouterConstants.PAGE_THREE)
+          this.jump()
         })
         Button("渐变").onClick((event: ClickEvent) => {
           this.setAnim(AnimConst.OPACITY)
-          ZRouter.getInstance()
-            .navigation(RouterConstants.PAGE_THREE)
+          this.jump()
         })
         Button("旋转").onClick((event: ClickEvent) => {
           this.setAnim(AnimConst.ROTATE)
-          ZRouter.getInstance()
-            .navigation(RouterConstants.PAGE_THREE)
+          this.jump()
         })
         Button("组合").onClick((event: ClickEvent) => {
           this.setAnim("")
-          ZRouter.getInstance()
-            .navigation(RouterConstants.PAGE_THREE)
+          this.jump()
         })
         Button('PageTwo进场/退场动画+PageOne进场/退场动画', { stateEffect: true, type: ButtonType.Capsule })
           .width('80%')
@@ -52,7 +57,7 @@ export struct PageTwo {
           .margin(20)
           .onClick(() => {
             this.setAnim("")
-            ZRouter.getInstance().navigation(RouterConstants.PAGE_ONE)
+            this.jump()
           })
       }
       .size({ width: '100%', height: '100%' })
@@ -82,6 +87,37 @@ export struct PageTwo {
     })
     .attributeModifier(this.modifier)
     .backgroundColor(Color.Yellow)
+  }
+
+  private jumpText() {
+    switch (this.jumpIndex % 4) {
+      case 1:
+        return "PageTwo"
+      case 2:
+        return "自己设置的全局转场"
+      case 3:
+        return "系统默认转场"
+      default:
+        return "PageOne"
+    }
+  }
+
+  private jump() {
+    switch (this.jumpIndex % 4) {
+      case 1:
+        ZRouter.getInstance().navigation(RouterConstants.PAGE_TWO)
+        break
+      case 2:
+        ZRouter.getInstance().navigation(RouterConstants.PAGE_THREE)
+        break
+      case 3:
+        ZRouter.getInstance().navigation(RouterConstants.PAGE_FOUR)
+        break
+      default:
+        ZRouter.getInstance()
+          .setParam(AnimConst.TRANSLATE)
+          .navigation(RouterConstants.PAGE_ONE)
+    }
   }
 
   private setAnim(type: string) {

@@ -1,7 +1,7 @@
 /**
  * @author: HHBin
  * @date: 2024-11-01
- * @desc:
+ * @desc: 自己设置的全局转场
  */
 import { RouterConstants } from '@hzw/common_library';
 import { NavAnimationModifier, Route, ZRouter } from 'routerapi';

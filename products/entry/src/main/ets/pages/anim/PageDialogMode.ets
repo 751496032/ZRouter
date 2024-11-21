@@ -25,6 +25,7 @@ export struct PageDialogMode {
       .size({ width: '100%', height: '100%' })
     }
     .title('PageDialogMode')
+    .backgroundColor(Color.White)
     .onReady((c) => {
       ZRouter.getInstance().registerAnimParam(this.modifier, c)
     })
