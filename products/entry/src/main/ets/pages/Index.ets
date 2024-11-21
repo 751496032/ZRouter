@@ -115,31 +115,28 @@ struct Index {
           .setAnimate(false)
           .navigation(RouterConst.SPLASH_PAGE)
       }
-
-      // 设置全局转场
-      ZRouter.getInstance()
-        .defaultAnimateBuilder()
-        .setPushEnterAnimate({
-          startCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
-          endCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
-        })
-        .setPopExitAnimate({
-          startCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
-          endCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
-        })
-        .setPushExitAnimate({
-          startCallback: (m) => m.attribute?.opacity(1),
-          endCallback: (m) => m.attribute?.opacity(0.01),
-        })
-        .setPopEnterAnimate({
-          startCallback: (m) => m.attribute?.opacity(0.01),
-          endCallback: (m) => m.attribute?.opacity(1),
-        })
-
     })
     .title('Main')
     .height('100%')
     .width('100%')
-    .customNavContentTransition(ZRouter.getInstance().getAnimCustomNavContentTransition())
+    .customNavContentTransition(ZRouter.getInstance()
+      .defaultAnimateBuilder()
+      .setPushEnterAnimate({
+        startCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
+        endCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
+      })
+      .setPopExitAnimate({
+        startCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
+        endCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
+      })
+      .setPushExitAnimate({
+        startCallback: (m) => m.attribute?.opacity(1),
+        endCallback: (m) => m.attribute?.opacity(0.01),
+      })
+      .setPopEnterAnimate({
+        startCallback: (m) => m.attribute?.opacity(0.01),
+        endCallback: (m) => m.attribute?.opacity(1),
+      })
+      .getAnimCustomNavContentTransition())
   }
 }

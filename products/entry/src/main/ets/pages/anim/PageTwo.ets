@@ -52,7 +52,7 @@ export struct PageTwo {
           .margin(20)
           .onClick(() => {
             this.setAnim("")
-            ZRouter.getInstance().navigation('PageOne')
+            ZRouter.getInstance().navigation(RouterConstants.PAGE_ONE)
           })
       }
       .size({ width: '100%', height: '100%' })
@@ -88,8 +88,7 @@ export struct PageTwo {
     switch (type) {
       case AnimConst.TRANSLATE:
         // 平移
-        ZRouter.getInstance()
-          .getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.translate({ x: '100%', y: '100%' })
@@ -109,8 +108,7 @@ export struct PageTwo {
         break
       case AnimConst.SCALE:
         // 缩放
-        ZRouter.getInstance()
-          .getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.scale({
@@ -150,8 +148,7 @@ export struct PageTwo {
         break
       case AnimConst.OPACITY:
         // 渐变
-        ZRouter.getInstance()
-          .getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.opacity(0.01)
@@ -171,8 +168,7 @@ export struct PageTwo {
         break
       case AnimConst.ROTATE:
         // 旋转
-        ZRouter.getInstance()
-          .getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.rotate({
@@ -208,8 +204,7 @@ export struct PageTwo {
         break
       default:
       // 组合
-        ZRouter.getInstance()
-          .getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.translate({ x: '100%', y: '100%' })

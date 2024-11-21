@@ -1,4 +1,3 @@
-import { NavAnimationModifier } from '../modifier/NavAnimationModifier'
 import { AnimateCallback, NavAnimationMgr } from '../NavAnimationMgr'
 import { INavSingleAnimationParam } from './INavAnimationParam'
 
@@ -16,7 +15,7 @@ export class NavAnimParamBuilder {
 
   constructor(callback?: AnimateCallback) {
     if (callback) {
-      this._callback =callback
+      this._callback = callback
     } else {
       this._callback = {}
     }
@@ -94,5 +93,13 @@ export class NavAnimParamBuilder {
       }
     }
     return this
+  }
+
+  /**
+   * 自定义转场动画回调，在Navigation().customNavContentTransition()设置
+   * @returns
+   */
+  public getAnimCustomNavContentTransition() {
+    return NavAnimationMgr.customNavContentTransition
   }
 }

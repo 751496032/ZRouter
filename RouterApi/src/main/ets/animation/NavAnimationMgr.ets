@@ -234,7 +234,7 @@ export class NavAnimationMgr {
     }
   }
 
-  // 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
+  // 自定义转场动画回调，在Navigation().customNavContentTransition()设置
   static customNavContentTransition = (from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
     // if (from.mode == NavDestinationMode.DIALOG || to.mode == NavDestinationMode.DIALOG) {
     //   return undefined;

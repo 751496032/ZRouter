@@ -78,12 +78,12 @@ export struct PageOne {
             })
           break
         case AnimConst.ANIM:
-          // 平移-播放2S-减速播放
+          // 平移-播放0.5-减速播放
           ZRouter.getInstance()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               animateParam: {
-                duration: 2000,
+                duration: 500,
                 curve: Curve.LinearOutSlowIn
               },
               startCallback: (m) => {
@@ -95,8 +95,7 @@ export struct PageOne {
             })
             .setPopExitAnimate({
               animateParam: {
-                delay: 1000,
-                duration: 2000,
+                duration: 500,
                 curve: Curve.LinearOutSlowIn
               },
               startCallback: (m) => {

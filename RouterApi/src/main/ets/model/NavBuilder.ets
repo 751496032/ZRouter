@@ -66,7 +66,7 @@ export class NavBuilder<T> {
   }
 
   /**
-   * 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
+   * 自定义转场动画回调，在Navigation().customNavContentTransition()设置
    * @returns
    */
   public getAnimCustomNavContentTransition() {
