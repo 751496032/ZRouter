@@ -59,6 +59,22 @@ export struct PageTwo {
     .title('pageTwo')
     .onReady((context: NavDestinationContext) => {
       ZRouter.getInstance().registerAnimParam(this.modifier, context)
+        .setPushEnterAnimate({
+          startCallback: (m) => {
+            m.attribute?.size({ width: '50%' }).opacity(0.5)
+          },
+          endCallback: (m) => {
+            m.attribute?.size({ width: '100%' }).opacity(1)
+          },
+        })
+        .setPopExitAnimate({
+          startCallback: (m) => {
+            m.attribute?.size({ width: '100%' }).opacity(1)
+          },
+          endCallback: (m) => {
+            m.attribute?.size({ width: '50%'}).opacity(0.5)
+          },
+        })
     })
     .onDisAppear(() => {
       ZRouter.getInstance().unregisterAnim(this.modifier)
@@ -242,11 +258,11 @@ export struct PageTwo {
             },
             endCallback: (m) => {
               m.attribute?.scale({
-                  x: 0,
-                  y: 0,
-                  centerX: '0',
-                  centerY: '0',
-                })
+                x: 0,
+                y: 0,
+                centerX: '0',
+                centerY: '0',
+              })
                 .opacity(0.01)
                 .rotate({
                   angle: 360,

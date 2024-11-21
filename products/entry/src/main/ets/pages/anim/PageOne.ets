@@ -21,14 +21,21 @@ export struct PageOne {
   build() {
     NavDestination() {
       Column() {
-        Button('空白页', { stateEffect: true, type: ButtonType.Capsule })
+        Button('自己设置的全局转场', { stateEffect: true, type: ButtonType.Capsule })
           .width('80%')
           .height(40)
           .margin(20)
           .onClick(() => {
             ZRouter.getInstance().push('PageThree')
           })
-        Button('PageTwo', { stateEffect: true, type: ButtonType.Capsule })
+        Button('系统默认转场', { stateEffect: true, type: ButtonType.Capsule })
+          .width('80%')
+          .height(40)
+          .margin(20)
+          .onClick(() => {
+            ZRouter.getInstance().push('PageFour')
+          })
+        Button('上一页的退场/进场动画', { stateEffect: true, type: ButtonType.Capsule })
           .width('80%')
           .height(40)
           .margin(20)
@@ -63,12 +70,11 @@ export struct PageOne {
             })
           break
         case AnimConst.ANIM:
-          // 平移-延迟1S-播放2S-减速播放
+          // 平移-播放2S-减速播放
           ZRouter.getInstance()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               animateParam: {
-                delay: 1000,
                 duration: 2000,
                 curve: Curve.LinearOutSlowIn
               },

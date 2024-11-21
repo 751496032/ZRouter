@@ -6,39 +6,31 @@
 import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 
 @Builder
-export function PageTwoBuilder(name: string, param: Object) {
+export function PageThreeBuilder(name: string, param: Object) {
   PageThree()
 }
 
 @Route({ name: "PageThree" })
 @Component
 export struct PageThree {
-  modifier: NavAnimationModifier = new NavAnimationModifier()
+  modifier = new NavAnimationModifier()
 
   build() {
     NavDestination() {
       Column() {
-        Text("空白页")
+        Button('系统默认转场', { stateEffect: true, type: ButtonType.Capsule })
+          .width('80%')
+          .height(40)
+          .margin(20)
+          .onClick(() => {
+            ZRouter.getInstance().push('PageFour')
+          })
       }
       .size({ width: '100%', height: '100%' })
     }
-    .title('PageThree')
-    .onReady((ctx) => {
-      ZRouter.getInstance().registerAnimParam(this.modifier, ctx)
-        .setPushEnterAnimate({
-          animateParam: {
-            duration: 1000,
-          },
-          startCallback: (m) => m.attribute?.translate({ x: '100%' }),
-          endCallback: (m) => m.attribute?.translate({ x: '0' }),
-        })
-        .setPopExitAnimate({
-          animateParam: {
-            duration: 1000,
-          },
-          startCallback: (m) => m.attribute?.translate({ x: '0' }),
-          endCallback: (m) => m.attribute?.translate({ x: '100%' }),
-        })
+    .title('自己设置的全局转场')
+    .onReady((c) => {
+      ZRouter.getInstance().registerAnimParam(this.modifier, c)
     })
     .onDisAppear(() => {
       ZRouter.getInstance().unregisterAnim(this.modifier)

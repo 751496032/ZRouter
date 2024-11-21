@@ -34,6 +34,13 @@ export class NavBuilder<T> {
   }
 
   /**
+   * 全局转场动画构造器，构造后还是需要给页面设置NavAnimationModifier，不然不生效
+   */
+  public defaultAnimateBuilder(): NavAnimParamBuilder {
+    return NavAnimationMgr.getInstance().defaultAnimateBuilder();
+  }
+
+  /**
    * 注册路由转场动画，相关参数构建
    * @param modifier
    * @param ctx

@@ -24,7 +24,7 @@ export struct AnimTransitionDemo {
             })
             .navigation("PageOne")
         })
-        Button("平移-延迟1S-播放2S-减速播放").onClick((event: ClickEvent) => {
+        Button("平移-播放2S-减速播放").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
             .setParam(AnimConst.ANIM)
@@ -77,7 +77,7 @@ export struct AnimTransitionDemo {
             })
             .navigation("PageOne")
         })
-        Button("上一个页面的退场/进场动画").onClick((event: ClickEvent) => {
+        Button("上一页的退场/进场动画").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
             .setPopListener((v) => {
@@ -92,5 +92,26 @@ export struct AnimTransitionDemo {
     .height('100%')
     .title("自定义动画转场")
     .customNavContentTransition(ZRouter.getInstance().getAnimCustomNavContentTransition())
+    .onAppear(() => {
+      // 设置全局转场
+      ZRouter.getInstance()
+        .defaultAnimateBuilder()
+        .setPushEnterAnimate({
+          startCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
+          endCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
+        })
+        .setPopExitAnimate({
+          startCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
+          endCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
+        })
+        .setPushExitAnimate({
+          startCallback: (m) => m.attribute?.opacity(1),
+          endCallback: (m) => m.attribute?.opacity(0.01),
+        })
+        .setPopEnterAnimate({
+          startCallback: (m) => m.attribute?.opacity(0.01),
+          endCallback: (m) => m.attribute?.opacity(1),
+        })
+    })
   }
 }
