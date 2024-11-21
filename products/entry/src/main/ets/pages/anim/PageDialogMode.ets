@@ -6,37 +6,25 @@
 import { RouterConstants } from '@hzw/common_library';
 import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 
-@Builder
-export function PageThreeBuilder(name: string, param: Object) {
-  PageThree()
-}
-
-@Route({ name: RouterConstants.PAGE_THREE })
+@Route({ name: RouterConstants.PAGE_DIALOG_MODE })
 @Component
-export struct PageThree {
+export struct PageDialogMode {
   modifier = new NavAnimationModifier()
 
   build() {
     NavDestination() {
       Column() {
-        Button('系统默认转场', { stateEffect: true, type: ButtonType.Capsule })
+        Button('自己设置的全局转场', { stateEffect: true, type: ButtonType.Capsule })
           .width('80%')
           .height(40)
           .margin(20)
           .onClick(() => {
-            ZRouter.getInstance().push(RouterConstants.PAGE_FOUR)
-          })
-        Button('返回动画 demo 首页', { stateEffect: true, type: ButtonType.Capsule })
-          .width('80%')
-          .height(40)
-          .margin(20)
-          .onClick(() => {
-            ZRouter.getInstance().popToName(RouterConstants.ANIM_DEMO)
+            ZRouter.getInstance().push(RouterConstants.PAGE_THREE)
           })
       }
       .size({ width: '100%', height: '100%' })
     }
-    .title('自己设置的全局转场')
+    .title('PageDialogMode')
     .onReady((c) => {
       ZRouter.getInstance().registerAnimParam(this.modifier, c)
     })
@@ -44,6 +32,6 @@ export struct PageThree {
       ZRouter.getInstance().unregisterAnim(this.modifier)
     })
     .attributeModifier(this.modifier)
-    .backgroundColor(Color.White)
+    .mode(NavDestinationMode.DIALOG)
   }
 }

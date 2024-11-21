@@ -236,9 +236,9 @@ export class NavAnimationMgr {
 
   // 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
   static customNavContentTransition = (from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
-    if (from.mode == NavDestinationMode.DIALOG || to.mode == NavDestinationMode.DIALOG) {
-      return undefined;
-    }
+    // if (from.mode == NavDestinationMode.DIALOG || to.mode == NavDestinationMode.DIALOG) {
+    //   return undefined;
+    // }
 
     const builder = NavAnimationMgr.getInstance()
     const fromParam = builder.getAnimateParam(from.navDestinationId)

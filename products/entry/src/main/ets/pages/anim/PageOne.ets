@@ -3,6 +3,7 @@
  * @date: 2024-11-01
  * @desc:
  */
+import { RouterConstants } from '@hzw/common_library';
 import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 import { AnimConst } from './AnimConst';
 
@@ -11,7 +12,7 @@ export function PageOneBuilder(name: string, param: Object) {
   PageOne()
 }
 
-@Route({ name: "PageOne" })
+@Route({ name: RouterConstants.PAGE_ONE })
 @Component
 export struct PageOne {
   modifier: NavAnimationModifier = new NavAnimationModifier()
@@ -26,21 +27,28 @@ export struct PageOne {
           .height(40)
           .margin(20)
           .onClick(() => {
-            ZRouter.getInstance().push('PageThree')
+            ZRouter.getInstance().push(RouterConstants.PAGE_THREE)
           })
         Button('系统默认转场', { stateEffect: true, type: ButtonType.Capsule })
           .width('80%')
           .height(40)
           .margin(20)
           .onClick(() => {
-            ZRouter.getInstance().push('PageFour')
+            ZRouter.getInstance().push(RouterConstants.PAGE_FOUR)
           })
         Button('上一页的退场/进场动画', { stateEffect: true, type: ButtonType.Capsule })
           .width('80%')
           .height(40)
           .margin(20)
           .onClick(() => {
-            ZRouter.getInstance().push('PageTwo')
+            ZRouter.getInstance().push(RouterConstants.PAGE_TWO)
+          })
+        Button('DialogMode', { stateEffect: true, type: ButtonType.Capsule })
+          .width('80%')
+          .height(40)
+          .margin(20)
+          .onClick(() => {
+            ZRouter.getInstance().push(RouterConstants.PAGE_DIALOG_MODE)
           })
       }
       .size({ width: '100%', height: '100%' })
