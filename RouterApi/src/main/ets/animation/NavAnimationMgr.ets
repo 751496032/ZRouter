@@ -244,12 +244,16 @@ export class NavAnimationMgr {
     const fromParam = builder.getAnimateParam(from.navDestinationId)
     const toParam = builder.getAnimateParam(to.navDestinationId)
 
-    if (operation == NavigationOperation.PUSH
-      && ((!toParam?.pushEnterParam && !builder._defaultCallback?.pushEnterParam) || !toParam?.modifier)) {
+    const toNoAnim = (!toParam?.pushEnterParam || !toParam?.pushEnterParam?.startCallback)
+      && (!builder._defaultCallback?.pushEnterParam || !builder._defaultCallback?.pushEnterParam?.startCallback)
+    const toNoModifier = !toParam?.modifier
+    const fromNoAnim = (!fromParam?.popExitParam || !fromParam?.popExitParam?.startCallback)
+      && (!builder._defaultCallback?.popExitParam || !builder._defaultCallback?.popExitParam?.startCallback)
+    const fromNoModifier = !fromParam?.modifier
+    if (operation == NavigationOperation.PUSH && (toNoAnim || toNoModifier)) {
       // 从 A页 进入 B页 时 B页 的进场动画转场不存在，或者 B页 的modifier不存在，则默认官方转场
       return undefined
-    } else if (operation == NavigationOperation.POP
-      && ((!fromParam?.popExitParam && !builder._defaultCallback?.popExitParam) || !fromParam?.modifier)) {
+    } else if (operation == NavigationOperation.POP && (fromNoAnim || fromNoModifier)) {
       // 从 B页 退回 A页 时 B页 的退场动画转场不存在，或者 B页 的modifier不存在，则默认官方转场
       return undefined
     }
