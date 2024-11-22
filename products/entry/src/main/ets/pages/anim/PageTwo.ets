@@ -28,7 +28,7 @@ export struct PageTwo {
           .fontSize(21)
           .fontColor(Color.Black)
           .fontWeight(10)
-        Button("切换调整页面").backgroundColor(Color.Orange).onClick((event: ClickEvent) => {
+        Button("切换跳转页面").backgroundColor(Color.Orange).onClick((event: ClickEvent) => {
           this.jumpIndex++
         })
         Button("平移").onClick((event: ClickEvent) => {
@@ -92,13 +92,13 @@ export struct PageTwo {
   private jumpText() {
     switch (this.jumpIndex % 4) {
       case 1:
-        return "PageTwo"
+        return "跳PageTwo"
       case 2:
-        return "自己设置的全局转场"
+        return "跳自己设置的全局转场"
       case 3:
-        return "系统默认转场"
+        return "跳系统默认转场"
       default:
-        return "PageOne"
+        return "跳PageOne"
     }
   }
 
