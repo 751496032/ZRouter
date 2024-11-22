@@ -2,10 +2,10 @@ import { RouterConstants, ToastUtils } from '@hzw/common_library'
 import { promptAction, router } from '@kit.ArkUI'
 import { ILifecycleObserver, Lifecycle,
   LifecycleRegistry, ZRouter } from 'routerapi'
-import { RouterConst } from '../constants/RouterConst'
 import { AddInterceptor } from '../interceptors/AddIntercetors'
 import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit'
+import { RouterConst } from '../constants/RouterConst'
 
 @Entry
 @Component
