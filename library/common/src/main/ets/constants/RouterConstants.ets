@@ -3,6 +3,7 @@ export class RouterConstants {
   public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
   public static readonly HARB_MAIN_PAGE :string = "harBMainPage"
   public static readonly HSPC_INDEX_PAGE: string = "hspCIndex"
+  public static readonly HSPC_PAGE3: string = "hspCPage3"
   public static readonly ORDER_PAGE: string = "order_Page"
   public static readonly ORDER_DETAILS_PAGE: string = "order_Details_Page"
   public static readonly SERVICE_HSPC_IMPL: string = "HspC_Service"

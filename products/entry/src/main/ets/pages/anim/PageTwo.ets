@@ -3,6 +3,7 @@
  * @date: 2024-11-01
  * @desc:
  */
+import { RouterConstants } from '@hzw/common_library';
 import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 
 @Builder
@@ -26,6 +27,10 @@ export struct PageTwo {
             //将name指定的NavDestination页面信息入栈，传递的数据为param
             ZRouter.getInstance().push('PageOne')
           })
+
+        Button(RouterConstants.HSPC_PAGE3).onClick((event: ClickEvent) => {
+          ZRouter.getInstance().push(RouterConstants.HSPC_PAGE3)
+        })
       }
       .size({ width: '100%', height: '100%' })
     }
