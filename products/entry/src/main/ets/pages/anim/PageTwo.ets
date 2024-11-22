@@ -51,14 +51,6 @@ export struct PageTwo {
           this.setAnim("")
           this.jump()
         })
-        Button('PageTwo进场/退场动画+PageOne进场/退场动画', { stateEffect: true, type: ButtonType.Capsule })
-          .width('80%')
-          .height(40)
-          .margin(20)
-          .onClick(() => {
-            this.setAnim("")
-            this.jump()
-          })
       }
       .size({ width: '100%', height: '100%' })
     }
