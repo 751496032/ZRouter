@@ -15,4 +15,10 @@ export class RouterConstants {
   public static readonly LIFECYCLE2_VIEW = 'Lifecycle2_View'
   public static readonly LIFECYCLE3_VIEW = 'Lifecycle3_View'
   public static readonly LIFECYCLE4_VIEW = 'Lifecycle4_View'
+  public static readonly ANIM_DEMO = 'AnimTransitionDemo'
+  public static readonly PAGE_ONE = 'PageOne'
+  public static readonly PAGE_TWO = 'PageTwo'
+  public static readonly PAGE_THREE = 'PageThree'
+  public static readonly PAGE_FOUR = 'PageFour'
+  public static readonly PAGE_DIALOG_MODE = 'PageDialogMode'
 }

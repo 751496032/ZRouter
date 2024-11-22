@@ -5,11 +5,9 @@
  */
 import { RouterMgr } from '../api/RouterMgr';
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
-import { INavAnimationCallback } from '../animation/callback/INavAnimationCallback';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
-import { INavAnimationParam } from '../animation/param/INavAnimationParam';
 import { NavAnimParamBuilder } from '../animation/param/NavAnimParamBuilder';
 import { NavAnimationModifier } from '../animation/modifier/NavAnimationModifier';
 
@@ -36,37 +34,27 @@ export class NavBuilder<T> {
   }
 
   /**
-   * 注册路由转场动画，设置相关参数（推荐）
-   * @param modifier
-   * @param ctx
-   * @param param
+   * 全局转场动画构造器，构造后还是需要给页面设置NavAnimationModifier，不然不生效
    */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    param: INavAnimationParam): NavBuilder<T> {
-    NavAnimationMgr.getInstance().registerAnimParam(modifier, ctx, param)
-    return this;
+  public defaultAnimateBuilder(): NavAnimParamBuilder {
+    return NavAnimationMgr.getInstance().defaultAnimateBuilder();
   }
 
   /**
-   * 注册路由转场动画，相关参数构建（推荐）
+   * 注册路由转场动画，相关参数构建
    * @param modifier
    * @param ctx
-   * @param param
    */
-  public buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
-    return NavAnimParamBuilder.builder(modifier, ctx);
+  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimationMgr.getInstance().buildAnimParam(modifier, ctx);
   }
 
   /**
-   * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
+   * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
    * @param modifier
-   * @param ctx
-   * @param options
    */
-  public registerAnimCallback(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    options: INavAnimationCallback): NavBuilder<T> {
-    NavAnimationMgr.getInstance().registerAnimCallback(modifier, ctx, options);
-    return this;
+  public getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
+    return NavAnimationMgr.getInstance().getAnimParamBuilder(modifier);
   }
 
   /**
@@ -78,7 +66,7 @@ export class NavBuilder<T> {
   }
 
   /**
-   * 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
+   * 自定义转场动画回调，在Navigation().customNavContentTransition()设置
    * @returns
    */
   public getAnimCustomNavContentTransition() {

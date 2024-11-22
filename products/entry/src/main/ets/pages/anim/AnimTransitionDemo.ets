@@ -3,39 +3,61 @@
  * @date: 2024-11-5
  * @desc:
  */
-import { ZRouter } from 'routerapi'
+import { RouterConstants } from '@hzw/common_library'
+import { Route, ZRouter } from 'routerapi'
+import { AnimConst } from './AnimConst'
 
-@Entry
+@Route({ name: RouterConstants.ANIM_DEMO })
 @Component
 export struct AnimTransitionDemo {
-  @State msg: string = "自定义动画转场"
 
   build() {
-    Navigation(ZRouter.getNavStack()) {
+    NavDestination() {
       Column({ space: 15 }) {
-        Text(this.msg)
-        Button("PageOne").onClick((event: ClickEvent) => {
+        Button("平移").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
-            .setAnimate(true)
-            .setPopListener((v) => {
-              this.msg = v.data?.toString() + ' ' + v.from?.toString()
-            })
-            .navigation("PageOne")
+            .setParam(AnimConst.TRANSLATE)
+            .navigation(RouterConstants.PAGE_ONE)
         })
-        Button("PageTwo").onClick((event: ClickEvent) => {
+        Button("平移-播放0.5S-减速播放").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setParam(AnimConst.ANIM)
+            .navigation(RouterConstants.PAGE_ONE)
+        })
+        Button("缩放").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setParam(AnimConst.SCALE)
+            .navigation(RouterConstants.PAGE_ONE)
+        })
+        Button("渐变").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setParam(AnimConst.OPACITY)
+            .navigation(RouterConstants.PAGE_ONE)
+        })
+        Button("旋转").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setParam(AnimConst.ROTATE)
+            .navigation(RouterConstants.PAGE_ONE)
+        })
+        Button("组合").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .navigation(RouterConstants.PAGE_ONE)
+        })
+        Button("自定义").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setAnimate(true)
-            .setPopListener((v) => {
-              this.msg = v.data?.toString() + ' ' + v.from?.toString()
-            })
-            .navigation("PageTwo")
+            .setParam(AnimConst.CUSTOM)
+            .navigation(RouterConstants.PAGE_ONE)
+        })
+        Button("上一页的退场/进场动画").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .navigation(RouterConstants.PAGE_TWO)
         })
       }
 
     }
     .width('100%')
     .height('100%')
-    .title("asd")
-    .customNavContentTransition(ZRouter.getInstance().getAnimCustomNavContentTransition())
+    .title("自定义动画转场")
   }
 }

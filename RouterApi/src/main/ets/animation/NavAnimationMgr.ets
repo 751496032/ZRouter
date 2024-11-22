@@ -3,20 +3,17 @@
  * @date: 2024-11-10
  * @desc:
  */
-// CustomNavigationUtils.ets
-import { INavAnimationCallback } from './callback/INavAnimationCallback';
-import { NavAnimationCallback } from './callback/NavAnimationCallback';
 import { NavAnimationModifier } from './modifier/NavAnimationModifier';
-import { INavAnimationParam } from './param/INavAnimationParam';
+import { INavSingleAnimationParam } from './param/INavAnimationParam';
+import { NavAnimParamBuilder } from './param/NavAnimParamBuilder';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
-  modifier: NavAnimationModifier
-  param: INavAnimationParam
-  finish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  start: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  onFinish: ((options: AnimateCallback, isPush: boolean, isExit: boolean) => void | undefined) | undefined;
-  interactive: ((options: AnimateCallback, operation: NavigationOperation) => void | undefined) | undefined;
+  modifier?: NavAnimationModifier | undefined
+  pushEnterParam?: INavSingleAnimationParam | undefined
+  pushExitParam?: INavSingleAnimationParam | undefined
+  popEnterParam?: INavSingleAnimationParam | undefined
+  popExitParam?: INavSingleAnimationParam | undefined
 }
 
 /**
@@ -27,80 +24,123 @@ export class NavAnimationMgr {
   private interactive: boolean = false;
   private proxy: NavigationTransitionProxy | undefined = undefined;
   private operation: NavigationOperation = NavigationOperation.PUSH
-  private navContextMap: Map<object, NavDestinationContext> = new Map();
+  private navContextMap: Map<NavAnimationModifier, NavDestinationContext> = new Map();
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
+  private _defaultCallback?: AnimateCallback
 
   static getInstance() {
     return NavAnimationMgr.delegate;
   }
 
   /**
-   * 注册路由转场动画，设置相关参数（推荐）
+   * 全局转场动画构造器，构造后还是需要给页面设置NavAnimationModifier，不然不生效
+   * @returns
+   */
+  defaultAnimateBuilder() {
+    const builder = NavAnimParamBuilder.builder()
+    this._defaultCallback = builder.getCallback()
+    return builder
+  }
+
+  /**
+   * 注册路由转场动画，设置相关参数
    * @param modifier
    * @param ctx
    * @param param
    */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    param: INavAnimationParam): void {
-    const options = new NavAnimationCallback()
-    options.param = param
-    this.registerAnimCallback(modifier, ctx, options);
-  }
-
-  /**
-   * 注册路由转场动画，设置相关回调，如果要实现复杂的动画效果可以通过自定义INavAnimationCallback来实现
-   * @param modifier
-   * @param ctx
-   * @param options
-   */
-  public registerAnimCallback(modifier: NavAnimationModifier, ctx: NavDestinationContext,
-    options: INavAnimationCallback): void {
+  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): AnimateCallback | undefined {
     if (ctx.navDestinationId && !this.navContextMap.has(modifier)) {
       this.navContextMap.set(modifier, ctx)
       const name = ctx.navDestinationId;
-      if (this.customTransitionMap.has(name)) {
-        let param = this.customTransitionMap.get(name);
-        if (param !== undefined) {
-          param.modifier = modifier
-          param.param = options.param ?? {}
-          param.start = options.startCallback;
-          param.finish = options.endCallback;
-          param.onFinish = options.onFinish;
-          param.interactive = options.interactiveCallback;
-
-          param.modifier.callback = param
+      let param: AnimateCallback | undefined
+      if (!this.customTransitionMap.has(name)) {
+        param = {
+          modifier: modifier,
         }
+        this.customTransitionMap.set(name, param);
       }
-      let params: AnimateCallback = {
-        modifier: modifier,
-        param: options.param ?? {},
-        start: options.startCallback,
-        finish: options.endCallback,
-        onFinish: options.onFinish,
-        interactive: options.interactiveCallback
-      };
+      return param
+    }
+    if (ctx.navDestinationId) {
+      return this.customTransitionMap.get(ctx.navDestinationId)
+    }
+    return undefined
+  }
 
-      params.modifier.callback = params
-      this.customTransitionMap.set(name, params);
+  /**
+   * 注册路由转场动画，相关参数构建
+   * @param modifier
+   * @param ctx
+   */
+  buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
+    const callback = this.registerAnimParam(modifier, ctx)
+    return NavAnimParamBuilder.builder(callback)
+  }
+
+
+  /**
+   * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
+   * @param modifier
+   */
+  getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
+    const ctx = this.navContextMap.get(modifier)
+    if (ctx?.navDestinationId) {
+      const callback = this.customTransitionMap.get(ctx.navDestinationId)
+      return NavAnimParamBuilder.builder(callback)
+    }
+    return undefined
+  }
+
+  /**
+   * 取消注册路由转场动画
+   * @param modifier
+   */
+  unregisterAnim(modifier: NavAnimationModifier) {
+    const navId = this.navContextMap.get(modifier)?.navDestinationId
+    if (navId) {
+      this.customTransitionMap.delete(navId);
+    }
+    this.navContextMap.delete(modifier)
+  }
+
+  startNavAnimPushEnter(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (callback?.modifier && callback.pushEnterParam) {
+      this.update(callback.modifier, callback.pushEnterParam)
+    } else if (callback?.modifier && this._defaultCallback) {
+      this.update(callback.modifier, this._defaultCallback.pushEnterParam)
+    } else {
+      this.finishTransition()
     }
   }
 
-  unregisterAnim(component: object) {
-    if (this.navContextMap.has(component)) {
-      const navId = this.navContextMap.get(component)?.navDestinationId
-      if (navId) {
-        this.customTransitionMap.delete(navId);
-      }
-      this.navContextMap.delete(component)
+  startNavAnimPushExit(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (callback?.modifier && callback.pushExitParam) {
+      this.update(callback.modifier, callback.pushExitParam)
+    } else if (callback?.modifier && this._defaultCallback) {
+      this.update(callback.modifier, this._defaultCallback.pushExitParam)
     }
   }
 
-  fireInteractiveAnimation(id: string, callback: AnimateCallback, operation: NavigationOperation) {
-    let animation = this.customTransitionMap.get(id)?.interactive;
-    if (!animation) {
-      return;
+  startNavAnimPopEnter(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (callback?.modifier && callback.popEnterParam) {
+      this.update(callback.modifier, callback.popEnterParam)
+    } else if (callback?.modifier && this._defaultCallback) {
+      this.update(callback.modifier, this._defaultCallback.popEnterParam)
     }
-    animation(callback, operation);
+  }
+
+  startNavAnimPopExit(id: string | undefined) {
+    const callback = this.getAnimateParam(id)
+    if (callback?.modifier && callback.popExitParam) {
+      this.update(callback.modifier, callback.popExitParam)
+    } else if (callback?.modifier && this._defaultCallback) {
+      this.update(callback.modifier, this._defaultCallback.popExitParam)
+    } else {
+      this.finishTransition()
+    }
   }
 
   updateProgress(progress: number) {
@@ -117,20 +157,6 @@ export class NavAnimationMgr {
     }
   }
 
-  recoverState() {
-    if (!this.proxy?.from.navDestinationId || !this.proxy?.to.navDestinationId) {
-      return;
-    }
-    let fromParam = this.customTransitionMap.get(this.proxy.from.navDestinationId);
-    if (fromParam?.onFinish) {
-      fromParam.onFinish(fromParam, false, false);
-    }
-    let toParam = this.customTransitionMap.get(this.proxy?.to.navDestinationId);
-    if (toParam?.onFinish) {
-      toParam.onFinish(toParam, true, true,);
-    }
-  }
-
   finishTransition() {
     this.proxy?.finishTransition();
   }
@@ -142,11 +168,11 @@ export class NavAnimationMgr {
           this.proxy.cancelTransition();
         }
       } else {
-        this.proxy?.finishTransition();
+        this.finishTransition();
       }
     } else {
       if (rate > 0.5) {
-        this.proxy?.finishTransition();
+        this.finishTransition();
       } else {
         if (this.proxy?.cancelTransition) {
           this.proxy.cancelTransition();
@@ -155,119 +181,106 @@ export class NavAnimationMgr {
     }
   }
 
-  getAnimateParam(name: string): AnimateCallback {
+  getAnimateParam(name: string | undefined): AnimateCallback | undefined {
+    if (!name) {
+      return undefined
+    }
+    if (!this.customTransitionMap.has(name)) {
+      return undefined
+    }
     let result: AnimateCallback = {
-      modifier: this.customTransitionMap.get(name)?.modifier ?? new NavAnimationModifier(),
-      param: this.customTransitionMap.get(name)?.param ?? {},
-      start: this.customTransitionMap.get(name)?.start,
-      finish: this.customTransitionMap.get(name)?.finish,
-      onFinish: this.customTransitionMap.get(name)?.onFinish,
-      interactive: this.customTransitionMap.get(name)?.interactive,
+      modifier: this.customTransitionMap.get(name)?.modifier,
+      pushEnterParam: this.customTransitionMap.get(name)?.pushEnterParam,
+      pushExitParam: this.customTransitionMap.get(name)?.pushExitParam,
+      popEnterParam: this.customTransitionMap.get(name)?.popEnterParam,
+      popExitParam: this.customTransitionMap.get(name)?.popExitParam,
     };
     return result;
   }
 
-  // 自定义导航内容过渡动画默认实现，在Navigation().customNavContentTransition()设置
-  static customNavContentTransition = (from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
-    if (from.mode == NavDestinationMode.DIALOG || to.mode == NavDestinationMode.DIALOG) {
-      return undefined;
+  public getProxy(): NavigationTransitionProxy | undefined {
+    return this.proxy
+  }
+
+  // 根据动画转场参数播放动画转场效果
+  private update(modifier: NavAnimationModifier, param: INavSingleAnimationParam | undefined) {
+    const proxy = NavAnimationMgr.getInstance().getProxy()
+    if (param) {
+      if (param.startCallback) {
+        param.startCallback(modifier, proxy)
+      }
+      if (param.endCallback) {
+        animateTo({
+          duration: param?.animateParam?.duration,
+          tempo: param?.animateParam?.tempo,
+          curve: param?.animateParam?.curve,
+          delay: param?.animateParam?.delay,
+          iterations: param?.animateParam?.iterations,
+          playMode: param?.animateParam?.playMode,
+          finishCallbackType: param?.animateParam?.finishCallbackType,
+          expectedFrameRateRange: param?.animateParam?.expectedFrameRateRange,
+          onFinish: () => {
+            if (param?.animateParam?.onFinish) {
+              param?.animateParam.onFinish()
+            }
+            this.finishTransition()
+          }
+        }, () => {
+          if (param.endCallback) {
+            param.endCallback(modifier, proxy)
+          }
+        })
+      }
     }
+  }
+
+  // 自定义转场动画回调，在Navigation().customNavContentTransition()设置
+  static customNavContentTransition = (from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
+    // if (from.mode == NavDestinationMode.DIALOG || to.mode == NavDestinationMode.DIALOG) {
+    //   return undefined;
+    // }
 
     const builder = NavAnimationMgr.getInstance()
+    const fromParam = builder.getAnimateParam(from.navDestinationId)
+    const toParam = builder.getAnimateParam(to.navDestinationId)
+
+    const toNoAnim = (!toParam?.pushEnterParam || !toParam?.pushEnterParam?.startCallback)
+      && (!builder._defaultCallback?.pushEnterParam || !builder._defaultCallback?.pushEnterParam?.startCallback)
+    const toNoModifier = !toParam?.modifier
+    const fromNoAnim = (!fromParam?.popExitParam || !fromParam?.popExitParam?.startCallback)
+      && (!builder._defaultCallback?.popExitParam || !builder._defaultCallback?.popExitParam?.startCallback)
+    const fromNoModifier = !fromParam?.modifier
+    if (operation == NavigationOperation.PUSH && (toNoAnim || toNoModifier)) {
+      // 从 A页 进入 B页 时 B页 的进场动画转场不存在，或者 B页 的modifier不存在，则默认官方转场
+      return undefined
+    } else if (operation == NavigationOperation.POP && (fromNoAnim || fromNoModifier)) {
+      // 从 B页 退回 A页 时 B页 的退场动画转场不存在，或者 B页 的modifier不存在，则默认官方转场
+      return undefined
+    }
 
     builder.operation = operation;
-    if (builder.interactive) {
-      let customAnimation: NavigationAnimatedTransition = {
-        timeout: 7000,
-        onTransitionEnd: (isSuccess: boolean) => {
-          console.log("===== current transition is " + isSuccess);
-          builder.recoverState();
-          builder.proxy = undefined;
-        },
-        transition: (transitionProxy: NavigationTransitionProxy) => {
-          builder.proxy = transitionProxy;
-          let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
-            (to.navDestinationId) : (from.navDestinationId);
-
-          if (targetIndex) {
-            builder.proxy = transitionProxy;
-            let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
-              (to.navDestinationId) : (from.navDestinationId);
-            if (targetIndex) {
-              const callback = builder.getAnimateParam(targetIndex)
-              if (callback) {
-                builder.fireInteractiveAnimation(targetIndex, callback, operation);
-              }
-            }
-          }
-        },
-        isInteractive: builder.interactive
-      }
-      return customAnimation;
-    }
     let customAnimation: NavigationAnimatedTransition = {
-      onTransitionEnd: (isSuccess: boolean) => {
-        console.log(`current transition result is ${isSuccess}`)
-      },
       timeout: 7000,
-      // 转场开始时系统调用该方法，并传入转场上下文代理对象
+      onTransitionEnd: (isSuccess: boolean) => {
+        console.log("===== current transition is " + isSuccess);
+        builder.proxy = undefined;
+      },
       transition: (transitionProxy: NavigationTransitionProxy) => {
-        // 从封装类CustomTransition中根据子页面的序列获取对应的转场动画回调
-        let fromParam: AnimateCallback | undefined =
-          from.navDestinationId ? builder.getAnimateParam(from.navDestinationId) : undefined;
-        let toParam: AnimateCallback | undefined =
-          to.navDestinationId ? builder.getAnimateParam(to.navDestinationId) : undefined;
+        builder.proxy = transitionProxy;
         if (operation == NavigationOperation.PUSH) {
-          if (toParam?.start) {
-            toParam.start(toParam, true, false);
-          }
-          animateTo({
-            duration: toParam?.param?.animateParam?.duration,
-            tempo: toParam?.param?.animateParam?.tempo,
-            curve: toParam?.param?.animateParam?.curve,
-            delay: toParam?.param?.animateParam?.delay,
-            iterations: toParam?.param?.animateParam?.iterations,
-            playMode: toParam?.param?.animateParam?.playMode,
-            finishCallbackType: toParam?.param?.animateParam?.finishCallbackType,
-            expectedFrameRateRange: toParam?.param?.animateParam?.expectedFrameRateRange,
-            onFinish: () => {
-              transitionProxy.finishTransition();
-              if (toParam?.param?.animateParam?.onFinish) {
-                toParam?.param?.animateParam?.onFinish()
-              }
-            }
-          }, () => {
-            if (toParam?.finish) {
-              toParam.finish(toParam, true, false);
-            }
-          })
+          // 从 A页 进入 B页 时 B页 的动画转场
+          builder.startNavAnimPushEnter(to.navDestinationId);
+          // 从 A页 进入 B页 时 A页 的动画转场
+          builder.startNavAnimPushExit(from.navDestinationId);
         } else {
-          if (fromParam?.start) {
-            fromParam.start(fromParam, false, true);
-          }
-          animateTo({
-            duration: fromParam?.param?.animateParam?.duration,
-            tempo: fromParam?.param?.animateParam?.tempo,
-            curve: fromParam?.param?.animateParam?.curve,
-            delay: fromParam?.param?.animateParam?.delay,
-            iterations: fromParam?.param?.animateParam?.iterations,
-            playMode: fromParam?.param?.animateParam?.playMode,
-            finishCallbackType: fromParam?.param?.animateParam?.finishCallbackType,
-            expectedFrameRateRange: fromParam?.param?.animateParam?.expectedFrameRateRange,
-            onFinish: () => {
-              transitionProxy.finishTransition();
-              if (fromParam?.param?.animateParam?.onFinish) {
-                fromParam?.param?.animateParam?.onFinish()
-              }
-            }
-          }, () => {
-            if (fromParam?.finish) {
-              fromParam.finish(fromParam, false, true);
-            }
-          })
+          // 从 B页 退回 A页 时 B页 的动画转场
+          builder.startNavAnimPopExit(from.navDestinationId);
+          // 从 B页 退回 A页 时 A页 的动画转场
+          builder.startNavAnimPopEnter(to.navDestinationId);
         }
-      }
-    };
+      },
+      isInteractive: builder.interactive
+    }
     return customAnimation;
   }
 }
