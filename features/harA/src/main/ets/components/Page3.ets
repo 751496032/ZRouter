@@ -16,18 +16,18 @@ export struct Page3 {
     NavDestination(){
       Column({space:12}){
         Text(this.message)
-        Button('pushForResult').onClick((event: ClickEvent) => {
+        Button('pushForResult - 监听上一页返回携带的数据').onClick((event: ClickEvent) => {
           // 上一个页面返回
           ZRouter.getInstance()
             .setParam('hello')
             .setPopListener((v)=>{
               ToastUtils.show(JSON.stringify(v.data))
             })
-            .push("hspCIndex")
+            .push(RouterConstants.HSPC_INDEX_PAGE)
 
         })
 
-        Button('pushNavForResult').onClick((event: ClickEvent) => {
+        Button('pushNavForResult - 监听跨多级页面返回携带的数据').onClick((event: ClickEvent) => {
           // 上上个页面返回
           ZRouter.getInstance()
             .setParam('hello')
@@ -36,17 +36,11 @@ export struct Page3 {
                 let msg = `from: ${r.from} data: ${r.data}`;
                 this.message = msg
             })
-            .push("harAPage4")
+            .push(RouterConstants.HARA_PAGE4)
         })
 
-        Button('toHspCIndex(测试跳转与返回携带数据)').onClick((event: ClickEvent) => {
-          let data: Record<string, Object> = { 'msg': 'hello' }
-          ZRouter.pushForResult("hspCIndex", data, (data) => {
-            ToastUtils.show(`返回携带的数据：${JSON.stringify(data.result)}`)
-          })
-        })
 
-        Button('popToRootWithResult').onClick((event: ClickEvent) => {
+        Button('popToRootWithResult - 返回根视图并携带数据').onClick((event: ClickEvent) => {
           ZRouter.getInstance().popToRootWithResult<string>('哈哈')
         })
 

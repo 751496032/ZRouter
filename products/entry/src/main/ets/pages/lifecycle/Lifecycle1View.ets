@@ -1,6 +1,7 @@
 import { RouterConstants } from '@hzw/common_library';
 import { ILifecycleObserver, Lifecycle, LifecycleEvent, LifecycleRegistry, Route, ZRouter } from 'routerapi';
 import { util } from '@kit.ArkTS';
+import { testModel } from '../../model/TestModel';
 
 /**
  * @author: HZWei

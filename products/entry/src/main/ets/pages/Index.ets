@@ -1,17 +1,19 @@
 import { RouterConstants, ToastUtils } from '@hzw/common_library'
 import { promptAction, router } from '@kit.ArkUI'
-import { IInterceptor, ILifecycleObserver, InterceptorInfo, Lifecycle,
+import { ILifecycleObserver, Lifecycle,
   LifecycleRegistry, ZRouter } from 'routerapi'
 import { RouterConst } from '../constants/RouterConst'
-import { GlobalNavigateInterceptor, UrlInterceptor } from '../interceptors/interceptors'
 import { AddInterceptor } from '../interceptors/AddIntercetors'
-
+import { common, Want } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit'
 
 @Entry
 @Component
 struct Index {
   @Lifecycle
   lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
+  private context = getContext(this) as common.UIAbilityContext;
+
 
   aboutToAppear(): void {
     AddInterceptor()
@@ -37,20 +39,19 @@ struct Index {
 
     })
 
-
   }
 
   build() {
     Navigation(ZRouter.getNavStack()){
       Column({space:12}){
-        Button('toHarAMainPage').onClick((event: ClickEvent) => {
+        Button('har-跳转到HarA模块').onClick((event: ClickEvent) => {
           ZRouter.getInstance().navigation(RouterConstants.HARA_MAIN_PAGE)
 
         })
-        Button('toHarBMainPage').onClick((event: ClickEvent) => {
+        Button('har-跳转到HarB模块').onClick((event: ClickEvent) => {
           ZRouter.push(RouterConstants.HARB_MAIN_PAGE)
         })
-        Button('toHspCIndex').onClick((event: ClickEvent) => {
+        Button('hsp-跳转到Hsp模块').onClick((event: ClickEvent) => {
           let data: Record<string, string | number> = { "msg": "hello ZRouter", "num": 100 }
           ZRouter.getInstance()
             .setParam(data)
@@ -59,10 +60,29 @@ struct Index {
               ToastUtils.show(msg)
             })
             .navigation(RouterConstants.HSPC_INDEX_PAGE)
-
         })
 
-        Button('redirectToPageNotFound').onClick((event: ClickEvent) => {
+        Button("hap-跳转到Hap模块").onClick((event: ClickEvent) => {
+          let want: Want = {
+            deviceId: '', // deviceId为空表示本设备
+            bundleName: 'com.harmony.router',
+            abilityName: 'HapAAbility',
+            moduleName: 'hapA', // moduleName非必选
+            parameters: {
+              // 自定义信息
+              route: RouterConstants.ORDER_PAGE
+            }
+          };
+          this.context.startAbility(want).then(() => {
+            console.info("startAbility", '已启动Ability');
+          }).catch((err: BusinessError) => {
+            // https://developer.huawei.com/consumer/cn/doc/harmonyos-faqs-V5/faqs-ability-7-V5
+            console.error("startAbility", `启动Ability失败. Code: ${err.code}, message: ${err.message}`);
+          })
+        })
+
+
+        Button('404页面').onClick((event: ClickEvent) => {
           // 页面不存在，重定向到提示页
           ZRouter.getInstance().navigation("PageNotFound111")
         })

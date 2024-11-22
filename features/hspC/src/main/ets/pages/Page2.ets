@@ -1,13 +1,12 @@
 import { Route, ZRouter } from 'routerapi';
 
-@Route({name:'hspCPage2'})
+@Route({ name: 'hspCPage2' })
 @Component
 export struct Page2 {
   @State message: string = 'Hello World';
-
   build() {
-    NavDestination(){
-      Column({space:12}){
+    NavDestination() {
+      Column({ space: 12 }) {
 
         Button('pop').onClick((event: ClickEvent) => {
           ZRouter.pop()

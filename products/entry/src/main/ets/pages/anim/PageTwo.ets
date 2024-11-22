@@ -51,6 +51,10 @@ export struct PageTwo {
           this.setAnim("")
           this.jump()
         })
+
+        Button(RouterConstants.HSPC_PAGE3).onClick((event: ClickEvent) => {
+          ZRouter.getInstance().push(RouterConstants.HSPC_PAGE3)
+        })
       }
       .size({ width: '100%', height: '100%' })
     }
