@@ -1,7 +1,8 @@
+import { RouterConstants } from 'common_library';
 import { Route, ZRouter } from 'routerapi';
 
 
-@Route({ name: "harAPage4" })
+@Route({ name: RouterConstants.HARA_PAGE4 })
 @Component
 export struct Page4 {
   @State message: string = 'Hello World';
@@ -9,9 +10,8 @@ export struct Page4 {
   build() {
     NavDestination(){
       Column({space:12}){
-
         Button('toHarAPage5').onClick((event: ClickEvent) => {
-          ZRouter.push("harAPage5")
+          ZRouter.push(RouterConstants.HARA_PAGE5)
         })
 
       }

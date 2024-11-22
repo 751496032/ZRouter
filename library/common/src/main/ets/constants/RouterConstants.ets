@@ -1,6 +1,9 @@
 export class RouterConstants {
   public static readonly CUSTOM_URL_PAGE: string = "custom_url_page";
   public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
+  public static readonly HARA_PAGE3 = 'harAPage3'
+  public static readonly HARA_PAGE4 :string = "harAPage4"
+  public static readonly HARA_PAGE5 :string = "harAPage5"
   public static readonly HARB_MAIN_PAGE :string = "harBMainPage"
   public static readonly HSPC_INDEX_PAGE: string = "hspCIndex"
   public static readonly HSPC_PAGE3: string = "hspCPage3"
@@ -9,12 +12,14 @@ export class RouterConstants {
   public static readonly SERVICE_HSPC_IMPL: string = "HspC_Service"
   public static readonly SERVICE_HARA_IMPL: string = "HarA_Service"
   public static readonly SERVICE_CASE_VIEW = 'Service_Case_View'
-  public static readonly HARA_PAGE3 = 'harAPage3'
   public static readonly LIFECYCLE_CASE_VIEW = 'Lifecycle_Case_View'
   public static readonly LIFECYCLE1_VIEW = 'Lifecycle1_View'
   public static readonly LIFECYCLE2_VIEW = 'Lifecycle2_View'
   public static readonly LIFECYCLE3_VIEW = 'Lifecycle3_View'
   public static readonly LIFECYCLE4_VIEW = 'Lifecycle4_View'
+  public static readonly HAP_A_PAGE_ONE = "HapPageOne"
+  public static readonly HAP = "Hap"
+  public static readonly EVENT_HAP_LAUNCH_ROUTER = "EVENT_HAP_LAUNCH_ROUTER"
   public static readonly ANIM_DEMO = 'AnimTransitionDemo'
   public static readonly PAGE_ONE = 'PageOne'
   public static readonly PAGE_TWO = 'PageTwo'

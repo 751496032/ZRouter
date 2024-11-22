@@ -64,7 +64,7 @@ export class ZRouter {
       if (!ObjectUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
-         // ZRouter.init(true)
+         ZRouter.init(true)
       }
     }
     if (!ZRouter.routerMgr) {

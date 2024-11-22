@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "HapAAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "HapAAbility_label",
+      "value": "label"
+    }
+  ]
+}
