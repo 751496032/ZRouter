@@ -38,10 +38,10 @@ export struct PageThree {
     }
     .title('自己设置的全局转场')
     .onReady((c) => {
-      ZRouter.getInstance().registerAnimParam(this.modifier, c)
+      ZRouter.getInstance().animateMgr().registerAnimParam(this.modifier, c)
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().unregisterAnim(this.modifier)
+      ZRouter.getInstance().animateMgr().unregisterAnim(this.modifier)
     })
     .attributeModifier(this.modifier)
     .backgroundColor(Color.White)

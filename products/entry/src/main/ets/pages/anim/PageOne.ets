@@ -59,6 +59,7 @@ export struct PageOne {
         case AnimConst.TRANSLATE:
           // 平移
           ZRouter.getInstance()
+            .animateMgr()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
@@ -80,6 +81,7 @@ export struct PageOne {
         case AnimConst.ANIM:
           // 平移-播放0.5-减速播放
           ZRouter.getInstance()
+            .animateMgr()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               animateParam: {
@@ -109,6 +111,7 @@ export struct PageOne {
         case AnimConst.SCALE:
           // 缩放
           ZRouter.getInstance()
+            .animateMgr()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
@@ -150,6 +153,7 @@ export struct PageOne {
         case AnimConst.OPACITY:
           // 渐变
           ZRouter.getInstance()
+            .animateMgr()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
@@ -171,6 +175,7 @@ export struct PageOne {
         case AnimConst.CUSTOM:
           // 自定义
           ZRouter.getInstance()
+            .animateMgr()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               startCallback: (m, proxy) => {
@@ -212,6 +217,7 @@ export struct PageOne {
         default:
         // 组合
           ZRouter.getInstance()
+            .animateMgr()
             .registerAnimParam(this.modifier, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
@@ -279,7 +285,7 @@ export struct PageOne {
       }
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().unregisterAnim(this.modifier)
+      ZRouter.getInstance().animateMgr().unregisterAnim(this.modifier)
     })
     .attributeModifier(this.modifier)
     .backgroundColor('#F1F3F5')

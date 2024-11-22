@@ -27,6 +27,7 @@ import { ServiceMgr } from '../service/ServiceMgr';
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr';
 import { RouterInfo } from '../model/RouterInfo';
 import { LifecycleEvent } from '../lifecycle/LifecycleEvent';
+import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 
 
 export class RouterMgr {
@@ -34,6 +35,7 @@ export class RouterMgr {
   private navStackMgr = NavStackMgr.getInstance()
   private serviceMgr = ServiceMgr.instance
   private _lifecycleMgr = LifecycleMgr.getInstance()
+  private _animateMgr = NavAnimationMgr.getInstance()
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -96,6 +98,10 @@ export class RouterMgr {
 
   public get lifecycleMgr(): LifecycleMgr {
     return this._lifecycleMgr
+  }
+
+  public get animateMgr(): NavAnimationMgr {
+    return this._animateMgr
   }
 
   public setCurrentStackName(name: string) {

@@ -1,4 +1,4 @@
-import { AnimateCallback, NavAnimationMgr } from '../NavAnimationMgr'
+import { AnimateCallback, NavAnimationStore } from '../NavAnimationMgr'
 import { INavSingleAnimationParam } from './INavAnimationParam'
 
 /**
@@ -100,6 +100,6 @@ export class NavAnimParamBuilder {
    * @returns
    */
   public getAnimCustomNavContentTransition() {
-    return NavAnimationMgr.customNavContentTransition
+    return NavAnimationStore.customNavContentTransition
   }
 }

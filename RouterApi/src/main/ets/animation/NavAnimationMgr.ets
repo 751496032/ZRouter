@@ -16,11 +16,61 @@ export interface AnimateCallback {
   popExitParam?: INavSingleAnimationParam | undefined
 }
 
+export class NavAnimationMgr {
+  private static delegate = new NavAnimationMgr();
+
+  static getInstance(): NavAnimationMgr {
+    return NavAnimationMgr.delegate;
+  }
+
+  /**
+   * 全局转场动画构造器，构造后还是需要给页面设置NavAnimationModifier，不然不生效
+   * @returns
+   */
+  public defaultAnimateBuilder(): NavAnimParamBuilder {
+    return NavAnimationStore.getInstance().defaultAnimateBuilder()
+  }
+
+  /**
+   * 注册路由转场动画，设置相关参数
+   * @param modifier
+   * @param ctx
+   * @param param
+   */
+  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimationStore.getInstance().buildAnimParam(modifier, ctx)
+  }
+
+  /**
+   * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
+   * @param modifier
+   */
+  public getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
+    return NavAnimationStore.getInstance().getAnimParamBuilder(modifier)
+  }
+
+  /**
+   * 取消注册路由转场动画
+   * @param modifier
+   */
+  public unregisterAnim(modifier: NavAnimationModifier): void {
+    NavAnimationStore.getInstance().unregisterAnim(modifier)
+  }
+
+  /**
+   * 自定义转场动画回调，在Navigation().customNavContentTransition()设置
+   * @returns
+   */
+  public getAnimCustomNavContentTransition() {
+    return NavAnimationStore.customNavContentTransition
+  }
+}
+
 /**
  * 路由转场动画管理
  */
-export class NavAnimationMgr {
-  private static delegate = new NavAnimationMgr();
+export class NavAnimationStore {
+  private static delegate = new NavAnimationStore();
   private interactive: boolean = false;
   private proxy: NavigationTransitionProxy | undefined = undefined;
   private operation: NavigationOperation = NavigationOperation.PUSH
@@ -29,7 +79,7 @@ export class NavAnimationMgr {
   private _defaultCallback?: AnimateCallback
 
   static getInstance() {
-    return NavAnimationMgr.delegate;
+    return NavAnimationStore.delegate;
   }
 
   /**
@@ -204,7 +254,7 @@ export class NavAnimationMgr {
 
   // 根据动画转场参数播放动画转场效果
   private update(modifier: NavAnimationModifier, param: INavSingleAnimationParam | undefined) {
-    const proxy = NavAnimationMgr.getInstance().getProxy()
+    const proxy = NavAnimationStore.getInstance().getProxy()
     if (param) {
       if (param.startCallback) {
         param.startCallback(modifier, proxy)
@@ -240,7 +290,7 @@ export class NavAnimationMgr {
     //   return undefined;
     // }
 
-    const builder = NavAnimationMgr.getInstance()
+    const builder = NavAnimationStore.getInstance()
     const fromParam = builder.getAnimateParam(from.navDestinationId)
     const toParam = builder.getAnimateParam(to.navDestinationId)
 

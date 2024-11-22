@@ -120,6 +120,7 @@ struct Index {
     .height('100%')
     .width('100%')
     .customNavContentTransition(ZRouter.getInstance()
+      .animateMgr()
       .defaultAnimateBuilder()
       .setPushEnterAnimate({
         startCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),

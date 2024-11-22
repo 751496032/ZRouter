@@ -27,10 +27,10 @@ export struct PageDialogMode {
     .title('PageDialogMode')
     .backgroundColor(Color.White)
     .onReady((c) => {
-      ZRouter.getInstance().registerAnimParam(this.modifier, c)
+      ZRouter.getInstance().animateMgr().registerAnimParam(this.modifier, c)
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().unregisterAnim(this.modifier)
+      ZRouter.getInstance().animateMgr().unregisterAnim(this.modifier)
     })
     .attributeModifier(this.modifier)
     .mode(NavDestinationMode.DIALOG)

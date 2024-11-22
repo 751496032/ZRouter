@@ -56,7 +56,7 @@ export struct PageTwo {
     }
     .title('pageTwo')
     .onReady((context: NavDestinationContext) => {
-      ZRouter.getInstance().registerAnimParam(this.modifier, context)
+      ZRouter.getInstance().animateMgr().registerAnimParam(this.modifier, context)
         .setPushEnterAnimate({
           startCallback: (m) => {
             m.attribute?.size({ width: '50%' }).opacity(0.5)
@@ -75,7 +75,7 @@ export struct PageTwo {
         })
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().unregisterAnim(this.modifier)
+      ZRouter.getInstance().animateMgr().unregisterAnim(this.modifier)
     })
     .attributeModifier(this.modifier)
     .backgroundColor(Color.Yellow)
@@ -116,7 +116,7 @@ export struct PageTwo {
     switch (type) {
       case AnimConst.TRANSLATE:
         // 平移
-        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().animateMgr().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.translate({ x: '100%', y: '100%' })
@@ -136,7 +136,7 @@ export struct PageTwo {
         break
       case AnimConst.SCALE:
         // 缩放
-        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().animateMgr().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.scale({
@@ -176,7 +176,7 @@ export struct PageTwo {
         break
       case AnimConst.OPACITY:
         // 渐变
-        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().animateMgr().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.opacity(0.01)
@@ -196,7 +196,7 @@ export struct PageTwo {
         break
       case AnimConst.ROTATE:
         // 旋转
-        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().animateMgr().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.rotate({
@@ -232,7 +232,7 @@ export struct PageTwo {
         break
       default:
       // 组合
-        ZRouter.getInstance().getAnimParamBuilder(this.modifier)
+        ZRouter.getInstance().animateMgr().getAnimParamBuilder(this.modifier)
         ?.setPopEnterAnimate({
           startCallback: (m) => {
             m.attribute?.translate({ x: '100%', y: '100%' })
