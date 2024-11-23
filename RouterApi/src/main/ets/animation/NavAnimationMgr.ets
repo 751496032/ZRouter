@@ -11,9 +11,13 @@ import { util } from '@kit.ArkTS';
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
   modifier?: NavAnimationModifier | undefined
+  // 进入状态(PUSH) 进入页的动画转场参数（A进入B 的 B进入转场）
   pushEnterParam?: INavSingleAnimationParam | undefined
+  // 进入状态(PUSH) 离开页的动画转场参数（A进入B 的 A离开转场）
   pushExitParam?: INavSingleAnimationParam | undefined
+  // 退出状态(POP) 进入页的动画转场参数（B返回A 的 A进入转场）
   popEnterParam?: INavSingleAnimationParam | undefined
+  // 退出状态(POP) 离开页的动画转场参数（B返回A 的 B离开转场）
   popExitParam?: INavSingleAnimationParam | undefined
 }
 
@@ -22,6 +26,9 @@ export interface NavAnimatePageInfo {
   modifier: NavAnimationModifier
 }
 
+/**
+ * 转场动画管理器
+ */
 export class NavAnimationMgr {
   private static delegate = new NavAnimationMgr();
 
@@ -308,7 +315,11 @@ export class NavAnimationStore {
           iterations: param?.animateParam?.iterations,
           playMode: param?.animateParam?.playMode,
           finishCallbackType: param?.animateParam?.finishCallbackType,
-          expectedFrameRateRange: param?.animateParam?.expectedFrameRateRange,
+          expectedFrameRateRange: param?.animateParam?.expectedFrameRateRange ?? {
+            min: 60,
+            expected: 90,
+            max: 120,
+          },
           onFinish: () => {
             if (param?.animateParam?.onFinish) {
               param?.animateParam.onFinish()
@@ -356,6 +367,7 @@ export class NavAnimationStore {
         builder.proxy = undefined;
       },
       transition: (transitionProxy: NavigationTransitionProxy) => {
+        builder.proxy?.finishTransition()
         builder.proxy = transitionProxy;
         if (operation == NavigationOperation.PUSH) {
           // 从 A页 进入 B页 时 B页 的动画转场

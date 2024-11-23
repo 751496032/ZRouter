@@ -1,20 +1,13 @@
-import { NavAnimationModifier } from "../modifier/NavAnimationModifier"
+import NavAnimateStatus from '../const/NavAnimateStatus'
+import { NavAnimationModifier } from '../modifier/NavAnimationModifier'
+import { AnimateCallback } from '../NavAnimationMgr'
+import { INavAnimateOptions as INavAnimateSingleOptions } from './INavAnimateOptions'
 
 /**
  * @author: HHBin
  * @date: 2024-11-14
  * @desc: 动画转场参数
  */
-export interface INavAnimationParam {
-  // 进入状态(PUSH) 进入页的动画转场参数（A进入B 的 B进入转场）
-  pushEnterParam?: INavSingleAnimationParam
-  // 进入状态(PUSH) 离开页的动画转场参数（A进入B 的 A离开转场）
-  pushExitParam?: INavSingleAnimationParam
-  // 退出状态(POP) 进入页的动画转场参数（B返回A 的 A进入转场）
-  popEnterParam?: INavSingleAnimationParam
-  // 退出状态(POP) 离开页的动画转场参数（B返回A 的 B离开转场）
-  popExitParam?: INavSingleAnimationParam
-}
 export interface INavSingleAnimationParam {
   // 转场动画函数参数
   animateParam?: AnimateParam
@@ -22,20 +15,56 @@ export interface INavSingleAnimationParam {
   startCallback?: (modifier: NavAnimationModifier, proxy: NavigationTransitionProxy | undefined) => void
   // 终点回调
   endCallback?: (modifier: NavAnimationModifier, proxy: NavigationTransitionProxy | undefined) => void
-  // // 起点平移果参数
-  // startTranslateOptions?: TranslateOptions
-  // // 终点平移参数
-  // endTranslateOptions?: TranslateOptions
-  // // 起点缩放参数
-  // startScaleOptions?: ScaleOptions
-  // // 终点缩放参数
-  // endScaleOptions?: ScaleOptions
-  // // 起点旋转参数
-  // startRotateOptions?: RotateOptions
-  // // 终点旋转参数
-  // endRotateOptions?: RotateOptions
-  // // 起点透明度值参数
-  // startOpacity?: number | Resource
-  // // 终点透明度值参数
-  // endOpacity?: number | Resource
+}
+
+export class NavAnimateOptions {
+  list: INavAnimateSingleOptions[] = []
+  enterAnimateParam?: AnimateParam
+  exitAnimateParam?: AnimateParam
+
+  public setEnterAnimateParam(param: AnimateParam) {
+    this.enterAnimateParam = param
+    return this
+  }
+
+  public setExitAnimateParam(param: AnimateParam) {
+    this.exitAnimateParam = param
+    return this
+  }
+
+  public addOptions(options: INavAnimateSingleOptions) {
+    this.list.push(options)
+    return this
+  }
+
+  public update(callback: AnimateCallback): void {
+    callback.pushEnterParam = {
+      animateParam: this.enterAnimateParam,
+      startCallback: (m) => this.updateList(m, true, NavAnimateStatus.PUSH_ENTER),
+      endCallback: (m) => this.updateList(m, false, NavAnimateStatus.PUSH_ENTER),
+    }
+    callback.popExitParam = {
+      animateParam: this.exitAnimateParam,
+      startCallback: (m) => this.updateList(m, true, NavAnimateStatus.POP_EXIT),
+      endCallback: (m) => this.updateList(m, false, NavAnimateStatus.POP_EXIT),
+    }
+    callback.pushExitParam = {
+      animateParam: this.enterAnimateParam,
+      startCallback: (m) => this.updateList(m, true, NavAnimateStatus.PUSH_EXIT),
+      endCallback: (m) => this.updateList(m, false, NavAnimateStatus.PUSH_EXIT),
+    }
+    callback.popEnterParam = {
+      animateParam: this.exitAnimateParam,
+      startCallback: (m) => this.updateList(m, true, NavAnimateStatus.POP_ENTER),
+      endCallback: (m) => this.updateList(m, false, NavAnimateStatus.POP_ENTER),
+    }
+  }
+
+  private updateList(modifier: NavAnimationModifier, isStart: boolean, status: NavAnimateStatus): void {
+    this.list.forEach((v) => {
+      if (v) {
+        v.updateModifier(modifier, isStart, status)
+      }
+    })
+  }
 }

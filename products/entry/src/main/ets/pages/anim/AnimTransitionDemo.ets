@@ -49,10 +49,16 @@ export struct AnimTransitionDemo {
             .setParam(AnimConst.CUSTOM)
             .navigation(RouterConstants.PAGE_ONE)
         })
-        Button("上一页的退场/进场动画").onClick((event: ClickEvent) => {
+        Button("PageTwo").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .navigation(RouterConstants.PAGE_TWO)
         })
+        Button('自己设置的全局转场').onClick(() => {
+            ZRouter.getInstance().push(RouterConstants.PAGE_THREE)
+          })
+        Button('系统默认转场').onClick(() => {
+            ZRouter.getInstance().push(RouterConstants.PAGE_FOUR)
+          })
       }
 
     }

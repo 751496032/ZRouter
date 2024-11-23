@@ -10,5 +10,12 @@ export { ILifecycleObserver } from './src/main/ets/lifecycle/ILifecycleObserver'
 export { LifecycleEvent } from './src/main/ets/lifecycle/LifecycleEvent'
 export { RouterInfo } from './src/main/ets/model/RouterInfo'
 export { NavAnimationModifier } from './src/main/ets/animation/modifier/NavAnimationModifier'
-export { INavAnimationParam, INavSingleAnimationParam } from './src/main/ets/animation/param/INavAnimationParam'
+export { INavSingleAnimationParam,
+  NavAnimateOptions,
+} from './src/main/ets/animation/param/INavAnimationParam'
+export { INavAnimateOptions } from './src/main/ets/animation/param/INavAnimateOptions'
+export { TranslateAnimationOptions } from './src/main/ets/animation/param/TranslateAnimationOptions'
+export { ScaleAnimateOptions } from './src/main/ets/animation/param/ScaleAnimateOptions'
+export { OpacityAnimateOptions } from './src/main/ets/animation/param/OpacityAnimateOptions'
+export { RotateAnimateOptions} from './src/main/ets/animation/param/RotateAnimateOptions'
 export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'

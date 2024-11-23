@@ -4,7 +4,16 @@
  * @desc:
  */
 import { RouterConstants } from '@hzw/common_library';
-import { Route, ZRouter } from 'routerapi';
+import {
+  NavAnimateOptions,
+  OpacityAnimateOptions,
+  RotateAnimateOptions,
+  Route,
+  ScaleAnimateOptions,
+  TranslateAnimationOptions,
+  ZRouter
+} from 'routerapi';
+import { AnimateCallback } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
 import { AnimConst } from './AnimConst';
 
 @Builder
@@ -60,227 +69,66 @@ export struct PageOne {
           ZRouter.getInstance()
             .animateMgr()
             .registerAnimParam(this, context)
-            .setPushEnterAnimate({
-              startCallback: (m) => {
-                m.attribute?.translate({ x: '100%', y: '100%' })
-              },
-              endCallback: (m) => {
-                m.attribute?.translate({ x: '0', y: '0' })
-              },
-            })
-            .setPopExitAnimate({
-              startCallback: (m) => {
-                m.attribute?.translate({ x: '0', y: '0' })
-              },
-              endCallback: (m) => {
-                m.attribute?.translate({ x: '0', y: '100%' })
-              },
-            })
+            .addAnimateOptions(new TranslateAnimationOptions({ y: '100%' }))
           break
         case AnimConst.ANIM:
           // 平移-播放0.5-减速播放
           ZRouter.getInstance()
             .animateMgr()
             .registerAnimParam(this, context)
-            .setPushEnterAnimate({
-              animateParam: {
-                duration: 500,
-                curve: Curve.LinearOutSlowIn
-              },
-              startCallback: (m) => {
-                m.attribute?.translate({ x: '100%', y: '100%' })
-              },
-              endCallback: (m) => {
-                m.attribute?.translate({ x: '0', y: '0' })
-              },
-            })
-            .setPopExitAnimate({
-              animateParam: {
-                duration: 500,
-                curve: Curve.LinearOutSlowIn
-              },
-              startCallback: (m) => {
-                m.attribute?.translate({ x: '0', y: '0' })
-              },
-              endCallback: (m) => {
-                m.attribute?.translate({ x: '100%', y: '100%' })
-              },
-            })
+            .setEnterAnimate({ duration: 500, curve: Curve.LinearOutSlowIn })
+            .setExitAnimate({ duration: 500, curve: Curve.LinearOutSlowIn })
+            .addAnimateOptions(new TranslateAnimationOptions({ y: '100%' }))
           break
         case AnimConst.SCALE:
           // 缩放
           ZRouter.getInstance()
             .animateMgr()
             .registerAnimParam(this, context)
-            .setPushEnterAnimate({
-              startCallback: (m) => {
-                m.attribute?.scale({
-                  x: 0,
-                  y: 0,
-                  centerX: '50%',
-                  centerY: '50%',
-                })
-              },
-              endCallback: (m) => {
-                m.attribute?.scale({
-                  x: 1,
-                  y: 1,
-                  centerX: '50%',
-                  centerY: '50%',
-                })
-              },
-            })
-            .setPopExitAnimate({
-              startCallback: (m) => {
-                m.attribute?.scale({
-                  x: 1,
-                  y: 1,
-                  centerX: '0',
-                  centerY: '0',
-                })
-              },
-              endCallback: (m) => {
-                m.attribute?.scale({
-                  x: 0,
-                  y: 0,
-                  centerX: '0',
-                  centerY: '0',
-                })
-              }
-            })
+            .addAnimateOptions(new ScaleAnimateOptions({
+              x: 0,
+              y: 0,
+              centerX: 0,
+              centerY: 0
+            }))
           break
         case AnimConst.OPACITY:
           // 渐变
           ZRouter.getInstance()
             .animateMgr()
             .registerAnimParam(this, context)
-            .setPushEnterAnimate({
-              startCallback: (m) => {
-                m.attribute?.opacity(0.01)
-              },
-              endCallback: (m) => {
-                m.attribute?.opacity(1)
-              },
-            })
-            .setPopExitAnimate({
-              startCallback: (m) => {
-                m.attribute?.opacity(1)
-              },
-              endCallback: (m) => {
-                m.attribute?.opacity(0.01)
-              },
-            })
+            .addAnimateOptions(new OpacityAnimateOptions(0.01))
+          break
+        case AnimConst.ROTATE:
+          // 旋转
+          ZRouter.getInstance()
+            .animateMgr()
+            .registerAnimParam(this, context)
+            .addAnimateOptions(new RotateAnimateOptions({
+              angle: 90,
+              x: 1,
+              y: 1,
+              z: 1,
+              centerX: 0,
+              centerY: 0
+            }))
           break
         case AnimConst.CUSTOM:
           // 自定义
           ZRouter.getInstance()
             .animateMgr()
             .registerAnimParam(this, context)
-            .setPushEnterAnimate({
-              startCallback: (m, proxy) => {
-                m.attribute?.translate({ x: '100%' }).rotate({ angle: 90 }).opacity(0.1)
-                animateTo({
-                  onFinish: () => {
-                    animateTo({
-                      onFinish: () => {
-                        proxy?.finishTransition()
-                      }
-                    }, () => {
-                      m.attribute?.translate({ x: '0' }).opacity(1)
-                    })
-                  }
-                }, () => {
-                  m.attribute?.translate({ x: '50%' }).rotate({ angle: 0 }).opacity(0.7)
-                })
-              }
-            })
-            .setPopExitAnimate({
-              startCallback: (m, proxy) => {
-                m.attribute?.translate({ x: '0' }).opacity(1)
-                animateTo({
-                  onFinish: () => {
-                    animateTo({
-                      onFinish: () => {
-                        proxy?.finishTransition()
-                      }
-                    }, () => {
-                      m.attribute?.translate({ x: '100%' }).rotate({ angle: 90 }).opacity(0.1)
-                    })
-                  }
-                }, () => {
-                  m.attribute?.translate({ x: '50%' }).rotate({ angle: 0 }).opacity(0.7)
-                })
-              }
-            })
+            .setCustomAnimeOptions(new CustomAnimOptions())
           break
         default:
         // 组合
           ZRouter.getInstance()
             .animateMgr()
             .registerAnimParam(this, context)
-            .setPushEnterAnimate({
-              startCallback: (m) => {
-                m.attribute?.translate({ x: '100%', y: '0' })
-                  .scale({
-                    x: 0,
-                    y: 0,
-                    centerX: '50%',
-                    centerY: '50%',
-                  })
-                  .opacity(0.01)
-                  .rotate({
-                    angle: 90,
-                    centerX: '50%',
-                    centerY: '50%',
-                  })
-              },
-              endCallback: (m) => {
-                m.attribute?.translate({ x: '0', y: '0' })
-                  .scale({
-                    x: 1,
-                    y: 1,
-                    centerX: '50%',
-                    centerY: '50%',
-                  })
-                  .opacity(1)
-                  .rotate({
-                    angle: 0,
-                    centerX: '50%',
-                    centerY: '50%',
-                  })
-              },
-            })
-            .setPopExitAnimate({
-              startCallback: (m) => {
-                m.attribute?.scale({
-                  x: 1,
-                  y: 1,
-                  centerX: '50%',
-                  centerY: '50%',
-                })
-                  .opacity(1)
-                  .rotate({
-                    angle: 0,
-                    centerX: '100%',
-                    centerY: '100%',
-                  })
-              },
-              endCallback: (m) => {
-                m.attribute?.translate({ x: '0', y: '0' })
-                  .scale({
-                    x: 0,
-                    y: 0,
-                    centerX: '0',
-                    centerY: '0',
-                  })
-                  .opacity(0.01)
-                  .rotate({
-                    angle: 360,
-                    centerX: '50%',
-                    centerY: '50%',
-                  })
-              },
-            })
+            .addAnimateOptions(new TranslateAnimationOptions({ y: '100%' }))
+            .addAnimateOptions(new ScaleAnimateOptions({ x: 0, y: 0 }))
+            .addAnimateOptions(new OpacityAnimateOptions(0.01))
+            .addAnimateOptions(new RotateAnimateOptions({ angle: 90 }))
       }
     })
     .onDisAppear(() => {
@@ -306,5 +154,49 @@ export struct PageOne {
     //     let rate: number = event.fingerList[0].localX / this.rectWidth;
     //     NavAnimationBuilder.getInstance().finishInteractiveAnimation(rate);
     //   }))
+  }
+}
+
+// 自定义转场
+class CustomAnimOptions extends NavAnimateOptions {
+  public update(callback: AnimateCallback): void {
+    // 进场
+    callback.pushEnterParam = {
+      startCallback: (m, proxy) => {
+        m.attribute?.translate({ x: '100%' }).rotate({ angle: 90 }).opacity(0.1)
+        animateTo({
+          onFinish: () => {
+            animateTo({
+              onFinish: () => {
+                proxy?.finishTransition()
+              }
+            }, () => {
+              m.attribute?.translate({ x: '0' }).opacity(1)
+            })
+          }
+        }, () => {
+          m.attribute?.translate({ x: '50%' }).rotate({ angle: 0 }).opacity(0.7)
+        })
+      }
+    }
+    // 退场
+    callback.popExitParam = {
+      startCallback: (m, proxy) => {
+        m.attribute?.translate({ x: '0' }).opacity(1)
+        animateTo({
+          onFinish: () => {
+            animateTo({
+              onFinish: () => {
+                proxy?.finishTransition()
+              }
+            }, () => {
+              m.attribute?.translate({ x: '100%' }).rotate({ angle: 90 }).opacity(0.1)
+            })
+          }
+        }, () => {
+          m.attribute?.translate({ x: '50%' }).rotate({ angle: 0 }).opacity(0.7)
+        })
+      }
+    }
   }
 }

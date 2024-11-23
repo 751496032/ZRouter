@@ -4,7 +4,7 @@
  * @desc:
  */
 
-import { InterceptorInfo, OnInterceptorCallback } from './Model'
+import { InterceptorInfo } from './Model'
 import { RedirectInfo } from './RedirectModel'
 
 export default class NavStackState {

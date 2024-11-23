@@ -1,10 +1,13 @@
 import { RouterConstants, ToastUtils } from '@hzw/common_library'
 import { promptAction, router } from '@kit.ArkUI'
-import { ILifecycleObserver, Lifecycle,
-  LifecycleRegistry, ZRouter } from 'routerapi'
+import { ILifecycleObserver, Lifecycle, LifecycleRegistry,
+  OpacityAnimateOptions,
+  RotateAnimateOptions,
+  ScaleAnimateOptions,
+  TranslateAnimationOptions, ZRouter } from 'routerapi'
 import { RouterConst } from '../constants/RouterConst'
 import { AddInterceptor } from '../interceptors/AddIntercetors'
-import { common, Want } from '@kit.AbilityKit';
+import { common, Want } from '@kit.AbilityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
 
 @Entry
@@ -13,7 +16,6 @@ struct Index {
   @Lifecycle
   lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
   private context = getContext(this) as common.UIAbilityContext;
-
 
   aboutToAppear(): void {
     AddInterceptor()
@@ -35,15 +37,15 @@ struct Index {
         console.log('Index  aboutToDisappear')
       },
     } as ILifecycleObserver)
-    this.lifecycle.addListener((e)=>{
+    this.lifecycle.addListener((e) => {
 
     })
 
   }
 
   build() {
-    Navigation(ZRouter.getNavStack()){
-      Column({space:12}){
+    Navigation(ZRouter.getNavStack()) {
+      Column({ space: 12 }) {
         Button('har-跳转到HarA模块').onClick((event: ClickEvent) => {
           ZRouter.getInstance().navigation(RouterConstants.HARA_MAIN_PAGE)
 
@@ -56,7 +58,7 @@ struct Index {
           ZRouter.getInstance()
             .setParam(data)
             .setPopListener((info) => {
-              let msg =  `返回携带的数据：${JSON.stringify(info.data)}`
+              let msg = `返回携带的数据：${JSON.stringify(info.data)}`
               ToastUtils.show(msg)
             })
             .navigation(RouterConstants.HSPC_INDEX_PAGE)
@@ -90,11 +92,11 @@ struct Index {
         Button('跳转携带参数与监听pop返回所携带的参数').onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setParam("root data")
-            .setLunchMode(LaunchMode.STANDARD) // 启动模式
-            .enableCrossPageParamReturn() // 跨页面参数返回
+            .setLunchMode(LaunchMode.STANDARD)// 启动模式
+            .enableCrossPageParamReturn()// 跨页面参数返回
             .setAnimate(true)
             .setPopListener((r) => {
-                ToastUtils.show(`pop result: ${r.data}  from: ${r.from}`)
+              ToastUtils.show(`pop result: ${r.data}  from: ${r.from}`)
             })
             .navigation(RouterConstants.HARA_PAGE3)
         })
@@ -128,8 +130,8 @@ struct Index {
 
       }
     }
-    .onAppear(()=>{
-      let isStarted= AppStorage.get<boolean>(RouterConst.SPLASH_TAG)
+    .onAppear(() => {
+      let isStarted = AppStorage.get<boolean>(RouterConst.SPLASH_TAG)
       if (!isStarted) {
         ZRouter.getInstance()
           .setAnimate(false)
@@ -140,24 +142,23 @@ struct Index {
     .height('100%')
     .width('100%')
     .customNavContentTransition(ZRouter.getInstance()
+      // 转场动画管理器
       .animateMgr()
+      // 创建默认动画管理器
       .defaultAnimateBuilder()
-      .setPushEnterAnimate({
-        startCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
-        endCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
-      })
-      .setPopExitAnimate({
-        startCallback: (m) => m.attribute?.translate({ x: '0', y: 0 }).opacity(1),
-        endCallback: (m) => m.attribute?.translate({ x: '200%', y: '-20%' }).opacity(0.01),
-      })
-      .setPushExitAnimate({
-        startCallback: (m) => m.attribute?.opacity(1),
-        endCallback: (m) => m.attribute?.opacity(0.01),
-      })
-      .setPopEnterAnimate({
-        startCallback: (m) => m.attribute?.opacity(0.01),
-        endCallback: (m) => m.attribute?.opacity(1),
-      })
+      // 设置进场动画参数
+      .setEnterAnimate({ duration: 500 })
+        // 设置退场动画参数
+      .setExitAnimate({ duration: 700 })
+      // 平移
+      .addAnimateOptions(new TranslateAnimationOptions({ x:'50%',y:'50%'}))
+      // 渐变
+      .addAnimateOptions(new OpacityAnimateOptions(0.01))
+      // 缩放
+      .addAnimateOptions(new ScaleAnimateOptions({ x:0, y: 0 }))
+      // 旋转
+      .addAnimateOptions(new RotateAnimateOptions({ angle: 90 }))
+      // 自定义转场动画回调
       .getAnimCustomNavContentTransition())
   }
 }
