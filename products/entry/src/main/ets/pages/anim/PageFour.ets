@@ -14,8 +14,6 @@ export function PageFourBuilder(name: string, param: Object) {
 @Route({ name: RouterConstants.PAGE_FOUR })
 @Component
 export struct PageFour {
-  modifier: NavAnimationModifier = new NavAnimationModifier()
-
   build() {
     NavDestination() {
       Column() {

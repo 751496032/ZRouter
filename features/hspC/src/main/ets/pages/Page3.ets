@@ -50,10 +50,10 @@ export struct Page3 {
       // })
 
     })
-    .onDisAppear(() => {
-      ZRouter.getInstance().unregisterAnim(this.modifier)
-    })
-    .attributeModifier(this.modifier)
+    // .onDisAppear(() => {
+    //   ZRouter.getInstance().unregisterAnim(this.modifier)
+    // })
+    // .attributeModifier(this.modifier)
     .width('100%')
     .height('100%')
   }

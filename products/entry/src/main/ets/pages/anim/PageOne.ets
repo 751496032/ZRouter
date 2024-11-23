@@ -4,7 +4,7 @@
  * @desc:
  */
 import { RouterConstants } from '@hzw/common_library';
-import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
+import { Route, ZRouter } from 'routerapi';
 import { AnimConst } from './AnimConst';
 
 @Builder
@@ -15,7 +15,6 @@ export function PageOneBuilder(name: string, param: Object) {
 @Route({ name: RouterConstants.PAGE_ONE })
 @Component
 export struct PageOne {
-  modifier: NavAnimationModifier = new NavAnimationModifier()
   rectWidth: number = 0;
   interactive: boolean = false;
 
@@ -60,7 +59,7 @@ export struct PageOne {
           // 平移
           ZRouter.getInstance()
             .animateMgr()
-            .registerAnimParam(this.modifier, context)
+            .registerAnimParam(this, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
                 m.attribute?.translate({ x: '100%', y: '100%' })
@@ -82,7 +81,7 @@ export struct PageOne {
           // 平移-播放0.5-减速播放
           ZRouter.getInstance()
             .animateMgr()
-            .registerAnimParam(this.modifier, context)
+            .registerAnimParam(this, context)
             .setPushEnterAnimate({
               animateParam: {
                 duration: 500,
@@ -112,7 +111,7 @@ export struct PageOne {
           // 缩放
           ZRouter.getInstance()
             .animateMgr()
-            .registerAnimParam(this.modifier, context)
+            .registerAnimParam(this, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
                 m.attribute?.scale({
@@ -154,7 +153,7 @@ export struct PageOne {
           // 渐变
           ZRouter.getInstance()
             .animateMgr()
-            .registerAnimParam(this.modifier, context)
+            .registerAnimParam(this, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
                 m.attribute?.opacity(0.01)
@@ -176,7 +175,7 @@ export struct PageOne {
           // 自定义
           ZRouter.getInstance()
             .animateMgr()
-            .registerAnimParam(this.modifier, context)
+            .registerAnimParam(this, context)
             .setPushEnterAnimate({
               startCallback: (m, proxy) => {
                 m.attribute?.translate({ x: '100%' }).rotate({ angle: 90 }).opacity(0.1)
@@ -218,7 +217,7 @@ export struct PageOne {
         // 组合
           ZRouter.getInstance()
             .animateMgr()
-            .registerAnimParam(this.modifier, context)
+            .registerAnimParam(this, context)
             .setPushEnterAnimate({
               startCallback: (m) => {
                 m.attribute?.translate({ x: '100%', y: '0' })
@@ -285,9 +284,9 @@ export struct PageOne {
       }
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().animateMgr().unregisterAnim(this.modifier)
+      ZRouter.getInstance().animateMgr().unregisterAnim(this)
     })
-    .attributeModifier(this.modifier)
+    .attributeModifier(ZRouter.getInstance().animateMgr().modifier(this))
     .backgroundColor('#F1F3F5')
 
     // .gesture(PanGesture()

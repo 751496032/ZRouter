@@ -6,6 +6,7 @@
 import { NavAnimationModifier } from './modifier/NavAnimationModifier';
 import { INavSingleAnimationParam } from './param/INavAnimationParam';
 import { NavAnimParamBuilder } from './param/NavAnimParamBuilder';
+import { util } from '@kit.ArkTS';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
@@ -16,11 +17,26 @@ export interface AnimateCallback {
   popExitParam?: INavSingleAnimationParam | undefined
 }
 
+export interface NavAnimatePageInfo {
+  pageId?: string
+  modifier: NavAnimationModifier
+}
+
 export class NavAnimationMgr {
   private static delegate = new NavAnimationMgr();
 
   static getInstance(): NavAnimationMgr {
     return NavAnimationMgr.delegate;
+  }
+
+  /**
+   * 该页面的动画转场所需要的modifier，也可以自己传进去
+   * @param component
+   * @param modifier
+   * @returns
+   */
+  public modifier(component: object, modifier?: NavAnimationModifier): NavAnimationModifier {
+    return NavAnimationStore.getInstance().modifier(component, modifier)
   }
 
   /**
@@ -37,24 +53,24 @@ export class NavAnimationMgr {
    * @param ctx
    * @param param
    */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
-    return NavAnimationStore.getInstance().buildAnimParam(modifier, ctx)
+  public registerAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimationStore.getInstance().buildAnimParam(component, ctx)
   }
 
   /**
    * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
    * @param modifier
    */
-  public getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
-    return NavAnimationStore.getInstance().getAnimParamBuilder(modifier)
+  public getAnimParamBuilder(component: object): NavAnimParamBuilder | undefined {
+    return NavAnimationStore.getInstance().getAnimParamBuilder(component)
   }
 
   /**
    * 取消注册路由转场动画
    * @param modifier
    */
-  public unregisterAnim(modifier: NavAnimationModifier): void {
-    NavAnimationStore.getInstance().unregisterAnim(modifier)
+  public unregisterAnim(component: object): void {
+    NavAnimationStore.getInstance().unregisterAnim(component)
   }
 
   /**
@@ -74,12 +90,34 @@ export class NavAnimationStore {
   private interactive: boolean = false;
   private proxy: NavigationTransitionProxy | undefined = undefined;
   private operation: NavigationOperation = NavigationOperation.PUSH
-  private navContextMap: Map<NavAnimationModifier, NavDestinationContext> = new Map();
+  // 根据 页面对象唯一标识 设置/获取 modifier 和 pageId
+  private navContextMap: Map<string, NavAnimatePageInfo> = new Map();
+  // 根据 pageId 设置/获取 转场动画
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
   private _defaultCallback?: AnimateCallback
 
   static getInstance() {
     return NavAnimationStore.delegate;
+  }
+
+  /**
+   * 该页面的动画转场所需要的modifier，也可以自己传进去
+   * @param component
+   * @param modifier
+   * @returns
+   */
+  modifier(component: object, modifier?: NavAnimationModifier) {
+    const pageInfo = this.navContextMap.get(this.getKey(component))
+    if (pageInfo) {
+      return pageInfo.modifier
+    }
+    const m = modifier ?? new NavAnimationModifier()
+    this.navContextMap.set(this.getKey(component), { modifier: m })
+    return m
+  }
+
+  private getKey(component: object) {
+    return `${component.constructor.name}-${util.getHash(component)}`
   }
 
   /**
@@ -98,21 +136,21 @@ export class NavAnimationStore {
    * @param ctx
    * @param param
    */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): AnimateCallback | undefined {
-    if (ctx.navDestinationId && !this.navContextMap.has(modifier)) {
-      this.navContextMap.set(modifier, ctx)
-      const name = ctx.navDestinationId;
-      let param: AnimateCallback | undefined
-      if (!this.customTransitionMap.has(name)) {
-        param = {
-          modifier: modifier,
-        }
-        this.customTransitionMap.set(name, param);
-      }
-      return param
-    }
+  public registerAnimParam(component: object, ctx: NavDestinationContext): AnimateCallback | undefined {
     if (ctx.navDestinationId) {
-      return this.customTransitionMap.get(ctx.navDestinationId)
+      const pageInfo = this.navContextMap.get(this.getKey(component))
+      if (pageInfo) {
+        pageInfo.pageId = ctx.navDestinationId
+        const name = ctx.navDestinationId;
+        let param = this.customTransitionMap.get(name)
+        if (!param) {
+          param = {
+            modifier: pageInfo?.modifier,
+          }
+          this.customTransitionMap.set(name, param);
+        }
+        return param
+      }
     }
     return undefined
   }
@@ -122,8 +160,8 @@ export class NavAnimationStore {
    * @param modifier
    * @param ctx
    */
-  buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
-    const callback = this.registerAnimParam(modifier, ctx)
+  buildAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
+    const callback = this.registerAnimParam(component, ctx)
     return NavAnimParamBuilder.builder(callback)
   }
 
@@ -132,11 +170,13 @@ export class NavAnimationStore {
    * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
    * @param modifier
    */
-  getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
-    const ctx = this.navContextMap.get(modifier)
-    if (ctx?.navDestinationId) {
-      const callback = this.customTransitionMap.get(ctx.navDestinationId)
-      return NavAnimParamBuilder.builder(callback)
+  getAnimParamBuilder(component: object): NavAnimParamBuilder | undefined {
+    const ctx = this.navContextMap.get(this.getKey(component))
+    if (ctx?.pageId) {
+      const callback = this.customTransitionMap.get(ctx?.pageId)
+      if (callback) {
+        return NavAnimParamBuilder.builder(callback)
+      }
     }
     return undefined
   }
@@ -145,12 +185,12 @@ export class NavAnimationStore {
    * 取消注册路由转场动画
    * @param modifier
    */
-  unregisterAnim(modifier: NavAnimationModifier) {
-    const navId = this.navContextMap.get(modifier)?.navDestinationId
+  unregisterAnim(component: object) {
+    const navId = this.navContextMap.get(this.getKey(component))?.pageId
     if (navId) {
       this.customTransitionMap.delete(navId);
     }
-    this.navContextMap.delete(modifier)
+    this.navContextMap.delete(this.getKey(this))
   }
 
   startNavAnimPushEnter(id: string | undefined) {

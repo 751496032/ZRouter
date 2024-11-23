@@ -9,8 +9,6 @@ import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 @Route({ name: RouterConstants.PAGE_DIALOG_MODE })
 @Component
 export struct PageDialogMode {
-  modifier = new NavAnimationModifier()
-
   build() {
     NavDestination() {
       Column() {
@@ -27,12 +25,12 @@ export struct PageDialogMode {
     .title('PageDialogMode')
     .backgroundColor(Color.White)
     .onReady((c) => {
-      ZRouter.getInstance().animateMgr().registerAnimParam(this.modifier, c)
+      ZRouter.getInstance().animateMgr().registerAnimParam(this, c)
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().animateMgr().unregisterAnim(this.modifier)
+      ZRouter.getInstance().animateMgr().unregisterAnim(this)
     })
-    .attributeModifier(this.modifier)
+    .attributeModifier(ZRouter.getInstance().animateMgr().modifier(this))
     .mode(NavDestinationMode.DIALOG)
   }
 }
