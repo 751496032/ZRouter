@@ -32,6 +32,9 @@ export interface NavAnimatePageInfo {
 export class NavAnimationMgr {
   private static delegate = new NavAnimationMgr();
 
+  private constructor() {
+  }
+
   static getInstance(): NavAnimationMgr {
     return NavAnimationMgr.delegate;
   }

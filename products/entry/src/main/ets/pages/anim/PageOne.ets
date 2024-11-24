@@ -66,15 +66,13 @@ export struct PageOne {
       switch (ZRouter.getParam()) {
         case AnimConst.TRANSLATE:
           // 平移
-          ZRouter.getInstance()
-            .animateMgr()
+          ZRouter.animateMgr()
             .registerAnimParam(this, context)
             .addAnimateOptions(new TranslateAnimationOptions({ y: '100%' }))
           break
         case AnimConst.ANIM:
           // 平移-播放0.5-减速播放
-          ZRouter.getInstance()
-            .animateMgr()
+          ZRouter.animateMgr()
             .registerAnimParam(this, context)
             .setEnterAnimate({ duration: 500, curve: Curve.LinearOutSlowIn })
             .setExitAnimate({ duration: 500, curve: Curve.LinearOutSlowIn })
@@ -82,8 +80,7 @@ export struct PageOne {
           break
         case AnimConst.SCALE:
           // 缩放
-          ZRouter.getInstance()
-            .animateMgr()
+          ZRouter.animateMgr()
             .registerAnimParam(this, context)
             .addAnimateOptions(new ScaleAnimateOptions({
               x: 0,
@@ -94,8 +91,7 @@ export struct PageOne {
           break
         case AnimConst.OPACITY:
           // 渐变
-          ZRouter.getInstance()
-            .animateMgr()
+          ZRouter.animateMgr()
             .registerAnimParam(this, context)
             .addAnimateOptions(new OpacityAnimateOptions(0.01))
           break
@@ -134,7 +130,7 @@ export struct PageOne {
     .onDisAppear(() => {
       ZRouter.getInstance().animateMgr().unregisterAnim(this)
     })
-    .attributeModifier(ZRouter.getInstance().animateMgr().modifier(this))
+    .attributeModifier(ZRouter.animateMgr().modifier(this))
     .backgroundColor('#F1F3F5')
 
     // .gesture(PanGesture()

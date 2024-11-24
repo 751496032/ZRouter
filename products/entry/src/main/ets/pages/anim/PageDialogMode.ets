@@ -4,33 +4,44 @@
  * @desc:
  */
 import { RouterConstants } from '@hzw/common_library';
-import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
+import { NavAnimationModifier, Route, TranslateAnimationOptions, ZRouter } from 'routerapi';
 
 @Route({ name: RouterConstants.PAGE_DIALOG_MODE })
 @Component
 export struct PageDialogMode {
   build() {
     NavDestination() {
-      Column() {
-        Button('自己设置的全局转场', { stateEffect: true, type: ButtonType.Capsule })
-          .width('80%')
-          .height(40)
-          .margin(20)
-          .onClick(() => {
-            ZRouter.getInstance().push(RouterConstants.PAGE_THREE)
-          })
+      Column(){
+        Divider()
+          .layoutWeight(1)
+        Column() {
+          Button('自己设置的全局转场', { stateEffect: true, type: ButtonType.Capsule })
+            .width('80%')
+            .height(40)
+            .margin(20)
+            .onClick(() => {
+              ZRouter.getInstance().push(RouterConstants.PAGE_THREE)
+            })
+        }
+        .backgroundColor(Color.White)
+        .size({ width: '100%', height: '60%' })
       }
-      .size({ width: '100%', height: '100%' })
     }
     .title('PageDialogMode')
-    .backgroundColor(Color.White)
     .onReady((c) => {
-      ZRouter.getInstance().animateMgr().registerAnimParam(this, c)
+      ZRouter.animateMgr()
+        .registerAnimParam(this, c)
+        .addAnimateOptions(new TranslateAnimationOptions({ y: '100%' }))
+
+
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().animateMgr().unregisterAnim(this)
+      ZRouter.animateMgr().unregisterAnim(this)
     })
-    .attributeModifier(ZRouter.getInstance().animateMgr().modifier(this))
+    .attributeModifier(ZRouter.animateMgr().modifier(this))
     .mode(NavDestinationMode.DIALOG)
+    .hideTitleBar(true)
+    .backgroundColor("#60000000")
+
   }
 }

@@ -21,6 +21,7 @@ import { IProvider } from '../service/IProvider'
 import { ConfigInitializer } from '../model/ConfigInitializer'
 import Logger from '../utlis/Logger'
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
+import { NavAnimationMgr } from '../animation/NavAnimationMgr'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -97,9 +98,14 @@ export class ZRouter {
   }
 
 
-  public static getService<T extends IProvider | null>(name: string): T | null {
+  public static getService<T extends IProvider>(name: string): T | null {
     return ZRouter.getServiceMgr().getService<T>(name)
   }
+
+  public static animateMgr(): NavAnimationMgr {
+    return ZRouter.getRouterMgr().animateMgr
+  }
+
 
   public static registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack): void {
     ZRouter.getRouterMgr().registerNavStack(stackName, pathStack)

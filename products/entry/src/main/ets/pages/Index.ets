@@ -141,9 +141,7 @@ struct Index {
     .title('Main')
     .height('100%')
     .width('100%')
-    .customNavContentTransition(ZRouter.getInstance()
-      // 转场动画管理器
-      .animateMgr()
+    .customNavContentTransition(ZRouter.animateMgr()
       // 创建默认动画管理器
       .defaultAnimateBuilder()
       // 设置进场动画参数
