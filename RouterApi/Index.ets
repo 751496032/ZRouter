@@ -9,4 +9,7 @@ export { LifecycleRegistry, LifecycleRegistryOrNull } from './src/main/ets/lifec
 export { ILifecycleObserver  } from './src/main/ets/lifecycle/ILifecycleObserver'
 export { LifecycleEvent } from './src/main/ets/lifecycle/LifecycleEvent'
 export { RouterInfo } from './src/main/ets/model/RouterInfo'
+export { NavAnimationModifier } from './src/main/ets/animation/modifier/NavAnimationModifier'
+export { INavAnimationParam, INavSingleAnimationParam } from './src/main/ets/animation/param/INavAnimationParam'
+export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'
 export { AbsLifecycleObserver } from './src/main/ets/lifecycle/template/AbsLifecycleObserver'

@@ -4,14 +4,18 @@ import { uiObserver, window } from '@kit.ArkUI';
 import { ZRouter } from 'routerapi';
 import { util } from '@kit.ArkTS';
 import BuildProfile from 'BuildProfile';
+import { Logger } from '@hzw/logger';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
+    Logger.init({
+      debug: BuildProfile.DEBUG, domain: 0x8888
+    })
     ZRouter.initialize((config) => {
       config.isLoggingEnabled = BuildProfile.DEBUG
       config.isHSPModuleDependent = true
-      config.loadDynamicModule = ['hara', 'harb', 'hspc']
+      config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc']
       config.onDynamicLoadComplete = () => {
         console.log("已完成所有模块的加载")
       }

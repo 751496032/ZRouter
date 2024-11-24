@@ -1,7 +1,7 @@
 import { RouterConstants } from '@hzw/common_library';
 import { Route, ZRouter } from 'routerapi';
 
-@Route({ name: RouterConstants.HSPC_INDEX_PAGE, needLogin: true, extra: 'hsp' })
+@Route({ name: RouterConstants.HSPC_INDEX_PAGE, needLogin: true})
 @Entry
 @Component
 struct Index {
@@ -32,7 +32,7 @@ struct Index {
           ZRouter.getInstance().push("hspCPage2")
         })
 
-        Button('pop(携带参数返回)').onClick((event: ClickEvent) => {
+        Button('popWithResult - 携带参数返回上一页').onClick((event: ClickEvent) => {
           // ZRouter.popWithResult('hspCIndex data')
           ZRouter.getInstance().popWithResult("from hspC index data")
         })

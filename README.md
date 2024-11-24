@@ -507,6 +507,9 @@ ZRouter的组件生命周期管理能力，主要有两个特点：
 
 详细见[wiki](https://gitee.com/common-apps/ZRouter/wikis/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86%E8%83%BD%E5%8A%9B)
 
+## 路由转场动画
+详细见[wiki](https://gitee.com/common-apps/ZRouter/wikis/%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB)
+
 ## 第三方Navigation实例使用本库的API
 
 如果第三方Navigation实例使用本库的API，需要将第三方Navigation的NavPathStack实例注册到ZRouter中，代码示例：

@@ -1,0 +1,13 @@
+{
+  "name": "hapa",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "routerapi": "file:../../RouterApi",
+    "common_library": "file:../../library/common"
+  }
+}
+

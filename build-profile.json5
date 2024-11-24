@@ -59,6 +59,18 @@
     {
       "name": "common",
       "srcPath": "./library/common"
+    },
+    {
+      "name": "hapA",
+      "srcPath": "./products/hapA",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
     }
   ]
 }

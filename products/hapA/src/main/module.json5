@@ -1,0 +1,28 @@
+{
+  "module": {
+    "name": "hapA",
+    "type": "feature",
+    "description": "$string:module_desc",
+    "mainElement": "HapAAbility",
+    "deviceTypes": [
+      "phone"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "HapAAbility",
+        "srcEntry": "./ets/hapaability/HapAAbility.ets",
+        "description": "$string:HapAAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:HapAAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "launchType": "standard"
+      }
+    ],
+    "routerMap": "$profile:route_map"
+  }
+}
