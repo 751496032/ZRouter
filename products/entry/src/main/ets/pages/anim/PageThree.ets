@@ -6,10 +6,6 @@
 import { RouterConstants } from '@hzw/common_library';
 import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 
-@Builder
-export function PageThreeBuilder(name: string, param: Object) {
-  PageThree()
-}
 
 @Route({ name: RouterConstants.PAGE_THREE })
 @Component
@@ -38,12 +34,12 @@ export struct PageThree {
     }
     .title('自己设置的全局转场')
     .onReady((c) => {
-      ZRouter.getInstance().registerAnimParam(this.modifier, c)
+      ZRouter.getInstance().animateMgr().registerAnimParam(this, c)
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().unregisterAnim(this.modifier)
+      ZRouter.getInstance().animateMgr().unregisterAnim(this)
     })
-    .attributeModifier(this.modifier)
+    .attributeModifier(ZRouter.getInstance().animateMgr().modifier(this))
     .backgroundColor(Color.White)
   }
 }

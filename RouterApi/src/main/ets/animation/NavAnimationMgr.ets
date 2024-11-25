@@ -6,30 +6,128 @@
 import { NavAnimationModifier } from './modifier/NavAnimationModifier';
 import { INavSingleAnimationParam } from './param/INavAnimationParam';
 import { NavAnimParamBuilder } from './param/NavAnimParamBuilder';
+import { util } from '@kit.ArkTS';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
   modifier?: NavAnimationModifier | undefined
+  // 进入状态(PUSH) 进入页的动画转场参数（A进入B 的 B进入转场）
   pushEnterParam?: INavSingleAnimationParam | undefined
+  // 进入状态(PUSH) 离开页的动画转场参数（A进入B 的 A离开转场）
   pushExitParam?: INavSingleAnimationParam | undefined
+  // 退出状态(POP) 进入页的动画转场参数（B返回A 的 A进入转场）
   popEnterParam?: INavSingleAnimationParam | undefined
+  // 退出状态(POP) 离开页的动画转场参数（B返回A 的 B离开转场）
   popExitParam?: INavSingleAnimationParam | undefined
+}
+
+export interface NavAnimatePageInfo {
+  pageId?: string
+  modifier: NavAnimationModifier
+}
+
+/**
+ * 转场动画管理器
+ */
+export class NavAnimationMgr {
+  private static delegate = new NavAnimationMgr();
+
+  private constructor() {
+  }
+
+  static getInstance(): NavAnimationMgr {
+    return NavAnimationMgr.delegate;
+  }
+
+  /**
+   * 该页面的动画转场所需要的modifier，也可以自己传进去
+   * @param component
+   * @param modifier
+   * @returns
+   */
+  public modifier(component: object, modifier?: NavAnimationModifier): NavAnimationModifier {
+    return NavAnimationStore.getInstance().modifier(component, modifier)
+  }
+
+  /**
+   * 全局转场动画构造器，构造后还是需要给页面设置NavAnimationModifier，不然不生效
+   * @returns
+   */
+  public defaultAnimateBuilder(): NavAnimParamBuilder {
+    return NavAnimationStore.getInstance().defaultAnimateBuilder()
+  }
+
+  /**
+   * 注册路由转场动画，设置相关参数
+   * @param modifier
+   * @param ctx
+   * @param param
+   */
+  public registerAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimationStore.getInstance().buildAnimParam(component, ctx)
+  }
+
+  /**
+   * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
+   * @param modifier
+   */
+  public getAnimParamBuilder(component: object): NavAnimParamBuilder | undefined {
+    return NavAnimationStore.getInstance().getAnimParamBuilder(component)
+  }
+
+  /**
+   * 取消注册路由转场动画
+   * @param modifier
+   */
+  public unregisterAnim(component: object): void {
+    NavAnimationStore.getInstance().unregisterAnim(component)
+  }
+
+  /**
+   * 自定义转场动画回调，在Navigation().customNavContentTransition()设置
+   * @returns
+   */
+  public getAnimCustomNavContentTransition() {
+    return NavAnimationStore.customNavContentTransition
+  }
 }
 
 /**
  * 路由转场动画管理
  */
-export class NavAnimationMgr {
-  private static delegate = new NavAnimationMgr();
+export class NavAnimationStore {
+  private static delegate = new NavAnimationStore();
   private interactive: boolean = false;
   private proxy: NavigationTransitionProxy | undefined = undefined;
   private operation: NavigationOperation = NavigationOperation.PUSH
-  private navContextMap: Map<NavAnimationModifier, NavDestinationContext> = new Map();
+  // 根据 页面对象唯一标识 设置/获取 modifier 和 pageId
+  private navContextMap: Map<string, NavAnimatePageInfo> = new Map();
+  // 根据 pageId 设置/获取 转场动画
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
   private _defaultCallback?: AnimateCallback
 
   static getInstance() {
-    return NavAnimationMgr.delegate;
+    return NavAnimationStore.delegate;
+  }
+
+  /**
+   * 该页面的动画转场所需要的modifier，也可以自己传进去
+   * @param component
+   * @param modifier
+   * @returns
+   */
+  modifier(component: object, modifier?: NavAnimationModifier) {
+    const pageInfo = this.navContextMap.get(this.getKey(component))
+    if (pageInfo) {
+      return pageInfo.modifier
+    }
+    const m = modifier ?? new NavAnimationModifier()
+    this.navContextMap.set(this.getKey(component), { modifier: m })
+    return m
+  }
+
+  private getKey(component: object) {
+    return `${component.constructor.name}-${util.getHash(component)}`
   }
 
   /**
@@ -48,21 +146,21 @@ export class NavAnimationMgr {
    * @param ctx
    * @param param
    */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): AnimateCallback | undefined {
-    if (ctx.navDestinationId && !this.navContextMap.has(modifier)) {
-      this.navContextMap.set(modifier, ctx)
-      const name = ctx.navDestinationId;
-      let param: AnimateCallback | undefined
-      if (!this.customTransitionMap.has(name)) {
-        param = {
-          modifier: modifier,
-        }
-        this.customTransitionMap.set(name, param);
-      }
-      return param
-    }
+  public registerAnimParam(component: object, ctx: NavDestinationContext): AnimateCallback | undefined {
     if (ctx.navDestinationId) {
-      return this.customTransitionMap.get(ctx.navDestinationId)
+      const pageInfo = this.navContextMap.get(this.getKey(component))
+      if (pageInfo) {
+        pageInfo.pageId = ctx.navDestinationId
+        const name = ctx.navDestinationId;
+        let param = this.customTransitionMap.get(name)
+        if (!param) {
+          param = {
+            modifier: pageInfo?.modifier,
+          }
+          this.customTransitionMap.set(name, param);
+        }
+        return param
+      }
     }
     return undefined
   }
@@ -72,8 +170,8 @@ export class NavAnimationMgr {
    * @param modifier
    * @param ctx
    */
-  buildAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
-    const callback = this.registerAnimParam(modifier, ctx)
+  buildAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
+    const callback = this.registerAnimParam(component, ctx)
     return NavAnimParamBuilder.builder(callback)
   }
 
@@ -82,11 +180,13 @@ export class NavAnimationMgr {
    * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
    * @param modifier
    */
-  getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
-    const ctx = this.navContextMap.get(modifier)
-    if (ctx?.navDestinationId) {
-      const callback = this.customTransitionMap.get(ctx.navDestinationId)
-      return NavAnimParamBuilder.builder(callback)
+  getAnimParamBuilder(component: object): NavAnimParamBuilder | undefined {
+    const ctx = this.navContextMap.get(this.getKey(component))
+    if (ctx?.pageId) {
+      const callback = this.customTransitionMap.get(ctx?.pageId)
+      if (callback) {
+        return NavAnimParamBuilder.builder(callback)
+      }
     }
     return undefined
   }
@@ -95,12 +195,12 @@ export class NavAnimationMgr {
    * 取消注册路由转场动画
    * @param modifier
    */
-  unregisterAnim(modifier: NavAnimationModifier) {
-    const navId = this.navContextMap.get(modifier)?.navDestinationId
+  unregisterAnim(component: object) {
+    const navId = this.navContextMap.get(this.getKey(component))?.pageId
     if (navId) {
       this.customTransitionMap.delete(navId);
     }
-    this.navContextMap.delete(modifier)
+    this.navContextMap.delete(this.getKey(this))
   }
 
   startNavAnimPushEnter(id: string | undefined) {
@@ -204,7 +304,7 @@ export class NavAnimationMgr {
 
   // 根据动画转场参数播放动画转场效果
   private update(modifier: NavAnimationModifier, param: INavSingleAnimationParam | undefined) {
-    const proxy = NavAnimationMgr.getInstance().getProxy()
+    const proxy = NavAnimationStore.getInstance().getProxy()
     if (param) {
       if (param.startCallback) {
         param.startCallback(modifier, proxy)
@@ -218,7 +318,11 @@ export class NavAnimationMgr {
           iterations: param?.animateParam?.iterations,
           playMode: param?.animateParam?.playMode,
           finishCallbackType: param?.animateParam?.finishCallbackType,
-          expectedFrameRateRange: param?.animateParam?.expectedFrameRateRange,
+          expectedFrameRateRange: param?.animateParam?.expectedFrameRateRange ?? {
+            min: 60,
+            expected: 90,
+            max: 120,
+          },
           onFinish: () => {
             if (param?.animateParam?.onFinish) {
               param?.animateParam.onFinish()
@@ -240,7 +344,7 @@ export class NavAnimationMgr {
     //   return undefined;
     // }
 
-    const builder = NavAnimationMgr.getInstance()
+    const builder = NavAnimationStore.getInstance()
     const fromParam = builder.getAnimateParam(from.navDestinationId)
     const toParam = builder.getAnimateParam(to.navDestinationId)
 
@@ -266,6 +370,7 @@ export class NavAnimationMgr {
         builder.proxy = undefined;
       },
       transition: (transitionProxy: NavigationTransitionProxy) => {
+        builder.proxy?.finishTransition()
         builder.proxy = transitionProxy;
         if (operation == NavigationOperation.PUSH) {
           // 从 A页 进入 B页 时 B页 的动画转场

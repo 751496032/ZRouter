@@ -10,8 +10,6 @@ import { CompUtil } from '../utlis/CompUtil';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
-import { NavAnimParamBuilder } from '../animation/param/NavAnimParamBuilder';
-import { NavAnimationModifier } from '../animation/modifier/NavAnimationModifier';
 
 export class NavBuilder<T> {
   private optionsImpl: INavOptions<T> = new NavOptionsImpl<T>();
@@ -33,46 +31,6 @@ export class NavBuilder<T> {
   public setAnimate(animated: boolean): NavBuilder<T> {
     this.optionsImpl.animated = animated;
     return this;
-  }
-
-  /**
-   * 全局转场动画构造器，构造后还是需要给页面设置NavAnimationModifier，不然不生效
-   */
-  public defaultAnimateBuilder(): NavAnimParamBuilder {
-    return NavAnimationMgr.getInstance().defaultAnimateBuilder();
-  }
-
-  /**
-   * 注册路由转场动画，相关参数构建
-   * @param modifier
-   * @param ctx
-   */
-  public registerAnimParam(modifier: NavAnimationModifier, ctx: NavDestinationContext): NavAnimParamBuilder {
-    return NavAnimationMgr.getInstance().buildAnimParam(modifier, ctx);
-  }
-
-  /**
-   * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
-   * @param modifier
-   */
-  public getAnimParamBuilder(modifier: NavAnimationModifier): NavAnimParamBuilder | undefined {
-    return NavAnimationMgr.getInstance().getAnimParamBuilder(modifier);
-  }
-
-  /**
-   * 取消注册路由转场动画
-   * @param modifier
-   */
-  public unregisterAnim(modifier: NavAnimationModifier) {
-    NavAnimationMgr.getInstance().unregisterAnim(modifier);
-  }
-
-  /**
-   * 自定义转场动画回调，在Navigation().customNavContentTransition()设置
-   * @returns
-   */
-  public getAnimCustomNavContentTransition() {
-    return NavAnimationMgr.customNavContentTransition
   }
 
   public setLunchMode(mode: LaunchMode): NavBuilder<T> {
@@ -228,10 +186,18 @@ export class NavBuilder<T> {
    * @param navDestinationId 通过自定义组件的this.queryNavDestinationInfo()获取
    * @returns
    */
-  public getLifecycleObserver<IL extends AbsLifecycleObserver>(navDestinationId: string | undefined): IL | undefined {
+  public getLifecycleObserver<LO extends AbsLifecycleObserver>(navDestinationId: string | undefined): LO | undefined {
     this.updateCurrentStackName()
-    return this.routerMgr.lifecycleMgr.findObservers((observer, state) => state.navDestinationId ==
-      navDestinationId)[0] as IL
+    try {
+      return this.routerMgr.lifecycleMgr.findObservers((observer, state) => state.navDestinationId ==
+        navDestinationId)[0] as LO
+    } catch (e) {
+       return undefined
+    }
+
   }
 
+  public animateMgr(): NavAnimationMgr {
+    return this.routerMgr.animateMgr
+  }
 }

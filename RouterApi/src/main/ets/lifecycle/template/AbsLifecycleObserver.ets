@@ -12,6 +12,8 @@ export abstract class AbsLifecycleObserver implements ILifecycleObserver {
 
   onShown(info: RouterInfo): void {
   }
+
   onHidden(info: RouterInfo): void {
   }
+
 }

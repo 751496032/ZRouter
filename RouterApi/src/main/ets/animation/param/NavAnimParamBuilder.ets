@@ -1,5 +1,6 @@
-import { AnimateCallback, NavAnimationMgr } from '../NavAnimationMgr'
-import { INavSingleAnimationParam } from './INavAnimationParam'
+import { AnimateCallback, NavAnimationStore } from '../NavAnimationMgr'
+import { INavAnimateOptions } from './INavAnimateOptions'
+import {  NavAnimateOptions, INavSingleAnimationParam } from './INavAnimationParam'
 
 /**
  * @author: HHBin
@@ -7,11 +8,8 @@ import { INavSingleAnimationParam } from './INavAnimationParam'
  * @desc: 路由动画转场参数建造器
  */
 export class NavAnimParamBuilder {
-  private _callback?: AnimateCallback
-  private _pushEnterParam?: INavSingleAnimationParam
-  private _pushExitParam?: INavSingleAnimationParam
-  private _popEnterParam?: INavSingleAnimationParam
-  private _popExitParam?: INavSingleAnimationParam
+  private _callback: AnimateCallback
+  private _options = new NavAnimateOptions()
 
   constructor(callback?: AnimateCallback) {
     if (callback) {
@@ -35,17 +33,52 @@ export class NavAnimParamBuilder {
     return this._callback
   }
 
+  public setCustomAnimeOptions(options: NavAnimateOptions) {
+    this._options = options
+    this._options.update(this._callback)
+    return this
+  }
+
+  /**
+   * 设置进场动画参数（比如动画时间，播放速度等）
+   * @param param
+   * @returns
+   */
+  public setExitAnimate(param: AnimateParam) {
+    this._options.setExitAnimateParam(param)
+    this._options.update(this._callback)
+    return this
+  }
+
+  /**
+   * 添加动画，可以重复添加，动画效果会重叠在一起
+   * @returns
+   */
+  public addAnimateOptions(options: INavAnimateOptions) {
+    this._options.addOptions(options)
+    this._options.update(this._callback)
+    return this
+  }
+
+  /**
+   * 设置退场动画参数（比如动画时间，播放速度等）
+   * @param param
+   * @returns
+   */
+  public setEnterAnimate(param: AnimateParam) {
+    this._options.setEnterAnimateParam(param)
+    this._options.update(this._callback)
+    return this
+  }
+
   /**
    * 进入状态(PUSH) 进入页的动画转场参数（A进入B 的 B进入转场）
    * @param param
    * @returns
    */
   public setPushEnterAnimate(param: INavSingleAnimationParam) {
-    if (!this._pushEnterParam) {
-      this._pushEnterParam = param
-      if (this._callback) {
-        this._callback.pushEnterParam = this._pushEnterParam
-      }
+    if (this._callback) {
+      this._callback.pushEnterParam = param
     }
     return this
   }
@@ -56,11 +89,8 @@ export class NavAnimParamBuilder {
    * @returns
    */
   public setPushExitAnimate(param: INavSingleAnimationParam) {
-    if (!this._pushExitParam) {
-      this._pushExitParam = param
-      if (this._callback) {
-        this._callback.pushExitParam = this._pushExitParam
-      }
+    if (this._callback) {
+      this._callback.pushExitParam = param
     }
     return this
   }
@@ -71,11 +101,8 @@ export class NavAnimParamBuilder {
    * @returns
    */
   public setPopEnterAnimate(param: INavSingleAnimationParam) {
-    if (!this._popEnterParam) {
-      this._popEnterParam = param
-      if (this._callback) {
-        this._callback.popEnterParam = this._popEnterParam
-      }
+    if (this._callback) {
+      this._callback.popEnterParam = param
     }
     return this
   }
@@ -86,11 +113,8 @@ export class NavAnimParamBuilder {
    * @returns
    */
   public setPopExitAnimate(param: INavSingleAnimationParam) {
-    if (!this._popExitParam) {
-      this._popExitParam = param
-      if (this._callback) {
-        this._callback.popExitParam = this._popExitParam
-      }
+    if (this._callback) {
+      this._callback.popExitParam = param
     }
     return this
   }
@@ -100,6 +124,6 @@ export class NavAnimParamBuilder {
    * @returns
    */
   public getAnimCustomNavContentTransition() {
-    return NavAnimationMgr.customNavContentTransition
+    return NavAnimationStore.customNavContentTransition
   }
 }

@@ -16,12 +16,13 @@ import { NavDesModifier } from './NavDestinationAttr';
 @Route({ name: RouterConstants.CUSTOM_COMPONENT_VIEW })
 @Component
 export struct CustomComponentView {
-  @Lifecycle lifecycle : LifecycleRegistry = LifecycleRegistry.create(this)
+  @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
   @Provide lifecycleObserver: CustomCompLifecycleObserver = new CustomCompLifecycleObserver()
+   modifier: NavDesModifier = new NavDesModifier()
+
   aboutToAppear(): void {
     console.log('CustomComponentView aboutToAppear')
     this.lifecycle.addObserver(this.lifecycleObserver)
-
   }
 
   build() {
@@ -29,12 +30,15 @@ export struct CustomComponentView {
       ChildView()
     }
     .onReady((data) => {
+      console.log("CustomComponentView onReady")
       this.lifecycleObserver.onReady(data)
     })
     .onBackPressed(() => {
       return this.lifecycleObserver.onBackPress()
     })
-    .attributeModifier(new NavDesModifier())
+    .title("测试")
+    .hideTitleBar(true)
+    .attributeModifier(this.modifier)
   }
 }
 
@@ -46,16 +50,14 @@ export struct ChildView{
   aboutToAppear(): void {
     console.log('ChildView CustomComponentView aboutToAppear')
 
+
   }
 
   build() {
     Column({space : 15}){
-      Text(this.lifecycleObserver?.counter  + "")
+      Text(this.lifecycleObserver.counter  + "")
       Button("+1").onClick((event: ClickEvent) => {
-        if (this.lifecycleObserver?.counter) {
-          this.lifecycleObserver.counter++
-        }
-
+        this.lifecycleObserver.counter++
       })
 
       Button("CustomComp").onClick((event: ClickEvent) => {
