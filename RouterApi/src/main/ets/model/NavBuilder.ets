@@ -186,10 +186,15 @@ export class NavBuilder<T> {
    * @param navDestinationId 通过自定义组件的this.queryNavDestinationInfo()获取
    * @returns
    */
-  public getLifecycleObserver<IL extends AbsLifecycleObserver>(navDestinationId: string | undefined): IL | undefined {
+  public getLifecycleObserver<LO extends AbsLifecycleObserver>(navDestinationId: string | undefined): LO | undefined {
     this.updateCurrentStackName()
-    return this.routerMgr.lifecycleMgr.findObservers((observer, state) => state.navDestinationId ==
-      navDestinationId)[0] as IL
+    try {
+      return this.routerMgr.lifecycleMgr.findObservers((observer, state) => state.navDestinationId ==
+        navDestinationId)[0] as LO
+    } catch (e) {
+       return undefined
+    }
+
   }
 
   public animateMgr(): NavAnimationMgr {
