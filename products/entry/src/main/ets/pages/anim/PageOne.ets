@@ -16,10 +16,7 @@ import {
 import { AnimateCallback } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
 import { AnimConst } from './AnimConst';
 
-@Builder
-export function PageOneBuilder(name: string, param: Object) {
-  PageOne()
-}
+
 
 @Route({ name: RouterConstants.PAGE_ONE })
 @Component

@@ -14,10 +14,6 @@ import {
 } from 'routerapi';
 import { AnimConst } from './AnimConst';
 
-@Builder
-export function PageTwoBuilder(name: string, param: Object) {
-  PageTwo()
-}
 
 @Route({ name: RouterConstants.PAGE_TWO })
 @Component

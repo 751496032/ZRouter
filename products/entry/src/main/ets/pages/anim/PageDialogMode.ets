@@ -4,11 +4,15 @@
  * @desc:
  */
 import { RouterConstants } from '@hzw/common_library';
-import { NavAnimationModifier, Route, TranslateAnimationOptions, ZRouter } from 'routerapi';
+import { Route, TranslateAnimationOptions, ZRouter } from 'routerapi';
 
 @Route({ name: RouterConstants.PAGE_DIALOG_MODE })
 @Component
 export struct PageDialogMode {
+
+  aboutToAppear(): void {
+
+  }
   build() {
     NavDestination() {
       Column(){
@@ -31,6 +35,8 @@ export struct PageDialogMode {
     .onReady((c) => {
       ZRouter.animateMgr()
         .registerAnimParam(this, c)
+        .setEnterAnimate({ duration: 300 })
+        .setExitAnimate({ duration: 300 })
         .addAnimateOptions(new TranslateAnimationOptions({ y: '100%' }))
 
 
@@ -40,6 +46,7 @@ export struct PageDialogMode {
     })
     .attributeModifier(ZRouter.animateMgr().modifier(this))
     .mode(NavDestinationMode.DIALOG)
+    .expandSafeArea([SafeAreaType.KEYBOARD])
     .hideTitleBar(true)
     .backgroundColor("#60000000")
 

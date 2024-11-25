@@ -6,10 +6,6 @@
 import { RouterConstants } from '@hzw/common_library';
 import { NavAnimationModifier, Route, ZRouter } from 'routerapi';
 
-@Builder
-export function PageThreeBuilder(name: string, param: Object) {
-  PageThree()
-}
 
 @Route({ name: RouterConstants.PAGE_THREE })
 @Component
