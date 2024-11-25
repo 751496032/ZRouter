@@ -30,7 +30,7 @@ ZRouter是一款轻量级、无侵入的动态路由框架，可以解决多个�
 ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://developer.huawei.com/consumer/cn/market/landing/component)
 
 
-## router-register-plugin插件的使用
+## router-register-plugin编译插件
 
 ### 下载安装
 

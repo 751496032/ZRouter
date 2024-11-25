@@ -2,20 +2,22 @@
 ## 介绍
 
 
-ZRouter是一款轻量级的动态路由框架，基于Navigation系统路由表和Hvigor插件实现的方案，可以解决多个业务模块（HAR/HSP）之间解耦和通信问题，从而实现业务复用和功能扩展。主要特性：
+ZRouter是一款轻量级、无侵入的动态路由框架，可以解决多个业务模块（HAR/HSP）之间耦合和通信问题，从而实现业务复用和功能扩展。主要特性：
 
-- 对Navigation简化使用，封装一系列简单易用的API，支持链式调用，无需再关注路由表的配置，对Navigation组件保持着零侵入零耦合；
+- 对Navigation简化使用，封装一系列简单易用的API，无需关注路由表的配置，对Navigation组件保持着零侵入零耦合，支持链式调用；
 - 注解参数支持使用静态常量，可跨模块定义；
-- 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面跳转和显示、埋点、登录等拦截处理；
-- 支持服务路由，可在相互独立的Har/Hsp模块间通信；
-- 支持组件的生命周期管理，以及跨多级页面参数回传接收；
-- 支持自定义URL路径跳转，可通过拦截URL路径来跳转原生不同页面；
-- 支持第三方Navigation的使用本库API；
+- 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面重定向、埋点、登录等拦截处理；
+- 支持服务路由，可用于相互独立的Har/Hsp模块间通信；
+- 支持页面的生命周期函数管理（包括了全局、单个页面的管理），可让任何一个类具有与组件同样的生命周期函数；
+- 支持跨多级页面参数携带返回监听；
+- 支持自定义URL路径跳转，可在拦截器内解析URL来跳转原生不同页面；
+- 内置转场动画（平移、旋转、渐变、缩放），支持自定义转场动画；
 - 支持启动模式、混淆、嵌套Navigation；
-- 未来计划：支持转场动画、NavDestination代码模版化选项。
+- 支持第三方Navigation的使用本库API；
+- 未来计划：支持共享元素动画、NavDestination代码模版化选项。
 
 
-> ZRouter侧重于路由跳转与模块解耦，以及组件化通信；对Navigation组件没有任何耦合，不做任何的限制把自主权交给开发者。
+> ZRouter侧重于路由跳转与模块解耦，以及模块间通信；对Navigation组件没有任何耦合，不做任何的限制把自主权交给开发者。
 
 **使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
 
@@ -27,9 +29,8 @@ ZRouter是一款轻量级的动态路由框架，基于Navigation系统路由表
 
 ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://developer.huawei.com/consumer/cn/market/landing/component)
 
-![a2.png](https://www.z4a.net/images/2024/10/12/a2.png)
 
-## router-register-plugin插件的使用
+## router-register-plugin编译插件
 
 ### 下载安装
 
@@ -38,7 +39,7 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.0.7"
+    "router-register-plugin":"1.1.1"
   },
 ```
 
@@ -127,14 +128,34 @@ ohpm install @hzw/zrouter
 ```
 onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     // 如果项目中存在hsp模块则传入true
-    // ZRouter.init(true)
-    
       ZRouter.initialize((config) => {
           config.isLoggingEnabled = BuildProfile.DEBUG
           config.isHSPModuleDependent = true
     })
 }
 
+```
+
+**建议在AbilityStage的onCreate()方法中完成初始化**
+
+```typescript
+
+export class AppAbilityStage extends AbilityStage{
+  onCreate(): void {
+    // 应用HAP首次加载时触发，可以在此执行该Module的初始化操作（例如资源预加载、线程创建等）。
+    // 在module.json5配置文件中，通过配置 srcEntry 参数来指定模块对应的代码路径，以作为HAP加载的入口。
+    // 初始化路由
+    ZRouter.initialize((config) => {
+      config.isLoggingEnabled = BuildProfile.DEBUG
+      config.isHSPModuleDependent = true
+      config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc']
+      config.onDynamicLoadComplete = () => {
+        console.log("已完成所有模块的加载")
+      }
+    })
+
+  }
+}
 ```
 
 
@@ -157,19 +178,6 @@ struct Index {
         // 跳转页面
           ZRouter.push("harAMainPage")
         })
-
-        Button('toHarBMainPage').onClick((event: ClickEvent) => {
-          ZRouter.push("harBMainPage")
-        })
-
-        Button('toHspCIndex').onClick((event: ClickEvent) => {
-          ZRouter.push("hspCIndex")
-        })
-        
-         Button('tohspCPage1').onClick((event: ClickEvent) => {
-          ZRouter.push("hspCPage1")
-        })
-
       }
     }
     .title('Main')
@@ -181,7 +189,7 @@ struct Index {
 
 通过ZRouter的pushXX()方法进行页面跳转，参数是@Route装饰器上的name属性值。或者用ZRouter的getNavStack()方法来执行页面跳转。
 
-3、在子页的结构体上使用自定义@Route装饰器描述当前页面，其中name属性是必填的，页面跳转需要用到name值，建议使用驼峰式命名，还有另外三个可选属性分别是：
+3、在NavDestination子页的使用自定义@Route装饰器描述当前页面，其中name属性是必填的，页面跳转需要用到name值，建议使用驼峰式命名，还有另外三个可选属性分别是：
 
 - description：页面描述，没有功能作用；
 - needLogin：如果页面需要登录，可以将值设置为true，然后在拦截器中做页面重定向到登录页；
@@ -216,8 +224,6 @@ export struct Page1 {
 
 ```
 
-NavDestination是子页面的根容器，不需要在main_pages文件中注册页面路径。
-
 **建议通过ZRouter.getInstance()方式来操作路由的跳转与关闭，使用会更灵活，之前的ZRouter的静态方法依然保留着。**
 
 ```typescript
@@ -225,7 +231,7 @@ NavDestination是子页面的根容器，不需要在main_pages文件中注册�
   .setParam("root data")
   .setLunchMode(LaunchMode.STANDARD) // 启动模式
   .enableCrossPageParamReturn() // 跨页面参数返回
-  .setAnimate(false)
+  .setAnimate(true)
   .setPopListener((r) => {
     LogUtil.log("index result: ", r.data ," from: ", r.from);
   })
@@ -310,15 +316,6 @@ export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
 // 添加拦截器
 ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())       
 
-// 或者字面量对象的方式
-ZRouter.setGlobalInterceptor({
-  onRootWillShow: (fromContext) => {
-    console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
-  },
-  onPageWillShow: (fromContext, toContext) => {
-    console.log("IInterceptor Global onPageWillShow: ", fromContext.pathInfo.name, toContext.pathInfo.name)
-  },
-} as IGlobalNavigateInterceptor)
 
 ```
 
@@ -377,15 +374,6 @@ export type ProcessCallback = (context: InterceptorInfo) => InterceptorInfoOrNul
 ```typescript
 
 aboutToAppear(): void {
-  // 第一种方式设置拦截器，字面量对象的形式
-  ZRouter.setInterceptor({
-    priority: 100,
-    process: (context: InterceptorInfo) => {
-      console.log("IInterceptor process: ", 100, context.name)
-      return context
-    }
-  } as IInterceptor)
-  // 第二种方式设置拦截器，类的实例对象的形式
   ZRouter.setInterceptor(new UrlInterceptor())
 }
 
@@ -478,7 +466,7 @@ export class UrlInterceptor implements IInterceptor {
 }
 ```
 
-## 注解上使用静态常量
+## 注解上使用静态常量，可跨模块定义
 
 router-register-plugin插件1.0.7版本起，@Route与@Service注解的name属性可使用静态常量，方便统一管理路由名称；静态常量支持当前模块或跨模块定义，常量的定义模版如下：
 
@@ -495,17 +483,22 @@ export class RouterConstants {
 
 服务路由主要用于实现模块之间的通信，模块间是相互独立且不直接依赖于彼此。
 
-> 1.0.9版本开始支持，具体使用可见[这篇文档](https://gitee.com/common-apps/ZRouter/wikis/%E6%9C%8D%E5%8A%A1%E8%B7%AF%E7%94%B1%E2%80%94%E6%A8%A1%E5%9D%97%E9%97%B4%E9%80%9A%E4%BF%A1) 或者参考demo
+> 1.0.9版本开始支持，具体使用可见[详情文档](https://gitee.com/common-apps/ZRouter/wikis/%E6%9C%8D%E5%8A%A1%E8%B7%AF%E7%94%B1%E2%80%94%E6%A8%A1%E5%9D%97%E9%97%B4%E9%80%9A%E4%BF%A1) 或者参考demo
 
 
-## 生命周期管理能力
+## 生命周期函数管理
 
 ZRouter的组件生命周期管理能力，主要有两个特点：
 
 - 不影响你原有的生命周期业务逻辑，对NavDestination页面保持着零侵入性，整合了组件通用生命周期函数和NavDestination生命周期函数
 - 可以让任何一个类具备有与组件的生命周期能力；
 
-详细见[wiki](https://gitee.com/common-apps/ZRouter/wikis/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86%E8%83%BD%E5%8A%9B)
+具体使用见[详细文档](https://gitee.com/common-apps/ZRouter/wikis/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86%E8%83%BD%E5%8A%9B)
+
+## 路由转场动画
+
+从1.1.1版本内置了转场动画（平移、旋转、渐变、缩放），也支持自定义转场动画；具体使用见[详细文档](https://gitee.com/common-apps/ZRouter/wikis/%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB)
+
 
 ## 第三方Navigation实例使用本库的API
 
@@ -532,10 +525,6 @@ ZRouter的组件生命周期管理能力，主要有两个特点：
 ```typescript
   Column({ space: 15 }) {
       Text(this.msg)
-      Button("EmptyPage").onClick((event: ClickEvent) => {
-        ZRouter.getInstance(NAV_STACK_NAME).push("PageNotFound")
-      })
-
       Button("harAMainPage").onClick((event: ClickEvent) => {
         ZRouter.getInstance(NAV_STACK_NAME)
           .setAnimate(true)
@@ -548,6 +537,9 @@ ZRouter的组件生命周期管理能力，主要有两个特点：
 ```
 把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
 
+## 在ArkUI-X项目上的使用
+
+router-register插件在ArkUI-X项目的配置有所不同，需要使用者自己手动修改下hvigorfile.ts文件，详细见[ArkuiX-ZRouter](https://gitee.com/common-apps/ArkuiX-ZRouter)，或者[issues IB35F5](https://gitee.com/common-apps/ZRouter/issues/IB35F5)
 
 
 ## 混淆
