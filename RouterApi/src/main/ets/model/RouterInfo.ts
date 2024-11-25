@@ -1,3 +1,4 @@
+import Logger from "../utlis/Logger";
 
 export class RouterInfo {
   /**
@@ -8,7 +9,7 @@ export class RouterInfo {
   param: Object
   navDestinationId: string;
 
-  constructor(name: string, navigationId: string, param: Object, navDestinationId: string) {
+  private constructor(name: string, navigationId: string, param: Object, navDestinationId: string) {
     this.name = name;
     this.navigationId = navigationId;
     this.param = param;
@@ -18,4 +19,9 @@ export class RouterInfo {
   static create(name: string, navigationId: string, param: Object, navDestinationId: string): RouterInfo {
     return new RouterInfo(name, navigationId, param, navDestinationId)
   }
+
+  toString() {
+    Logger.log(`name: ${this.name} navigationId: ${this.navigationId} navDestinationId: ${this.navDestinationId}`)
+  }
+
 }

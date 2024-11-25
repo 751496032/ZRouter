@@ -8,7 +8,7 @@ import { RouterInfo } from "../model/RouterInfo"
 
 export interface ILifecycle {}
 
-export interface IPageLifeCycle extends ILifecycle {
+export interface IPageLifecycle extends ILifecycle {
   pageClasName?: string
 
   aboutToAppear?(): void
@@ -33,7 +33,7 @@ export interface IPageLifeCycle extends ILifecycle {
 
 }
 
-export interface INavLifeCycle extends ILifecycle {
+export interface INavLifecycle extends ILifecycle {
   /**
    * 当该NavDestination页面显示时触发此回调
    */
@@ -74,10 +74,13 @@ export interface INavLifeCycle extends ILifecycle {
    */
   onDisappear?(info: RouterInfo): void
 
+
+  //—————————————————— onBackPress 和 onReady 方法只有在NavDestination模板模式下才会生效 ——————————————————
+
   /**
    * NavDestination组件返回时触发此回调
    */
-  // onBackPress?: () => void
+  // onBackPress? () : boolean
 
   /**
    * 当NavDestination即将构建子组件之前会触发此回调。
@@ -86,4 +89,17 @@ export interface INavLifeCycle extends ILifecycle {
 
 }
 
-// export type RouterFunc = (info?: RouterInfo) => void
+export interface INavActiveLifecycle extends ILifecycle {
+
+  onWillShow?(info: RouterInfo): void
+
+  onShown?(info: RouterInfo): void
+
+  onWillHide?(info: RouterInfo): void
+
+  onHidden?(info: RouterInfo): void
+
+  onWillDisappear?(info: RouterInfo): void
+
+  onDisappear?(info: RouterInfo): void
+}

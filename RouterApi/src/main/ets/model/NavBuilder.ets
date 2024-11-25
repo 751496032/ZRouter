@@ -5,6 +5,8 @@
  */
 import { RouterMgr } from '../api/RouterMgr';
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
+import { AbsLifecycleObserver } from '../lifecycle/template/AbsLifecycleObserver';
+import { CompUtil } from '../utlis/CompUtil';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
@@ -139,6 +141,7 @@ export class NavBuilder<T> {
   }
 
   public getTopPathName(): string | null {
+    this.updateCurrentStackName()
     return this.routerMgr.getTopPathName()
   }
 
@@ -168,8 +171,25 @@ export class NavBuilder<T> {
     this.routerMgr.moveToTop(name)
   }
 
-  public addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL) {
+  /**
+   * 添加全局的NavDestination页面的生命周期观察者
+   * @param observer
+   * @returns
+   */
+  public addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL): NavBuilder<T> {
     this.routerMgr.lifecycleMgr.addGlobalObserver(observer)
+    return this
+  }
+
+  /**
+   * 获取NavDestination模板化的生命周期观察者实例
+   * @param navDestinationId 通过自定义组件的this.queryNavDestinationInfo()获取
+   * @returns
+   */
+  public getLifecycleObserver<IL extends AbsLifecycleObserver>(navDestinationId: string | undefined): IL | undefined {
+    this.updateCurrentStackName()
+    return this.routerMgr.lifecycleMgr.findObservers((observer, state) => state.navDestinationId ==
+      navDestinationId)[0] as IL
   }
 
   public animateMgr(): NavAnimationMgr {

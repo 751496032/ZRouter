@@ -118,6 +118,12 @@ struct Index {
           ZRouter.getInstance().navigation(RouterConstants.ANIM_DEMO)
         })
 
+        Button("template").onClick((event: ClickEvent) => {
+          ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_VIEW)
+        })
+
+
+
         Button('退出登录').onClick((event: ClickEvent) => {
           AppStorage.set<boolean>("isLogin", false)
           promptAction.showToast({ message: "已退出登录" })

@@ -8,6 +8,15 @@ export function Route(param: Param) {
   return Object
 }
 
+/**
+ * 预留，后面会替代@Route
+ * @param param
+ * @returns
+ */
+export function ZRoute(param: Param){
+  return Object
+}
+
 interface Param {
   name: string,
   description?: string
