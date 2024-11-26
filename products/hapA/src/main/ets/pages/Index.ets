@@ -16,7 +16,7 @@ struct Index {
   build() {
     Navigation(ZRouter.getNavStackByName(RouterConstants.HAP)) {
       Column({ space: 20 }) {
-        Button("to hap_page_one").onClick((event: ClickEvent) => {
+        Button("toHapPageOne").onClick((event: ClickEvent) => {
           ZRouter.getInstance(RouterConstants.HAP).navigation(RouterConstants.HAP_A_PAGE_ONE)
         })
       }
@@ -27,5 +27,6 @@ struct Index {
         .setAnimate(false)
         .push(route.toString())
     })
+    .title("hapA Index")
   }
 }

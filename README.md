@@ -11,7 +11,7 @@ ZRouter是一款轻量级、无侵入的动态路由框架，可以解决多个�
 - 支持页面的生命周期函数管理（包括了全局、单个页面的管理），可让任何一个类具有与组件同样的生命周期函数；
 - 支持跨多级页面参数携带返回监听；
 - 支持自定义URL路径跳转，可在拦截器内解析URL来跳转原生不同页面；
-- 内置了转场动画（平移、旋转、渐变、缩放），支持自定义转场动画；
+- 内置转场动画（平移、旋转、渐变、缩放），支持自定义转场动画；
 - 支持启动模式、混淆、嵌套Navigation；
 - 支持第三方Navigation的使用本库API；
 - 未来计划：支持共享元素动画、NavDestination代码模版化选项。
@@ -29,9 +29,8 @@ ZRouter是一款轻量级、无侵入的动态路由框架，可以解决多个�
 
 ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://developer.huawei.com/consumer/cn/market/landing/component)
 
-![a2.png](https://www.z4a.net/images/2024/10/12/a2.png)
 
-## router-register-plugin插件的使用
+## router-register-plugin编译插件
 
 ### 下载安装
 
@@ -129,14 +128,34 @@ ohpm install @hzw/zrouter
 ```
 onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     // 如果项目中存在hsp模块则传入true
-    // ZRouter.init(true)
-    
       ZRouter.initialize((config) => {
           config.isLoggingEnabled = BuildProfile.DEBUG
           config.isHSPModuleDependent = true
     })
 }
 
+```
+
+**建议在AbilityStage的onCreate()方法中完成初始化**
+
+```typescript
+
+export class AppAbilityStage extends AbilityStage{
+  onCreate(): void {
+    // 应用HAP首次加载时触发，可以在此执行该Module的初始化操作（例如资源预加载、线程创建等）。
+    // 在module.json5配置文件中，通过配置 srcEntry 参数来指定模块对应的代码路径，以作为HAP加载的入口。
+    // 初始化路由
+    ZRouter.initialize((config) => {
+      config.isLoggingEnabled = BuildProfile.DEBUG
+      config.isHSPModuleDependent = true
+      config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc']
+      config.onDynamicLoadComplete = () => {
+        console.log("已完成所有模块的加载")
+      }
+    })
+
+  }
+}
 ```
 
 
@@ -297,15 +316,6 @@ export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
 // 添加拦截器
 ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())       
 
-// 或者字面量对象的方式
-ZRouter.setGlobalInterceptor({
-  onRootWillShow: (fromContext) => {
-    console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
-  },
-  onPageWillShow: (fromContext, toContext) => {
-    console.log("IInterceptor Global onPageWillShow: ", fromContext.pathInfo.name, toContext.pathInfo.name)
-  },
-} as IGlobalNavigateInterceptor)
 
 ```
 
@@ -364,15 +374,6 @@ export type ProcessCallback = (context: InterceptorInfo) => InterceptorInfoOrNul
 ```typescript
 
 aboutToAppear(): void {
-  // 第一种方式设置拦截器，字面量对象的形式
-  ZRouter.setInterceptor({
-    priority: 100,
-    process: (context: InterceptorInfo) => {
-      console.log("IInterceptor process: ", 100, context.name)
-      return context
-    }
-  } as IInterceptor)
-  // 第二种方式设置拦截器，类的实例对象的形式
   ZRouter.setInterceptor(new UrlInterceptor())
 }
 
