@@ -1,8 +1,10 @@
 import { RouterConstants } from '@hzw/common_library';
+import { Logger } from '@hzw/logger';
 import { ILifecycleObserver, Lifecycle, LifecycleEvent, LifecycleRegistry,
   LifecycleRegistryOrNull,
   Route,
   RouterInfo,
+  templateMgr,
   ZRouter} from 'routerapi';
 import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
 import { NavDesModifier } from './NavDestinationAttr';
@@ -49,8 +51,8 @@ export struct ChildView{
 
   aboutToAppear(): void {
     console.log('ChildView CustomComponentView aboutToAppear')
-
-
+    Logger.i(this.queryNavDestinationInfo())
+    templateMgr.addObserver(this)
   }
 
   build() {
@@ -62,6 +64,10 @@ export struct ChildView{
 
       Button("CustomComp").onClick((event: ClickEvent) => {
         ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_VIEW)
+      })
+
+      Button("LifecycleComp").onClick((event: ClickEvent) => {
+        ZRouter.getInstance().navigation(RouterConstants.LIFECYCLE_CASE_VIEW)
       })
     }
   }

@@ -18,9 +18,6 @@ export class NavDesModifier extends AttributeUpdater<NavDestinationModifier, Nav
     instance.hideTitleBar(false)
   }
 
-  applyNormalAttribute(instance: NavDestinationModifier): void {
-    console.log("AttributeUpdater applyNormalAttribute")
-  }
 
 
 }

@@ -289,7 +289,7 @@ export class RouterMgr {
    * @param animated
    */
   public popWithResult(result?: Object, animated: boolean = true) {
-    // 路由栈处理结果不支持Boolean类型，转成字符串携带
+    // 路由栈默认是不支持Boolean类型，转成字符串携带
     if (typeof result == "boolean") {
       result = result + ""
     }

@@ -27,5 +27,4 @@ export class RouterConstants {
   public static readonly PAGE_THREE = 'PageThree'
   public static readonly PAGE_FOUR = 'PageFour'
   public static readonly PAGE_DIALOG_MODE = 'PageDialogMode'
-  public static readonly CUSTOM_COMPONENT_VIEW = 'Custom_Component_View'
 }
