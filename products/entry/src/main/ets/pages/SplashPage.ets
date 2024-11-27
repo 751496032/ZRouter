@@ -1,5 +1,5 @@
 
-import { Route, ZRouter } from 'routerapi';
+import { OpacityAnimateOptions, Route, ScaleAnimateOptions, ZRouter } from 'routerapi';
 import { RouterConst } from '../constants/RouterConst';
 /**
  * @author: HZWei
@@ -35,15 +35,24 @@ export struct SplashPage {
     }.width('100%')
     .height('100%')
     .hideTitleBar(true)
+    .onReady((context=>{
+      ZRouter
+        .animateMgr()
+        .registerAnimParam(this, context)
+        .addAnimateOptions(new ScaleAnimateOptions({ x: 0, y: 0 }))
+        .addAnimateOptions(new OpacityAnimateOptions(0.5))
+    }))
+    .attributeModifier(ZRouter.animateMgr().modifier(this))
     .onAppear(() => {
       setInterval(() => {
         this.countdown -= 1000
         if (this.countdown === 0) {
-          ZRouter.getInstance().pop()
+          ZRouter.getInstance().pop(true)
         }
       }, 1000)
     })
     .onDisAppear(()=>{
+      ZRouter.animateMgr().unregisterAnim(this)
       AppStorage.setOrCreate(RouterConst.SPLASH_TAG,true)
     })
   }
