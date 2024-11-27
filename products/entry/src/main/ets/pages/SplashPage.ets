@@ -40,7 +40,7 @@ export struct SplashPage {
         .animateMgr()
         .registerAnimParam(this, context)
         .addAnimateOptions(new ScaleAnimateOptions({ x: 0, y: 0 }))
-        .addAnimateOptions(new OpacityAnimateOptions(0.01))
+        .addAnimateOptions(new OpacityAnimateOptions(0.5))
     }))
     .attributeModifier(ZRouter.animateMgr().modifier(this))
     .onAppear(() => {
