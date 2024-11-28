@@ -39,6 +39,11 @@ export struct AnimTransitionDemo {
             .setParam(AnimConst.ROTATE)
             .navigation(RouterConstants.PAGE_ONE)
         })
+        Button("模糊").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setParam(AnimConst.BLUR)
+            .navigation(RouterConstants.PAGE_ONE)
+        })
         Button("组合").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .navigation(RouterConstants.PAGE_ONE)

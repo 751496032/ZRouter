@@ -19,5 +19,6 @@ export { TranslateAnimationOptions } from './src/main/ets/animation/param/Transl
 export { ScaleAnimateOptions } from './src/main/ets/animation/param/ScaleAnimateOptions'
 export { OpacityAnimateOptions } from './src/main/ets/animation/param/OpacityAnimateOptions'
 export { RotateAnimateOptions} from './src/main/ets/animation/param/RotateAnimateOptions'
+export { BlurAnimationOptions } from './src/main/ets/animation/param/BlurAnimationOptions'
 export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'
 export { templateMgr } from './src/main/ets/lifecycle/template/TemplateMgr'
