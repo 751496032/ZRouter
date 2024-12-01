@@ -124,6 +124,14 @@ export class ZRouter {
     return ZRouter.getRouterMgr().getNavStackByName(stackName)
   }
 
+  public static getCurrentNavStack(): NavPathStack {
+    return ZRouter.getNavStackByName(ZRouter.getCurrentStackName())
+  }
+
+  public static getLastNavDestinationId(): string | undefined {
+    return ZRouter.getRouterMgr().getLastNavDestinationId()
+  }
+
 
   public static push(name: string, param?: ObjectOrNull, animated: boolean = true) {
     ZRouter.getRouterMgr().push<ObjectOrNull>(name, param, animated)

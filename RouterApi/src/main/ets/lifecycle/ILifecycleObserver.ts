@@ -1,4 +1,4 @@
-import { INavActiveLifecycle, INavLifecycle,  IPageLifecycle } from "./ILifecycle";
+import {  INavLifecycle,  IPageLifecycle } from "./ILifecycle";
 
 /**
  * @author: HZWei
@@ -6,10 +6,6 @@ import { INavActiveLifecycle, INavLifecycle,  IPageLifecycle } from "./ILifecycl
  * @desc:
  */
 export interface ILifecycleObserver extends INavLifecycle, IPageLifecycle {
-}
-
-export interface IActiveLifecycleObserver extends INavActiveLifecycle {
-
 }
 
 

@@ -1,11 +1,13 @@
 import { RouterConstants } from '@hzw/common_library';
 import { Logger } from '@hzw/logger';
-import { ILifecycleObserver, Lifecycle, LifecycleEvent, LifecycleRegistry,
-  LifecycleRegistryOrNull,
+import {
+  Lifecycle,
+  LifecycleEvent,
+  LifecycleRegistry,
   Route,
-  RouterInfo,
   templateMgr,
-  ZRouter} from 'routerapi';
+  ZRouter
+} from 'routerapi';
 import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
 import { NavDesModifier } from './NavDestinationAttr';
 
@@ -20,23 +22,62 @@ import { NavDesModifier } from './NavDestinationAttr';
 export struct CustomComponentView {
   @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
   @Provide lifecycleObserver: CustomCompLifecycleObserver = new CustomCompLifecycleObserver()
-   modifier: NavDesModifier = new NavDesModifier()
+  modifier: NavDesModifier = new NavDesModifier()
+  private navDestinationId: string | undefined = ''
 
   aboutToAppear(): void {
     console.log('CustomComponentView aboutToAppear')
     this.lifecycle.addObserver(this.lifecycleObserver)
+    this.lifecycle.addListener((event, router) => {
+      switch (event) {
+        case LifecycleEvent.ON_WILL_APPEAR:
+          this.navDestinationId = router?.navDestinationId
+          templateMgr.register(this.navDestinationId)
+          break;
+        default:
+          templateMgr.dispatch(this.navDestinationId, event, router)
+          break;
+
+      }
+
+    })
   }
 
   build() {
     NavDestination() {
       ChildView()
+        .onAppear(() => {
+          // console.log("CustomComponentView ChildView onAppear", this.queryNavDestinationInfo()?.navigationId)
+        })
     }
-    .onReady((data) => {
-      console.log("CustomComponentView onReady")
-      this.lifecycleObserver.onReady(data)
+    .onReady((context) => {
+      if (!this.navDestinationId) {
+        this.navDestinationId = context.navDestinationId
+      }
+      console.log("CustomComponentView onReady", context.navDestinationId, context.pathInfo.name)
+      this.lifecycleObserver.onReady(context)
     })
     .onBackPressed(() => {
-      return this.lifecycleObserver.onBackPress()
+      const r = templateMgr.dispatch(this.navDestinationId, LifecycleEvent.ON_BACK_PRESS)
+      return this.lifecycleObserver.onBackPress() || (typeof r === 'boolean' && r)
+    })
+    .onAppear(() => {
+      console.log("CustomComponentView onAppear")
+    })
+    .onWillAppear(() => {
+      console.log("CustomComponentView onWillAppear", ZRouter.getLastNavDestinationId())
+    })
+    .onWillShow(() => {
+      console.log("CustomComponentView onWillShow")
+    })
+    .onShown(() => {
+      console.log("CustomComponentView onShown", this.queryNavDestinationInfo()?.name)
+    })
+    .onAttach(() => {
+      console.log("CustomComponentView onAttach")
+    })
+    .onDetach(() => {
+      console.log("CustomComponentView onDetach")
     })
     .title("测试")
     .hideTitleBar(true)
@@ -45,19 +86,20 @@ export struct CustomComponentView {
 }
 
 @Component
-export struct ChildView{
+export struct ChildView {
   @Consume lifecycleObserver: CustomCompLifecycleObserver
 
-
   aboutToAppear(): void {
-    console.log('ChildView CustomComponentView aboutToAppear')
-    Logger.i(this.queryNavDestinationInfo())
-    templateMgr.addObserver(this)
+    // console.log('ChildView CustomComponentView aboutToAppear', this.queryNavDestinationInfo()?.name)
+    // Logger.i(this.queryNavDestinationInfo())
+    templateMgr.addObserver((state, router) => {
+      console.log("ChildView CustomComponentView addObserver ", state, router?.navDestinationId)
+    })
   }
 
   build() {
-    Column({space : 15}){
-      Text(this.lifecycleObserver.counter  + "")
+    Column({ space: 15 }) {
+      Text(this.lifecycleObserver.counter + "")
       Button("+1").onClick((event: ClickEvent) => {
         this.lifecycleObserver.counter++
       })

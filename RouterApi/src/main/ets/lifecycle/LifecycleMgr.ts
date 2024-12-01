@@ -6,7 +6,7 @@
 import { RouterInfo } from "../model/RouterInfo";
 import Logger from "../utlis/Logger";
 import { ILifecycleObserver } from "./ILifecycleObserver";
-import { LifecycleEvent } from "./LifecycleEvent";
+import { LifecycleCallback, LifecycleEvent } from "./LifecycleEvent";
 import { ObserverState, SPLIT_SYMBOL } from "./ObserverState";
 import ArrayList from "@ohos.util.ArrayList";
 
@@ -103,12 +103,6 @@ export class LifecycleMgr {
     }
 
 
-  }
-
-
-  public getTopClassName(): string {
-    let lastKV = Array.from(this._observerMap.entries()).pop()
-    return lastKV && lastKV[1].className
   }
 
   private splitClassNameGetName(className: string): string {
@@ -439,5 +433,5 @@ export class LifecycleMgr {
   }
 }
 
-export type LifecycleCallback = (event: LifecycleEvent, router?: RouterInfo) => void;
 
+export { LifecycleCallback };

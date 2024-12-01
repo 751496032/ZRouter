@@ -11,7 +11,6 @@ import { SPLIT_SYMBOL } from "./ObserverState";
  */
 export class LifecycleRegistry {
   private targetClassName: string
-  private currentLifecycleObserver: ILifecycleObserver | null = null;
 
   private constructor(className: string) {
     this.targetClassName = className;
@@ -25,25 +24,14 @@ export class LifecycleRegistry {
 
   public addObserver<T extends ILifecycleObserver>(observer: T) {
     RouterMgr.getInstance().lifecycleMgr.addObserver(observer, this.targetClassName);
-    if (!this.currentLifecycleObserver) {
-      this.currentLifecycleObserver = observer;
-    }
+
   }
 
   public removeObserver(observer: ILifecycleObserver): boolean {
     const isSuccess = RouterMgr.getInstance().lifecycleMgr.removeObserver(observer);
-    this.currentLifecycleObserver = null;
     return isSuccess
   }
 
-  public getCurrentObserver<T extends ILifecycleObserver>(): T | undefined {
-    try {
-      return this.currentLifecycleObserver as T
-    } catch (e) {
-      return undefined
-    }
-
-  }
 
   public addListener(callback: LifecycleCallback) {
     RouterMgr.getInstance().lifecycleMgr.addListener(callback, this.targetClassName);

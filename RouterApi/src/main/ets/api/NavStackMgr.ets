@@ -7,9 +7,10 @@ import { InterceptorMgr } from '../interceptions/InterceptorMgr';
 import { DEFAULT_STACK_NAME, InterceptorInfo, RouteMetadata } from '../model/Model';
 import LogUtil from '../utlis/LogUtil';
 import { ObjectUtil } from '../utlis/ObjectUtil';
-import { HashMap } from '@kit.ArkTS';
+import { ArrayList, HashMap } from '@kit.ArkTS';
 import NavStackState from '../model/NavStackState';
 import { ZRouter } from './Router';
+import { RouterInfo } from '../model/RouterInfo';
 
 export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
@@ -17,6 +18,7 @@ export default class NavStackMgr {
   private navStackStateMap = new HashMap<string, NavStackState>()
   private _currentStackName = DEFAULT_STACK_NAME
   private onBeforeNavStackRegisterCallback?: Function
+  private navDesMap = new HashMap<string, ArrayList<RouterInfo>>()
 
   private constructor() {
   }
@@ -147,5 +149,40 @@ export default class NavStackMgr {
         }
       })
     }
+  }
+
+  public addRouterInfo(routerInfo: RouterInfo) {
+    let list = this.navDesMap.get(this._currentStackName)
+    if (list) {
+      list.add(routerInfo)
+    } else {
+      const list = new ArrayList<RouterInfo>()
+      list.add(routerInfo)
+      this.navDesMap.set(this._currentStackName, list)
+    }
+  }
+
+  public removeRouterInfo(routerInfo: RouterInfo) {
+    let list = this.navDesMap.get(this._currentStackName)
+    if (list) {
+      let pos = -1
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].navDestinationId == routerInfo.navDestinationId) {
+          pos = i
+          break
+        }
+      }
+      if (pos != -1) {
+        list.removeByIndex(pos)
+      }
+    }
+  }
+
+  public getLastNavDestinationId(): string | undefined {
+    let list = this.navDesMap.get(this._currentStackName)
+    if (list && list.length > 0) {
+      return list[list.length - 1].navDestinationId
+    }
+    return undefined
   }
 }

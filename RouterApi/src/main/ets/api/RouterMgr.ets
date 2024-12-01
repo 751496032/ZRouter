@@ -44,7 +44,6 @@ export class RouterMgr {
         return
       }
       const routerInfo = RouterInfo.create(name, info.navigationId.toString(), info.param, info.navDestinationId)
-      // const className = this._lifecycleEventMgr.getTopClassName()
       switch (info.state) {
         case uiObserver.NavDestinationState.ON_SHOWN:
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_SHOWN, routerInfo)
@@ -56,6 +55,7 @@ export class RouterMgr {
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
+          this.navStackMgr.removeRouterInfo(routerInfo)
           const indexList = this.getNavStack().getIndexByName(name)
           if (indexList.length == 0) {
             this.unregisterEvent(name)
@@ -69,13 +69,14 @@ export class RouterMgr {
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_WILL_HIDE, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_WILL_APPEAR:
+          this.navStackMgr.addRouterInfo(routerInfo)
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_WILL_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_WILL_DISAPPEAR:
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_WILL_DISAPPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_BACKPRESS:
-          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_BACKPRESS, routerInfo)
+          this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_BACK_PRESS, routerInfo)
           break
 
       }
@@ -110,6 +111,10 @@ export class RouterMgr {
 
   public get currentStackName(): string {
     return this.navStackMgr.currentStackName
+  }
+
+  public getLastNavDestinationId(): string | undefined {
+    return this.navStackMgr.getLastNavDestinationId()
   }
 
 
