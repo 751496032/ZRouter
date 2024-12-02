@@ -18,6 +18,7 @@ export class RouterConstants {
   public static readonly LIFECYCLE3_VIEW = 'Lifecycle3_View'
   public static readonly LIFECYCLE4_VIEW = 'Lifecycle4_View'
   public static readonly CUSTOM_COMPONENT_VIEW = 'Custom_Component_View'
+  public static readonly CUSTOM_COMPONENT_VIEW_HSP = 'Custom_Component_View_HSP'
   public static readonly HAP_A_PAGE_ONE = "HapPageOne"
   public static readonly HAP = "Hap"
   public static readonly EVENT_HAP_LAUNCH_ROUTER = "EVENT_HAP_LAUNCH_ROUTER"

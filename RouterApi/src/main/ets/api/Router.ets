@@ -20,9 +20,10 @@ import { ServiceMgr } from '../service/ServiceMgr'
 import { IProvider } from '../service/IProvider'
 import { ConfigInitializer } from '../model/ConfigInitializer'
 import Logger from '../utlis/Logger'
-import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
-import { AbsLifecycleObserver } from '../lifecycle/template/AbsLifecycleObserver'
 import { NavAnimationMgr } from '../animation/NavAnimationMgr'
+import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
+import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
+import { templateMgr } from '../lifecycle/template/TemplateMgr'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -70,7 +71,7 @@ export class ZRouter {
       }
     }
     if (!ZRouter.routerMgr) {
-      throw new Error('请在EntryAbility调用 ZRouter.initialize 初始化')
+      throw new Error('请在AbilityStage或EntryAbility调用 ZRouter.initialize 初始化')
     }
     return ZRouter.routerMgr
   }
@@ -228,13 +229,32 @@ export class ZRouter {
     ZRouter.getRouterMgr().setInterceptor<T>(interceptor, stackName)
   }
 
+  /**
+   * 添加全局的NavDestination页面的生命周期观察者
+   * @param observer
+   * @returns
+   */
+  public static  addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL) {
+    ZRouter.getRouterMgr().lifecycleMgr.addGlobalObserver(observer)
+  }
+
+  /**
+   * 添加NavDestination页面的生命周期观察者，在NavDestination页面模版模式下才会生效
+   * @param observer
+   */
+  public static addLifecycleObserver(observer: LifecycleObserver) {
+    templateMgr.addObserver(observer)
+  }
+
+  public static templateMgr() {
+    return templateMgr
+  }
+
+
   public static getCurrentStackName(): string {
     return ZRouter.getRouterMgr().currentStackName
   }
 
-  public static getLifecycleObserver<IL extends AbsLifecycleObserver>(navDestinationId: string | undefined){
-    return ZRouter.getInstance().getLifecycleObserver<IL>(navDestinationId)
-  }
 
 
 

@@ -5,7 +5,7 @@
  */
 import { RouterMgr } from '../api/RouterMgr';
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
-import { AbsLifecycleObserver } from '../lifecycle/template/AbsLifecycleObserver';
+import { ComponentLifecycleObserver } from '../lifecycle/template/ComponentLifecycleObserver';
 import { CompUtil } from '../utlis/CompUtil';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
@@ -171,32 +171,13 @@ export class NavBuilder<T> {
     this.routerMgr.moveToTop(name)
   }
 
-  /**
-   * 添加全局的NavDestination页面的生命周期观察者
-   * @param observer
-   * @returns
-   */
-  public addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL): NavBuilder<T> {
-    this.routerMgr.lifecycleMgr.addGlobalObserver(observer)
-    return this
-  }
+
 
   /**
-   * 获取NavDestination模板化的生命周期观察者实例
-   * @param navDestinationId 通过自定义组件的this.queryNavDestinationInfo()获取
+   * @deprecated
+   * @see {@link ZRouter.animateMgr()}
    * @returns
    */
-  public getLifecycleObserver<LO extends AbsLifecycleObserver>(navDestinationId: string | undefined): LO | undefined {
-    this.updateCurrentStackName()
-    try {
-      return this.routerMgr.lifecycleMgr.findObservers((observer, state) => state.navDestinationId ==
-        navDestinationId)[0] as LO
-    } catch (e) {
-       return undefined
-    }
-
-  }
-
   public animateMgr(): NavAnimationMgr {
     return this.routerMgr.animateMgr
   }
