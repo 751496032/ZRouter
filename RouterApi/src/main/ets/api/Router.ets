@@ -134,91 +134,6 @@ export class ZRouter {
   }
 
 
-  public static push(name: string, param?: ObjectOrNull, animated: boolean = true) {
-    ZRouter.getRouterMgr().push<ObjectOrNull>(name, param, animated)
-  }
-
-
-  public static pushForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
-    ZRouter.getRouterMgr().pushForResult<ObjectOrNull>(name, param, callback)
-  }
-
-
-  public static pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
-    ZRouter.getRouterMgr().pushNavForResult<T>(name, param, callback)
-  }
-
-
-  public static redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
-    ZRouter.getRouterMgr().redirectForResult2(name, param, callback)
-  }
-
-  public static redirect(name: string) {
-    ZRouter.getRouterMgr().redirect<ObjectOrNull>(name)
-  }
-
-
-  public static popToName(name: string, animated: boolean = true) {
-    ZRouter.getRouterMgr().popToName(name, animated)
-  }
-
-  public static pop(animated: boolean = true) {
-    ZRouter.getRouterMgr().pop(animated)
-  }
-
-  public static popWithResult(result?: Object, animated: boolean = true) {
-    ZRouter.getRouterMgr().popWithResult(result, animated)
-  }
-
-  public static popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
-    ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
-  }
-
-  public static popToRootWithResult<T>(result?: T, animated: boolean = true) {
-    ZRouter.getRouterMgr().popToRootWithResult<T>(result, animated)
-  }
-
-  public static finishWithResult<T>(result?: T, animated: boolean = true) {
-    ZRouter.getRouterMgr().finishWithResult<T>(result, animated)
-  }
-
-
-  public static clear() {
-    ZRouter.getRouterMgr().clear()
-  }
-
-  public static getAllPathName(): string[] {
-    return ZRouter.getRouterMgr().getAllPathName()
-  }
-
-  public static getTopPathName(): string | null {
-    return ZRouter.getRouterMgr().getTopPathName()
-  }
-
-
-  public static getParamByName(name: string): Record<string, ObjectOrNull>[] {
-    return ZRouter.getRouterMgr().getParamByName(name)
-  }
-
-  public static getParam(): ObjectOrNull {
-    return ZRouter.getRouterMgr().getParam()
-  }
-
-  public static getAnnotationParam() {
-    return ZRouter.getRouterMgr().getAnnotationParam()
-  }
-
-  public static removeByName(name: string) {
-    ZRouter.getRouterMgr().removeByName(name)
-  }
-
-  public static moveToTop(name: string) {
-    ZRouter.getRouterMgr().moveToTop(name)
-  }
-
-  public static replacePathByName(name: string, param?: ObjectOrNull, animated: boolean = true) {
-    ZRouter.getRouterMgr().replacePathByName<ObjectOrNull>(name, param, animated)
-  }
 
 
   public static setGlobalInterceptor(interceptor: IGlobalNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
@@ -260,6 +175,206 @@ export class ZRouter {
 
 
   // region 废弃方法
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().push}
+   * @param name
+   * @param param
+   * @param animated
+   */
+  public static push(name: string, param?: ObjectOrNull, animated: boolean = true) {
+    ZRouter.getRouterMgr().push<ObjectOrNull>(name, param, animated)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().push}
+   * @param name
+   * @param param
+   * @param callback
+   */
+  public static pushForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
+    ZRouter.getRouterMgr().pushForResult<ObjectOrNull>(name, param, callback)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().push}
+   * @param name
+   * @param param
+   * @param callback
+   */
+  public static pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
+    ZRouter.getRouterMgr().pushNavForResult<T>(name, param, callback)
+  }
+
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().redirectForResult2}
+   * @param name
+   * @param param
+   * @param callback
+   */
+  public static redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>) {
+    ZRouter.getRouterMgr().redirectForResult2(name, param, callback)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().redirect}
+   * @param name
+   */
+  public static redirect(name: string) {
+    ZRouter.getRouterMgr().redirect<ObjectOrNull>(name)
+  }
+
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().popToName}
+   * @param name
+   * @param animated
+   */
+  public static popToName(name: string, animated: boolean = true) {
+    ZRouter.getRouterMgr().popToName(name, animated)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().pop}
+   * @param animated
+   */
+  public static pop(animated: boolean = true) {
+    ZRouter.getRouterMgr().pop(animated)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().popWithResult}
+   * @param result
+   * @param animated
+   */
+  public static popWithResult(result?: Object, animated: boolean = true) {
+    ZRouter.getRouterMgr().popWithResult(result, animated)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().popNavWithResult}
+   * @param name
+   * @param result
+   * @param animated
+   */
+  public static popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
+    ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().popToRootWithResult}
+   * @param result
+   * @param animated
+   */
+  public static popToRootWithResult<T>(result?: T, animated: boolean = true) {
+    ZRouter.getRouterMgr().popToRootWithResult<T>(result, animated)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().finishWithResult}
+   * @param result
+   * @param animated
+   */
+  public static finishWithResult<T>(result?: T, animated: boolean = true) {
+    ZRouter.getRouterMgr().finishWithResult<T>(result, animated)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().clear}
+   */
+  public static clear() {
+    ZRouter.getRouterMgr().clear()
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().getAllPathName}
+   * @returns
+   */
+  public static getAllPathName(): string[] {
+    return ZRouter.getRouterMgr().getAllPathName()
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().getTopPathName}
+   * @returns
+   */
+  public static getTopPathName(): string | null {
+    return ZRouter.getRouterMgr().getTopPathName()
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().getParamByName}
+   * @param name
+   * @returns
+   */
+  public static getParamByName(name: string): Record<string, ObjectOrNull>[] {
+    return ZRouter.getRouterMgr().getParamByName(name)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().getParam}
+   * @returns
+   */
+  public static getParam(): ObjectOrNull {
+    return ZRouter.getRouterMgr().getParam()
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().getAnnotationParam}
+   * @returns
+   */
+  public static getAnnotationParam() {
+    return ZRouter.getRouterMgr().getAnnotationParam()
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().removeByName}
+   * @param name
+   */
+  public static removeByName(name: string) {
+    ZRouter.getRouterMgr().removeByName(name)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().moveToTop}
+   * @param name
+   */
+  public static moveToTop(name: string) {
+    ZRouter.getRouterMgr().moveToTop(name)
+  }
+
+  /**
+   * @deprecated
+   * @see {ZRouter.getInstance().replacePathByName}
+   * @param name
+   * @param param
+   * @param animated
+   */
+  public static replacePathByName(name: string, param?: ObjectOrNull, animated: boolean = true) {
+    ZRouter.getRouterMgr().replacePathByName<ObjectOrNull>(name, param, animated)
+  }
+
+
 
   /**
    * @deprecated
