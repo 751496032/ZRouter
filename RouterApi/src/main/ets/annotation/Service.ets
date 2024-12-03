@@ -18,6 +18,9 @@ export function ZService(param: Param){
 }
 
 interface Param {
+  /**
+   * 服务路由名称
+   */
   name: String,
 
   /**

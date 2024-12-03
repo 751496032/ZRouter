@@ -4,9 +4,6 @@
  * @desc:
  */
 import { RouterMgr } from '../api/RouterMgr';
-import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver';
-import { ComponentLifecycleObserver } from '../lifecycle/template/ComponentLifecycleObserver';
-import { CompUtil } from '../utlis/CompUtil';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
 import { INavOptions, NavOptionsImpl } from './NavOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';

@@ -18,6 +18,9 @@ export function ZRoute(param: Param){
 }
 
 interface Param {
+  /**
+   * 页面路由名称
+   */
   name: string,
   description?: string
   extra?: string

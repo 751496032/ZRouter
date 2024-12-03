@@ -6,7 +6,7 @@
 import { RouterInfo } from "../../model/RouterInfo";
 import { ILifecycleObserver } from "../ILifecycleObserver";
 
-export abstract class ComponentLifecycleObserver implements ILifecycleObserver {
+export abstract class ZLifecycleObserver implements ILifecycleObserver {
   abstract onBackPress(): boolean
   abstract onReady(context: NavDestinationContext): void
 

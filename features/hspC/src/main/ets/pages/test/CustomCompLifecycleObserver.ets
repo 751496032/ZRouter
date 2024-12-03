@@ -1,4 +1,4 @@
-import { ComponentLifecycleObserver, RouterInfo } from "routerapi";
+import {  RouterInfo, ZLifecycleObserver } from "routerapi";
 
 /**
  * @author: HZWei
@@ -6,7 +6,7 @@ import { ComponentLifecycleObserver, RouterInfo } from "routerapi";
  * @desc:
  */
 @Observed
-export class CustomCompLifecycleObserver extends ComponentLifecycleObserver {
+export class CustomCompLifecycleObserver extends ZLifecycleObserver {
   counter = 0
   onReady(context: NavDestinationContext): void {
   }

@@ -3,11 +3,18 @@ import { RouterInfo } from "../../model/RouterInfo"
 import { ILifecycleRegistry } from "../ILifecycleRegistry"
 import { LifecycleEvent, LifecycleObserver, LifecycleState } from "../LifecycleEvent"
 
-class TemplateMgr {
+export class TemplateMgr {
 
   private _templateMap: Map<string, ILifecycleRegistry | undefined> = new Map()
   private _observers: Map<string, LifecycleObserver> = new Map()
+  private static _instance: TemplateMgr;
 
+  public static getInstance(): TemplateMgr {
+    if (!TemplateMgr._instance) {
+      TemplateMgr._instance = new TemplateMgr();
+    }
+    return TemplateMgr._instance;
+  }
 
   addObserver(callback: LifecycleObserver) {
     const navDesId = ZRouter.getLastNavDestinationId()
@@ -72,5 +79,5 @@ class TemplateMgr {
 
 
 }
-export const templateMgr = new TemplateMgr()
+
 

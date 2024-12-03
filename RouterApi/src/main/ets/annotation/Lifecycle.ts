@@ -8,16 +8,7 @@ import { LifecycleEvent } from "../lifecycle/LifecycleEvent";
 import { LifecycleMgr } from "../lifecycle/LifecycleMgr";
 
 export function Lifecycle(target: any, propertyKey: string) {
-  // if (!target['build']) {
-  //   throw new Error('@Lifecycle only for UI components')
-  // }
 
-  // Reflect.defineProperty(target, `${propertyKey}_router`, {
-  //   value: router,
-  //   writable: false,
-  //   enumerable: false,
-  //   configurable: false
-  // });
   hooks(target,
     propertyKey,
     LifecycleEvent.ABOUT_TO_DISAPPEAR, LifecycleEvent.ABOUT_TO_APPEAR,

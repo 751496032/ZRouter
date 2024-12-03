@@ -23,7 +23,7 @@ import Logger from '../utlis/Logger'
 import { NavAnimationMgr } from '../animation/NavAnimationMgr'
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
 import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
-import { templateMgr } from '../lifecycle/template/TemplateMgr'
+import { TemplateMgr } from '../lifecycle/template/TemplateMgr'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -82,7 +82,7 @@ export class ZRouter {
 
   /**
    * 获取路由操作的实例,如跳转、返回等操作
-   * @param stackName
+   * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
   public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavBuilder<ObjectOrNull> {
@@ -94,7 +94,7 @@ export class ZRouter {
 
   /**
    * 获取路由操作的实例,如跳转、返回等操作
-   * @param stackName
+   * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
   public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavBuilder<T> {
@@ -136,7 +136,7 @@ export class ZRouter {
   }
 
   /**
-   * 注册关联一个路由栈到ZRouter中，通常情况使用不上
+   * 注册关联一个路由栈到ZRouter中，通常情况使用不上，一般用于第三方的Navigation的路由栈关联到ZRouter中
    * @param stackName
    * @param pathStack
    */
@@ -220,7 +220,7 @@ export class ZRouter {
    * @param observer
    */
   public static addLifecycleObserver(observer: LifecycleObserver) {
-    templateMgr.addObserver(observer)
+    TemplateMgr.getInstance().addObserver(observer)
   }
 
   /**
@@ -228,7 +228,7 @@ export class ZRouter {
    * @returns
    */
   public static templateMgr() {
-    return templateMgr
+    return TemplateMgr.getInstance()
   }
 
 

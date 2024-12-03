@@ -4,13 +4,12 @@
  * @desc:
  */
 import { AttributeUpdater, NavDestinationModifier } from '@kit.ArkUI'
+import { ZAttribute, ZAttributeModifier } from 'routerapi'
 
-abstract class BaseModifier <T> implements AttributeModifier<T> {
-  abstract applyNormalAttribute(instance: T): void
-}
 
 @Observed
-export class NavDesModifier extends AttributeUpdater<NavDestinationModifier, NavDestinationInterface> {
+@ZAttribute({ name: '' })
+export class NavDesModifier extends ZAttributeModifier {
 
 
   initializeModifier(instance: NavDestinationModifier): void {
