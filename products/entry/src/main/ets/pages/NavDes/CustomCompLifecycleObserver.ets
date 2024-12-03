@@ -1,3 +1,4 @@
+import { RouterConstants } from "@hzw/common_library";
 import { ZLifecycleObserver, RouterInfo, ZLifecycle } from "routerapi";
 
 /**
@@ -5,7 +6,7 @@ import { ZLifecycleObserver, RouterInfo, ZLifecycle } from "routerapi";
  * @date: 2024/11/19
  * @desc:
  */
-@ZLifecycle({name:''})
+@ZLifecycle({name:RouterConstants.CUSTOM_COMPONENT_VIEW})
 @Observed
 export class CustomCompLifecycleObserver extends ZLifecycleObserver {
   counter = 0
@@ -15,6 +16,4 @@ export class CustomCompLifecycleObserver extends ZLifecycleObserver {
   onBackPress(): boolean {
     return false
   }
-
-
 }

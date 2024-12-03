@@ -21,7 +21,7 @@ import { NavDesModifier } from './NavDestinationAttr';
 export struct CustomComponentView {
   @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
   @Provide lifecycleObserver: CustomCompLifecycleObserver = new CustomCompLifecycleObserver()
-  modifier: NavDesModifier = new NavDesModifier()
+  @Provide modifier: NavDesModifier = new NavDesModifier()
   private navDestinationId: string | undefined = ''
 
   aboutToAppear(): void {
@@ -57,30 +57,12 @@ export struct CustomComponentView {
       const r =  ZRouter.templateMgr().dispatch(this.navDestinationId, LifecycleEvent.ON_BACK_PRESS)
       return this.lifecycleObserver.onBackPress() || (typeof r === 'boolean' && r)
     })
-    .onAppear(() => {
-      console.log("CustomComponentView onAppear")
-    })
-    .onWillAppear(() => {
-      console.log("CustomComponentView onWillAppear", ZRouter.getLastNavDestinationId())
-    })
-    .onWillShow(() => {
-      console.log("CustomComponentView onWillShow")
-    })
-    .onShown(() => {
-      console.log("CustomComponentView onShown", this.queryNavDestinationInfo()?.name)
-    })
-    .onAttach(() => {
-      console.log("CustomComponentView onAttach")
-    })
-    .onDetach(() => {
-      console.log("CustomComponentView onDetach")
-    })
-    .title("测试")
     .hideTitleBar(true)
     .attributeModifier(this.modifier)
   }
 }
 
+@Route({ name: RouterConstants.CUSTOM_COMPONENT_VIEW, useTemplate: true })
 @Component
 export struct ChildView {
   @Consume lifecycleObserver: CustomCompLifecycleObserver

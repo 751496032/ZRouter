@@ -3,12 +3,13 @@
  * @date: 2024/11/12
  * @desc:
  */
+import { RouterConstants } from '@hzw/common_library'
 import { AttributeUpdater, NavDestinationModifier } from '@kit.ArkUI'
 import { ZAttribute, ZAttributeModifier } from 'routerapi'
 
 
 @Observed
-@ZAttribute({ name: '' })
+@ZAttribute({ name: RouterConstants.CUSTOM_COMPONENT_VIEW })
 export class NavDesModifier extends ZAttributeModifier {
 
 
