@@ -8,7 +8,6 @@ import {
   ZRouter
 } from 'routerapi';
 import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
-import { NavDesModifier } from './NavDestinationAttr';
 
 /**
  * @author: HZWei
@@ -16,17 +15,14 @@ import { NavDesModifier } from './NavDestinationAttr';
  * @desc:
  */
 
-@Route({ name: RouterConstants.CUSTOM_COMPONENT_VIEW })
+@Route({ name: RouterConstants.CUSTOM_COMPONENT_VIEW_HSP })
 @Component
 export struct CustomComponentView {
   @Lifecycle lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
   @Provide lifecycleObserver: CustomCompLifecycleObserver = new CustomCompLifecycleObserver()
-  modifier: NavDesModifier = new NavDesModifier()
   private navDestinationId: string | undefined = ''
 
   aboutToAppear(): void {
-    console.log('CustomComponentView aboutToAppear')
-    this.lifecycle.addObserver(this.lifecycleObserver)
     this.lifecycle.addListener((event, router) => {
       switch (event) {
         case LifecycleEvent.ON_WILL_APPEAR:
@@ -51,42 +47,20 @@ export struct CustomComponentView {
         this.navDestinationId = context.navDestinationId
       }
       console.log("CustomComponentView onReady", context.navDestinationId, context.pathInfo.name)
-      this.lifecycleObserver.onReady(context)
     })
     .onBackPressed(() => {
-      const r =  ZRouter.templateMgr().dispatch(this.navDestinationId, LifecycleEvent.ON_BACK_PRESS)
-      return this.lifecycleObserver.onBackPress() || (typeof r === 'boolean' && r)
+      const r = ZRouter.templateMgr().dispatch(this.navDestinationId, LifecycleEvent.ON_BACK_PRESS)
+      return  (typeof r === 'boolean' && r)
     })
-    .onAppear(() => {
-      console.log("CustomComponentView onAppear")
-    })
-    .onWillAppear(() => {
-      console.log("CustomComponentView onWillAppear", ZRouter.getLastNavDestinationId())
-    })
-    .onWillShow(() => {
-      console.log("CustomComponentView onWillShow")
-    })
-    .onShown(() => {
-      console.log("CustomComponentView onShown", this.queryNavDestinationInfo()?.name)
-    })
-    .onAttach(() => {
-      console.log("CustomComponentView onAttach")
-    })
-    .onDetach(() => {
-      console.log("CustomComponentView onDetach")
-    })
-    .title("测试")
-    .hideTitleBar(true)
-    .attributeModifier(this.modifier)
+    .title("测试-hsp")
+    .hideTitleBar(false)
   }
 }
 
 @Component
 export struct ChildView {
   @Consume lifecycleObserver: CustomCompLifecycleObserver
-
   aboutToAppear(): void {
-
     ZRouter.addLifecycleObserver((state, router) => {
       console.log("ChildView CustomComponentView addObserver ", state, router?.navDestinationId)
     })
@@ -99,24 +73,16 @@ export struct ChildView {
         this.lifecycleObserver.counter++
       })
 
-      Button("CustomComp").onClick((event: ClickEvent) => {
-        ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_VIEW)
+      Button("CustomComp-hsp").onClick((event: ClickEvent) => {
+        ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_VIEW_HSP)
       })
 
-      Button("CustomComp2").onClick((event: ClickEvent) => {
+      Button("CustomComp2-hsp").onClick((event: ClickEvent) => {
         ZRouter.getInstance()
           .setLunchMode(LaunchMode.MOVE_TO_TOP_SINGLETON)
-          .navigation(RouterConstants.CUSTOM_COMPONENT_VIEW)
-      })
-
-      Button("CustomComp-hsp").onClick((event: ClickEvent) => {
-        ZRouter.getInstance()
           .navigation(RouterConstants.CUSTOM_COMPONENT_VIEW_HSP)
       })
 
-      Button("LifecycleComp").onClick((event: ClickEvent) => {
-        ZRouter.getInstance().navigation(RouterConstants.LIFECYCLE_CASE_VIEW)
-      })
     }
   }
 }

@@ -115,7 +115,7 @@ export struct PageOne {
           break
         default:
         // 组合
-          ZRouter.getInstance()
+          ZRouter
             .animateMgr()
             .registerAnimParam(this, context)
             .addAnimateOptions(new TranslateAnimationOptions({ y: '100%' }))
@@ -125,7 +125,7 @@ export struct PageOne {
       }
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().animateMgr().unregisterAnim(this)
+      ZRouter.animateMgr().unregisterAnim(this)
     })
     .attributeModifier(ZRouter.animateMgr().modifier(this))
     .backgroundColor('#F1F3F5')

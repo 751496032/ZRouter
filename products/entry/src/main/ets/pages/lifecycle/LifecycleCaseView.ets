@@ -37,7 +37,7 @@ export struct LifecycleCaseView {
         })
 
         Button('添加全局生命周期监听').onClick((event: ClickEvent) => {
-          ZRouter.getInstance().addGlobalLifecycleObserver(new GlobalLifecycleObserverImpl())
+          ZRouter.addGlobalLifecycleObserver(new GlobalLifecycleObserverImpl())
         })
 
       }.justifyContent(FlexAlign.Center)
