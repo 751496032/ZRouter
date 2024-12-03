@@ -33,6 +33,10 @@ export class ZRouter {
   private constructor() {
   }
 
+  /**
+   * 初始化路由
+   * @param invoke
+   */
   public static initialize(invoke?: ((config: ConfigInitializer) => void)) {
     const config = new ConfigInitializer()
     invoke?.(config)
@@ -76,7 +80,11 @@ export class ZRouter {
     return ZRouter.routerMgr
   }
 
-
+  /**
+   * 获取路由操作的实例,如跳转、返回等操作
+   * @param stackName
+   * @returns
+   */
   public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavBuilder<ObjectOrNull> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
@@ -84,6 +92,11 @@ export class ZRouter {
     return NavBuilder.create<ObjectOrNull>(ZRouter.routerMgr, stackName)
   }
 
+  /**
+   * 获取路由操作的实例,如跳转、返回等操作
+   * @param stackName
+   * @returns
+   */
   public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavBuilder<T> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
@@ -95,51 +108,100 @@ export class ZRouter {
     return ZRouter.getRouterMgr().getServiceMgr()
   }
 
+  /**
+   * 添加服务路由，开发者不需要手动调用，在编译阶段会自动生成模版代码
+   * @param name
+   * @param service
+   */
   public static addService(name: string, service: IProvider) {
     ZRouter.getServiceMgr().addService(name, service)
   }
 
 
+  /**
+   * 获取服务路由实例
+   * @param name
+   * @returns
+   */
   public static getService<T extends IProvider>(name: string): T | null {
     return ZRouter.getServiceMgr().getService<T>(name)
   }
 
+  /**
+   * 获取动画管理类
+   * @returns
+   */
   public static animateMgr(): NavAnimationMgr {
     return ZRouter.getRouterMgr().animateMgr
   }
 
-
+  /**
+   * 注册关联一个路由栈到ZRouter中，通常情况使用不上
+   * @param stackName
+   * @param pathStack
+   */
   public static registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack): void {
     ZRouter.getRouterMgr().registerNavStack(stackName, pathStack)
   }
 
+  /**
+   * 从ZRouter解注册路由栈，通常情况使用不上
+   * @param stackName
+   */
   public static unregisterNavStack(stackName: string) {
     ZRouter.getRouterMgr().unregisterNavStack(stackName)
   }
 
+  /**
+   * 获取默认栈名的路由栈，初次调用会创建一个实例，并入参到Navigation构造方法中
+   * @param willShow 可选
+   * @returns
+   */
   public static getNavStack(willShow?: InterceptionShowCallback): NavPathStack {
     return ZRouter.getRouterMgr().getNavStackByName(DEFAULT_STACK_NAME, willShow)
   }
 
+  /**
+   * 根据栈名获取路由栈，【初次调用会创建一个实例，并入参到Navigation构造方法中】
+   * @param stackName
+   * @returns
+   */
   public static getNavStackByName(stackName: string): NavPathStack {
     return ZRouter.getRouterMgr().getNavStackByName(stackName)
   }
 
+  /**
+   * 获取当前路由栈
+   * @returns
+   */
   public static getCurrentNavStack(): NavPathStack {
     return ZRouter.getNavStackByName(ZRouter.getCurrentStackName())
   }
 
+  /**
+   * 获取当前路由栈的栈顶页面DestinationId
+   * @returns
+   */
   public static getLastNavDestinationId(): string | undefined {
     return ZRouter.getRouterMgr().getLastNavDestinationId()
   }
 
 
 
-
+  /**
+   * 设置全局拦截器，每个路由栈只能设置一次
+   * @param interceptor
+   * @param stackName
+   */
   public static setGlobalInterceptor(interceptor: IGlobalNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
     ZRouter.getRouterMgr().setGlobalInterceptor(interceptor, stackName)
   }
 
+  /**
+   * 添加拦截器，可设置多次
+   * @param interceptor
+   * @param stackName
+   */
   public static setInterceptor<T extends IInterceptor>(interceptor: T, stackName: string = DEFAULT_STACK_NAME) {
     ZRouter.getRouterMgr().setInterceptor<T>(interceptor, stackName)
   }
@@ -154,18 +216,26 @@ export class ZRouter {
   }
 
   /**
-   * 添加NavDestination页面的生命周期观察者，在NavDestination页面模版模式下才会生效
+   * 添加单个NavDestination页面的生命周期观察者，在NavDestination页面模版模式下才会生效
    * @param observer
    */
   public static addLifecycleObserver(observer: LifecycleObserver) {
     templateMgr.addObserver(observer)
   }
 
+  /**
+   * 获取NavDestination页面模板管理器
+   * @returns
+   */
   public static templateMgr() {
     return templateMgr
   }
 
 
+  /**
+   * 获取当前路由栈名称
+   * @returns
+   */
   public static getCurrentStackName(): string {
     return ZRouter.getRouterMgr().currentStackName
   }
