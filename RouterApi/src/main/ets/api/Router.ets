@@ -75,7 +75,7 @@ export class ZRouter {
       }
     }
     if (!ZRouter.routerMgr) {
-      throw new Error('请在AbilityStage或EntryAbility调用 ZRouter.initialize 初始化')
+      throw new Error('请在AbilityStage或EntryAbility调用 ZRouter.initialize 初始化，建议在AbilityStage完成初始化')
     }
     return ZRouter.routerMgr
   }
