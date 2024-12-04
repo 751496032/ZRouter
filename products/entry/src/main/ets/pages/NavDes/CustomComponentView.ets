@@ -62,7 +62,7 @@ export struct CustomComponentView {
   }
 }
 
-@Route({ name: RouterConstants.CUSTOM_COMPONENT_VIEW, useTemplate: true })
+@Route({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW, useTemplate: true })
 @Component
 export struct ChildView {
   @Consume lifecycleObserver: CustomCompLifecycleObserver
