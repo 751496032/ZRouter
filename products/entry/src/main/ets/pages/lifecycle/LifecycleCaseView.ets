@@ -36,6 +36,11 @@ export struct LifecycleCaseView {
           ZRouter.getInstance().navigation(RouterConstants.LIFECYCLE4_VIEW)
         })
 
+        Button('Lifecycle5View - NavDestination模板化').onClick((event: ClickEvent) => {
+          ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW)
+        })
+
+
         Button('添加全局生命周期监听').onClick((event: ClickEvent) => {
           ZRouter.addGlobalLifecycleObserver(new GlobalLifecycleObserverImpl())
         })
