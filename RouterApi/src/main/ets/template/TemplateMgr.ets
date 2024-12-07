@@ -15,6 +15,9 @@ export class TemplateMgr {
   private _observers: Map<string, LifecycleObserver> = new Map()
   private static _instance: TemplateMgr;
 
+  private constructor() {
+  }
+
   public static getInstance(): TemplateMgr {
     if (!TemplateMgr._instance) {
       TemplateMgr._instance = new TemplateMgr();
