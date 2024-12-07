@@ -5,6 +5,7 @@
  */
 import { RouterConstants } from '@hzw/common_library';
 import {
+  BlurAnimationOptions,
   NavAnimateOptions,
   OpacityAnimateOptions,
   RotateAnimateOptions,
@@ -15,7 +16,6 @@ import {
 } from 'routerapi';
 import { AnimateCallback } from 'routerapi/src/main/ets/animation/NavAnimationMgr';
 import { AnimConst } from './AnimConst';
-
 
 
 @Route({ name: RouterConstants.PAGE_ONE })
@@ -105,6 +105,13 @@ export struct PageOne {
               centerX: 0,
               centerY: 0
             }))
+          break
+        case AnimConst.BLUR:
+          // 模糊
+          ZRouter.getInstance()
+            .animateMgr()
+            .registerAnimParam(this, context)
+            .addAnimateOptions(new BlurAnimationOptions(50))
           break
         case AnimConst.CUSTOM:
           // 自定义
