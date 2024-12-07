@@ -11,8 +11,8 @@ export { LifecycleRegistry } from './src/main/ets/lifecycle/LifecycleRegistry'
 export { ILifecycleObserver  } from './src/main/ets/lifecycle/ILifecycleObserver'
 export { LifecycleEvent , LifecycleState } from './src/main/ets/lifecycle/LifecycleEvent'
 export { RouterInfo } from './src/main/ets/model/RouterInfo'
-export { ZLifecycleObserver   } from './src/main/ets/lifecycle/template/ZLifecycleObserver'
-export { ZAttributeModifier   } from './src/main/ets/lifecycle/template/ZAttributeModifier'
+export { ZLifecycleObserver   } from './src/main/ets/template/ZLifecycleObserver'
+export { ZAttributeModifier   } from './src/main/ets/template/ZAttributeModifier'
 export { NavAnimationModifier } from './src/main/ets/animation/modifier/NavAnimationModifier'
 export { INavSingleAnimationParam,
   NavAnimateOptions,

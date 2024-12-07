@@ -28,6 +28,11 @@ interface Param {
    */
   useTemplate?: boolean,
   /**
+   * 页面标题，可选 在useTemplate为true时生效， 不支持常量设置
+   * */
+  title?: string
+
+  /**
    * 页面描述，可选
    */
   description?: string

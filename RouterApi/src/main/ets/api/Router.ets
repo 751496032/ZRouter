@@ -23,7 +23,7 @@ import Logger from '../utlis/Logger'
 import { NavAnimationMgr } from '../animation/NavAnimationMgr'
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
 import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
-import { TemplateMgr } from '../lifecycle/template/TemplateMgr'
+import { TemplateMgr } from '../template/TemplateMgr'
 
 const KEY_Z_ROUTER = 'ZRouter'
 

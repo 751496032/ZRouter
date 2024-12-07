@@ -1,7 +1,13 @@
-import { ZRouter } from "../../api/Router"
-import { RouterInfo } from "../../model/RouterInfo"
-import { ILifecycleRegistry } from "../ILifecycleRegistry"
-import { LifecycleEvent, LifecycleObserver, LifecycleState } from "../LifecycleEvent"
+import { ZRouter } from "../api/Router"
+import { RouterInfo } from "../model/RouterInfo"
+import { ILifecycleRegistry } from "../lifecycle/ILifecycleRegistry"
+import { LifecycleEvent, LifecycleObserver, LifecycleState } from "../lifecycle/LifecycleEvent"
+
+/**
+ * @author: HZWei
+ * @date: 2024/12/7
+ * @desc:  NavDest模版管理类
+ */
 
 export class TemplateMgr {
 

@@ -1,10 +1,11 @@
 /**
  * @author: HZWei
  * @date: 2024/11/19
- * @desc:
+ * @desc: NavDest模版的生命周期观察者
+ * 继承该类可以实现NavDestination的生命周期回调
  */
-import { RouterInfo } from "../../model/RouterInfo";
-import { ILifecycleObserver } from "../ILifecycleObserver";
+import { RouterInfo } from "../model/RouterInfo";
+import { ILifecycleObserver } from "../lifecycle/ILifecycleObserver";
 
 export abstract class ZLifecycleObserver implements ILifecycleObserver {
   abstract onBackPress(): boolean

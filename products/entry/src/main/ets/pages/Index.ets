@@ -119,8 +119,8 @@ struct Index {
             ZRouter.getInstance().navigation(RouterConstants.ANIM_DEMO)
           })
 
-          Button("template").onClick((event: ClickEvent) => {
-            ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_VIEW)
+          Button("NavDestination页面模板化").onClick((event: ClickEvent) => {
+            ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW)
           })
 
           Button('退出登录').onClick((event: ClickEvent) => {

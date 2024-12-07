@@ -6,7 +6,7 @@ import { ZLifecycleObserver, RouterInfo, ZLifecycle } from "routerapi";
  * @date: 2024/11/19
  * @desc:
  */
-@ZLifecycle({name:RouterConstants.CUSTOM_COMPONENT_VIEW})
+@ZLifecycle({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW })
 @Observed
 export class CustomCompLifecycleObserver extends ZLifecycleObserver {
   counter = 0

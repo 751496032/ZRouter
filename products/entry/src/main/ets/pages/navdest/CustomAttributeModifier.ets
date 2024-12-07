@@ -8,15 +8,14 @@ import { AttributeUpdater, NavDestinationModifier } from '@kit.ArkUI'
 import { ZAttribute, ZAttributeModifier } from 'routerapi'
 
 
-@Observed
-@ZAttribute({ name: RouterConstants.CUSTOM_COMPONENT_VIEW })
-export class NavDesModifier extends ZAttributeModifier {
-
-
-  initializeModifier(instance: NavDestinationModifier): void {
-    console.log("AttributeUpdater initializeModifier")
+@ZAttribute({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW })
+export class CustomAttributeModifier extends ZAttributeModifier {
+  counter = 0
+  initModifier(instance: NavDestinationModifier): void {
     instance.hideTitleBar(false)
+    instance.mode(NavDestinationMode.STANDARD)
   }
+
 
 
 
