@@ -16,4 +16,9 @@ export class CustomCompLifecycleObserver extends ZLifecycleObserver {
   onBackPress(): boolean {
     return false
   }
+  onShown(info: RouterInfo): void {
+  }
+
+  onHidden(info: RouterInfo): void {
+  }
 }

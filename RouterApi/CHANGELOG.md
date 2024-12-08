@@ -1,6 +1,12 @@
 
 ## 版本更新记录
 
+### 1.2.0 / 2024-12-8
+
+- 新增NavDestination页面模板化能力，编译插件需要升级到1.2.0版本；
+- 新增@ZRoute、@ZService、@ZLifecycle、@Attribute注解，其中@ZLifecycle和@Attribute用于辅助页面模板化能力；
+- ZRouter的路由静态方法标记为过期状态，建议使用NavDestBuilder的方法进行路由操作。
+
 ### 1.1.1
 
 - 新增转场动画（平移、旋转、渐变、缩放），支持自定义动画；

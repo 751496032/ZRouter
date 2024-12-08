@@ -1,7 +1,7 @@
 {
   "name": "@hzw/zrouter",
-  "version": "1.1.1",
-  "description": "ZRouter是一款轻量级、无侵入的动态路由框架，可以解决多个业务模块（HAR/HSP）之间耦合和通信问题",
+  "version": "1.2.0",
+  "description": "ZRouter是一款轻量级且非侵入性的动态路由框架，可解决HAR/HSP业务模块间的耦合与通信问题，提供了自定义拦截器、转场动画、生命周期函数管理、NavDestination模板化等众多功能",
   "main": "Index.ets",
   "author": "HZWei",
   "license": "Apache-2.0",
@@ -16,10 +16,10 @@
     "navigation",
     "URLRouter",
     "路由框架",
-    "路由插件",
+    "转场动画",
     "系统路由表",
     "动态路由",
-    "页面跳转"
+    "NavDestination",
   ],
   "dynamicDependencies": {}
 }

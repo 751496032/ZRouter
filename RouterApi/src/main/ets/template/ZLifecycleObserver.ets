@@ -47,4 +47,10 @@ export abstract class ZLifecycleObserver implements ILifecycleObserver {
   onHidden(info: RouterInfo): void {
   }
 
+  onAppear(info: RouterInfo): void {
+  }
+
+  onDisappear(info: RouterInfo): void {
+  }
+
 }

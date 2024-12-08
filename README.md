@@ -1,23 +1,22 @@
 
 ## 介绍
 
+ZRouter是一款轻量级且非侵入性的动态路由框架，可解决HAR/HSP业务模块间的耦合与通信问题。主要特性：
 
-ZRouter是一款轻量级、无侵入性的动态路由框架，可以解决多个业务模块（HAR/HSP）之间耦合和通信问题，从而实现业务复用和功能扩展。主要特性：
-
-- 对Navigation简化使用，保持着零侵入零耦合，无需关注路由表的配置；
-- **支持链式调用，让API更简洁；**
-- **为了简化使用，支持NavDestination页面模板化，是一个可选项；**
+- 简化Navigation使用，无需关注路由表的配置，对Navigation及NavDestination组件保持零侵入；
+- **支持API链式调用，让API更简洁直观；**
+- **为了进一步简化使用，支持NavDestination页面模板化，是一个可选项；**
 - 注解参数支持使用静态常量，可跨模块定义；
-- 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面重定向、登录等拦截处理；
-- **支持服务路由，可用于相互独立的Har/Hsp模块间通信；**
-- 支持页面的生命周期函数管理（可设全局、单个页面的管理），可让任一个类具有与组件同样的生命周期函数，可对页面进行埋点统计；
+- 支持自定义与全局拦截器，可设优先级及中断逻辑，可实现页面重定向、登录验证等业务场景。
+- **支持服务路由，可实现Har/Hsp模块间的通信；**
+- 支持全局及单个页面的生命周期函数管理，可使任意类都能享有与组件相同的生命周期特性，便于页面埋点统计等业务场景；
 - **支持跨多级页面参数携带返回监听；**
 - 支持自定义URL路径跳转，可在拦截器内自行解析URL实现业务逻辑；
-- 内置转场动画（平移、旋转、渐变、缩放、高斯模糊），支持自定义转场动画；
+- 内置多种转场动画效果（平移、旋转、渐变、缩放、高斯模糊），并支持自定义动画；
 - 支持启动模式、混淆、嵌套Navigation、Hap；
 - 支持第三方Navigation的使用本库API；
-- **支持与你现有项目的Navigation混合使用，零成本迁移；**
-- 未来计划：支持共享元素动画、优化拦截器。
+- **支持与您现有项目中的Navigation无缝融合，实现零成本向本库迁移；**
+- 未来计划：支持共享元素动画、持续优化。
 
 **使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
 
@@ -238,6 +237,7 @@ export struct Page1 {
   .navigation("harAPage3")
 ```
 
+
 ### 拦截器
 
 ZRouter支持多个拦截器和全局拦截器，在拦截器中可以做页面跳转的拦截，比如登录拦截，404拦截、埋点、自定义URL路径跳转等。
@@ -354,9 +354,9 @@ export struct LoginPage{
 
 上面是全局拦截器，每个跳转都会触发，如果需要添加多个拦截器，则可以使用setInterceptor()方法。
 
-#### 多个拦截器
+#### 自定义拦截器
 
-单个拦截器的使用方式和全局拦截器是类似的，首先实现接口IInterceptor，然后使用setInterceptor()方法注册拦截器，，代码示例如下：
+自定义拦截器，首先实现接口IInterceptor，然后使用setInterceptor()方法注册拦截器，，代码示例如下：
 
 ```typescript
 export interface IInterceptor {
@@ -389,9 +389,16 @@ export class UrlInterceptor implements IInterceptor {
 关于其他API的使用请参考demo。
 
 
+## NavDestination页面模板化
+
+在介绍基本使用的流程中，我们知道每个页面都需要通过NavDestination来包裹，这样会造成代码的冗余，因此可通过ZRouter的模板化能力将NavDestination层去除。
+
+具体使用见[详细文档](https://gitee.com/common-apps/ZRouter/wikis/NavDestination%E9%A1%B5%E9%9D%A2%E6%A8%A1%E6%9D%BF%E5%8C%96%E8%83%BD%E5%8A%9B)
+
+
 ## 自定义URL路径跳转
 
-在项目中一般设计一套统一的URL路径跳转规范，通过URL路径跳转到不同原生页面。比如下面的URL路径：
+在项目中一般会设计一套统一的URL路径跳转规范，通过URL路径跳转到不同原生页面。比如下面的URL路径：
 
 ```typescript
 hzw://hello?id=69&name=harAPage3
@@ -500,6 +507,7 @@ ZRouter的组件生命周期管理能力，主要有两个特点：
 从1.1.1版本起内置了转场动画（平移、旋转、渐变、缩放、高斯模糊），也支持自定义转场动画；具体使用见[详细文档](https://gitee.com/common-apps/ZRouter/wikis/%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB)
 
 
+
 ## 第三方Navigation实例使用本库的API
 
 如果第三方Navigation实例使用本库的API，需要将第三方Navigation的NavPathStack实例注册到ZRouter中，代码示例：
@@ -535,7 +543,7 @@ ZRouter的组件生命周期管理能力，主要有两个特点：
       })
     }
 ```
-把标识导航栈的名称NAV_STACK_NAME，传入到ZRouter.getInstance()方法中，就可以使用ZRouter相关的API了。
+把标识导航栈的名称NAV_STACK_NAME，入参到ZRouter.getInstance()方法中，就可使用ZRouter的API。
 
 ## 在ArkUI-X项目上的使用
 
@@ -544,7 +552,7 @@ router-register插件在ArkUI-X项目的配置有所不同，需要使用者自�
 
 ## 混淆
 
-在混淆时需要在每个模块添加如下配置：
+生产环境需要在每个模块的obfuscation-rules.txt文件添加混淆配置：
 
 ```
 -keep-file-name
@@ -552,17 +560,16 @@ _generated
 ZR*
 ```
 
-**插件必须是1.0.6版本后才支持混淆，之前版本不支持混淆。如果在release环境不添加混淆配置，会跳转失败。**
 
-## 原理
+## 工作原理
 
-路由注册流程代码是由插件自动化生成，其原理是不难的，通过Hvigor插件扫描指定目录的ets文件，递归解析ets文件的语法树节点，查找解析注解上的参数，然后将这些信息通过模板引擎在编译阶段生成对应的代码逻辑。
+路由注册流程代码是由插件在编译阶段自动化生成，其原理是不难的，通过Hvigor插件扫描指定目录的ets文件，递归解析ets文件的语法树节点，查找解析注解上的参数，然后将这些信息通过模板引擎生成对应的代码逻辑。
 
 > 与Java注解处理器原理是类似的
 
-ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、拦截器、服务路由、页面显示管理、生命周期等功能，提供了更加简单易用的API，部分思想参考了Android [ARouter](https://github.com/alibaba/ARouter)路由框架。
+ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、自定义拦截器、服务路由、生命周期回调、转场动画、NavDestination模板化等功能，提供了更简洁易用的API，其中部分思想参考了Android [ARouter](https://github.com/alibaba/ARouter)路由框架。
 
-插件工作流程图：
+编译插件的基本流程图：
 
 <center>
 
@@ -570,6 +577,13 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 
 </center>
 
+## 接口列表
+
+[查看详细文档](https://gitee.com/common-apps/ZRouter/wikis/%E6%8E%A5%E5%8F%A3%E5%88%97%E8%A1%A8?sort_id=13047549)
+
+## FQA
+
+[查看详细文档](https://gitee.com/common-apps/ZRouter/wikis/FQA)
 
 ## 源码
 
@@ -578,7 +592,7 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 
 ## 交流
 
-使用有疑问或建议， **请提交issue（这样可以统一收集问题，方便更多人查阅，另外会也第一时间回复处理）** ，或者在进群交流(+v: 751496032)。
+ **欢迎大家提交issue、PR（可以统一收集问题，方便更多人查阅，会第一时间回复处理）** ，或进群交流(+v: 751496032)。
 
 
 

@@ -14,7 +14,7 @@ import {
 } from '../model/Model'
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
-import { NavBuilder } from '../model/NavBuilder'
+import { NavDestBuilder } from '../model/NavDestBuilder'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import { ServiceMgr } from '../service/ServiceMgr'
 import { IProvider } from '../service/IProvider'
@@ -85,11 +85,11 @@ export class ZRouter {
    * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
-  public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavBuilder<ObjectOrNull> {
+  public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavDestBuilder<ObjectOrNull> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
-    return NavBuilder.create<ObjectOrNull>(ZRouter.routerMgr, stackName)
+    return NavDestBuilder.create<ObjectOrNull>(ZRouter.routerMgr, stackName)
   }
 
   /**
@@ -97,11 +97,11 @@ export class ZRouter {
    * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
-  public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavBuilder<T> {
+  public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavDestBuilder<T> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
-    return NavBuilder.create<T>(ZRouter.routerMgr, stackName)
+    return NavDestBuilder.create<T>(ZRouter.routerMgr, stackName)
   }
 
   private static getServiceMgr(): ServiceMgr {

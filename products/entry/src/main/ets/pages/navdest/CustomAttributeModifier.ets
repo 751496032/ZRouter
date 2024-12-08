@@ -10,13 +10,9 @@ import { ZAttribute, ZAttributeModifier } from 'routerapi'
 
 @ZAttribute({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW })
 export class CustomAttributeModifier extends ZAttributeModifier {
-  counter = 0
   initModifier(instance: NavDestinationModifier): void {
     instance.hideTitleBar(false)
     instance.mode(NavDestinationMode.STANDARD)
   }
-
-
-
 
 }

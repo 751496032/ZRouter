@@ -21,7 +21,7 @@ import uiObserver from '@ohos.arkui.observer';
 import { InterceptorMgr } from '../interceptions/InterceptorMgr'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import NavStackMgr from './NavStackMgr'
-import { NavBuilder } from '../model/NavBuilder'
+import { NavDestBuilder } from '../model/NavDestBuilder'
 import { ErrorCode } from '../model/Const'
 import { ServiceMgr } from '../service/ServiceMgr';
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr';
@@ -152,7 +152,7 @@ export class RouterMgr {
    * @param name 是Route装饰器上的name属性值
    * @param param 携带的参数
    */
-  public push<T>(name: string, param?: ObjectOrNull, animated: boolean = false, builder?: NavBuilder<T>) {
+  public push<T>(name: string, param?: ObjectOrNull, animated: boolean = false, builder?: NavDestBuilder<T>) {
     this.pushDestination<T>(name, param, undefined, builder)
   }
 
@@ -166,7 +166,7 @@ export class RouterMgr {
    * @param callback
    */
   public pushForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
-    builder?: NavBuilder<T>) {
+    builder?: NavDestBuilder<T>) {
     this.pushDestination<T>(name, param, callback, builder)
   }
 
@@ -182,7 +182,7 @@ export class RouterMgr {
    * @param callback
    */
   public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>,
-    builder?: NavBuilder<T>) {
+    builder?: NavDestBuilder<T>) {
     const topName = this.getTopPathName()
     this.pushDestination(name, param, undefined, builder).then(() => {
       let eName = ''
@@ -226,7 +226,7 @@ export class RouterMgr {
    * @param callback
    */
   public redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>,
-    builder?: NavBuilder<T>) {
+    builder?: NavDestBuilder<T>) {
     const state = this.getCurrentState()
     state.redirectInfo.name = state.stackTopInfo?.metadata?.name || ''
     this.pop(false)
@@ -240,14 +240,14 @@ export class RouterMgr {
    * 重定向页面
    * @param name
    */
-  public redirect<T>(name: string, builder?: NavBuilder<T>) {
+  public redirect<T>(name: string, builder?: NavDestBuilder<T>) {
     this.pop(false)
     this.pushForResult<ObjectOrNull>(name, builder)
   }
 
 
   private pushDestination<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
-    builder?: NavBuilder<T>) {
+    builder?: NavDestBuilder<T>) {
     return this.getNavStack()
       .pushDestination({
         name, param: param, onPop: (data) => {
@@ -459,7 +459,7 @@ export class RouterMgr {
   }
 
   public replacePathByName<T>(name: string, param?: ObjectOrNull, animated: boolean = true,
-    builder?: NavBuilder<T>) {
+    builder?: NavDestBuilder<T>) {
     this.getNavStack()
       .replacePath({ name, param },
         { launchMode: builder?.options?.lunchMode, animated: builder?.options.animated ?? animated })

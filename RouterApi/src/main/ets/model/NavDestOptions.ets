@@ -5,7 +5,7 @@
  */
 import { DEFAULT_STACK_NAME, ObjectOrNull, OnPopResultCallback } from './Model';
 
-export interface  INavOptions<T> {
+export interface  INavDestOptions<T> {
   animated: boolean;
   lunchMode: LaunchMode;
   params?: ObjectOrNull;
@@ -14,7 +14,7 @@ export interface  INavOptions<T> {
   onPopListener?: OnPopResultCallback<T | ObjectOrNull>;
 }
 
-export class NavOptionsImpl<T> implements  INavOptions<T> {
+export class NavDestOptionsImpl<T> implements  INavDestOptions<T> {
   animated: boolean = true;
   lunchMode: LaunchMode = LaunchMode.STANDARD;
   navStackName: string = DEFAULT_STACK_NAME

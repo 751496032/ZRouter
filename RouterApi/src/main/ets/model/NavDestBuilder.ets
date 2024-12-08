@@ -5,19 +5,19 @@
  */
 import { RouterMgr } from '../api/RouterMgr';
 import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
-import { INavOptions, NavOptionsImpl } from './NavOptions';
+import { INavDestOptions, NavDestOptionsImpl } from './NavDestOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 
-export class NavBuilder<T> {
-  private optionsImpl: INavOptions<T> = new NavOptionsImpl<T>();
+export class NavDestBuilder<T> {
+  private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
   private routerMgr: RouterMgr
 
-  get options(): INavOptions<T> {
+  get options(): INavDestOptions<T> {
     return this.optionsImpl
   }
 
-  public static  create<T>(routerMgr: RouterMgr, stackName: string): NavBuilder<T> {
-    return new NavBuilder<T>(routerMgr, stackName)
+  public static  create<T>(routerMgr: RouterMgr, stackName: string): NavDestBuilder<T> {
+    return new NavDestBuilder<T>(routerMgr, stackName)
   }
 
   private constructor(routerMgr: RouterMgr, stackName: string) {
@@ -30,7 +30,7 @@ export class NavBuilder<T> {
    * @param animated
    * @returns
    */
-  public setAnimate(animated: boolean): NavBuilder<T> {
+  public setAnimate(animated: boolean): NavDestBuilder<T> {
     this.optionsImpl.animated = animated;
     return this;
   }
@@ -40,7 +40,7 @@ export class NavBuilder<T> {
    * @param mode
    * @returns
    */
-  public setLunchMode(mode: LaunchMode): NavBuilder<T> {
+  public setLunchMode(mode: LaunchMode): NavDestBuilder<T> {
     this.optionsImpl.lunchMode = mode;
     return this;
   }
@@ -50,7 +50,7 @@ export class NavBuilder<T> {
    * @param param
    * @returns
    */
-  public setParam(param: ObjectOrNull): NavBuilder<T> {
+  public setParam(param: ObjectOrNull): NavDestBuilder<T> {
     this.optionsImpl.params = param;
     return this;
   }
@@ -60,7 +60,7 @@ export class NavBuilder<T> {
    * @param callback
    * @returns
    */
-  public setPopListener(callback: OnPopResultCallback<T | ObjectOrNull>): NavBuilder<T> {
+  public setPopListener(callback: OnPopResultCallback<T | ObjectOrNull>): NavDestBuilder<T> {
     this.optionsImpl.onPopListener = callback;
     return this;
   }
@@ -69,7 +69,7 @@ export class NavBuilder<T> {
    * 开启跨多级页面回调监听，这种场景返回需要使用popNavWithResult()方法
    * @returns
    */
-  public enableCrossPageParamReturn(): NavBuilder<T> {
+  public enableCrossPageParamReturn(): NavDestBuilder<T> {
     this.optionsImpl.enableCrossPageParamReturn = true;
     return this;
   }
