@@ -4,21 +4,20 @@
 
 ZRouter是一款轻量级、无侵入性的动态路由框架，可以解决多个业务模块（HAR/HSP）之间耦合和通信问题，从而实现业务复用和功能扩展。主要特性：
 
-- 对Navigation简化使用，封装一系列简单易用的API，无需关注路由表的配置，对Navigation组件保持着零侵入零耦合；
-- 支持链式调用，让API更简洁易读；
+- 对Navigation简化使用，保持着零侵入零耦合，无需关注路由表的配置；
+- **支持链式调用，让API更简洁；**
+- **为了简化使用，支持NavDestination页面模板化，是一个可选项；**
 - 注解参数支持使用静态常量，可跨模块定义；
-- 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面重定向、埋点、登录等拦截处理；
-- 支持服务路由，可用于相互独立的Har/Hsp模块间通信；
-- 支持页面的生命周期函数管理（可设全局、单个页面的管理），可让任何一个类具有与组件同样的生命周期函数；
-- 支持跨多级页面参数携带返回监听；
-- 支持自定义URL路径跳转，可在拦截器内解析URL来跳转原生不同页面；
-- 内置转场动画（平移、旋转、渐变、缩放），支持自定义转场动画；
+- 支持多个拦截器(支持优先级和中断拦截)和全局拦截器，可实现页面重定向、登录等拦截处理；
+- **支持服务路由，可用于相互独立的Har/Hsp模块间通信；**
+- 支持页面的生命周期函数管理（可设全局、单个页面的管理），可让任一个类具有与组件同样的生命周期函数，可对页面进行埋点统计；
+- **支持跨多级页面参数携带返回监听；**
+- 支持自定义URL路径跳转，可在拦截器内自行解析URL实现业务逻辑；
+- 内置转场动画（平移、旋转、渐变、缩放、高斯模糊），支持自定义转场动画；
 - 支持启动模式、混淆、嵌套Navigation、Hap；
 - 支持第三方Navigation的使用本库API；
-- 支持与现有项目的Navigation组件混合使用，零成本的迁移；
-- 未来计划：支持共享元素动画、NavDestination代码模版化选项。
-
-
+- **支持与你现有项目的Navigation混合使用，零成本迁移；**
+- 未来计划：支持共享元素动画、优化拦截器。
 
 **使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
 
@@ -35,12 +34,12 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 
 ### 下载安装
 
-在项目根目录的hvigor目录的hvigor-config.json5文件中配置安装
+在项目根目录的hvigor目录下的hvigor-config.json5文件中配置安装
 
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.1.1"
+    "router-register-plugin":"1.2.0"
   },
 ```
 
@@ -190,13 +189,13 @@ struct Index {
 
 通过ZRouter的pushXX()方法进行页面跳转，参数是@Route装饰器上的name属性值。或者用ZRouter的getNavStack()方法来执行页面跳转。
 
-3、在NavDestination子页的使用自定义@Route装饰器描述当前页面，其中name属性是必填的，页面跳转需要用到name值，建议使用驼峰式命名，还有另外三个可选属性分别是：
+3、在NavDestination子页的使用自定义@Route或@ZRoute注解描述当前页面，其中name属性是必填的，页面跳转需要用到name值，建议使用驼峰式命名，还有另外三个可选属性分别是：
 
 - description：页面描述，没有功能作用；
 - needLogin：如果页面需要登录，可以将值设置为true，然后在拦截器中做页面重定向到登录页；
 - extra：额外的值可以通过该属性设置
 
-> @Route和@Service注解的name属性值是支持使用常量，具体使用在下面有介绍
+> @Route/@Service/@ZAttribute/@ZLifecycle等自定义注解上的name属性支持使用静态常量，在后面文档有详细介绍
 
 代码如下：
 
@@ -225,7 +224,7 @@ export struct Page1 {
 
 ```
 
-**建议通过ZRouter.getInstance()方式来操作路由的跳转与关闭，使用会更灵活，之前的ZRouter的静态方法依然保留着。**
+**建议通过ZRouter.getInstance()方式来操作路由的跳转与关闭，使用会更灵活简洁，之前的ZRouter的静态方法依然保留着，在1.2.0版本起将标记为过期状态了。**
 
 ```typescript
  ZRouter.getInstance()
@@ -498,7 +497,7 @@ ZRouter的组件生命周期管理能力，主要有两个特点：
 
 ## 路由转场动画
 
-从1.1.1版本内置了转场动画（平移、旋转、渐变、缩放），也支持自定义转场动画；具体使用见[详细文档](https://gitee.com/common-apps/ZRouter/wikis/%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB)
+从1.1.1版本起内置了转场动画（平移、旋转、渐变、缩放、高斯模糊），也支持自定义转场动画；具体使用见[详细文档](https://gitee.com/common-apps/ZRouter/wikis/%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB)
 
 
 ## 第三方Navigation实例使用本库的API

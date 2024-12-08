@@ -8,7 +8,7 @@ import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
  * @desc:
  */
 
-@Route({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW, useTemplate: true, title: "NavDest模板案例" })
+@Route({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW, useTemplate: true, title: "NavDest模板化案例" })
 @Component
 export struct ChildView {
   // 通过@Consume获取生命周期观察者
@@ -41,7 +41,8 @@ export struct ChildView {
 
   build() {
     Column({ space: 15 }) {
-      Text("NavDest页面模板：即页面无需用NavDestination组件包裹，会自动生成NavDestination组件")
+      Text("NavDest页面模板化：即页面无需用NavDestination组件包裹，在编译阶段会自动生成对应的逻辑，" +
+        "提供了额外的生命周期回调，并支持自定义NavDestination属性。")
         .padding(20)
       Text((this.lifecycleObserver.counter) + "")
       Button("+1 - lifecycleObserver").onClick((event: ClickEvent) => {
