@@ -5,6 +5,7 @@
 
 - 新增NavDestination页面模板化能力，编译插件需要升级到1.2.0版本；
 - 新增@ZRoute、@ZService、@ZLifecycle、@Attribute注解，其中@ZLifecycle和@Attribute用于辅助页面模板化能力；
+- 转场动画新增高斯模糊效果；
 - ZRouter的路由静态方法标记为过期状态，建议使用NavDestBuilder的方法进行路由操作。
 
 ### 1.1.1
