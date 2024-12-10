@@ -131,7 +131,7 @@ export class NavDestBuilder<T> {
   public redirect(name: string) {
     this.updateCurrentStackName()
     if (this.optionsImpl.onPopListener) {
-      this.routerMgr.redirectForResult2<T>(name, this, this.optionsImpl.onPopListener,this)
+      this.routerMgr.redirectForResult2<T>(name, this.optionsImpl.params, this.optionsImpl.onPopListener,this)
     } else {
       this.routerMgr.redirect(name, this)
     }
