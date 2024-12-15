@@ -591,7 +591,13 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - gitee：https://gitee.com/common-apps/ZRouter
 - github：https://github.com/751496032/ZRouter
 
-## 交流
+## 参与贡献
+- Fork 本仓库
+- 新建分支
+- 提交代码
+- 新建 Pull Request
+
+## 联系我们
 
  **欢迎大家提交issue、PR（可以统一收集问题，方便更多人查阅，会第一时间回复处理）** ，或进群交流(+v: 751496032)。
 
