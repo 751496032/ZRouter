@@ -25,6 +25,7 @@ export class AppAbilityStage extends AbilityStage{
       config.onDynamicLoadComplete = () => {
         console.log("已完成所有模块的加载")
       }
+      // config.dynamicLoadDelayTime = 5000
     })
 
   }

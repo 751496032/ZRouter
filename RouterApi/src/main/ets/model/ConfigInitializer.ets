@@ -16,6 +16,7 @@ export class ConfigInitializer implements IConfigOptions {
   private _isLoggingEnabled: boolean = true
   private _loadDynamicModule: string[] = []
   private _isLoaded = false
+  private _onDynamicLoadedComplete?: () => void
 
   public get dynamicLoadDelayTime(): number {
     return this._dynamicLoadDelayTime
@@ -49,7 +50,12 @@ export class ConfigInitializer implements IConfigOptions {
   }
 
   public set onDynamicLoadComplete(value: () => void) {
-    this._onDynamicLoadComplete = value
+    if (!this._onDynamicLoadComplete) {
+      this._onDynamicLoadComplete = value
+    } else {
+      this._onDynamicLoadedComplete = value
+    }
+
   }
 
   public set dynamicLoadDelayTime(value: number) {
@@ -88,6 +94,8 @@ export class ConfigInitializer implements IConfigOptions {
         .finally(() => {
           this._isLoaded = true
           this._onDynamicLoadComplete?.()
+          this._onDynamicLoadedComplete?.()
+
         })
     }, this._dynamicLoadDelayTime)
 

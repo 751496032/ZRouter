@@ -36,7 +36,11 @@ export class RouterMgr {
   private serviceMgr = ServiceMgr.instance
   private _lifecycleMgr = LifecycleMgr.getInstance()
   private _animateMgr = NavAnimationMgr.getInstance()
-  private _isDynamicLoadComplete: boolean = false
+  /**
+   * 只有使用了服务路由才会生效，判断是否已经完成了模块的动态加载
+   */
+  public isDynamicLoadedComplete = false
+  public moduleLoadedListener?: () => void
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -148,9 +152,6 @@ export class RouterMgr {
     return this.navStackMgr.getNavStackState()
   }
 
-  public isDynamicLoadComplete(): Promise<boolean> {
-    return Promise.resolve(this._isDynamicLoadComplete)
-  }
 
   /**
    * 页面跳转

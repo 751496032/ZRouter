@@ -30,6 +30,8 @@ const KEY_Z_ROUTER = 'ZRouter'
 export class ZRouter {
   private static routerMgr: RouterMgr | undefined = undefined
 
+
+
   private constructor() {
   }
 
@@ -43,6 +45,23 @@ export class ZRouter {
     LogUtil.config = { isShowLog: config.isLoggingEnabled }
     Logger.isShowLog = config.isLoggingEnabled
     ZRouter.setup(config.isHSPModuleDependent)
+    config.onDynamicLoadComplete = () => {
+      ZRouter.getRouterMgr().isDynamicLoadedComplete = true
+      ZRouter.getRouterMgr().moduleLoadedListener?.()
+    }
+  }
+
+  public static setModuleLoadedListener(listener: () => void) {
+    if (ZRouter.isDynamicLoadedComplete()) {
+      listener()
+    } else {
+      ZRouter.getRouterMgr().moduleLoadedListener = listener
+    }
+  }
+
+
+  public static isDynamicLoadedComplete(): boolean {
+    return ZRouter.getRouterMgr().isDynamicLoadedComplete
   }
 
   /**
