@@ -36,6 +36,7 @@ export class RouterMgr {
   private serviceMgr = ServiceMgr.instance
   private _lifecycleMgr = LifecycleMgr.getInstance()
   private _animateMgr = NavAnimationMgr.getInstance()
+  private _isDynamicLoadComplete: boolean = false
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -145,6 +146,10 @@ export class RouterMgr {
 
   private getCurrentState() {
     return this.navStackMgr.getNavStackState()
+  }
+
+  public isDynamicLoadComplete(): Promise<boolean> {
+    return Promise.resolve(this._isDynamicLoadComplete)
   }
 
   /**

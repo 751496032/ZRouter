@@ -72,6 +72,11 @@ export struct MainPage {
             ZRouter.getInstance().push("harBPage2")
           })
 
+          Button('replace').onClick((event: ClickEvent) => {
+            // ZRouter.push("harBPage2")
+            ZRouter.getInstance().replace(RouterConstants.ORDER_PAGE)
+          })
+
         }.visibility(this.isNewStack ? Visibility.Hidden : Visibility.Visible)
 
         Button('back newNavStack').onClick((event: ClickEvent) => {

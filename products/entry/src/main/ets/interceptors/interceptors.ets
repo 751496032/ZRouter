@@ -23,14 +23,28 @@ export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
     let isLogin = AppStorage.get<boolean>("isLogin")
     if (info.isNeedLogin && !isLogin) {
       let param = info.param
-      ZRouter.redirectForResult2<boolean>("LoginPage", param, (data) => {
-        if (data.data) {
-          // 登录成功
-          promptAction.showToast({ message: `登录成功` })
-          return true // 返回true 则继续跳转登录前的页面
-        }
-        return false
-      })
+      // ZRouter.redirectForResult2<boolean>("LoginPage", param, (data) => {
+      //   if (data.data) {
+      //     // 登录成功
+      //     promptAction.showToast({ message: `登录成功` })
+      //     return true // 返回true 则继续跳转登录前的页面
+      //   }
+      //   return false
+      // })
+
+      ZRouter.getInstance()
+        .setParam(param)
+        .setPopListener((result) => {
+          if (result.data) {
+            //  登录成功
+            promptAction.showToast({ message: `登录成功` })
+            return true // 返回true 则继续跳转登录前的页面
+          } else {
+            return false
+          }
+        })
+        .redirect("LoginPage")
+
     }
 
   }
@@ -78,5 +92,15 @@ export class UrlInterceptor implements IInterceptor {
     }
     return params;
   }
+
+}
+
+export class TestInterceptor implements IInterceptor {
+  process: (context: InterceptorInfo) => InterceptorInfoOrNull =(context)=>{
+    console.log("IInterceptor TestInterceptor: ", context.name)
+    return context
+  }
+
+  priority: number = 100;
 
 }

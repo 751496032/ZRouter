@@ -95,12 +95,13 @@ export default class NavStackMgr {
           if (willShow !== undefined) {
             willShow(from, to, operation, animated)
           }
-          let isShowRoot = false
-          let isShowPage = false
+          let isWillShowRootView = false
+          let isWillShowNavDestView = false
           let fromContext: NavDestinationContext
           let toContext: NavDestinationContext
           const interceptorInfo = InterceptorInfo.create(false)
-          if (operation === NavigationOperation.PUSH) {
+          const isPushOrReplace = operation === NavigationOperation.PUSH || operation === NavigationOperation.REPLACE
+          if (isPushOrReplace) {
             try {
               const toContext: NavDestinationContext = to as NavDestinationContext
               interceptorInfo.toContext = toContext
@@ -109,7 +110,7 @@ export default class NavStackMgr {
                 const metadata: RouteMetadata = data as RouteMetadata
                 metadata.name = toContext.getConfigInRouteMap()?.name
                 interceptorInfo.name = metadata.name
-                interceptorInfo.param = ZRouter.getParam()
+                interceptorInfo.param = ZRouter.getInstance(state.stackName).getParam()
                 interceptorInfo.metadata = metadata
               }
 
@@ -121,25 +122,25 @@ export default class NavStackMgr {
             }
           } else {
             if (to === 'navBar') {
-              isShowRoot = true
+              isWillShowRootView = true
               fromContext = from as NavDestinationContext
             }
           }
-          if (ObjectUtil.isObject(from) && !isShowRoot) {
+          if (ObjectUtil.isObject(from) && !isWillShowRootView) {
             fromContext = from as NavDestinationContext
             toContext = to as NavDestinationContext
-            isShowPage = true
+            isWillShowNavDestView = true
           }
 
-          this.interceptorMgr.run(state.stackName, interceptorInfo, operation == NavigationOperation.PUSH,
+          this.interceptorMgr.run(state.stackName, interceptorInfo, isPushOrReplace,
             (interceptor) => {
-              if (operation == NavigationOperation.PUSH) {
+              if (isPushOrReplace) {
                 interceptor.onNavigate?.(interceptorInfo)
               }
-              if (isShowRoot) {
+              if (isWillShowRootView) {
                 interceptor.onRootWillShow?.(fromContext)
               }
-              if (isShowPage) {
+              if (isWillShowNavDestView) {
                 interceptor.onPageWillShow?.(fromContext, toContext)
               }
               interceptor.onShowCallback?.(from, to, operation, animated)

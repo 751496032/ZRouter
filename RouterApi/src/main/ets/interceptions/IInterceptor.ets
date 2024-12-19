@@ -6,7 +6,7 @@
 import { InterceptorInfo, InterceptorInfoOrNull } from '../model/Model';
 
 export interface IInterceptor {
-  process: ProcessCallback;
+  process: (context: InterceptorInfo) => InterceptorInfoOrNull;
   priority: number;
 }
 
