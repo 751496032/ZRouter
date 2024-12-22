@@ -5,7 +5,7 @@ import { Route, ZRouter } from 'routerapi';
 @Entry
 @Component
 struct Index {
-  @State message: string =  JSON.stringify(ZRouter.getParam() || '');
+  @State message: string =  JSON.stringify(ZRouter.getInstance().getParam() || '');
   // @State pathStack: NavPathStack = ZRouter.getNavStack()
 
   aboutToAppear(): void {
@@ -15,6 +15,7 @@ struct Index {
 
     // 获取当前页的装饰器上参数
     console.debug('aboutToAppear: ', JSON.stringify(ZRouter.getAnnotationParam()))
+    console.debug('aboutToAppear param key: ' + ZRouter.getInstance().getParamByKey<string>('key1'))
 
   }
 

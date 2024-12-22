@@ -1,6 +1,8 @@
 export { MainPage } from './src/main/ets/components/MainPage'
 export { RouterConstants } from './src/main/ets/constants/RouterConstants'
+export { KeyConst } from './src/main/ets/constants/KeyConst'
 export { commonTest } from './src/main/ets/constants/Test'
 export { IHarAService } from './src/main/ets/services/IHarAService'
 export { IHspCService } from './src/main/ets/services/IHspCService'
 export { ToastUtils } from './src/main/ets/utils/ToastUtils'
+export * from './src/main/ets/bean/Person'
