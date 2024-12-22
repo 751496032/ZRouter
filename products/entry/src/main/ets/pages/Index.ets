@@ -18,7 +18,7 @@ struct Index {
   private context = getContext(this) as common.UIAbilityContext;
 
   aboutToAppear(): void {
-
+    AddInterceptor()
     ZRouter.setModuleLoadedListener(() => {
       // 模块加载完成
       console.log("Index 模块加载完成")

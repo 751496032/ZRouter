@@ -91,7 +91,8 @@ export default class NavStackMgr {
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
           const state = this.getNavStackState()
-          LogUtil.log('operation: ', operation)
+          LogUtil.log("from: ", this.getNavDestContext(from)?.pathInfo?.name , " isNavBar: " ,this.isNavBar(from),  " --> to: ", this.getNavDestContext(to)?.pathInfo?.name," isNavBar: " , this.isNavBar(to), ' operation: ', operation, "")
+
           if (willShow !== undefined) {
             willShow(from, to, operation, animated)
           }
@@ -121,7 +122,7 @@ export default class NavStackMgr {
               LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
             }
           } else {
-            if (to === 'navBar') {
+            if (this.isNavBar(to)) {
               isWillShowRootView = true
               fromContext = from as NavDestinationContext
             }
@@ -129,6 +130,10 @@ export default class NavStackMgr {
           if (ObjectUtil.isObject(from) && !isWillShowRootView) {
             fromContext = from as NavDestinationContext
             toContext = to as NavDestinationContext
+            isWillShowNavDestView = true
+          }else if (this.isNavBar(from) && !isWillShowRootView){
+            toContext = to as NavDestinationContext
+            fromContext = toContext
             isWillShowNavDestView = true
           }
 
@@ -150,6 +155,17 @@ export default class NavStackMgr {
         }
       })
     }
+  }
+
+  private isNavBar(context: NavDestinationContext | NavBar) {
+    return context === 'navBar'
+  }
+
+  private getNavDestContext(context: NavDestinationContext | NavBar) {
+    if (!this.isNavBar(context)) {
+      return context as NavDestinationContext
+    }
+    return undefined
   }
 
   public addRouterInfo(routerInfo: RouterInfo) {

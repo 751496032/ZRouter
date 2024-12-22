@@ -11,16 +11,25 @@ import { Route, ZRouter } from 'routerapi'
 @Component
 export struct LoginPage{
 
+  aboutToAppear(): void {
+    console.log('LoginPage aboutToAppear')
+  }
+
+
+  aboutToDisappear(): void {
+    console.log('LoginPage aboutToDisappear')
+  }
+
   build() {
     NavDestination(){
        Column({space:15}){
          Button('填写登录验证码').onClick((event: ClickEvent) => {
-           ZRouter.push("loginVerifyCodePage")
+           ZRouter.getInstance().push("loginVerifyCodePage")
          })
 
          Button('登录成功').onClick((event: ClickEvent) => {
            AppStorage.setOrCreate<boolean>('isLogin', true)
-           ZRouter.finishWithResult<boolean>(true)
+           ZRouter.getInstance().finishWithResult<boolean>(true)
          })
        }
        .width('100%')

@@ -235,9 +235,10 @@ export class RouterMgr {
     builder?: NavDestBuilder<T>) {
     const state = this.getCurrentState()
     state.redirectInfo.name = state.stackTopInfo?.metadata?.name || ''
-    this.pop(false)
     state.redirectWithResultMode = true
-    this.push<T>(name, param, true)
+    // this.pop(false)
+    // this.push<T>(name, param, true)
+    this.getNavStack().replacePathByName(name, param, builder?.options.animated)
     this.unregisterEvent(state.redirectInfo.name)
     this.registerEvent<T>(state.redirectInfo.name, param, callback)
   }

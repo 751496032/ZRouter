@@ -10,15 +10,15 @@ import { HashMap } from '@kit.ArkTS';
 
 export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
   onRootWillShow?: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
-    console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
+    console.log("IInterceptor Global onRootWillShow ->  from name: ", fromContext.pathInfo.name)
   }
   onPageWillShow?: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined = (from ,to)=>{
-    console.log("IInterceptor Global onPageWillShow: ", from, to.pathInfo.name, to.pathInfo.param)
+    console.log("IInterceptor Global onPageWillShow -> ", " form name: ", from.pathInfo.name," to name: ", to.pathInfo.name)
   }
 
   onNavigate?: ((context: InterceptorInfo) => void) | undefined = (info)=>{
     if (info.notRegistered) return
-    console.log("IInterceptor Global onNavigate: ", info.name)
+    console.log("IInterceptor Global onNavigate -> ", info.name)
 
     let isLogin = AppStorage.get<boolean>("isLogin")
     if (info.isNeedLogin && !isLogin) {
@@ -34,6 +34,7 @@ export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
 
       ZRouter.getInstance()
         .setParam(param)
+        .setAnimate(true)
         .setPopListener((result) => {
           if (result.data) {
             //  登录成功

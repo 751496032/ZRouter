@@ -18,7 +18,7 @@ export interface IGlobalNavigateInterceptor {
   onRootWillShow?: (fromContext: NavDestinationContext) => void;
 
   /**
-   * 页面显示时回调
+   * 页面显示时回调，当fromContext、toContext是一样时，则在NavBar根页面中启动的
    * @param fromContext
    * @param toContext
    */
