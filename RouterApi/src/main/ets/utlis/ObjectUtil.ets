@@ -100,11 +100,21 @@ export class ObjectUtil {
    * @param obj
    * @returns
    */
-   shallowCopy(obj: object): object {
+  static shallowCopy(obj: object): object {
     let newObj: Record<string, Object> = {};
     for (let key of Object.keys(obj)) {
       newObj[key] = obj[key];
     }
+    return newObj;
+  }
+
+  static merge(objs: object[]): object {
+    let newObj: Record<string, Object> = {};
+    objs.forEach((obj)=>{
+      for (let key of Object.keys(obj)) {
+        newObj[key] = obj[key];
+      }
+    })
     return newObj;
   }
 

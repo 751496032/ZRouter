@@ -4,13 +4,16 @@
  * @desc:
  */
 import { RouterMgr } from '../api/RouterMgr';
-import { ObjectOrNull, OnPopResultCallback, PopResult } from './Model';
+import { ObjectOrNull, OnPopResultCallback, PopResult, RouteMetadata } from './Model';
 import { INavDestOptions, NavDestOptionsImpl } from './NavDestOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
+import { HashMap } from '@kit.ArkTS';
+import { ObjectUtil } from '../utlis/ObjectUtil';
 
 export class NavDestBuilder<T> {
   private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
   private routerMgr: RouterMgr
+  private paramMap = new HashMap<string, ObjectOrNull>()
 
   get options(): INavDestOptions<T> {
     return this.optionsImpl
@@ -47,12 +50,35 @@ export class NavDestBuilder<T> {
 
   /**
    * 页面跳转携带的参数
+   * setParam 和 withParam 方法的区别是，setParam 方法会覆盖之前的参数，而 withParam 方法会合并之前的参数，但不会合并setParam基本类型的参数
    * @param param
    * @returns
    */
   public setParam(param: ObjectOrNull): NavDestBuilder<T> {
     this.optionsImpl.params = param;
     return this;
+  }
+
+  /**
+   * 页面跳转携带的参数，键值对的方式
+   * @param key
+   * @param value
+   * @returns
+   */
+  public withParam(key: string, value: ObjectOrNull): NavDestBuilder<T> {
+    this.paramMap.set(key, value)
+    return this
+  }
+
+  /**
+   * 页面跳转携带的参数，map的方式
+   * @param key
+   * @param value
+   * @returns
+   */
+  public withParams(paramMap: HashMap<string, ObjectOrNull>): NavDestBuilder<T> {
+    this.paramMap = paramMap
+    return this
   }
 
   /**
@@ -78,6 +104,35 @@ export class NavDestBuilder<T> {
     this.routerMgr.setCurrentStackName(this.optionsImpl.navStackName)
   }
 
+  private mergeParams(): ObjectOrNull {
+    let param = this.optionsImpl.params
+    const objs = new Array<object>()
+    if (ObjectUtil.isObject(param)) {
+      objs.push(param!)
+    }
+    if (this.paramMap.length > 0 ) {
+      let newObj: Record<string, ObjectOrNull> = {};
+      this.paramMap.forEach((val, key) => {
+        if (key) {
+          newObj[key] = val
+        }
+      })
+      objs.push(newObj)
+    }
+
+    if (param && !ObjectUtil.isObject(param) && objs.length > 0) {
+      throw new Error('当setParam()和withParam()方法同时调用时，setParam()方法入参类型不能是基本数据类型，必须要求是对象')
+    }
+
+
+    if (objs.length > 0 || !param) {
+      param = ObjectUtil.merge(objs)
+    }
+
+
+    return param
+  }
+
 
   /**
    * 页面跳转
@@ -87,9 +142,9 @@ export class NavDestBuilder<T> {
     this.updateCurrentStackName()
     if (this.optionsImpl.onPopListener) {
       if (this.optionsImpl.enableCrossPageParamReturn) {
-        this.routerMgr.pushNavForResult<T>(name, this.optionsImpl.params, this.optionsImpl.onPopListener,this)
+        this.routerMgr.pushNavForResult<T>(name, this.mergeParams(), this.optionsImpl.onPopListener,this)
       } else {
-        this.routerMgr.pushForResult(name, this.optionsImpl.params, (data) => {
+        this.routerMgr.pushForResult(name, this.mergeParams(), (data) => {
           let result = data.result
           let from = data.info.name
           let r = new PopResult<ObjectOrNull>()
@@ -100,7 +155,7 @@ export class NavDestBuilder<T> {
       }
 
     } else {
-      this.routerMgr.push(name, this.optionsImpl.params, this.optionsImpl.animated, this)
+      this.routerMgr.push(name, this.mergeParams(), this.optionsImpl.animated, this)
     }
   }
 
@@ -118,7 +173,7 @@ export class NavDestBuilder<T> {
    */
   public replace(name: string) {
     this.updateCurrentStackName()
-    this.routerMgr.replacePathByName(name, this.optionsImpl.params, this.optionsImpl.animated, this)
+    this.routerMgr.replacePathByName(name, this.mergeParams(), this.optionsImpl.animated, this)
   }
 
   /**
@@ -131,7 +186,7 @@ export class NavDestBuilder<T> {
   public redirect(name: string) {
     this.updateCurrentStackName()
     if (this.optionsImpl.onPopListener) {
-      this.routerMgr.redirectForResult2<T>(name, this.optionsImpl.params, this.optionsImpl.onPopListener,this)
+      this.routerMgr.redirectForResult2<T>(name, this.mergeParams(), this.optionsImpl.onPopListener,this)
     } else {
       this.routerMgr.redirect(name, this)
     }
@@ -244,10 +299,29 @@ export class NavDestBuilder<T> {
   }
 
   /**
+   * 通过key获取当前页面的参数
+   * @param key
+   * @returns
+   */
+  public getParamByKey<P = ObjectOrNull>(key: string): P {
+    const p = this.getParam()
+    try {
+      if (ObjectUtil.hasProperty(p, key)) {
+        const o = p as Record<string, ObjectOrNull>
+        return o[key] as P
+      }
+      return p as P
+    } catch (err) {
+      return p as P
+    }
+
+  }
+
+  /**
    * 获取当前页面的@Route或@ZRoute注解中的参数
    * @returns
    */
-  public getAnnotationParam() {
+  public getAnnotationParam() :RouteMetadata | undefined {
     this.updateCurrentStackName()
     return this.routerMgr.getAnnotationParam()
   }

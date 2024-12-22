@@ -1,4 +1,4 @@
-import { RouterConstants, ToastUtils } from 'common_library';
+import { KeyConst, RouterConstants, Student, ToastUtils } from 'common_library';
 import { Route, ZRouter } from 'routerapi';
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil';
 
@@ -10,6 +10,7 @@ export struct Page3 {
 
   aboutToAppear(): void {
     this.message = ZRouter.getInstance().getParam()?.toString() ?? ""
+      ZRouter.getInstance().getParamByKey<string>("key")
   }
 
   build() {
@@ -19,7 +20,8 @@ export struct Page3 {
         Button('pushForResult - 监听上一页返回携带的数据').onClick((event: ClickEvent) => {
           // 上一个页面返回
           ZRouter.getInstance()
-            .setParam('hello')
+            // .setParam('hello')
+            .withParam("key1", 55)
             .setPopListener((v)=>{
               ToastUtils.show(JSON.stringify(v.data))
             })
@@ -42,6 +44,17 @@ export struct Page3 {
 
         Button('popToRootWithResult - 返回根视图并携带数据').onClick((event: ClickEvent) => {
           ZRouter.getInstance().popToRootWithResult<string>('哈哈')
+        })
+
+
+        Button("携带参数跳转-withParam").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .withParam(KeyConst.KEY_AGE, 22)
+            .withParam(KeyConst.KEY_NAME, "lili")
+            .withParam(KeyConst.KEY_SCORE, [80, 90, 100])
+            .withParam(KeyConst.KEY_USER_INFO, new Student())
+            .navigation(RouterConstants.PAGE_PARAM)
+
         })
 
       }
