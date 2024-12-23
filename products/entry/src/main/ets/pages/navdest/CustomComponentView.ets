@@ -1,5 +1,6 @@
 import { RouterConstants, ToastUtils } from '@hzw/common_library';
 import { LifecycleState, Route, ZRouter } from 'routerapi';
+import { CustomAttributeModifier } from './CustomAttributeModifier';
 import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
 
 /**
@@ -8,8 +9,9 @@ import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
  * @desc:
  */
 
-@Route({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW, useTemplate: true, title: "NavDest模板化案例" })
+@Route({ name: RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW, useTemplate: true, title: "NavDest模板化案例" , hideTitleBar:false})
 @Component
+@Preview
 export struct ChildView {
   // 通过@Consume获取生命周期观察者
   // 生命周期监听方式一
@@ -57,6 +59,11 @@ export struct ChildView {
       Button("CustomComp-hsp").onClick((event: ClickEvent) => {
         ZRouter.getInstance()
           .navigation(RouterConstants.CUSTOM_COMPONENT_VIEW_HSP)
+      })
+
+      Button("状态管理V2").onClick((event: ClickEvent) => {
+        ZRouter.getInstance()
+          .navigation(RouterConstants.PAGE_NAVDEST_TEMPLATE_V2)
       })
 
     }
