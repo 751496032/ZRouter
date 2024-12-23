@@ -370,6 +370,12 @@ export class RouterMgr {
   }
 
 
+  public removeInterceptor<T extends IInterceptor>(interceptor: T, stackName: string = DEFAULT_STACK_NAME): boolean {
+    return this.interceptorMgr.removeInterceptor(stackName, interceptor)
+  }
+
+
+
   /**
    * 清空页面栈，返回Navigation主页
    */

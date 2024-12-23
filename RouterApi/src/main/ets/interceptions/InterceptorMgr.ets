@@ -46,13 +46,14 @@ export class InterceptorMgr {
     }
   }
 
-  public removeInterceptor(stackName: string, interceptor: IInterceptor) {
+  public removeInterceptor(stackName: string, interceptor: IInterceptor): boolean {
     if (this.interceptions.has(stackName)) {
       const interceptors = this.interceptions.get(stackName)
       if (interceptors?.has(interceptor)) {
-        interceptors.remove(interceptor)
+        return interceptors.remove(interceptor)
       }
     }
+    return false
   }
 
   public setGlobalInterceptor(stackName: string, interceptor: IGlobalNavigateInterceptor) {

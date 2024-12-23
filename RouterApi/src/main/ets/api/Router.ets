@@ -225,6 +225,18 @@ export class ZRouter {
     ZRouter.getRouterMgr().setInterceptor<T>(interceptor, stackName)
   }
 
+
+  /**
+   * 移除拦截器
+   * @param interceptor
+   * @param stackName
+   * @returns true:移除成功，false:移除失败
+   */
+  public static removeInterceptor<T extends IInterceptor>(interceptor: T,
+    stackName: string = DEFAULT_STACK_NAME): boolean {
+    return ZRouter.getRouterMgr().removeInterceptor<T>(interceptor, stackName)
+  }
+
   /**
    * 添加全局的NavDestination页面的生命周期观察者
    * @param observer
