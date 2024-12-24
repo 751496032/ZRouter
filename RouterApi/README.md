@@ -70,6 +70,7 @@ const config: PluginConfig = {
     logEnabled: true, // 查看日志
     viewNodeInfo: false, // 查看节点信息
     isAutoDeleteHistoryFiles: true // 删除无用编译产物
+    lifecycleObserverAttributeName: 'xxx' // 可选，设置全局的生命周期实现类在组件上的属性名，默认值是lifecycleObserver
 
 }
 export default {
@@ -81,10 +82,11 @@ export default {
 
 常用的配置字段：
 
-- scanDirs：扫描的目录，建议是页面目录，这样可以更精准扫描目标文件，如果不设置，默认是扫描src/main/ets目录
+- scanDirs：扫描的目录，建议设置可更精准、更快扫描生成文件，如果不设置，默认是扫描src/main/ets目录
 - logEnabled：日志记录开关。
 - viewNodeInfo：查看节点信息的开关，只有logEnabled和viewNodeInfo同时开启才会生效
-- isAutoDeleteHistoryFiles：是否删除无用编译产物。
+- isAutoDeleteHistoryFiles：是否删除无用编译产物；
+- lifecycleObserverAttributeName：设置全局的生命周期实现类在组件上的属性名，默认值是lifecycleObserver，若要设置单个页面的名称，可在@ZRoute注解中的loAttributeName属性上设置。
 
 PluginConfig配置对象还有其他属性，但不建议使用，使用默认值即可。
 
@@ -591,7 +593,13 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - gitee：https://gitee.com/common-apps/ZRouter
 - github：https://github.com/751496032/ZRouter
 
-## 交流
+## 参与贡献
+- Fork 本仓库
+- 新建分支
+- 提交代码
+- 新建 Pull Request
+
+## 联系我们
 
  **欢迎大家提交issue、PR（可以统一收集问题，方便更多人查阅，会第一时间回复处理）** ，或进群交流(+v: 751496032)。
 
