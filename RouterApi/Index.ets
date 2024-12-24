@@ -24,3 +24,4 @@ export { OpacityAnimateOptions } from './src/main/ets/animation/param/OpacityAni
 export { RotateAnimateOptions} from './src/main/ets/animation/param/RotateAnimateOptions'
 export { BlurAnimationOptions } from './src/main/ets/animation/param/BlurAnimationOptions'
 export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'
+export { RedirectType } from './src/main/ets/model/Const'

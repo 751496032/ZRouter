@@ -11,6 +11,11 @@ export enum ErrorCode {
   NOT_FOUND = 100006,
 }
 
+export enum RedirectType {
+  REPLACE = 'replace',
+  PUSH = 'push',
+}
+
 // export class InterceptorNames {
 //   public static readonly PageNavigateInterceptor: string = 'PageNavigateInterceptor'
 // }

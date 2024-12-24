@@ -9,6 +9,7 @@ import { INavDestOptions, NavDestOptionsImpl } from './NavDestOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { HashMap } from '@kit.ArkTS';
 import { ObjectUtil } from '../utlis/ObjectUtil';
+import { RedirectType } from './Const';
 
 export class NavDestBuilder<T> {
   private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
@@ -183,10 +184,11 @@ export class NavDestBuilder<T> {
    * 注意：如果登录流程中间有多个页面，需要在finishWithResult()方法前手动调用pop()方法关闭。
    * @param name
    */
-  public redirect(name: string) {
+  public redirect(name: string, type: RedirectType = RedirectType.REPLACE) {
     this.updateCurrentStackName()
+    this.optionsImpl.redirectType = type
     if (this.optionsImpl.onPopListener) {
-      this.routerMgr.redirectForResult2<T>(name, this.mergeParams(), this.optionsImpl.onPopListener,this)
+      this.routerMgr.redirectForResult2<T>(name, this.mergeParams(), this.optionsImpl.onPopListener, this)
     } else {
       this.routerMgr.redirect(name, this)
     }

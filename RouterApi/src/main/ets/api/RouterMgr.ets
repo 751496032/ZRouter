@@ -22,7 +22,7 @@ import { InterceptorMgr } from '../interceptions/InterceptorMgr'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import NavStackMgr from './NavStackMgr'
 import { NavDestBuilder } from '../model/NavDestBuilder'
-import { ErrorCode } from '../model/Const'
+import { ErrorCode, RedirectType } from '../model/Const'
 import { ServiceMgr } from '../service/ServiceMgr';
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr';
 import { RouterInfo } from '../model/RouterInfo';
@@ -236,9 +236,12 @@ export class RouterMgr {
     const state = this.getCurrentState()
     state.redirectInfo.name = state.stackTopInfo?.metadata?.name || ''
     state.redirectWithResultMode = true
-    // this.pop(false)
-    // this.push<T>(name, param, true)
-    this.getNavStack().replacePathByName(name, param, builder?.options.animated)
+    if (builder?.options?.redirectType == RedirectType.REPLACE) {
+      this.getNavStack().replacePathByName(name, param, builder?.options.animated)
+    } else {
+      this.pop(false)
+      this.push<T>(name, param, true)
+    }
     this.unregisterEvent(state.redirectInfo.name)
     this.registerEvent<T>(state.redirectInfo.name, param, callback)
   }
@@ -248,8 +251,13 @@ export class RouterMgr {
    * @param name
    */
   public redirect<T>(name: string, builder?: NavDestBuilder<T>) {
-    this.pop(false)
-    this.pushForResult<ObjectOrNull>(name, builder)
+    if (builder?.options?.redirectType == RedirectType.REPLACE) {
+      this.replacePathByName(name, null, builder?.options.animated, builder)
+    } else {
+      this.pop(false)
+      this.pushForResult<ObjectOrNull>(name, builder)
+    }
+
   }
 
 
