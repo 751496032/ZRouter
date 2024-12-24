@@ -4,6 +4,7 @@
  * @desc:  拦截器案例
  */
 import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IGlobalNavigateInterceptor, ZRouter,
+  RedirectType,
    } from 'routerapi';
 import { promptAction } from '@kit.ArkUI';
 import { HashMap } from '@kit.ArkTS';
@@ -44,7 +45,7 @@ export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
             return false
           }
         })
-        .redirect("LoginPage")
+        .redirect("LoginPage", RedirectType.REPLACE)
 
     }
 

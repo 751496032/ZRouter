@@ -1,10 +1,24 @@
 
 ## 版本更新记录
 
+### 1.3.0 / 2024-12-24
+
+- NavDestination页面模板化支持V2状态管理，编译插件需要升级到1.3.0版本；
+- NavDestination页面模板化的生命周期实现类属性支持全局和单个页面自定义命名；
+- 新增如下api：
+  - removeInterceptor：移除拦截器；
+  - withParam：携带页面参数，key-value形式；
+  - getParamByKey：获取页面参数，根据key获取；
+  - setModuleLoadedListener：设置动态模块加载状态监听；
+  - isDynamicLoadedComplete：判断动态模块是否加载完成；
+- 修复普通拦截器在replace路由操作时不生效的问题；
+- 修复全局拦截器页面首次跳转时onPageWillShow()方法不执行的问题；
+- 修复路由重定向问题，新增了重定向的类型;
+
 ### 1.2.0 / 2024-12-8
 
 - 新增NavDestination页面模板化能力，编译插件需要升级到1.2.0版本；
-- 新增@ZRoute、@ZService、@ZLifecycle、@Attribute注解，其中@ZLifecycle和@Attribute用于辅助页面模板化能力；
+- 新增@ZRoute、@ZService、@ZLifecycle、@ZAttribute注解，其中@ZLifecycle和@ZAttribute用于辅助页面模板化能力；
 - 转场动画新增高斯模糊效果；
 - ZRouter的路由静态方法标记为过期状态，建议使用NavDestBuilder的方法进行路由操作。
 

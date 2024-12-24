@@ -38,7 +38,7 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 ```
   "dependencies": {
 //    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
-    "router-register-plugin":"1.2.0"
+    "router-register-plugin":"1.3.0"
   },
 ```
 
@@ -146,7 +146,8 @@ export class AppAbilityStage extends AbilityStage{
     // 初始化路由
     ZRouter.initialize((config) => {
       config.isLoggingEnabled = BuildProfile.DEBUG
-      config.isHSPModuleDependent = true
+      config.isHSPModuleDependent = true 
+      // 服务路由初始化配置，如果没有使用服务路由，可不设置
       config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc']
       config.onDynamicLoadComplete = () => {
         console.log("已完成所有模块的加载")
