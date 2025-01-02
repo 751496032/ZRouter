@@ -10,6 +10,7 @@ import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { HashMap } from '@kit.ArkTS';
 import { ObjectUtil } from '../utlis/ObjectUtil';
 import { RedirectType } from './Const';
+import { LaunchMode } from './LaunchMode';
 
 export class NavDestBuilder<T> {
   private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
@@ -40,7 +41,7 @@ export class NavDestBuilder<T> {
   }
 
   /**
-   * 设置启动模式，api12起才生效
+   * 设置启动模式，api12起才会生效
    * @param mode
    * @returns
    */
