@@ -28,6 +28,7 @@ import { LifecycleMgr } from '../lifecycle/LifecycleMgr';
 import { RouterInfo } from '../model/RouterInfo';
 import { LifecycleEvent } from '../lifecycle/LifecycleEvent';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
+import { DeviceUtil } from '../utlis/DeviceUtil';
 
 
 export class RouterMgr {
@@ -263,24 +264,42 @@ export class RouterMgr {
 
   private pushDestination<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
     builder?: NavDestBuilder<T>) {
-    return this.getNavStack()
-      .pushDestination({
-        name, param: param, onPop: (data) => {
-          callback?.(data)
-        }
-      }, { launchMode: builder?.options?.lunchMode, animated: builder?.options.animated ?? true })
-      .catch((err: BusinessError) => {
-        LogUtil.error('error: ', err.code, err.message)
-        if (err.code == ErrorCode.NOT_REGISTERED) {
-          const state = this.getCurrentState()
-          let interceptorInfo = InterceptorInfo.create(true)
-          interceptorInfo.name = name
-          interceptorInfo.param = param
-          this.interceptorMgr.run(state.stackName, interceptorInfo, true, (it) => {
-            it.onNavigate?.(interceptorInfo)
-          })
-        }
+    const animated = builder?.options.animated ?? true
+    const launchMode = builder?.options?.lunchMode
+    if (DeviceUtil.isSdkVersion12()){
+      return this.getNavStack()
+        .pushDestination({
+          name, param: param, onPop: (data) => {
+            callback?.(data)
+          }
+        }, { launchMode: launchMode, animated: animated })
+        .catch((err: BusinessError) => {
+          this.handlePushError(err, name, param)
+        })
+    } else {
+      return this.getNavStack()
+        .pushDestination({
+          name, param: param, onPop: (data) => {
+            callback?.(data)
+          }
+        }, animated)
+        .catch((err: BusinessError) => {
+          this.handlePushError(err, name, param)
+        })
+    }
+  }
+
+  private handlePushError(err: BusinessError, name: string, param?: ObjectOrNull) {
+    LogUtil.error('error: ', err.code, err.message)
+    if (err.code == ErrorCode.NOT_REGISTERED) {
+      const state = this.getCurrentState()
+      let interceptorInfo = InterceptorInfo.create(true)
+      interceptorInfo.name = name
+      interceptorInfo.param = param
+      this.interceptorMgr.run(state.stackName, interceptorInfo, true, (it) => {
+        it.onNavigate?.(interceptorInfo)
       })
+    }
   }
 
   /**
@@ -481,9 +500,16 @@ export class RouterMgr {
 
   public replacePathByName<T>(name: string, param?: ObjectOrNull, animated: boolean = true,
     builder?: NavDestBuilder<T>) {
-    this.getNavStack()
-      .replacePath({ name, param },
-        { launchMode: builder?.options?.lunchMode, animated: builder?.options.animated ?? animated })
+    const anim = builder?.options.animated ?? animated
+    const launchMode = builder?.options?.lunchMode
+    if (DeviceUtil.isSdkVersion12()) {
+      this.getNavStack()
+        .replacePath({ name, param },
+          { launchMode: launchMode, animated: anim })
+    } else {
+      this.getNavStack().replacePath({ name, param }, anim)
+    }
+
   }
 
   private isRegisterEvent(name: string) {

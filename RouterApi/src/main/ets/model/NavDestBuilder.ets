@@ -40,7 +40,7 @@ export class NavDestBuilder<T> {
   }
 
   /**
-   * 设置启动模式
+   * 设置启动模式，api12起才生效
    * @param mode
    * @returns
    */

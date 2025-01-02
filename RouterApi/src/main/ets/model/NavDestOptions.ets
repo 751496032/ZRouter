@@ -5,18 +5,19 @@
  */
 import { RedirectType } from './Const';
 import { DEFAULT_STACK_NAME, ObjectOrNull, OnPopResultCallback } from './Model';
+import { LaunchMode } from './LaunchMode';
 
-export interface  INavDestOptions<T> {
+export interface INavDestOptions<T> {
   animated: boolean;
   lunchMode: LaunchMode;
   params?: ObjectOrNull;
-  navStackName:string;
+  navStackName: string;
   enableCrossPageParamReturn?: boolean;
   onPopListener?: OnPopResultCallback<T | ObjectOrNull>;
   redirectType?: RedirectType
 }
 
-export class NavDestOptionsImpl<T> implements  INavDestOptions<T> {
+export class NavDestOptionsImpl<T> implements INavDestOptions<T> {
   animated: boolean = true;
   lunchMode: LaunchMode = LaunchMode.STANDARD;
   navStackName: string = DEFAULT_STACK_NAME;

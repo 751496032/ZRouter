@@ -23,5 +23,6 @@
 
 # ZRouter混淆配置
 -keep-file-name
+Index
 _generated
 ZR*

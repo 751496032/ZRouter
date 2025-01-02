@@ -1,4 +1,4 @@
 # ZRouter混淆配置
--keep-file-name
-_generated
-ZR*
+# -keep-file-name
+# _generated
+# ZR*

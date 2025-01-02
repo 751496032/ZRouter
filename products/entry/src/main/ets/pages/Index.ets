@@ -1,14 +1,20 @@
 import { RouterConstants, ToastUtils } from '@hzw/common_library'
 import { promptAction, router } from '@kit.ArkUI'
-import { ILifecycleObserver, Lifecycle, LifecycleRegistry,
+import {
+  ILifecycleObserver,
+  Lifecycle,
+  LifecycleRegistry,
   OpacityAnimateOptions,
   RotateAnimateOptions,
   ScaleAnimateOptions,
-  TranslateAnimationOptions, ZRouter } from 'routerapi'
+  TranslateAnimationOptions,
+  ZRouter
+} from 'routerapi'
 import { RouterConst } from '../constants/RouterConst'
 import { AddInterceptor } from '../interceptors/AddIntercetors'
 import { common, Want } from '@kit.AbilityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
+import { deviceInfo } from '@kit.BasicServicesKit';
 
 @Entry
 @Component
@@ -16,6 +22,16 @@ struct Index {
   @Lifecycle
   lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
   private context = getContext(this) as common.UIAbilityContext;
+  private sdkApiVer = deviceInfo.sdkApiVersion
+  private isSdkApi12 = this.sdkApiVer >= 12
+
+  desc(): string {
+    if (this.isSdkApi12) {
+      return "sdkApiVersion: " + this.sdkApiVer
+    } else {
+      return "sdkApiVersion: " + this.sdkApiVer + "  不支持启动模式"
+    }
+  }
 
   aboutToAppear(): void {
     AddInterceptor()
@@ -23,6 +39,8 @@ struct Index {
       // 模块加载完成
       console.log("Index 模块加载完成")
     })
+
+    console.log("Index  aboutToAppear sdkApiVersion: " + this.sdkApiVer)
 
     // @Entry页面生命周期监听
     const that = this
@@ -49,8 +67,9 @@ struct Index {
 
   build() {
     Navigation(ZRouter.getNavStack()) {
-      Scroll(){
+      Scroll() {
         Column({ space: 12 }) {
+          Text(this.desc())
           Button('har-跳转到HarA模块').onClick((event: ClickEvent) => {
             ZRouter.getInstance().navigation(RouterConstants.HARA_MAIN_PAGE)
 
@@ -151,22 +170,14 @@ struct Index {
     .title('Main')
     .height('100%')
     .width('100%')
-    .customNavContentTransition(ZRouter.animateMgr()
-      // 创建默认动画管理器
-      .defaultAnimateBuilder()
-      // 设置进场动画参数
-      .setEnterAnimate({ duration: 500 })
-        // 设置退场动画参数
-      .setExitAnimate({ duration: 700 })
-      // 平移
-      .addAnimateOptions(new TranslateAnimationOptions({ x:'50%',y:'50%'}))
-      // 渐变
-      .addAnimateOptions(new OpacityAnimateOptions(0.01))
-      // 缩放
-      .addAnimateOptions(new ScaleAnimateOptions({ x:0, y: 0 }))
-      // 旋转
-      .addAnimateOptions(new RotateAnimateOptions({ angle: 90 }))
-      // 自定义转场动画回调
+    .customNavContentTransition(ZRouter.animateMgr()// 创建默认动画管理器
+      .defaultAnimateBuilder()// 设置进场动画参数
+      .setEnterAnimate({ duration: 500 })// 设置退场动画参数
+      .setExitAnimate({ duration: 700 })// 平移
+      .addAnimateOptions(new TranslateAnimationOptions({ x: '50%', y: '50%' }))// 渐变
+      .addAnimateOptions(new OpacityAnimateOptions(0.01))// 缩放
+      .addAnimateOptions(new ScaleAnimateOptions({ x: 0, y: 0 }))// 旋转
+      .addAnimateOptions(new RotateAnimateOptions({ angle: 90 }))// 自定义转场动画回调
       .getAnimCustomNavContentTransition())
   }
 }

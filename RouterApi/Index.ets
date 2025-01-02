@@ -25,3 +25,4 @@ export { RotateAnimateOptions} from './src/main/ets/animation/param/RotateAnimat
 export { BlurAnimationOptions } from './src/main/ets/animation/param/BlurAnimationOptions'
 export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'
 export { RedirectType } from './src/main/ets/model/Const'
+export { LaunchMode } from './src/main/ets/model/LaunchMode'
