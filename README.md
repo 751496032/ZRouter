@@ -486,7 +486,7 @@ export class RouterConstants {
   public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
 }
 ```
-> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
+> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common)
 
 
 ## 服务路由-模块间通信
