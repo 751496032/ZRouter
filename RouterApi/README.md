@@ -599,6 +599,12 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - 提交代码
 - 新建 Pull Request
 
+## 其他库
+
+- 数据库：https://gitee.com/HW-Commons/ZDbUtil
+- Web桥接库：https://github.com/751496032/DSBridge-HarmonyOS
+- 日志库：https://gitee.com/common-apps/logger
+
 ## 联系我们
 
  **欢迎大家提交issue、PR（可以统一收集问题，方便更多人查阅，会第一时间回复处理）** ，或进群交流(+v: 751496032)。
