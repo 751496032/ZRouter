@@ -310,6 +310,9 @@ export class NavAnimationStore {
         param.startCallback(modifier, proxy)
       }
       if (param.endCallback) {
+        // 直接调用param?.animateParam?.expectedFrameRateRange，在Arkui-X上会报'expectedFrameRateRange' can't support crossplatform application.
+        const expected =
+          (param?.animateParam as Record<string, Object> | undefined)?.["expectedFrameRateRange"] as ExpectedFrameRateRange | undefined
         animateTo({
           duration: param?.animateParam?.duration,
           tempo: param?.animateParam?.tempo,
@@ -318,7 +321,7 @@ export class NavAnimationStore {
           iterations: param?.animateParam?.iterations,
           playMode: param?.animateParam?.playMode,
           finishCallbackType: param?.animateParam?.finishCallbackType,
-          expectedFrameRateRange: param?.animateParam?.expectedFrameRateRange ?? {
+          expectedFrameRateRange: expected ?? {
             min: 60,
             expected: 90,
             max: 120,
