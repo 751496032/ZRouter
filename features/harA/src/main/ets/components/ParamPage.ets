@@ -18,10 +18,12 @@ export struct ParamPage {
   aboutToAppear(): void {
     this.userInfo.s_name = ''
     this.userInfo.s_age = 0
-    this.name = ZRouter.getInstance().getParamByKey(KeyConst.KEY_NAME)
-    this.age = ZRouter.getInstance().getParamByKey(KeyConst.KEY_AGE)
-    this.score = ZRouter.getInstance().getParamByKey(KeyConst.KEY_SCORE)
-    this.userInfo = ZRouter.getInstance().getParamByKey(KeyConst.KEY_USER_INFO)
+    if (ZRouter.getInstance().hasKey(KeyConst.KEY_NAME)) {
+      this.name = ZRouter.getInstance().getParamByKey(KeyConst.KEY_NAME)
+      this.age = ZRouter.getInstance().getParamByKey(KeyConst.KEY_AGE)
+      this.score = ZRouter.getInstance().getParamByKey(KeyConst.KEY_SCORE)
+      this.userInfo = ZRouter.getInstance().getParamByKey(KeyConst.KEY_USER_INFO)
+    }
     this.params = JSON.stringify(ZRouter.getInstance().getParam() || "")
   }
 

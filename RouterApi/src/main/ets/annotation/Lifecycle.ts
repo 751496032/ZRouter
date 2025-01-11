@@ -6,6 +6,7 @@
 
 import { LifecycleEvent } from "../lifecycle/LifecycleEvent";
 import { LifecycleMgr } from "../lifecycle/LifecycleMgr";
+import Logger from "../utlis/Logger";
 
 export function Lifecycle(target: any, propertyKey: string) {
 
@@ -39,7 +40,7 @@ export function hook(target: any, className: string, event: LifecycleEvent) {
           lifecycleFun?.call(target)
           LifecycleMgr.getInstance().notifyObservers(event, undefined, className)
         } catch (e) {
-          console.error(e)
+          Logger.error(e)
         }
       },
       writable:true,

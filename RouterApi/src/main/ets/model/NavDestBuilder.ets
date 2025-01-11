@@ -56,6 +56,12 @@ export class NavDestBuilder<T> {
    * @returns
    */
   public setParam(param: ObjectOrNull): NavDestBuilder<T> {
+    // 系统不支持直接携带0 和 false， 只能转成字符串
+    if (typeof param === 'number' && param === 0) {
+        param = '0'
+    }else if (typeof param === 'boolean' && !param){
+      param = 'false'
+    }
     this.optionsImpl.params = param;
     return this;
   }
@@ -316,7 +322,12 @@ export class NavDestBuilder<T> {
     } catch (err) {
       return p as P
     }
+  }
 
+
+  public hasKey(key: string): boolean {
+    const p = this.getParam()
+    return ObjectUtil.hasProperty(p, key)
   }
 
   /**
