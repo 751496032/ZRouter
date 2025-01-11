@@ -11,4 +11,5 @@
 **/.test
 /.appanalyzer
 _generated
-route_map.json
+**/route_map.json
+oh-package-lock.json5

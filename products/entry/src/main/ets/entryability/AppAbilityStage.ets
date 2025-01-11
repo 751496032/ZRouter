@@ -19,7 +19,7 @@ export class AppAbilityStage extends AbilityStage{
     })
     // 初始化路由
     ZRouter.initialize((config) => {
-      config.isLoggingEnabled = BuildProfile.DEBUG
+      config.isLoggingEnabled = true
       config.isHSPModuleDependent = true
       config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc']
       config.onDynamicLoadComplete = () => {
