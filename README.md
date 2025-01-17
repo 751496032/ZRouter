@@ -593,6 +593,14 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - gitee：https://gitee.com/common-apps/ZRouter
 - github：https://github.com/751496032/ZRouter
 
+## 实战案例
+
+这里推荐一个基于ZRouter搭建项目的实战案例，仅做参考具体可根据你项目来调整。
+
+- [《探索 HarmonyOS NEXT (5.0)：开启构建模块化项目架构奇幻之旅 —— 动态路由 ZRouter：引领高效模块通信的智慧中枢》](https://blog.csdn.net/qq_40533422/article/details/143479759)
+- [案例源码](https://github.com/JasonYinH/ExploreHarmonyNext)
+
+
 ## 参与贡献
 - Fork 本仓库
 - 新建分支
@@ -601,9 +609,9 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 
 ## 其他库
 
-- 数据库：https://gitee.com/HW-Commons/ZDbUtil
-- Web桥接库：https://github.com/751496032/DSBridge-HarmonyOS
-- 日志库：https://gitee.com/common-apps/logger
+- 鸿蒙数据库工具：https://gitee.com/HW-Commons/ZDbUtil
+- 鸿蒙WebView桥接库：https://github.com/751496032/DSBridge-HarmonyOS
+- 鸿蒙日志库：https://gitee.com/common-apps/logger
 
 ## 联系我们
 
