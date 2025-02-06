@@ -59,7 +59,6 @@ export class NavDestBuilder<T> {
   public setParam(param: ObjectOrNull): NavDestBuilder<T> {
     // enableConvertJumpParamZeroAndFalseToString()方法启用
     if (this.optionsImpl.isConvertJumpParamZeroAndFalseToString) {
-      // 系统不支持直接携带0 和 false， 只能转成字符串
       if (typeof param === 'number' && param === 0) {
         param = '0'
       } else if (typeof param === 'boolean' && !param) {

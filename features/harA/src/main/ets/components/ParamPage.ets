@@ -24,7 +24,7 @@ export struct ParamPage {
       this.score = ZRouter.getInstance().getParamByKey(KeyConst.KEY_SCORE)
       this.userInfo = ZRouter.getInstance().getParamByKey(KeyConst.KEY_USER_INFO)
     }
-    this.params = JSON.stringify(ZRouter.getInstance().getParam() || "")
+    this.params = JSON.stringify(ZRouter.getInstance().getParam())
   }
 
   build() {
