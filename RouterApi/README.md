@@ -1,7 +1,7 @@
 
 ## 介绍
 
-ZRouter是一款轻量级且非侵入性的动态路由框架，可解决HAR/HSP业务模块间的耦合与通信问题。主要特性：
+ZRouter是一款轻量级且非侵入性的鸿蒙动态路由框架，可解决HAR/HSP业务模块间的耦合与通信问题。主要特性：
 
 - 简化Navigation使用，无需关注路由表的配置，对Navigation及NavDestination组件保持零侵入；
 - **支持API链式调用，让API更简洁直观；**
@@ -37,7 +37,6 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 
 ```
   "dependencies": {
-//    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
     "router-register-plugin":"1.3.0"
   },
 ```
@@ -486,7 +485,7 @@ export class RouterConstants {
   public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
 }
 ```
-> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common_library)
+> 如果路由常量在一个公共模块定义，建议在模块的Index.ets文件导出，另外RouterConstants的文件必须是.ets后缀，不支持ts后缀文件。[具体可参考案例](https://gitee.com/common-apps/ZRouter/tree/master/library/common)
 
 
 ## 服务路由-模块间通信
@@ -593,6 +592,14 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - gitee：https://gitee.com/common-apps/ZRouter
 - github：https://github.com/751496032/ZRouter
 
+## 实战案例
+
+这里推荐一个基于ZRouter搭建项目的实战案例，仅做参考具体可根据你项目来调整。
+
+- [《探索 HarmonyOS NEXT (5.0)：开启构建模块化项目架构奇幻之旅 —— 动态路由 ZRouter：引领高效模块通信的智慧中枢》](https://blog.csdn.net/qq_40533422/article/details/143479759)
+- [案例源码](https://github.com/JasonYinH/ExploreHarmonyNext)
+
+
 ## 参与贡献
 - Fork 本仓库
 - 新建分支
@@ -601,9 +608,9 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 
 ## 其他库
 
-- 数据库：https://gitee.com/HW-Commons/ZDbUtil
-- Web桥接库：https://github.com/751496032/DSBridge-HarmonyOS
-- 日志库：https://gitee.com/common-apps/logger
+- 鸿蒙数据库工具：https://gitee.com/HW-Commons/ZDbUtil
+- 鸿蒙WebView桥接库：https://github.com/751496032/DSBridge-HarmonyOS
+- 鸿蒙日志库：https://gitee.com/common-apps/logger
 
 ## 联系我们
 

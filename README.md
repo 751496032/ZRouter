@@ -1,7 +1,7 @@
 
 ## 介绍
 
-ZRouter是一款轻量级且非侵入性的动态路由框架，可解决HAR/HSP业务模块间的耦合与通信问题。主要特性：
+ZRouter是一款轻量级且非侵入性的鸿蒙动态路由框架，可解决HAR/HSP业务模块间的耦合与通信问题。主要特性：
 
 - 简化Navigation使用，无需关注路由表的配置，对Navigation及NavDestination组件保持零侵入；
 - **支持API链式调用，让API更简洁直观；**
@@ -37,7 +37,6 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 
 ```
   "dependencies": {
-//    "router-register-plugin":"file:../plugins/router-register-plugin-1.0.2.tgz"
     "router-register-plugin":"1.3.0"
   },
 ```
