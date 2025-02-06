@@ -133,7 +133,7 @@ export class NavDestBuilder<T> {
     }
 
 
-    if (objs.length > 0 || !param) {
+    if (objs.length > 0 || ObjectUtil.isEmpty(param)) {
       param = ObjectUtil.merge(objs)
     }
 
