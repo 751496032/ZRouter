@@ -57,11 +57,14 @@ export class NavDestBuilder<T> {
    * @returns
    */
   public setParam(param: ObjectOrNull): NavDestBuilder<T> {
-    // 系统不支持直接携带0 和 false， 只能转成字符串
-    if (typeof param === 'number' && param === 0) {
+    // enableConvertJumpParamZeroAndFalseToString()方法启用
+    if (this.optionsImpl.isConvertJumpParamZeroAndFalseToString) {
+      // 系统不支持直接携带0 和 false， 只能转成字符串
+      if (typeof param === 'number' && param === 0) {
         param = '0'
-    }else if (typeof param === 'boolean' && !param){
-      param = 'false'
+      } else if (typeof param === 'boolean' && !param) {
+        param = 'false'
+      }
     }
     this.optionsImpl.params = param;
     return this;
@@ -105,6 +108,17 @@ export class NavDestBuilder<T> {
    */
   public enableCrossPageParamReturn(): NavDestBuilder<T> {
     this.optionsImpl.enableCrossPageParamReturn = true;
+    return this;
+  }
+
+  /**
+   * 开启将0 和 false 转成字符串，Navigation跳转携带参数时，系统不支持直接携带0 和 false， 如果需要携带只能转成字符串
+   * 这种场景由开发者决定是否需要启用，默认不启用
+   * 在setParam()方法中控制，必须在setParam()方法之前调用
+   * @returns
+   */
+  public enableConvertJumpParamZeroAndFalseToString(): NavDestBuilder<T> {
+    this.optionsImpl.isConvertJumpParamZeroAndFalseToString = true;
     return this;
   }
 
