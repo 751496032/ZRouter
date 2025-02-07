@@ -253,7 +253,7 @@ export class RouterMgr {
    */
   public redirect<T>(name: string, builder?: NavDestBuilder<T>) {
     if (builder?.options?.redirectType == RedirectType.REPLACE) {
-      this.replacePathByName(name, null, builder?.options.animated, builder)
+      this.replacePathByName(name, builder.getParam(), builder?.options.animated, builder)
     } else {
       this.pop(false)
       this.pushForResult<ObjectOrNull>(name, builder)
