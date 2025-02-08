@@ -4,7 +4,7 @@
  * @desc:
  */
 import { RouterConstants } from "@hzw/common_library";
-import { ZLifecycle, ZLifecycleObserver } from "routerapi";
+import { RouterInfo, ZLifecycle, ZLifecycleObserver } from "routerapi";
 
 
 export class  BaseViewModel  extends  ZLifecycleObserver{

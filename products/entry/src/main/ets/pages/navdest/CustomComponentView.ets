@@ -20,6 +20,7 @@ export struct ChildView {
   private  lastBackTime: number = 0
 
   aboutToAppear(): void {
+    console.log("ChildView aboutToAppear")
     // 生命周期监听方式二
     // 设置NavDest模板页面的生命周期监听
     ZRouter.addLifecycleObserver((state, router) => {
