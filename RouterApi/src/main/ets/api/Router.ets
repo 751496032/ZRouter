@@ -104,7 +104,7 @@ export class ZRouter {
    * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
-  public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavDestBuilder<ObjectOrNull> {
+  public static getInstance(stackName: string = ZRouter.getCurrentStackName()): NavDestBuilder<ObjectOrNull> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
@@ -116,7 +116,7 @@ export class ZRouter {
    * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
-  public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavDestBuilder<T> {
+  public static instance<T>(stackName: string = ZRouter.getCurrentStackName()): NavDestBuilder<T> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
