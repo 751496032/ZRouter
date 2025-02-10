@@ -115,7 +115,7 @@ export class NavDestBuilder<T> {
   private mergeParams(): ObjectOrNull {
     let param = this.optionsImpl.params
     const objs = new Array<object>()
-    if (ObjectUtil.isObject(param)) {
+    if (!(param instanceof Array) && !(param instanceof Set) && ObjectUtil.isObject(param)) {
       objs.push(param!)
     }
     if (this.paramMap.length > 0 ) {
