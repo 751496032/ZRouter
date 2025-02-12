@@ -558,6 +558,7 @@ router-register插件在ArkUI-X项目的配置有所不同，需要使用者自�
 
 ```
 -keep-file-name
+Index
 _generated
 ZR*
 ```

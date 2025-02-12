@@ -328,7 +328,7 @@ export class RouterMgr {
    * @param result
    * @param animated
    */
-  public popWithResult(result?: Object, animated: boolean = true) {
+  public popWithResult(result: Object, animated: boolean = true) {
     // 路由栈默认是不支持Boolean类型，转成字符串携带
     if (typeof result == "boolean") {
       result = result + ""
@@ -345,7 +345,7 @@ export class RouterMgr {
    * @param result
    * @param animated
    */
-  public popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
+  public popNavWithResult<T>(name: string, result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
     if (ObjectUtil.isEmpty(currentName)) {
       LogUtil.error(currentName + " 不存在路由栈顶中")
@@ -353,7 +353,7 @@ export class RouterMgr {
     }
     if (ObjectUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
       if (currentName !== name) {
-        this.getNavStack().popToName(name, result, animated)
+        this.getNavStack().popToName(name, result!, animated)
       } else {
         LogUtil.error('不支持关闭当前页， 请使用popWithResult')
       }
@@ -371,7 +371,7 @@ export class RouterMgr {
    * @param result
    * @param animated
    */
-  public finishWithResult<T>(result?: T, animated: boolean = true) {
+  public finishWithResult<T>(result: T, animated: boolean = true) {
     const state = this.getCurrentState()
     if (state.redirectWithResultMode && ObjectUtil.isNotEmpty(state.redirectInfo.name)) {
       const topName = this.getTopPathName()
@@ -381,7 +381,7 @@ export class RouterMgr {
   }
 
 
-  public popToRootWithResult<T>(result?: T, animated: boolean = true) {
+  public popToRootWithResult<T>(result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
     if (ObjectUtil.isEmpty(currentName)) {
       LogUtil.error(currentName + " 不存在路由栈顶中")

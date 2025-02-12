@@ -357,7 +357,7 @@ export class ZRouter {
    * @param result
    * @param animated
    */
-  public static popWithResult(result?: Object, animated: boolean = true) {
+  public static popWithResult(result: Object, animated: boolean = true) {
     ZRouter.getRouterMgr().popWithResult(result, animated)
   }
 
@@ -368,7 +368,7 @@ export class ZRouter {
    * @param result
    * @param animated
    */
-  public static popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
+  public static popNavWithResult<T>(name: string, result: T, animated: boolean = true) {
     ZRouter.getRouterMgr().popNavWithResult<T>(name, result, animated)
   }
 
@@ -378,7 +378,7 @@ export class ZRouter {
    * @param result
    * @param animated
    */
-  public static popToRootWithResult<T>(result?: T, animated: boolean = true) {
+  public static popToRootWithResult<T>(result: T, animated: boolean = true) {
     ZRouter.getRouterMgr().popToRootWithResult<T>(result, animated)
   }
 
@@ -388,7 +388,7 @@ export class ZRouter {
    * @param result
    * @param animated
    */
-  public static finishWithResult<T>(result?: T, animated: boolean = true) {
+  public static finishWithResult<T>(result: T, animated: boolean = true) {
     ZRouter.getRouterMgr().finishWithResult<T>(result, animated)
   }
 

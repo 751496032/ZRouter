@@ -239,7 +239,7 @@ export class NavDestBuilder<T> {
    * @param result 返回携带的数据
    * @param animated 是否执行动画
    */
-  public popWithResult(result?: Object, animated: boolean = true) {
+  public popWithResult(result: Object , animated: boolean = true) {
     this.updateCurrentStackName()
     this.routerMgr.popWithResult(result, animated)
   }
@@ -250,7 +250,7 @@ export class NavDestBuilder<T> {
    * @param result  返回携带的数据
    * @param animated 是否执行动画
    */
-  public popNavWithResult<T>(name: string, result?: T, animated: boolean = true) {
+  public popNavWithResult<T>(name: string, result: T, animated: boolean = true) {
     this.updateCurrentStackName()
     this.routerMgr.popNavWithResult<T>(name, result, animated)
   }
@@ -260,7 +260,7 @@ export class NavDestBuilder<T> {
    * @param result 返回携带的数据
    * @param animated 是否执行动画
    */
-  public popToRootWithResult<T>(result?: T, animated: boolean = true) {
+  public popToRootWithResult<T>(result: T, animated: boolean = true) {
     this.updateCurrentStackName()
     this.routerMgr.popToRootWithResult<T>(result, animated)
   }
@@ -270,7 +270,7 @@ export class NavDestBuilder<T> {
    * @param result
    * @param animated
    */
-  public finishWithResult<T>(result?: T, animated: boolean = true) {
+  public finishWithResult<T>(result: T, animated: boolean = true) {
     this.updateCurrentStackName()
     this.routerMgr.finishWithResult<T>(result, animated)
   }
