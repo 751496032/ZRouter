@@ -133,6 +133,7 @@ export class RouterMgr {
   public registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack,
     willShow?: InterceptionShowCallback): void {
     this.navStackMgr.registerNavStack(stackName, pathStack, willShow)
+    this.navStackMgr.currentStackName = stackName
   }
 
   public unregisterNavStack(stackName: string) {

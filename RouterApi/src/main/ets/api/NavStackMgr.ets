@@ -52,7 +52,11 @@ export default class NavStackMgr {
   }
 
   public get currentStackName(): string {
-    return this._currentStackName
+    if (this.navStackMap.has(this._currentStackName)) {
+      return this._currentStackName
+    }
+    const keys = Array.from(this.navStackMap.keys())
+    return keys[keys.length - 1]
   }
 
 

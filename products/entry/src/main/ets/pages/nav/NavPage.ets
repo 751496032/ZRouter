@@ -30,11 +30,11 @@ export struct NavPage {
       Column({ space: 15 }) {
         Text(this.msg)
         Button("EmptyPage").onClick((event: ClickEvent) => {
-          ZRouter.getInstance(NAV_STACK_NAME).push("PageNotFound")
+          ZRouter.getInstance().push("PageNotFound")
         })
 
         Button(RouterConstants.HARA_MAIN_PAGE).onClick((event: ClickEvent) => {
-          ZRouter.getInstance(NAV_STACK_NAME)
+          ZRouter.getInstance()
             .setAnimate(true)
             .setPopListener((v) => {
               this.msg = v.data?.toString() + ' ' + v.from?.toString()
