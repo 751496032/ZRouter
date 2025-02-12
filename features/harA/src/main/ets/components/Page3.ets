@@ -59,7 +59,7 @@ export struct Page3 {
 
         Button("携带参数跳转-setParam").onClick((event: ClickEvent) => {
           ZRouter.getInstance()
-            .setParam(false)
+            .setParam([55, 66, 77])
             .navigation(RouterConstants.PAGE_PARAM)
 
         })

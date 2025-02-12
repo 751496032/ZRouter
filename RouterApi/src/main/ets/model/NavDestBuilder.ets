@@ -127,6 +127,9 @@ export class NavDestBuilder<T> {
 
   private mergeParams(): ObjectOrNull {
     let param = this.optionsImpl.params
+    if (this.paramMap.length === 0) {
+      return param
+    }
     const objs = new Array<object>()
     if (!(param instanceof Array) && !(param instanceof Set) && ObjectUtil.isObject(param)) {
       objs.push(param!)
@@ -142,7 +145,7 @@ export class NavDestBuilder<T> {
     }
 
     if (param && !ObjectUtil.isObject(param) && objs.length > 0) {
-      throw new Error('当setParam()和withParam()方法同时调用时，setParam()方法入参类型不能是基本数据类型，必须要求是对象')
+      throw new Error('当setParam()和withParam()方法同时调用时，setParam()方法的实参不能为基本数据类型，必须是对象')
     }
 
 
