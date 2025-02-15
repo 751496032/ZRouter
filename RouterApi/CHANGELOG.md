@@ -3,7 +3,7 @@
 
 ### 1.3.4 / 2025-2-12
 
-- 修复setParam携带参数问题，处理Array、Set类型参数；
+- 修复setParam携带参数问题，处理Array等类型参数；
 - 优化ZRouter.getInstance()、popResult()等api；
 
 ### 1.3.3 / 2025-2-6
