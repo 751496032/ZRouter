@@ -23,6 +23,23 @@ export struct ParamPage {
       this.age = ZRouter.getInstance().getParamByKey(KeyConst.KEY_AGE)
       this.score = ZRouter.getInstance().getParamByKey(KeyConst.KEY_SCORE)
       this.userInfo = ZRouter.getInstance().getParamByKey(KeyConst.KEY_USER_INFO)
+      // 建议使用泛型
+      const map = new Map<string,number>()
+      map.set('a',1)
+      const set = new Set<string>()
+      set.add('a')
+
+      const a = ZRouter.getInstance().getParamByKey<number>('a',0)
+      const b = ZRouter.getInstance().getParamByKey<string>('b','hello')
+      const c = ZRouter.getInstance().getParamByKey<Student>('c',new Student())
+      const d = ZRouter.getInstance().getParamByKey<number[]>('d',[1,2,3])
+      const e = ZRouter.getInstance().getParamByKey<Student[]>('e',[new Student(),new Student()])
+      const f = ZRouter.getInstance().getParamByKey<boolean>('f',false)
+      const g = ZRouter.getInstance().getParamByKey<Map<string,number>>('g',map)
+      const h = ZRouter.getInstance().getParamByKey<Set<string>>('h',set)
+      const hh = ZRouter.getInstance().getParamByKey<Set<string>>('hh',undefined)
+      const aa = ZRouter.getInstance().getParamByKey<number>('aa',null)
+      console.log('a:',a,'b:',b,'c:',c.s_name,'d:',d,'e:',e[0].s_name,'f:',f,'g:',g.get('a'),'h:',h.has('a'))
     }
     this.params = JSON.stringify(ZRouter.getInstance().getParam())
   }

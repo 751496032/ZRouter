@@ -6,7 +6,7 @@
 import { InterceptorMgr } from '../interceptions/InterceptorMgr';
 import { DEFAULT_STACK_NAME, InterceptorInfo, RouteMetadata } from '../model/Model';
 import LogUtil from '../utlis/LogUtil';
-import { ObjectUtil } from '../utlis/ObjectUtil';
+import { ObjUtil } from '../utlis/ObjUtil';
 import { ArrayList, HashMap } from '@kit.ArkTS';
 import NavStackState from '../model/NavStackState';
 import { ZRouter } from './Router';
@@ -40,7 +40,7 @@ export default class NavStackMgr {
       }
     })
     if (!has) {
-      if (ObjectUtil.isEmpty(name)) {
+      if (ObjUtil.isEmpty(name)) {
         throw new Error(`Initialize NavPathStack: 【 Navigation(ZRouter.getNavStack())  or  Navigation(ZRouter.getNavStackByName(xx))】`)
       }else {
         throw new Error(`stack name does not exist: 【 ${name} 】，please call  method  register: 【 registerNavStack 】`)
@@ -111,7 +111,7 @@ export default class NavStackMgr {
               const toContext: NavDestinationContext = to as NavDestinationContext
               interceptorInfo.toContext = toContext
               const data = toContext.getConfigInRouteMap()?.data
-              if (ObjectUtil.isObject(data)) {
+              if (ObjUtil.isObject(data)) {
                 const metadata: RouteMetadata = data as RouteMetadata
                 metadata.name = toContext.getConfigInRouteMap()?.name
                 interceptorInfo.name = metadata.name
@@ -131,7 +131,7 @@ export default class NavStackMgr {
               fromContext = from as NavDestinationContext
             }
           }
-          if (ObjectUtil.isObject(from) && !isWillShowRootView) {
+          if (ObjUtil.isObject(from) && !isWillShowRootView) {
             fromContext = from as NavDestinationContext
             toContext = to as NavDestinationContext
             isWillShowNavDestView = true

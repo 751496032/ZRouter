@@ -3,7 +3,7 @@
  * @date: 2024/7/18
  * @desc:
  */
-import { ObjectUtil } from '../utlis/ObjectUtil'
+import { ObjUtil } from '../utlis/ObjUtil'
 import {
   DEFAULT_STACK_NAME,
   InitConfig,
@@ -87,7 +87,7 @@ export class ZRouter {
   private static getRouterMgr(): RouterMgr {
     if (ZRouter.routerMgr === undefined) {
       const mgr = AppStorage.get<RouterMgr>(KEY_Z_ROUTER)
-      if (!ObjectUtil.isEmpty(mgr)) {
+      if (!ObjUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
          ZRouter.init(true)

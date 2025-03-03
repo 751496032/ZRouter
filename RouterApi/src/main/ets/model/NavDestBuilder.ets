@@ -8,7 +8,7 @@ import { ObjectOrNull, OnPopResultCallback, PopResult, RouteMetadata } from './M
 import { INavDestOptions, NavDestOptionsImpl } from './NavDestOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { HashMap } from '@kit.ArkTS';
-import { ObjectUtil } from '../utlis/ObjectUtil';
+import { ObjUtil } from '../utlis/ObjUtil';
 import { RedirectType } from './Const';
 import { LaunchMode } from './LaunchMode';
 
@@ -131,7 +131,7 @@ export class NavDestBuilder<T> {
       return param
     }
     const objs = new Array<object>()
-    if (!(param instanceof Array) && !(param instanceof Set) && ObjectUtil.isObject(param)) {
+    if (!(param instanceof Array) && !(param instanceof Set) && ObjUtil.isObject(param)) {
       objs.push(param!)
     }
     if (this.paramMap.length > 0 ) {
@@ -144,13 +144,13 @@ export class NavDestBuilder<T> {
       objs.push(newObj)
     }
 
-    if (param && !ObjectUtil.isObject(param) && objs.length > 0) {
+    if (param && !ObjUtil.isObject(param) && objs.length > 0) {
       throw new Error('当setParam()和withParam()方法同时调用时，setParam()方法的实参不能为基本数据类型，必须是对象')
     }
 
 
-    if (objs.length > 0 || ObjectUtil.isEmpty(param)) {
-      param = ObjectUtil.merge(objs)
+    if (objs.length > 0 || ObjUtil.isEmpty(param)) {
+      param = ObjUtil.merge(objs)
     }
 
 
@@ -328,23 +328,51 @@ export class NavDestBuilder<T> {
    * @param key
    * @returns
    */
-  public getParamByKey<P = ObjectOrNull>(key: string): P {
+  public getParamByKey<P = ObjectOrNull>(key: string, defVal: ObjectOrNull = null): P {
     const p = this.getParam()
     try {
-      if (ObjectUtil.hasProperty(p, key)) {
+      if (ObjUtil.hasProperty(p, key)) {
         const o = p as Record<string, ObjectOrNull>
-        return o[key] as P
+        const target = o[key]
+        return target as P
       }
-      return p as P
+      return this.defaultValue<P>(defVal)
     } catch (err) {
-      return p as P
+      return this.defaultValue<P>(defVal)
     }
+  }
+
+  private defaultValue<P = ObjectOrNull>(defVal: ObjectOrNull = null): P {
+    if (defVal instanceof Array) {
+      return defVal as P
+    }
+    if (defVal instanceof Map) {
+      return defVal as P
+    }
+    if (defVal instanceof Set) {
+      return defVal as P
+    }
+    if (typeof defVal === 'number') {
+      return defVal as P
+    }
+    if (typeof defVal === 'boolean') {
+      return defVal as P
+    }
+    if (typeof defVal === 'string') {
+      return defVal as P
+    }
+    if (typeof defVal === 'object') {
+      return defVal as P
+    }
+
+    return defVal as P
+
   }
 
 
   public hasKey(key: string): boolean {
     const p = this.getParam()
-    return ObjectUtil.hasProperty(p, key)
+    return ObjUtil.hasProperty(p, key)
   }
 
   /**

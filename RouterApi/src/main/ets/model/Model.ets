@@ -3,7 +3,7 @@
  * @date: 2024/7/18
  * @desc:
  */
-import { ObjectUtil } from '../utlis/ObjectUtil'
+import { ObjUtil } from '../utlis/ObjUtil'
 import { HashMap } from '@kit.ArkTS'
 
 export class InterceptorInfo {
@@ -34,7 +34,7 @@ export class InterceptorInfo {
   }
 
   public get isNeedLogin(): boolean {
-    return !ObjectUtil.isEmpty(this.metadata) && this.metadata?.needLogin === 'true'
+    return !ObjUtil.isEmpty(this.metadata) && this.metadata?.needLogin === 'true'
   }
 
   public get notRegistered(): boolean {
@@ -42,8 +42,8 @@ export class InterceptorInfo {
   }
 
   private isContext() {
-    return ObjectUtil.isNotEmpty(this.toContext?.pathStack)
-      && ObjectUtil.isNotEmpty(this.toContext?.pathInfo)
+    return ObjUtil.isNotEmpty(this.toContext?.pathStack)
+      && ObjUtil.isNotEmpty(this.toContext?.pathInfo)
   }
 
   public putExtra(key: string, value: ObjectOrNull) {

@@ -1,32 +1,11 @@
-import { ObjectOrNull } from '../model/Model';
 
 /**
  * @author: HZWei
  * @date: 2024/7/18
  * @desc:
  */
-export class ObjectUtil {
+export class ObjUtil {
   private constructor() {
-  }
-  /**
-   * 将对象转换成hashCode，用于对象的唯一标识
-   * @param obj
-   * @returns
-   */
-  static hashCode(obj: object): number {
-    let hash = 0
-    let i = 0
-    let chr: number = 0;
-    let str = JSON.stringify(obj)
-    if (str.length === 0) {
-      return hash;
-    }
-    for (i = 0; i < str.length; i++) {
-      chr = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + chr;
-      hash |= 0; // 将 hash 转换为 32 位整数
-    }
-    return hash
   }
 
   /**
@@ -34,7 +13,7 @@ export class ObjectUtil {
    * @param obj
    * @returns
    */
-  static isObject(obj: ObjectOrNull): boolean {
+  static isObject(obj: Object | undefined | null): boolean {
     return typeof obj === 'object' && obj !== null
   }
 
@@ -43,7 +22,7 @@ export class ObjectUtil {
    * @param obj
    * @returns
    */
-  static isEmpty(obj: ObjectOrNull): boolean {
+  static isEmpty(obj: Object | undefined | null): boolean {
     let isEmpty = obj === undefined || obj === null
     if (typeof obj === 'string') {
       isEmpty = isEmpty || obj.trim().length === 0
@@ -56,8 +35,8 @@ export class ObjectUtil {
    * @param obj
    * @returns
    */
-  static isNotEmpty(obj: ObjectOrNull): boolean {
-    return !ObjectUtil.isEmpty(obj)
+  static isNotEmpty(obj: Object | undefined | null): boolean {
+    return !ObjUtil.isEmpty(obj)
   }
 
   /**
@@ -66,8 +45,8 @@ export class ObjectUtil {
    * @param propertyName
    * @returns
    */
-  static hasProperty(obj: ObjectOrNull, propertyName: string): boolean {
-    if (!ObjectUtil.isObject(obj)) {
+  static hasProperty(obj: Object | undefined | null, propertyName: string): boolean {
+    if (!ObjUtil.isObject(obj)) {
       return false
     }
     for (const key of Object.keys(obj!)) {
@@ -83,16 +62,32 @@ export class ObjectUtil {
    * @param obj
    * @returns
    */
-  static  deepCopy(obj: object): object {
-    let newObj: Record<string, Object> | Object[] = Array.isArray(obj) ? [] : {};
-    for (let key of Object.keys(obj)) {
-      if (ObjectUtil.isObject(obj[key])) {
-        newObj[key] = ObjectUtil.deepCopy(obj[key]);
-      } else {
-        newObj[key] = obj[key];
+  static deepCopy(obj: Object | undefined | null): ESObject {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+    let copy: ESObject;
+    if (Array.isArray(obj)) {
+      copy = [];
+      for (let i = 0; i < obj.length; i++) {
+        copy[i] = ObjUtil.deepCopy(obj[i]);
+      }
+    } else {
+      copy = {};
+      for (let key of Object.keys(obj)) {
+        if (ObjUtil.hasProperty(obj, key)) {
+          let keyStr = key + '';
+          let suffix = '__ob_'
+          if (keyStr.startsWith(suffix)) {
+            const newKey = keyStr.substring(suffix.length)
+            copy[newKey] = ObjUtil.deepCopy(obj[key]);
+          }else {
+            copy[key] = ObjUtil.deepCopy(obj[key]);
+          }
+        }
       }
     }
-    return newObj;
+    return copy;
   }
 
   /**
@@ -110,7 +105,7 @@ export class ObjectUtil {
 
   static merge(objs: object[]): object {
     let newObj: Record<string, Object> = {};
-    objs.forEach((obj)=>{
+    objs.forEach((obj) => {
       for (let key of Object.keys(obj)) {
         newObj[key] = obj[key];
       }
