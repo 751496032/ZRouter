@@ -5,6 +5,7 @@
  */
 import { KeyConst, RouterConstants, Student } from "common_library";
 import { ZRoute, ZRouter } from "routerapi";
+import { ArrayList, HashMap } from "@kit.ArkTS";
 
 
 @ZRoute({ name: RouterConstants.PAGE_PARAM, useTemplate: true, title: "获取携带的参数案例" })
@@ -29,17 +30,28 @@ export struct ParamPage {
       const set = new Set<string>()
       set.add('a')
 
-      const a = ZRouter.getInstance().getParamByKey<number>('a',0)
-      const b = ZRouter.getInstance().getParamByKey<string>('b','hello')
-      const c = ZRouter.getInstance().getParamByKey<Student>('c',new Student())
-      const d = ZRouter.getInstance().getParamByKey<number[]>('d',[1,2,3])
-      const e = ZRouter.getInstance().getParamByKey<Student[]>('e',[new Student(),new Student()])
-      const f = ZRouter.getInstance().getParamByKey<boolean>('f',false)
-      const g = ZRouter.getInstance().getParamByKey<Map<string,number>>('g',map)
-      const h = ZRouter.getInstance().getParamByKey<Set<string>>('h',set)
-      const hh = ZRouter.getInstance().getParamByKey<Set<string>>('hh',undefined)
-      const aa = ZRouter.getInstance().getParamByKey<number>('aa',null)
-      console.log('a:',a,'b:',b,'c:',c.s_name,'d:',d,'e:',e[0].s_name,'f:',f,'g:',g.get('a'),'h:',h.has('a'))
+      const map1 = new HashMap<string,number>()
+
+      if (map1 instanceof Map) {
+        console.log('map1 is Map')
+      }
+      if (map1 instanceof HashMap) {
+        console.log('map1 is HashMap')
+      }
+
+      const a = ZRouter.getParamByKey<number>('a',0)
+      const b = ZRouter.getParamByKey<string>('b','hello')
+      const c = ZRouter.getParamByKey<Student>('c',new Student())
+      const d = ZRouter.getParamByKey<number[]>('d',[1,2,3])
+      const e = ZRouter.getParamByKey<Student[]>('e',[new Student(),new Student()])
+      const f = ZRouter.getParamByKey<boolean>('f',false)
+      const g = ZRouter.getParamByKey<Map<string,number>>('g',map)
+      const h = ZRouter.getParamByKey<Set<string>>('h',set)
+      const hh =ZRouter.getParamByKey<Set<string>>('hh',undefined)
+      const aa =ZRouter.getParamByKey<number>('aa',null)
+      const hm =ZRouter.getParamByKey<HashMap<string,string>>('hm',new HashMap<string,string>())
+      const al =ZRouter.getParamByKey<ArrayList<string>>('al',new ArrayList<string>())
+      console.log('a:',a,'b:',b,'c:',c.s_name,'d:',d,'e:',e?.[0].s_name,'f:',f,'g:',g.get('a'),'h:',h.has('a'))
     }
     this.params = JSON.stringify(ZRouter.getInstance().getParam())
   }

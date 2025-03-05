@@ -7,10 +7,11 @@ import { RouterMgr } from '../api/RouterMgr';
 import { ObjectOrNull, OnPopResultCallback, PopResult, RouteMetadata } from './Model';
 import { INavDestOptions, NavDestOptionsImpl } from './NavDestOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
-import { HashMap } from '@kit.ArkTS';
+import { ArrayList, HashMap } from '@kit.ArkTS';
 import { ObjUtil } from '../utlis/ObjUtil';
 import { RedirectType } from './Const';
 import { LaunchMode } from './LaunchMode';
+import Logger from '../utlis/Logger';
 
 export class NavDestBuilder<T> {
   private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
@@ -324,7 +325,7 @@ export class NavDestBuilder<T> {
   }
 
   /**
-   * 通过key获取当前页面的参数
+   * 通过key获取当前页面的参数，建议带上默认值和泛型
    * @param key
    * @returns
    */
@@ -338,7 +339,7 @@ export class NavDestBuilder<T> {
       }
       return this.defaultValue<P>(defVal)
     } catch (err) {
-      return this.defaultValue<P>(defVal)
+      return defVal as P
     }
   }
 
@@ -364,8 +365,10 @@ export class NavDestBuilder<T> {
     if (typeof defVal === 'object') {
       return defVal as P
     }
+    Logger.error('defaultValue is not support type ' + typeof defVal)
+    throw new Error('defaultValue is not support type ' + typeof defVal)
 
-    return defVal as P
+    // return defVal as P
 
   }
 

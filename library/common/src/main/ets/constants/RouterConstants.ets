@@ -31,4 +31,5 @@ export class RouterConstants {
   public static readonly PAGE_DIALOG_MODE = 'PageDialogMode'
   public static readonly PAGE_PARAM = 'ParamPage'
   public static readonly PAGE_NAVDEST_TEMPLATE_V2 = 'NavDestTemplateV2'
+  public static readonly NEST_PAGE = 'NestPage'
 }

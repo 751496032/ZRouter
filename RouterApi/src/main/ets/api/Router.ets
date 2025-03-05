@@ -104,7 +104,7 @@ export class ZRouter {
    * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
-  public static getInstance(stackName: string = ZRouter.getCurrentStackName()): NavDestBuilder<ObjectOrNull> {
+  public static getInstance(stackName: string = DEFAULT_STACK_NAME): NavDestBuilder<ObjectOrNull> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
@@ -116,15 +116,15 @@ export class ZRouter {
    * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */
-  public static instance<T>(stackName: string = ZRouter.getCurrentStackName()): NavDestBuilder<T> {
+  public static instance<T>(stackName: string = DEFAULT_STACK_NAME): NavDestBuilder<T> {
     if (ZRouter.routerMgr === undefined) {
       ZRouter.routerMgr = ZRouter.getRouterMgr()
     }
     return NavDestBuilder.create<T>(ZRouter.routerMgr, stackName)
   }
 
-  private static getServiceMgr(): ServiceMgr {
-    return ZRouter.getRouterMgr().getServiceMgr()
+  private static serviceMgr(): ServiceMgr {
+    return ZRouter.getRouterMgr().serviceMgr()
   }
 
   /**
@@ -133,7 +133,7 @@ export class ZRouter {
    * @param service
    */
   public static addService(name: string, service: IProvider) {
-    ZRouter.getServiceMgr().addService(name, service)
+    ZRouter.serviceMgr().addService(name, service)
   }
 
 
@@ -143,7 +143,7 @@ export class ZRouter {
    * @returns
    */
   public static getService<T extends IProvider>(name: string): T | null {
-    return ZRouter.getServiceMgr().getService<T>(name)
+    return ZRouter.serviceMgr().getService<T>(name)
   }
 
   /**
@@ -272,7 +272,15 @@ export class ZRouter {
   }
 
 
-
+  /**
+   * 获取路由参数 建议带上默认值和泛型
+   * @param key
+   * @param defVal
+   * @returns
+   */
+  public static getParamByKey<P = ObjectOrNull>(key: string, defVal: ObjectOrNull = null): P {
+    return ZRouter.getInstance().getParamByKey<P>(key, defVal)
+  }
 
 
   // region 废弃方法

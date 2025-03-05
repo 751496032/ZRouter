@@ -34,7 +34,7 @@ import { DeviceUtil } from '../utlis/DeviceUtil';
 export class RouterMgr {
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStackMgr = NavStackMgr.getInstance()
-  private serviceMgr = ServiceMgr.instance
+  private _serviceMgr = ServiceMgr.getInstance()
   private _lifecycleMgr = LifecycleMgr.getInstance()
   private _animateMgr = NavAnimationMgr.getInstance()
   /**
@@ -99,8 +99,8 @@ export class RouterMgr {
     return RouterMgr.instance
   }
 
-  public getServiceMgr(): ServiceMgr {
-    return this.serviceMgr
+  public serviceMgr(): ServiceMgr {
+    return this._serviceMgr
   }
 
   public get lifecycleMgr(): LifecycleMgr {
@@ -112,7 +112,7 @@ export class RouterMgr {
   }
 
   public setCurrentStackName(name: string) {
-    this.navStackMgr.currentStackName = name
+    this.navStackMgr.updateCurrentStackName(name)
   }
 
   public get currentStackName(): string {
@@ -133,7 +133,7 @@ export class RouterMgr {
   public registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack,
     willShow?: InterceptionShowCallback): void {
     this.navStackMgr.registerNavStack(stackName, pathStack, willShow)
-    this.navStackMgr.currentStackName = stackName
+    this.navStackMgr.updateCurrentStackName(stackName)
   }
 
   public unregisterNavStack(stackName: string) {
@@ -309,7 +309,10 @@ export class RouterMgr {
    * @param animated
    */
   public popToName(name: string, animated: boolean = true) {
-    this.getNavStack().popToName(name, animated)
+    const num = this.getNavStack().popToName(name, animated)
+    if (num === -1) {
+      this.getNavStack()?.getParent()?.popToName(name, animated)
+    }
   }
 
   /**
@@ -317,7 +320,10 @@ export class RouterMgr {
    * @param animated
    */
   public pop(animated: boolean = true) {
-    this.getNavStack().pop(animated)
+    const r = this.getNavStack().pop(animated)
+    if (!r) {
+      this.getNavStack()?.getParent()?.pop(animated)
+    }
   }
 
   /**
@@ -333,7 +339,10 @@ export class RouterMgr {
     if (typeof result == "boolean") {
       result = result + ""
     }
-    this.getNavStack().pop(result, animated)
+    const r = this.getNavStack().pop(result, animated)
+    if (!r) {
+      this.getNavStack().getParent()?.pop(result, animated)
+    }
   }
 
 

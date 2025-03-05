@@ -92,6 +92,6 @@ export type ObjectOrNull = Object | undefined | null
 
 export const NavRootEvent = 'NavRoot'
 
-export const DEFAULT_STACK_NAME = ''
+export const DEFAULT_STACK_NAME = 'ZRouter'
 
 export type  InterceptorInfoOrNull = InterceptorInfo | null

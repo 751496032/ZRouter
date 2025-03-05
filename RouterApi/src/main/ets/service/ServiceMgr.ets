@@ -15,11 +15,11 @@ export class ServiceMgr {
     private constructor() {
     }
 
-    public static get instance(): ServiceMgr {
-        if (!this._instance) {
-            this._instance = new ServiceMgr();
+    public static  getInstance(): ServiceMgr {
+        if (!ServiceMgr._instance) {
+            ServiceMgr._instance = new ServiceMgr();
         }
-        return this._instance;
+        return ServiceMgr._instance;
     }
 
     public addService(name: string, service: IProvider) {

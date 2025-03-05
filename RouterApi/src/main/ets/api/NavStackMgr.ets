@@ -16,7 +16,7 @@ export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStackStateMap = new HashMap<string, NavStackState>()
-  private _currentStackName = DEFAULT_STACK_NAME
+  private _currentStackName: string | undefined = undefined
   private onBeforeNavStackRegisterCallback?: Function
   private navDesMap = new HashMap<string, ArrayList<RouterInfo>>()
 
@@ -32,31 +32,42 @@ export default class NavStackMgr {
     return NavStackMgr._instance;
   }
 
-  public set currentStackName(name: string) {
-    let has = false
-    this.navStackStateMap.forEach((item) => {
-      if (name === item?.stackName) {
-        has = true
-      }
-    })
-    if (!has) {
+  public updateCurrentStackName(name: string) {
+    if (!this.navStackMap.has(name)) {
       if (ObjUtil.isEmpty(name)) {
         throw new Error(`Initialize NavPathStack: 【 Navigation(ZRouter.getNavStack())  or  Navigation(ZRouter.getNavStackByName(xx))】`)
-      }else {
+      } else {
         throw new Error(`stack name does not exist: 【 ${name} 】，please call  method  register: 【 registerNavStack 】`)
       }
-
     } else {
       this._currentStackName = name
     }
   }
 
   public get currentStackName(): string {
-    if (this.navStackMap.has(this._currentStackName)) {
-      return this._currentStackName
+    if (ObjUtil.isNotEmpty(this._currentStackName) ) {
+      if (this.navStackMap.has(this._currentStackName!)) {
+        const name = this._currentStackName!
+        // this._currentStackName = undefined
+        return name
+      } else {
+        throw new Error(`stack name does not exist: 【 ${this._currentStackName} 】，please call  method  register: 【 registerNavStack 】`)
+      }
+
     }
-    const keys = Array.from(this.navStackMap.keys())
-    return keys[keys.length - 1]
+    // this.tryRemoveInvalidNavStack()
+    const newKeys = Array.from(this.navStackMap.keys())
+    return newKeys[newKeys.length - 1]
+  }
+
+  public tryRemoveInvalidNavStack() {
+    if (this.navStackMap.size > 1) {
+        this.navStackMap.forEach((item, key) => {
+          if (item.size() === 0 && key !== DEFAULT_STACK_NAME) {
+            this.unregisterNavStack(key)
+          }
+        })
+    }
   }
 
 
@@ -75,15 +86,22 @@ export default class NavStackMgr {
   }
 
   public getNavStackState(): NavStackState {
-    let state = this.navStackStateMap.get(this._currentStackName)
+    const name = this.currentStackName
+    let state = this.navStackStateMap.get(name)
     if (state !== undefined && state !== null) {
       return state as NavStackState
     }
-    throw new Error(`current 【${this._currentStackName}】 state is null`)
+    throw new Error(`current 【${name}】 state is null`)
   }
 
   public unregisterNavStack(stackName: string): void {
-    this.navStackMap.delete(stackName)
+    if (this.navStackMap.has(stackName)) {
+      this.navStackMap.delete(stackName)
+    }
+    if (this.navStackStateMap.hasKey(stackName)) {
+      this.navStackStateMap.remove(stackName)
+    }
+
   }
 
   public registerNavStack(stackName: string = DEFAULT_STACK_NAME, pathStack: NavPathStack,
@@ -95,7 +113,7 @@ export default class NavStackMgr {
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
           const state = this.getNavStackState()
-          LogUtil.log("from: ", this.getNavDestContext(from)?.pathInfo?.name , " isNavBar: " ,this.isNavBar(from),  " --> to: ", this.getNavDestContext(to)?.pathInfo?.name," isNavBar: " , this.isNavBar(to), ' operation: ', operation, "")
+          LogUtil.log(`setInterception ${state.stackName} from: `, this.getNavDestContext(from)?.pathInfo?.name , " isNavBar: " ,this.isNavBar(from),  " --> to: ", this.getNavDestContext(to)?.pathInfo?.name," isNavBar: " , this.isNavBar(to), ' operation: ', operation)
 
           if (willShow !== undefined) {
             willShow(from, to, operation, animated)
@@ -173,18 +191,19 @@ export default class NavStackMgr {
   }
 
   public addRouterInfo(routerInfo: RouterInfo) {
-    let list = this.navDesMap.get(this._currentStackName)
+    const name = this.currentStackName
+    let list = this.navDesMap.get(name)
     if (list) {
       list.add(routerInfo)
     } else {
       const list = new ArrayList<RouterInfo>()
       list.add(routerInfo)
-      this.navDesMap.set(this._currentStackName, list)
+      this.navDesMap.set(name, list)
     }
   }
 
   public removeRouterInfo(routerInfo: RouterInfo) {
-    let list = this.navDesMap.get(this._currentStackName)
+    let list = this.navDesMap.get(this.currentStackName)
     if (list) {
       let pos = -1
       for (let i = 0; i < list.length; i++) {
@@ -200,7 +219,7 @@ export default class NavStackMgr {
   }
 
   public getLastNavDestinationId(): string | undefined {
-    let list = this.navDesMap.get(this._currentStackName)
+    let list = this.navDesMap.get(this.currentStackName)
     if (list && list.length > 0) {
       return list[list.length - 1].navDestinationId
     }
