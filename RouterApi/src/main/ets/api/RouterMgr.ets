@@ -42,6 +42,7 @@ export class RouterMgr {
    */
   public isDynamicLoadedComplete = false
   public moduleLoadedListener?: () => void
+  public hasPageBeenLaunched = false
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -52,6 +53,9 @@ export class RouterMgr {
       const routerInfo = RouterInfo.create(name, info.navigationId.toString(), info.param, info.navDestinationId)
       switch (info.state) {
         case uiObserver.NavDestinationState.ON_SHOWN:
+          if (!this.hasPageBeenLaunched) {
+            this.hasPageBeenLaunched = true
+          }
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_SHOWN, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_HIDDEN:

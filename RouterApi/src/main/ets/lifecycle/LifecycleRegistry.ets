@@ -23,7 +23,7 @@ export class LifecycleRegistry {
 
 
   public addObserver<T extends ILifecycleObserver>(observer: T) {
-    RouterMgr.getInstance().lifecycleMgr.addObserver(observer, this.targetClassName);
+    RouterMgr.getInstance().lifecycleMgr.addObserver(observer, this.targetClassName, this.inRootView());
 
   }
 
@@ -34,11 +34,17 @@ export class LifecycleRegistry {
 
 
   public addListener(callback: LifecycleCallback) {
-    RouterMgr.getInstance().lifecycleMgr.addListener(callback, this.targetClassName);
+    RouterMgr.getInstance().lifecycleMgr.addListener(callback, this.targetClassName, this.inRootView());
   }
 
   public removeListener(callback: LifecycleCallback): boolean {
     return RouterMgr.getInstance().lifecycleMgr.removeListener(callback);
+  }
+
+  private inRootView() {
+    const lastId = RouterMgr.getInstance().getLastNavDestinationId()
+    const hasPageBeenLaunched = RouterMgr.getInstance().hasPageBeenLaunched
+    return lastId === undefined && !hasPageBeenLaunched
   }
 }
 

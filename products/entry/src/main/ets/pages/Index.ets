@@ -58,6 +58,9 @@ struct Index {
       aboutToDisappear(): void {
         console.log('Index  aboutToDisappear')
       },
+      onWillShow(){
+        console.log('Index  onWillShow')
+      }
     } as ILifecycleObserver)
     this.lifecycle.addListener((e) => {
 

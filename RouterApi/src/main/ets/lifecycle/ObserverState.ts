@@ -22,5 +22,10 @@ export class ObserverState {
    * 是否允许调用aboutToDisappear，在onDisAppear中会设置为true
    */
   isAboutToDisappearAllowed: boolean = false;
+
+  /**
+   * 是否是根页面
+   */
+  isRootView: boolean = false;
 }
 export const SPLIT_SYMBOL: string = "__"

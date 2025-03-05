@@ -42,13 +42,14 @@ export class LifecycleMgr {
     }
   }
 
-  public addObserver(observer: ILifecycleObserver, targetClassName: string) {
+  public addObserver(observer: ILifecycleObserver, targetClassName: string, isRootView: boolean = false) {
     if (this._observerMap.has(observer)) {
       return;
     }
     Logger.log("ILifecycleObserver _observerMap 添加前: ", this._observerMap.size)
     const state = new ObserverState()
     state.className = targetClassName
+    state.isRootView = isRootView
     this._observerMap.set(observer, state);
     Logger.log("ILifecycleObserver _observerMap 添加后: ", this._observerMap.size)
   }
@@ -61,13 +62,14 @@ export class LifecycleMgr {
     return this._observerMap.delete(observer);
   }
 
-  public addListener(callback: LifecycleCallback, targetClassName: string) {
+  public addListener(callback: LifecycleCallback, targetClassName: string, isRootView: boolean = false) {
     if (this._listenerMap.has(callback)) {
       return;
     }
     Logger.log("ILifecycleObserver _listenerMap 添加前: ", this._listenerMap.size)
     const state = new ObserverState()
     state.className = targetClassName
+    state.isRootView = isRootView
     this._listenerMap.set(callback, state);
     Logger.log("ILifecycleObserver _listenerMap 添加后: ", this._listenerMap.size)
   }
@@ -118,7 +120,7 @@ export class LifecycleMgr {
   }
 
   private isCurrentNavDestination(state: ObserverState, routerInfo?: RouterInfo) {
-    return state.navDestinationId == routerInfo?.navDestinationId
+    return state.navDestinationId == routerInfo?.navDestinationId && !state.isRootView
   }
 
   public notifyObservers(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string) {
