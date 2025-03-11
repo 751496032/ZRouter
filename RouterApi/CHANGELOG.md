@@ -1,6 +1,13 @@
 
 ## 版本更新记录
 
+### 1.3.5 / 2025-3-11
+
+- 优化获取getParamByKey()方法，支持设置默认参数；
+- 优化生命周期管理，添加根页面判断逻辑；
+- 新增replaceWithDefaultAnim() api，解决replace页面无动画的问题；
+- 重定向新增REMOVE类型。
+
 ### 1.3.4 / 2025-2-12
 
 - 修复setParam携带参数问题，处理Array等类型参数；
