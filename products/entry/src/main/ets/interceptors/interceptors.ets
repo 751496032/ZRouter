@@ -45,7 +45,7 @@ export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
             return false
           }
         })
-        .redirect("LoginPage", RedirectType.REMOVE)
+        .redirect("LoginPage", RedirectType.REPLACE)
 
     }
 
