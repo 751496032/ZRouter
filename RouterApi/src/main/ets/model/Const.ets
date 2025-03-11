@@ -14,6 +14,7 @@ export enum ErrorCode {
 export enum RedirectType {
   REPLACE = 'replace',
   PUSH = 'push',
+  REMOVE = 'remove',
 }
 
 // export class InterceptorNames {

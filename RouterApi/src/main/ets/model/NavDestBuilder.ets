@@ -203,6 +203,7 @@ export class NavDestBuilder<T> {
 
   /**
    * 将当前NavDestination替换为特定NavDestination。当前的NavDestination将被销毁。默认转场动画
+   * 解决replace()方法无动画问题
    * @param name
    */
   public replaceWithDefaultAnim(name: string) {

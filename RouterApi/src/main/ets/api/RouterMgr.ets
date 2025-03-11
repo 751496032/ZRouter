@@ -67,7 +67,7 @@ export class RouterMgr {
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
           this.navStackMgr.removeRouterInfo(routerInfo)
           const indexList = this.getNavStack().getIndexByName(name)
-          if (indexList.length == 0) {
+          if (indexList.length == 0 && !this.getCurrentState().redirectWithResultMode) {
             this.unregisterEvent(name)
           }
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_DISAPPEAR, routerInfo)
@@ -215,18 +215,7 @@ export class RouterMgr {
 
   }
 
-  /**
-   * 携带结果重定向到指定页面
-   * @deprecated
-   * @see {redirectForResult2}
-   * @param name
-   * @param param
-   * @param callback
-   */
-  public redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
-    this.pop(false)
-    this.pushForResult<ObjectOrNull>(name, param, callback)
-  }
+
 
 
   /**
@@ -239,12 +228,22 @@ export class RouterMgr {
    */
   public redirectForResult2<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>,
     builder?: NavDestBuilder<T>) {
+    const redirectType = builder?.options?.redirectType
     const state = this.getCurrentState()
     state.redirectInfo.name = state.stackTopInfo?.metadata?.name || ''
     state.redirectWithResultMode = true
-    if (builder?.options?.redirectType == RedirectType.REPLACE) {
+    state.redirectInfo.type = redirectType
+    if (redirectType == RedirectType.REPLACE) {
       this.getNavStack().replacePathByName(name, param, builder?.options.animated)
-    } else {
+    } else if (redirectType == RedirectType.REMOVE) {
+      const topName = this.getTopPathName()
+      this.push<T>(name, param, true)
+      setTimeout(() => {
+        if (topName) {
+          this.removeByName(topName)
+        }
+      }, 500)
+    }else {
       this.pop(false)
       this.push<T>(name, param, true)
     }
@@ -257,8 +256,17 @@ export class RouterMgr {
    * @param name
    */
   public redirect<T>(name: string, builder?: NavDestBuilder<T>) {
-    if (builder?.options?.redirectType == RedirectType.REPLACE) {
-      this.replacePathByName(name, builder.getParam(), builder?.options.animated, builder)
+    const redirectType = builder?.options?.redirectType
+    if (redirectType === RedirectType.REPLACE) {
+      this.replacePathByName(name, builder?.getParam(), builder?.options.animated, builder)
+    } else if (redirectType === RedirectType.REMOVE) {
+      const topName = this.getTopPathName()
+      this.pushForResult<ObjectOrNull>(name, builder)
+      setTimeout(() => {
+        if (topName) {
+          this.removeByName(topName)
+        }
+      },500)
     } else {
       this.pop(false)
       this.pushForResult<ObjectOrNull>(name, builder)
@@ -271,7 +279,7 @@ export class RouterMgr {
     builder?: NavDestBuilder<T>) {
     const animated = builder?.options.animated ?? true
     const launchMode = builder?.options?.lunchMode
-    if (DeviceUtil.isSdkVersion12()){
+    if (DeviceUtil.isSdkVersion12()) {
       return this.getNavStack()
         .pushDestination({
           name, param: param, onPop: (data) => {
@@ -414,7 +422,6 @@ export class RouterMgr {
   public removeInterceptor<T extends IInterceptor>(interceptor: T, stackName: string = DEFAULT_STACK_NAME): boolean {
     return this.interceptorMgr.removeInterceptor(stackName, interceptor)
   }
-
 
 
   /**
@@ -568,6 +575,19 @@ export class RouterMgr {
 
   public setGlobalInterceptor(interceptor: IGlobalNavigateInterceptor, stackName: string = DEFAULT_STACK_NAME) {
     this.interceptorMgr.setGlobalInterceptor(stackName, interceptor)
+  }
+
+  /**
+   * 携带结果重定向到指定页面
+   * @deprecated
+   * @see {redirectForResult2}
+   * @param name
+   * @param param
+   * @param callback
+   */
+  public redirectForResult(name: string, param?: ObjectOrNull, callback?: OnPopCallback) {
+    this.pop(false)
+    this.pushForResult<ObjectOrNull>(name, param, callback)
   }
 
   /**
