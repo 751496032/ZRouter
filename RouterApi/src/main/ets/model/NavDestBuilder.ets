@@ -202,6 +202,18 @@ export class NavDestBuilder<T> {
   }
 
   /**
+   * 将当前NavDestination替换为特定NavDestination。当前的NavDestination将被销毁。默认转场动画
+   * @param name
+   */
+  public replaceWithDefaultAnim(name: string) {
+    const beforePath = this.getTopPathName() ?? ""
+    this.navigation(name)
+    setTimeout(() => {
+      this.routerMgr.removeByName(beforePath)
+    }, 500)
+  }
+
+  /**
    * 重定位页面，建议在拦截器中使用，与finishWithResult()方法搭配使用
    * 比如用于拦截未登录的场景，当未登录时，在拦截器中重定向到登录页，当登录成功后，通过finishWithResult()方法关闭当前页，
    * 在onPopListener的回调函数中返回true则会继续跳转到未登录前的页面。
