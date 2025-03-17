@@ -3,6 +3,8 @@ import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleCallback } from "./LifecycleMgr";
 import { util } from "@kit.ArkTS";
 import { SPLIT_SYMBOL } from "./ObserverState";
+import { ObjUtil } from "../utlis/ObjUtil";
+import Logger from "../utlis/Logger";
 
 /**
  * @author: HZWei
@@ -21,9 +23,13 @@ export class LifecycleRegistry {
     return new LifecycleRegistry(className);
   }
 
-
-  public addObserver<T extends ILifecycleObserver>(observer: T) {
-    RouterMgr.getInstance().lifecycleMgr.addObserver(observer, this.targetClassName, this.inRootView());
+  /**
+   * 添加生命周期观察者
+   * @param observer
+   * @param inRootView 当前页面是否是Navigation根视图中 可选参数
+   */
+  public addObserver<T extends ILifecycleObserver>(observer: T, inRootView: boolean = false) {
+    RouterMgr.getInstance().lifecycleMgr.addObserver(observer, this.targetClassName, inRootView);
 
   }
 
@@ -33,19 +39,25 @@ export class LifecycleRegistry {
   }
 
 
-  public addListener(callback: LifecycleCallback) {
-    RouterMgr.getInstance().lifecycleMgr.addListener(callback, this.targetClassName, this.inRootView());
+  /**
+   * 添加生命周期监听
+   * @param callback
+   * @param inRootView 当前页面是否是Navigation根视图中 可选参数
+   */
+  public addListener(callback: LifecycleCallback, inRootView: boolean = false) {
+    RouterMgr.getInstance().lifecycleMgr.addListener(callback, this.targetClassName, inRootView);
   }
 
   public removeListener(callback: LifecycleCallback): boolean {
     return RouterMgr.getInstance().lifecycleMgr.removeListener(callback);
   }
 
-  private inRootView() {
-    const lastId = RouterMgr.getInstance().getLastNavDestinationId()
-    const hasPageBeenLaunched = RouterMgr.getInstance().hasPageBeenLaunched
-    return lastId === undefined && !hasPageBeenLaunched
-  }
+  // private inRootView() {
+  //   const lastId = RouterMgr.getInstance().getLastNavDestinationId()
+  //   const hasPageBeenLaunched = RouterMgr.getInstance().hasPageBeenLaunched
+  //   Logger.log(`lastId:${lastId} hasPageBeenLaunched:${hasPageBeenLaunched}`)
+  //   return ObjUtil.isEmpty(lastId) && !hasPageBeenLaunched
+  // }
 }
 
 export type  LifecycleRegistryOrNull = LifecycleRegistry | undefined | null;

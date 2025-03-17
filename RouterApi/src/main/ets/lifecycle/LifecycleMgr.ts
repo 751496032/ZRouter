@@ -120,7 +120,7 @@ export class LifecycleMgr {
   }
 
   private isCurrentNavDestination(state: ObserverState, routerInfo?: RouterInfo) {
-    return state.navDestinationId == routerInfo?.navDestinationId && !state.isRootView
+    return state.navDestinationId == routerInfo?.navDestinationId
   }
 
   public notifyObservers(event: LifecycleEvent, routerInfo?: RouterInfo, className?: string) {

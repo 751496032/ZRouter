@@ -61,10 +61,10 @@ struct Index {
       onWillShow(){
         console.log('Index  onWillShow')
       }
-    } as ILifecycleObserver)
+    } as ILifecycleObserver, true)
     this.lifecycle.addListener((e) => {
 
-    })
+    }, true)
 
   }
 
@@ -166,6 +166,7 @@ struct Index {
         }
       }
     }
+    // .hideNavBar(true)
     .onAppear(() => {
       let isStarted = AppStorage.get<boolean>(RouterConst.SPLASH_TAG)
       if (!isStarted) {
