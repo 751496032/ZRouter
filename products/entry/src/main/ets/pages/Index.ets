@@ -43,6 +43,7 @@ struct Index {
     console.log("Index  aboutToAppear sdkApiVersion: " + this.sdkApiVer)
 
     // @Entry页面生命周期监听
+    // 如果在Navigation根视图中设置生命周期监听，建议将inRootView设置为true
     const that = this
     this.lifecycle.addObserver({
       aboutToAppear(): void {
