@@ -392,13 +392,15 @@ export class RouterMgr {
    * @param result
    * @param animated
    */
-  public finishWithResult<T>(result: T, animated: boolean = true) {
+  public finishWithResult<T>(result: T, animated: boolean = true): boolean {
     const state = this.getCurrentState()
     if (state.redirectWithResultMode && ObjUtil.isNotEmpty(state.redirectInfo.name)) {
       const topName = this.getTopPathName()
       this.sendEvent<T>(state.redirectInfo.name, topName!, result)
       this.pop(animated)
+      return true
     }
+    return false
   }
 
 

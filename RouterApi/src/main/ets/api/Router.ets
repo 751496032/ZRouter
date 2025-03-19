@@ -397,7 +397,7 @@ export class ZRouter {
    * @param animated
    */
   public static finishWithResult<T>(result: T, animated: boolean = true) {
-    ZRouter.getRouterMgr().finishWithResult<T>(result, animated)
+    return ZRouter.getRouterMgr().finishWithResult<T>(result, animated)
   }
 
   /**

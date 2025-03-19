@@ -287,9 +287,10 @@ export class NavDestBuilder<T> {
    * @param result
    * @param animated
    */
-  public finishWithResult<T>(result: T, animated: boolean = true) {
+  public finishWithResult<T>(result: T, animated: boolean = true){
     this.updateCurrentStackName()
-    this.routerMgr.finishWithResult<T>(result, animated)
+    const r =  this.routerMgr.finishWithResult<T>(result, animated)
+    return r
   }
 
   /**
