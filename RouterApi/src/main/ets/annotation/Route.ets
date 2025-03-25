@@ -4,8 +4,8 @@
  * @desc: NavDestination页面注解
  */
 
-export function Route(param: Param) {
-  return Object
+export const Route: ClassDecorator & ((param?: Param) => ClassDecorator) = () => {
+  return void 0
 }
 
 /**
@@ -13,9 +13,7 @@ export function Route(param: Param) {
  * @param param
  * @returns
  */
-export function ZRoute(param: Param){
-  return Object
-}
+export const ZRoute = Route
 
 interface Param {
   /**
