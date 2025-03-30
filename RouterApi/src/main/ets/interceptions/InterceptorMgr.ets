@@ -28,7 +28,7 @@ export class InterceptorMgr {
   }
 
 
-  public addInterceptor(stackName: string, interceptor: IInterceptor) {
+  public addInterceptor(stackName: string, interceptor: IInterceptor): InterceptorMgr {
     if (this.interceptions.has(stackName)) {
       let interceptors = this.interceptions.get(stackName)
       if (interceptors === undefined) {
@@ -44,6 +44,7 @@ export class InterceptorMgr {
       interceptors.sort((a, b) => b.priority - a.priority);
       this.interceptions.set(stackName, interceptors)
     }
+    return this
   }
 
   public removeInterceptor(stackName: string, interceptor: IInterceptor): boolean {

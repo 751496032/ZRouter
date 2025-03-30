@@ -4,7 +4,7 @@
  * @desc: NavDestination页面注解
  */
 
-export const Route: ClassDecorator & ((param?: Param) => ClassDecorator) = () => {
+export const Route: ClassDecorator & ((param: Param) => ClassDecorator) = () => {
   return void 0
 }
 

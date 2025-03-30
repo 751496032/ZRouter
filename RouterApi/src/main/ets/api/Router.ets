@@ -243,7 +243,7 @@ export class ZRouter {
    * @returns
    */
   public static  addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL) {
-    ZRouter.getRouterMgr().lifecycleMgr.addGlobalObserver(observer)
+    return ZRouter.getRouterMgr().lifecycleMgr.addGlobalObserver(observer)
   }
 
   /**
@@ -251,7 +251,7 @@ export class ZRouter {
    * @param observer
    */
   public static addLifecycleObserver(observer: LifecycleObserver) {
-    TemplateMgr.getInstance().addObserver(observer)
+    return TemplateMgr.getInstance().addObserver(observer)
   }
 
   /**

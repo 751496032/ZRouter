@@ -25,11 +25,12 @@ export class TemplateMgr {
     return TemplateMgr._instance;
   }
 
-  addObserver(callback: LifecycleObserver) {
+  addObserver(callback: LifecycleObserver): TemplateMgr {
     const navDesId = ZRouter.getLastNavDestinationId()
     if (navDesId) {
       this._observers.set(navDesId, callback)
     }
+    return this
   }
 
   removeObserver(navDesId: string | undefined = undefined) {

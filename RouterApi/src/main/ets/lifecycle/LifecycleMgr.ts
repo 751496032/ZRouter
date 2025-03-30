@@ -29,11 +29,12 @@ export class LifecycleMgr {
     return LifecycleMgr._instance;
   }
 
-  public addGlobalObserver(observer: ILifecycleObserver){
+  public addGlobalObserver(observer: ILifecycleObserver): LifecycleMgr{
     if (this.globalObservers.has(observer)) {
       return;
     }
     this.globalObservers.add(observer)
+    return this
   }
 
   public removeGlobalObserver(observer: ILifecycleObserver){
