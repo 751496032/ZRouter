@@ -3,9 +3,9 @@ import { Route, ZRouter } from 'routerapi';
 import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil';
 
 
-@Route({ name: RouterConstants.HARA_PAGE3 ,needLogin: true})
+@Route({ name: RouterConstants.PAGE_PUSH_AND_POP_CASE ,needLogin: true})
 @Component
-export struct Page3 {
+export struct PushAndPopCasePage {
   @State message: string = 'Hello World';
 
   aboutToAppear(): void {
@@ -67,7 +67,7 @@ export struct Page3 {
       }
 
     }
-    .title('跳转携带参数与监听pop返回所携带的参数')
+    .title('跳转携带参数与监听pop携带的参数 - PushAndPopCasePage')
     .width('100%')
     .height('100%')
 

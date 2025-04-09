@@ -117,7 +117,7 @@ struct Index {
             ZRouter.getInstance().navigation("PageNotFound111")
           })
 
-          Button('跳转携带参数与监听pop返回所携带的参数').onClick((event: ClickEvent) => {
+          Button('跳转携带参数与监听pop携带的参数').onClick((event: ClickEvent) => {
             ZRouter.getInstance()
               .setParam("root data")
               .setLunchMode(LaunchMode.STANDARD)// 启动模式
@@ -126,7 +126,7 @@ struct Index {
               .setPopListener((r) => {
                 ToastUtils.show(`pop result: ${r.data}  from: ${r.from}`)
               })
-              .navigation(RouterConstants.HARA_PAGE3)
+              .navigation(RouterConstants.PAGE_PUSH_AND_POP_CASE)
           })
 
 

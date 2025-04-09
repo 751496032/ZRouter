@@ -1,4 +1,4 @@
-import { RouterConstants } from 'common_library';
+import { RouterConstants, ToastUtils } from 'common_library';
 import { Route, ZRouter } from 'routerapi';
 
 
@@ -11,7 +11,11 @@ export struct Page4 {
     NavDestination(){
       Column({space:12}){
         Button('toHarAPage5').onClick((event: ClickEvent) => {
-          ZRouter.push(RouterConstants.HARA_PAGE5)
+          ZRouter.getInstance()
+            .setPopListener((result) => {
+              ToastUtils.show('from: ' + result.from + '  data: ' + JSON.stringify(result.data))
+            })
+            .push(RouterConstants.PAGE_POP_CASE)
         })
 
       }

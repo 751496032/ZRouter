@@ -187,7 +187,7 @@ export class RouterMgr {
    * 监听返回结果跳转，必须与popNavWithResult配合使用
    * 当跳转多个页面，并且返回需要携带结果时使用
    * 比如 A->B->C->D 当页面在D时，需要返回到A并携带结果，此时在A就可以监听D的返回结果
-   * pushNavForResult - popNavWithResult
+   * pushNavForResult - popNavWithResult 或 popToNameWithResult
    * pushNavForResult - popToRootWithResult
    * @see {popNavWithResult}
    * @param name
@@ -350,23 +350,31 @@ export class RouterMgr {
    * 关闭到指定名称页面
    * @param name
    * @param animated
+   * @returns 页面在栈中的索引index
    */
   public popToName(name: string, animated: boolean = true) {
-    const num = this.getNavStack().popToName(name, animated)
-    if (num === -1) {
-      this.getNavStack()?.getParent()?.popToName(name, animated)
-    }
+    return this.popToNameInternal(name, undefined, animated)
+  }
+
+
+  /**
+   * 关闭到指定名称页面，并携带结果
+   * @param name
+   * @param result
+   * @param animated
+   * @returns
+   */
+  public popToNameWithResult<T>(name: string, result?: T, animated: boolean = true) {
+    return this.popToNameInternal(name, result, animated)
   }
 
   /**
    * 返回上一页
    * @param animated
+   * @returns boolean true: 表示成功关闭页面
    */
   public pop(animated: boolean = true) {
-    const r = this.getNavStack().pop(animated)
-    if (!r) {
-      this.getNavStack()?.getParent()?.pop(animated)
-    }
+    return this.popInternal(undefined, animated)
   }
 
   /**
@@ -376,16 +384,47 @@ export class RouterMgr {
    * @see {pushForResult}
    * @param result
    * @param animated
+   * @returns boolean true: 表示成功关闭页面
    */
   public popWithResult(result: Object, animated: boolean = true) {
-    // 路由栈默认是不支持Boolean类型，转成字符串携带
-    if (typeof result == "boolean") {
-      result = result + ""
+    return this.popInternal(result, animated)
+  }
+
+
+  private popInternal(result?: Object, animated: boolean = true): boolean {
+    if (result) {
+      // 路由栈默认是不支持Boolean类型，转成字符串携带
+      if (typeof result == "boolean") {
+        result = result + ""
+      }
+      let r = this.getNavStack().pop(result, animated)
+      if (!r) {
+        r = this.getNavStack().getParent()?.pop(result, animated)
+      }
+      return r !== undefined
+    } else {
+      let r = this.getNavStack().pop(animated)
+      if (!r) {
+        r = this.getNavStack()?.getParent()?.pop(animated)
+      }
+      return r !== undefined
     }
-    const r = this.getNavStack().pop(result, animated)
-    if (!r) {
-      this.getNavStack().getParent()?.pop(result, animated)
+  }
+
+  private popToNameInternal<T>(name: string, result?: T, animated: boolean = true): number {
+    let index = -1
+    if (result) {
+      index = this.getNavStack().popToName(name, result!, animated)
+      if (index === -1) {
+        index = this.getNavStack()?.getParent()?.popToName(name, result!, animated) ?? -1
+      }
+    } else {
+      index = this.getNavStack().popToName(name, animated)
+      if (index === -1) {
+        index = this.getNavStack()?.getParent()?.popToName(name, animated) ?? -1
+      }
     }
+    return index
   }
 
 
@@ -396,6 +435,7 @@ export class RouterMgr {
    * @param name 路由名称
    * @param result
    * @param animated
+   * @deprecated 建议使用popToNameWithResult()方法，该方法已经被弃用
    */
   public popNavWithResult<T>(name: string, result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
@@ -405,7 +445,7 @@ export class RouterMgr {
     }
     if (ObjUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
       if (currentName !== name) {
-        this.getNavStack().popToName(name, result!, animated)
+        this.popToNameWithResult(name, result!, animated)
       } else {
         LogUtil.error('不支持关闭当前页， 请使用popWithResult')
       }

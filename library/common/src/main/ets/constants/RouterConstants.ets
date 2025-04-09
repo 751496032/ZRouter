@@ -1,9 +1,9 @@
 export class RouterConstants {
   public static readonly CUSTOM_URL_PAGE: string = "custom_url_page";
   public static readonly HARA_MAIN_PAGE :string = "harAMainPage"
-  public static readonly HARA_PAGE3 = 'harAPage3'
+  public static readonly PAGE_PUSH_AND_POP_CASE = 'PushAndPopCasePage'
   public static readonly HARA_PAGE4 :string = "harAPage4"
-  public static readonly HARA_PAGE5 :string = "harAPage5"
+  public static readonly PAGE_POP_CASE :string = "PopCasePage5"
   public static readonly HARB_MAIN_PAGE :string = "harBMainPage"
   public static readonly HSPC_INDEX_PAGE: string = "hspCIndex"
   public static readonly HSPC_PAGE3: string = "hspCPage3"
@@ -33,4 +33,5 @@ export class RouterConstants {
   public static readonly PAGE_BEFORE_PUSH = 'BeforePushPage'
   public static readonly PAGE_NAVDEST_TEMPLATE_V2 = 'NavDestTemplateV2'
   public static readonly NEST_PAGE = 'NestPage'
+  // public static readonly PAGE_POP_CASE = 'POP_CASE_PAGE'
 }

@@ -1,4 +1,4 @@
-import { RouterConstants } from '@hzw/common_library';
+import { RouterConstants, ToastUtils } from '@hzw/common_library';
 import { Route, ZRouter } from 'routerapi';
 
 @Route({ name: RouterConstants.HSPC_INDEX_PAGE, needLogin: true})
@@ -36,6 +36,14 @@ struct Index {
         Button('popWithResult - 携带参数返回上一页').onClick((event: ClickEvent) => {
           // ZRouter.popWithResult('hspCIndex data')
           ZRouter.getInstance().popWithResult("from hspC index data")
+        })
+
+        Button('pop case').onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setPopListener((result) => {
+              ToastUtils.show('from: ' + result.from + '  data: ' + JSON.stringify(result.data))
+            })
+            .push(RouterConstants.PAGE_POP_CASE)
         })
       }
       .width('100%')

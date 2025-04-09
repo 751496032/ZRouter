@@ -235,30 +235,46 @@ export class NavDestBuilder<T> {
    * 返回上一页
    * @param animated
    */
-  public pop(animated: boolean = true) {
+  public pop(animated: boolean = true): boolean {
     this.updateCurrentStackName()
-    this.routerMgr.pop(animated)
+    return this.routerMgr.pop(animated)
   }
 
 
   /**
-   * 返回指定路由名称的页面
+   * 返回指定路由名称的页面，会关闭中间页面
    * @param name 路由名称
    * @param animated 是否执行动画
+   * @returns number  页面在栈中的索引index
    */
-  public popToName(name: string, animated: boolean = true) {
+  public popToName(name: string, animated: boolean = true): number {
     this.updateCurrentStackName()
-    this.routerMgr.popToName(name, animated)
+    return this.routerMgr.popToName(name, animated)
+  }
+
+
+  /**
+   * 携带结果返回指定路由名称的页面，会关闭中间页面，可以替代popNavWithResult
+   * 可在onPopListener回调函数内监听
+   * @param name
+   * @param result
+   * @param animated
+   * @returns
+   */
+  public popToNameWithResult<T>(name: string, result: T, animated: boolean = true): number {
+    this.updateCurrentStackName()
+    return this.routerMgr.popToNameWithResult<T>(name, result, animated)
   }
 
   /**
    * 携带结果返回上一页，可在onPopListener回调函数内监听
    * @param result 返回携带的数据
    * @param animated 是否执行动画
+   * @returns boolean 是否返回成功
    */
-  public popWithResult(result: Object , animated: boolean = true) {
+  public popWithResult(result: Object , animated: boolean = true): boolean {
     this.updateCurrentStackName()
-    this.routerMgr.popWithResult(result, animated)
+    return this.routerMgr.popWithResult(result, animated)
   }
 
   /**
@@ -266,6 +282,7 @@ export class NavDestBuilder<T> {
    * @param name 路由名称
    * @param result  返回携带的数据
    * @param animated 是否执行动画
+   * @deprecated 建议使用popToNameWithResult()方法，该方法已经被弃用
    */
   public popNavWithResult<T>(name: string, result: T, animated: boolean = true) {
     this.updateCurrentStackName()
@@ -287,9 +304,9 @@ export class NavDestBuilder<T> {
    * @param result
    * @param animated
    */
-  public finishWithResult<T>(result: T, animated: boolean = true){
+  public finishWithResult<T>(result: T, animated: boolean = true) {
     this.updateCurrentStackName()
-    const r =  this.routerMgr.finishWithResult<T>(result, animated)
+    const r = this.routerMgr.finishWithResult<T>(result, animated)
     return r
   }
 
@@ -321,7 +338,7 @@ export class NavDestBuilder<T> {
 
   /**
    * 按路由名称获取携带的参数
-   * @param name
+   * @param name 路由名称
    * @returns
    */
   public getParamByName(name: string): Record<string, ObjectOrNull>[] {
