@@ -7,7 +7,14 @@ import { ObjUtil } from '../utlis/ObjUtil'
 import { HashMap } from '@kit.ArkTS'
 
 export class InterceptorInfo {
+  /**
+   * 页面是否注册
+   */
   private isNotRegistered: boolean = false
+  /**
+   * 拦截器携带的额外数据 预留
+   * 目前暂时没有作用
+   */
   private extra = new HashMap<string, ObjectOrNull>()
   /**
    * 页面在没有注册的情况下，以下属性不可使用
@@ -18,10 +25,25 @@ export class InterceptorInfo {
    * @function notRegistered
    */
   toContext: NavDestinationContext | undefined
+  /**
+   * @Route和@ZRoute注解上的元数据 - 参数
+   */
   metadata?: RouteMetadata
-  param?: ObjectOrNull // 跳转携带的参数
-  name: string = '' // 跳转页面名称
-  // isInterruptGlobalInterceptor = false // 是否中断全局拦截器 在单个拦截器中使用
+  /**
+   * 跳转携带的参数
+   */
+  param?: ObjectOrNull
+  /**
+   * 页面跳转的name
+   * 对应RouteMetadata中的name
+   */
+  name: string = ''
+
+  /**
+   * 页面跳转的操作类型
+   */
+  operation?: NavigationOperation
+
 
 
 

@@ -6,7 +6,15 @@
 import { InterceptorInfo, InterceptorInfoOrNull } from '../model/Model';
 
 export interface IInterceptor {
+  /**
+   * 处理push和replace拦截器逻辑，返回null则表示拦截器处理完成，否则继续执行下一个拦截器
+   * @param context
+   * @returns
+   */
   process: (context: InterceptorInfo) => InterceptorInfoOrNull;
+  /**
+   * 拦截器优先级，数值越大则优先执行
+   */
   priority: number;
 }
 
@@ -25,7 +33,7 @@ export interface IGlobalNavigateInterceptor {
   onPageWillShow?: (fromContext: NavDestinationContext, toContext: NavDestinationContext) => void;
 
   /**
-   * 页面跳转时回调
+   * 页面push 或者 replace回调
    * @param context
    */
   onNavigate?: (context: InterceptorInfo) => void;

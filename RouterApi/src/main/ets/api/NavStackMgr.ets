@@ -123,6 +123,7 @@ export default class NavStackMgr {
           let fromContext: NavDestinationContext
           let toContext: NavDestinationContext
           const interceptorInfo = InterceptorInfo.create(false)
+          interceptorInfo.operation = operation
           const isPushOrReplace = operation === NavigationOperation.PUSH || operation === NavigationOperation.REPLACE
           if (isPushOrReplace) {
             try {

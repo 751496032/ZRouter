@@ -15,7 +15,7 @@ import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
 export struct ChildView {
   // 通过@Consume获取生命周期观察者
   // 生命周期监听方式一
-  @Consume lifecycleObserver: CustomCompLifecycleObserver
+  @Consume viewModel: CustomCompLifecycleObserver
 
   private  lastBackTime: number = 0
 
@@ -47,9 +47,9 @@ export struct ChildView {
       Text("NavDest页面模板化：即页面无需用NavDestination组件包裹，在编译阶段会自动生成对应的逻辑，" +
         "提供了额外的生命周期回调，并支持自定义NavDestination属性。")
         .padding(20)
-      Text((this.lifecycleObserver.counter) + "")
+      Text((this.viewModel.counter) + "")
       Button("+1 - lifecycleObserver").onClick((event: ClickEvent) => {
-        this.lifecycleObserver.counter++
+        this.viewModel.counter++
       })
 
       Button("CustomComp2").onClick((event: ClickEvent) => {
