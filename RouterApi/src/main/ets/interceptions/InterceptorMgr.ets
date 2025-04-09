@@ -91,4 +91,9 @@ export class InterceptorMgr {
 
     return context
   }
+
+  public async runAsync(stackName: string, context: InterceptorInfo, isPush: boolean = false,
+    callback?: (it: IGlobalNavigateInterceptor) => void) {
+     return Promise.resolve(this.run(stackName, context, isPush, callback))
+  }
 }

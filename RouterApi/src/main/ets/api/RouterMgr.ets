@@ -7,6 +7,7 @@ import { ObjUtil } from '../utlis/ObjUtil'
 import {
   DEFAULT_STACK_NAME,
   InterceptorInfo,
+  InterceptorInfoOrNull,
   NavRootEvent,
   ObjectOrNull,
   OnInterceptorCallback,
@@ -164,8 +165,8 @@ export class RouterMgr {
    * @param name 是Route装饰器上的name属性值
    * @param param 携带的参数
    */
-  public push<T>(name: string, param?: ObjectOrNull, animated: boolean = false, builder?: NavDestBuilder<T>) {
-    this.pushDestination<T>(name, param, undefined, builder)
+  public push<T>(name: string, param?: ObjectOrNull, animated: boolean = false, builder?: NavDestBuilder<T>):Promise<void>  {
+    return this.pushDestination<T>(name, param, undefined, builder)
   }
 
   /**
@@ -178,8 +179,8 @@ export class RouterMgr {
    * @param callback
    */
   public pushForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
-    builder?: NavDestBuilder<T>) {
-    this.pushDestination<T>(name, param, callback, builder)
+    builder?: NavDestBuilder<T>): Promise<void> {
+    return this.pushDestination<T>(name, param, callback, builder)
   }
 
   /**
@@ -194,9 +195,9 @@ export class RouterMgr {
    * @param callback
    */
   public pushNavForResult<T>(name: string, param?: ObjectOrNull, callback?: OnPopResultCallback<T>,
-    builder?: NavDestBuilder<T>) {
+    builder?: NavDestBuilder<T>): Promise<void> {
     const topName = this.getTopPathName()
-    this.pushDestination(name, param, undefined, builder).then(() => {
+    return this.pushDestination(name, param, undefined, builder).then(() => {
       let eName = ''
       if (ObjUtil.isNotEmpty(topName)) {
         eName = topName!
@@ -237,12 +238,13 @@ export class RouterMgr {
       this.getNavStack().replacePathByName(name, param, builder?.options.animated)
     } else if (redirectType == RedirectType.REMOVE) {
       const topName = this.getTopPathName()
-      this.push<T>(name, param, true)
-      setTimeout(() => {
-        if (topName) {
-          this.removeByName(topName)
-        }
-      }, 500)
+      this.push<T>(name, param, true).then(() => {
+        setTimeout(() => {
+          if (topName) {
+            this.removeByName(topName)
+          }
+        }, 500)
+      })
     }else {
       this.pop(false)
       this.push<T>(name, param, true)
@@ -275,10 +277,16 @@ export class RouterMgr {
   }
 
 
-  private pushDestination<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
+  private async pushDestination<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
     builder?: NavDestBuilder<T>) {
     const animated = builder?.options.animated ?? true
     const launchMode = builder?.options?.lunchMode
+    const r = await this.beforePushOrReplace(name, NavigationOperation.PUSH, param, builder)
+    if (r) {
+      param = r.param
+    } else {
+      return Promise.resolve()
+    }
     if (DeviceUtil.isSdkVersion12()) {
       return this.getNavStack()
         .pushDestination({
@@ -313,6 +321,29 @@ export class RouterMgr {
         it.onNavigate?.(interceptorInfo)
       })
     }
+  }
+
+
+  private async beforePushOrReplace<T>(name: string, operation: NavigationOperation, param?: ObjectOrNull,
+    builder?: NavDestBuilder<T>): Promise<InterceptorInfoOrNull> {
+    const state = this.getCurrentState()
+    let interceptorInfo = InterceptorInfo.create(true)
+    interceptorInfo.name = name
+    interceptorInfo.param = param
+    interceptorInfo.operation = operation
+    let r: InterceptorInfoOrNull = interceptorInfo
+    await this.interceptorMgr.runAsync(state.stackName, interceptorInfo, false, async (it) => {
+      try {
+        const result = await it.onNavigateBefore?.(interceptorInfo)
+        r = result
+      } catch (error) {
+        LogUtil.error('error: ', error)
+      }
+    })
+    if (!r) {
+      LogUtil.error('error: ', ErrorCode.INTERCEPTED, "intercepted before jumping")
+    }
+    return Promise.resolve(r)
   }
 
   /**
@@ -521,10 +552,16 @@ export class RouterMgr {
     this.getNavStack().moveToTop(name)
   }
 
-  public replacePathByName<T>(name: string, param?: ObjectOrNull, animated: boolean = true,
+  public async replacePathByName<T>(name: string, param?: ObjectOrNull, animated: boolean = true,
     builder?: NavDestBuilder<T>) {
     const anim = builder?.options.animated ?? animated
     const launchMode = builder?.options?.lunchMode
+    const r = await this.beforePushOrReplace(name, NavigationOperation.REPLACE, param, builder)
+    if (r) {
+      param = r.param
+    } else {
+      return
+    }
     if (DeviceUtil.isSdkVersion12()) {
       this.getNavStack()
         .replacePath({ name, param },

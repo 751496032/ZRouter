@@ -9,6 +9,7 @@ export enum ErrorCode {
   INTERNAL_ERROR = 100001,
   NOT_REGISTERED = 100005,
   NOT_FOUND = 100006,
+  INTERCEPTED = 100
 }
 
 export enum RedirectType {

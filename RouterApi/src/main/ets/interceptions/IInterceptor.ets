@@ -7,7 +7,7 @@ import { InterceptorInfo, InterceptorInfoOrNull } from '../model/Model';
 
 export interface IInterceptor {
   /**
-   * 处理push和replace拦截器逻辑，返回null则表示拦截器处理完成，否则继续执行下一个拦截器
+   * 处理push和replace拦截器逻辑，返回null或undefined则表示拦截器处理完成，否则继续执行下一个拦截器
    * @param context
    * @returns
    */
@@ -33,11 +33,21 @@ export interface IGlobalNavigateInterceptor {
   onPageWillShow?: (fromContext: NavDestinationContext, toContext: NavDestinationContext) => void;
 
   /**
-   * 页面push 或者 replace回调
+   * 页面push 或者 replace跳转时回调
    * @param context
    */
   onNavigate?: (context: InterceptorInfo) => void;
   onShowCallback?: InterceptionShowCallback
+  /**
+   * 在跳转之前回调，可以在此回调中拦截跳转做一些自定义的逻辑，比如修改路由参数、数据预取、拦截登录等场景
+   * @param context
+   * @returns  InterceptorInfoOrNull  返回null或undefined则表示不跳转
+   * @note
+   * 如果通过ZRouter.getNavStack().push()方法跳转，则不会回调此方法,
+   * 只有通过ZRouter.getInstance().push()方法跳转时会回调此方法
+   */
+
+  onNavigateBefore?: (context: InterceptorInfo) => Promise<InterceptorInfoOrNull>;
 }
 
 export type ProcessCallback = (context: InterceptorInfo) => InterceptorInfoOrNull;

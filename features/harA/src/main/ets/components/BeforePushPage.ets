@@ -1,6 +1,6 @@
 /**
  * @author: HZWei
- * @date: 2024/12/22
+ * @date: 2025/4/9
  * @desc:
  */
 import { KeyConst, RouterConstants, Student } from "common_library";
@@ -8,9 +8,9 @@ import { ZRoute, ZRouter } from "routerapi";
 import { ArrayList, HashMap } from "@kit.ArkTS";
 
 
-@ZRoute({ name: RouterConstants.PAGE_PARAM, useTemplate: true, title: "获取携带的参数案例" })
+@ZRoute({ name: RouterConstants.PAGE_BEFORE_PUSH, useTemplate: true, title: "跳转前拦截案例" })
 @Component
-export struct ParamPage {
+export struct BeforePushPage {
   @State name :string =''
   @State age: number = 0
   @State score: number[] = []

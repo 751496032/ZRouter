@@ -116,4 +116,4 @@ export const NavRootEvent = 'NavRoot'
 
 export const DEFAULT_STACK_NAME = 'ZRouter'
 
-export type  InterceptorInfoOrNull = InterceptorInfo | null
+export type  InterceptorInfoOrNull = InterceptorInfo | null | undefined

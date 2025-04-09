@@ -8,16 +8,31 @@ import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IGlobalNavigateIn
    } from 'routerapi';
 import { promptAction } from '@kit.ArkUI';
 import { HashMap } from '@kit.ArkTS';
+import { RouterConstants } from '@hzw/common_library';
 
-export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
-  onRootWillShow?: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
+export class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
+  onNavigateBefore: ((context: InterceptorInfo) => Promise<InterceptorInfoOrNull>) | undefined = (context) => {
+    console.log("IInterceptor Global onNavigateBefore -> ", context.name)
+    return new Promise((resolve, reject) => {
+      if (context.name === RouterConstants.PAGE_PARAM) {
+        // 拦截跳转到ParamPage页面
+        context.param = 55
+        resolve(context)
+      } else {
+        resolve(context)
+      }
+
+    })
+  }
+
+  onRootWillShow: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
     console.log("IInterceptor Global onRootWillShow ->  from name: ", fromContext.pathInfo.name)
   }
-  onPageWillShow?: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined = (from ,to)=>{
+  onPageWillShow: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined = (from ,to)=>{
     console.log("IInterceptor Global onPageWillShow -> ", " form name: ", from.pathInfo.name," to name: ", to.pathInfo.name)
   }
 
-  onNavigate?: ((context: InterceptorInfo) => void) | undefined = (info)=>{
+  onNavigate: ((context: InterceptorInfo) => void) | undefined = (info)=>{
     if (info.notRegistered) return
     console.log("IInterceptor Global onNavigate -> ", info.name)
 

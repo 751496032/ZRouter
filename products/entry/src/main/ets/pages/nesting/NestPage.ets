@@ -21,11 +21,11 @@ export struct NestPage {
             .width('100%')
 
           Button('返回 - 默认栈').onClick((event: ClickEvent) => {
-            ZRouter.getInstance('ZRouter').pop()
+            ZRouter.getInstance().pop()
           }).fontColor(Color.White)
 
           Button('返回').onClick((event: ClickEvent) => {
-            ZRouter.getInstance().pop()
+            ZRouter.getInstance(newTaskName).pop()
           }).fontColor(Color.White)
 
         }
