@@ -15,6 +15,7 @@ import { AddInterceptor } from '../interceptors/AddIntercetors'
 import { common, Want } from '@kit.AbilityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
 import { deviceInfo } from '@kit.BasicServicesKit';
+import { GlobalNavigateInterceptor } from '../interceptors/interceptors'
 
 @Entry
 @Component
@@ -121,12 +122,18 @@ struct Index {
             ZRouter.getInstance()
               .setParam("root data")
               .setLunchMode(LaunchMode.STANDARD)// 启动模式
-              .enableCrossPageParamReturn()// 跨页面参数返回
+              // .enableCrossPageParamReturn()// 跨页面参数返回
               .setAnimate(true)
               .setPopListener((r) => {
                 ToastUtils.show(`pop result: ${r.data}  from: ${r.from}`)
               })
               .navigation(RouterConstants.PAGE_PUSH_AND_POP_CASE)
+          })
+
+          Button("拦截器案例 跳转前拦截 - onNavigateBefore").onClick((event: ClickEvent) => {
+            ZRouter.getInstance()
+              .setParam(" 正常数据 ")
+              .navigation(RouterConstants.PAGE_BEFORE_PUSH)
           })
 
 
@@ -156,6 +163,7 @@ struct Index {
 
           Button('退出登录').onClick((event: ClickEvent) => {
             AppStorage.set<boolean>("isLogin", false)
+            GlobalNavigateInterceptor.count = 0
             promptAction.showToast({ message: "已退出登录" })
           })
 

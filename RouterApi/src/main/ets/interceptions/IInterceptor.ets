@@ -39,7 +39,7 @@ export interface IGlobalNavigateInterceptor {
   onNavigate?: (context: InterceptorInfo) => void;
   onShowCallback?: InterceptionShowCallback
   /**
-   * 在跳转之前回调，可以在此回调中拦截跳转做一些自定义的逻辑，比如修改路由参数、数据预取、拦截登录等场景
+   * 在跳转之前回调，可以在此回调中拦截跳转做一些自定义的逻辑，比如修改路由参数、数据预取、拦截跳转、拦截登录等场景
    * @param context
    * @returns  InterceptorInfoOrNull  返回null或undefined则表示不跳转
    * @note

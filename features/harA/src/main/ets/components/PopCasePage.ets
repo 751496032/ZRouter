@@ -12,9 +12,17 @@ export struct PopCasePage5 {
   build() {
     Column({space:12}){
 
-      Button('popNavWithResult - 跨多级页面返回携带数据').onClick((event: ClickEvent) => {
-        ZRouter.getInstance().popNavWithResult<string>(RouterConstants.PAGE_PUSH_AND_POP_CASE, 'popNavWithResult 跨多级页面返回携带数据 ' + systemDateTime.getTime())
-      })
+      Text('popNavWithResult - 跨多级页面返回携带数据  已弃用 用popToNameWithResult替代')
+        .onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .popNavWithResult<string>(RouterConstants.PAGE_PUSH_AND_POP_CASE,
+              'popNavWithResult 跨多级页面返回携带数据 ' + systemDateTime.getTime())
+        })
+        .width('90%')
+        .backgroundColor(Color.Red)
+        .fontColor(Color.White)
+        .padding(10)
+        .borderRadius(40)
 
       Button('popToRootWithResult - 携带数据返回根视图').onClick((event: ClickEvent) => {
         ZRouter.getInstance().popToRootWithResult<string>('popToRootWithResult 携带数据返回根视图 '  + systemDateTime.getTime())

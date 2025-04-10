@@ -8,15 +8,23 @@ import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IGlobalNavigateIn
    } from 'routerapi';
 import { promptAction } from '@kit.ArkUI';
 import { HashMap } from '@kit.ArkTS';
-import { RouterConstants } from '@hzw/common_library';
+import { RouterConstants, ToastUtils } from '@hzw/common_library';
 
 export class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
-  onNavigateBefore: ((context: InterceptorInfo) => Promise<InterceptorInfoOrNull>) | undefined = (context) => {
+ static  count = 0
+  onNavigateBefore: (context: InterceptorInfo) => Promise<InterceptorInfoOrNull> = (context) => {
     console.log("IInterceptor Global onNavigateBefore -> ", context.name)
     return new Promise((resolve, reject) => {
-      if (context.name === RouterConstants.PAGE_PARAM) {
+      if (context.name === RouterConstants.PAGE_BEFORE_PUSH) {
         // 拦截跳转到ParamPage页面
-        context.param = 55
+        if (GlobalNavigateInterceptor.count === 0) {
+          context.param = ' 在拦截器onNavigateBefore中已替换参数 '
+          GlobalNavigateInterceptor.count = 1
+        }else if (GlobalNavigateInterceptor.count === 1){
+          ToastUtils.show("拦截器onNavigateBefore中已拦截, 再点一次会继续执行")
+          GlobalNavigateInterceptor.count = 2
+          resolve(undefined)
+        }
         resolve(context)
       } else {
         resolve(context)
