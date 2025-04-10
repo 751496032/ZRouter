@@ -17,7 +17,10 @@ export interface IInterceptor {
    */
   priority: number;
 }
-
+/**
+ * 全局拦截器
+ * 执行顺序： onNavigateBefore  -> [IInterceptor#process] -> onNavigate  -> onPageWillShow [onShowCallback]
+ */
 export interface IGlobalNavigateInterceptor {
   /**
    * Navigation根视图显示时回调
