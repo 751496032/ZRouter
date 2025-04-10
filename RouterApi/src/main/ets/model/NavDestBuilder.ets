@@ -105,6 +105,7 @@ export class NavDestBuilder<T> {
   /**
    * 开启跨多级页面回调监听，这种场景返回需要使用popNavWithResult()方法
    * @returns
+   * @deprecated 使用popToNameWithResult()方法替代 popNavWithResult()方法
    */
   public enableCrossPageParamReturn(): NavDestBuilder<T> {
     this.optionsImpl.enableCrossPageParamReturn = true;

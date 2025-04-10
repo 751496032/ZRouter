@@ -38,7 +38,7 @@ struct Index {
           ZRouter.getInstance().popWithResult("from hspC index data")
         })
 
-        Button('pop case').onClick((event: ClickEvent) => {
+        Button('pop 案例').onClick((event: ClickEvent) => {
           ZRouter.getInstance()
             .setPopListener((result) => {
               ToastUtils.show('from: ' + result.from + '  data: ' + JSON.stringify(result.data))

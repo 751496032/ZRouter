@@ -17,7 +17,7 @@ export struct PushAndPopCasePage {
     NavDestination(){
       Column({space:12}){
         Text(this.message)
-        Button('pushForResult - 监听上一页返回携带的数据').onClick((event: ClickEvent) => {
+        Button('push - 监听上一页返回携带的数据').onClick((event: ClickEvent) => {
           // 上一个页面返回
           ZRouter.getInstance()
             // .setParam('hello')
@@ -29,7 +29,7 @@ export struct PushAndPopCasePage {
 
         })
 
-        Button('pushNavForResult - 监听跨多级页面返回携带的数据').onClick((event: ClickEvent) => {
+        Button('push - 监听跨多级页面返回携带的数据').onClick((event: ClickEvent) => {
           // 上上个页面返回
           ZRouter.getInstance()
             .setParam('hello')
