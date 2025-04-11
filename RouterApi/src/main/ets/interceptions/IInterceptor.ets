@@ -44,7 +44,7 @@ export interface IGlobalNavigateInterceptor {
   /**
    * 在跳转之前回调，可以在此回调中拦截跳转做一些自定义的逻辑，比如修改路由参数、数据预取、拦截跳转、拦截登录等场景
    * @param context
-   * @returns  InterceptorInfoOrNull  返回null或undefined则表示不跳转
+   * @returns  返回InterceptorInfo则继续跳转  返回null或undefined则表示不跳转
    * @note
    * 如果通过ZRouter.getNavStack().push()方法跳转，则不会回调此方法,
    * 只有通过ZRouter.getInstance().push()方法跳转时会回调此方法
