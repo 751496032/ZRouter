@@ -17,7 +17,7 @@ export interface IGlobalNavigateInterceptor {
    * @param dest
    * @returns  DestinationInfo#action 为NavigationAction.BLOCK 则表示拦截跳转，NEXT继续执行
    * @note
-   * 如果通过ZRouter.getNavStack().push()方法跳转，则不会回调此方法,
+   * 如果通过ZRouter.getNavStack().push()方法跳转，则不会回调此方法,后续会考虑兼容
    * 只有通过ZRouter.getInstance().push()方法跳转时会回调此方法
    */
   onNavigateBefore?: (dest: DestinationInfo) => Promise<DestinationInfo>;

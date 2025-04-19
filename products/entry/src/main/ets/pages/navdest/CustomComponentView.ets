@@ -1,5 +1,6 @@
 import { RouterConstants, ToastUtils } from '@hzw/common_library';
 import { LifecycleState, Route, ZRouter } from 'routerapi';
+import onBackPress from '../onBackPress';
 import { CustomAttributeModifier } from './CustomAttributeModifier';
 import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
 
@@ -27,15 +28,7 @@ export struct ChildView {
       console.log("ChildView CustomComponentView  ", state, router?.navDestinationId)
       if (state === LifecycleState.ON_BACK_PRESS) {
         // 拦截返回事件，与可以在lifecycleObserver做拦截处理
-        if (Date.now() - this.lastBackTime < 2000 || this.lastBackTime === 0) {
-          if (Date.now() - this.lastBackTime < 2000 ) {
-            return false
-          }
-          this.lastBackTime = Date.now()
-          ToastUtils.show("再按一次退出")
-          return true
-        }
-        return false
+       return onBackPress()
       }
       return false
 

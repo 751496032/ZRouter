@@ -485,7 +485,7 @@ export class RouterMgr {
       LogUtil.error(currentName + " 不存在路由栈顶中")
       return;
     }
-    this.getNavStack().clear(animated)
+    this.clear(animated)
     const name = NavRootEvent
     this.sendEvent<T>(name!, currentName!, result)
   }
@@ -502,10 +502,10 @@ export class RouterMgr {
 
 
   /**
-   * 清空页面栈，返回Navigation主页
+   * 清空页面栈，返回Navigation 根视图
    */
-  public clear() {
-    this.getNavStack().clear()
+  public clear(animated: boolean = true) {
+    this.getNavStack().clear(animated)
   }
 
 

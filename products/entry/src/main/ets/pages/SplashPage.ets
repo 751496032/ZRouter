@@ -47,7 +47,7 @@ export struct SplashPage {
       setInterval(() => {
         this.countdown -= 1000
         if (this.countdown === 0) {
-          ZRouter.getInstance().pop(true)
+          ZRouter.getInstance().popWithResult(true)
         }
       }, 1000)
     })
@@ -55,5 +55,6 @@ export struct SplashPage {
       ZRouter.animateMgr().unregisterAnim(this)
       AppStorage.setOrCreate(RouterConst.SPLASH_TAG,true)
     })
+    .onBackPressed(() => true)
   }
 }
