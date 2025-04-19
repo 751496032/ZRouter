@@ -77,6 +77,7 @@ export class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
   }
 }
 
+
 export class UrlInterceptor implements IInterceptor {
   // 设置拦截器优先级，数值越大则优先执行
   priority: number = 10000;
