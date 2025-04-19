@@ -83,7 +83,7 @@ export struct MainView {
           ZRouter.getInstance()
             .setParam("root data")
             .setLunchMode(LaunchMode.STANDARD)// 启动模式
-              // .enableCrossPageParamReturn()// 跨页面参数返回
+            .listenPopResultOnRootView()// 跨页面参数返回
             .setAnimate(true)
             .setPopListener((r) => {
               ToastUtils.show(`pop result: ${r.data}  from: ${r.from}`)

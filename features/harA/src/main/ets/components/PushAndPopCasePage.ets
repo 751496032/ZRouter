@@ -33,7 +33,7 @@ export struct PushAndPopCasePage {
           // 上上个页面返回
           ZRouter.getInstance()
             .setParam('hello')
-            .enableCrossPageParamReturn()
+            // .enableCrossPageParamReturn()
             .setPopListener((r)=>{
                 let msg = `from: ${r.from} data: ${r.data}`;
                 this.message = msg

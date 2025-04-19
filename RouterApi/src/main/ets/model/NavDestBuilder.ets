@@ -103,12 +103,23 @@ export class NavDestBuilder<T> {
   }
 
   /**
-   * 开启跨多级页面回调监听，这种场景返回需要使用popNavWithResult()方法
+   * 开启跨多级页面回调监听，这种场景返回需要使用popNavWithResult()方法， popNavWithResult()已废弃
+   * @date 2025/4/19 如果在Navigation根视图中push需要监听返回数据，则需要设置listenPopResultOnRootView为true
+   * @deprecated
+   * @see listenPopResultOnRootView替代
    * @returns
-   * @deprecated 使用popToNameWithResult()方法替代 popNavWithResult()方法
    */
   public enableCrossPageParamReturn(): NavDestBuilder<T> {
-    this.optionsImpl.enableCrossPageParamReturn = true;
+    this.optionsImpl.listenPopResultOnRootView = true;
+    return this;
+  }
+
+  /**
+   * 如果在Navigation根视图中push需要监听返回数据，则需要设置listenPopResultOnRootView为true
+   * @returns
+   */
+  public listenPopResultOnRootView(): NavDestBuilder<T> {
+    this.optionsImpl.listenPopResultOnRootView = true;
     return this;
   }
 
@@ -117,6 +128,7 @@ export class NavDestBuilder<T> {
    * 这种场景由开发者决定是否需要启用，默认不启用
    * 在setParam()方法中控制，必须在setParam()方法之前调用
    * @returns
+   * @deprecated
    */
   public enableConvertJumpParamZeroAndFalseToString(): NavDestBuilder<T> {
     this.optionsImpl.isConvertJumpParamZeroAndFalseToString = true;
@@ -167,7 +179,7 @@ export class NavDestBuilder<T> {
   public navigation(name: string): void {
     this.updateCurrentStackName()
     if (this.optionsImpl.onPopListener) {
-      if (this.optionsImpl.enableCrossPageParamReturn) {
+      if (this.optionsImpl.listenPopResultOnRootView) {
         this.routerMgr.pushNavForResult<T>(name, this.mergeParams(), this.optionsImpl.onPopListener,this)
       } else {
         this.routerMgr.pushForResult(name, this.mergeParams(), (data) => {

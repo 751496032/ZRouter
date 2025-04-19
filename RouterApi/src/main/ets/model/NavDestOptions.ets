@@ -12,7 +12,7 @@ export interface INavDestOptions<T> {
   lunchMode: LaunchMode;
   params?: ObjectOrNull;
   navStackName: string;
-  enableCrossPageParamReturn?: boolean;
+  listenPopResultOnRootView?: boolean;
   onPopListener?: OnPopResultCallback<T | ObjectOrNull>;
   redirectType?: RedirectType;
   isConvertJumpParamZeroAndFalseToString?: boolean;
