@@ -88,6 +88,55 @@ export class RouteMetadata {
   needLogin: string = ''
 }
 
+
+export class DestinationInfo {
+  /**
+   * 跳转携带的参数
+   */
+  param?: ObjectOrNull
+  /**
+   * 页面跳转的name
+   * 对应RouteMetadata中的name
+   */
+  name: string = ''
+
+  /**
+   * 页面跳转的操作类型
+   */
+  operation?: NavigationOperation
+
+  /**
+   *  是否拦截、继续
+   */
+  action: NavigationAction = NavigationAction.NEXT
+
+  private constructor() {
+  }
+  static create(info : InterceptorInfo) {
+    const dest = new DestinationInfo()
+    dest.name = info.name
+    dest.param = info.param
+    dest.operation = info.operation
+    dest.action = NavigationAction.NEXT
+    return dest
+  }
+  isContinue() {
+    return this.action === NavigationAction.NEXT
+  }
+  next() {
+    this.action = NavigationAction.NEXT
+  }
+  block() {
+    this.action = NavigationAction.BLOCK
+  }
+}
+
+
+export enum NavigationAction {
+  NEXT = 'next', // 继续
+  BLOCK = 'block', // 拦截
+}
+
 /**
  *
  * @class ConfigInitializer

@@ -1,6 +1,6 @@
 export  { Route, ZRoute} from './src/main/ets/annotation/Route'
 export  { ZRouter } from './src/main/ets/api/Router'
-export { PopResult,RouteMetadata , InterceptorInfoOrNull, InterceptorInfo } from './src/main/ets/model/Model'
+export { PopResult,RouteMetadata , InterceptorInfoOrNull, InterceptorInfo, DestinationInfo , NavigationAction } from './src/main/ets/model/Model'
 export * from './src/main/ets/interceptions/IInterceptor'
 export { IProvider } from './src/main/ets/service/IProvider'
 export { Service, ZService } from './src/main/ets/annotation/Service'

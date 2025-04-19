@@ -6,8 +6,10 @@
 import { ObjUtil } from '../utlis/ObjUtil'
 import {
   DEFAULT_STACK_NAME,
+  DestinationInfo,
   InterceptorInfo,
   InterceptorInfoOrNull,
+  NavigationAction,
   NavRootEvent,
   ObjectOrNull,
   OnInterceptorCallback,
@@ -282,7 +284,7 @@ export class RouterMgr {
     const animated = builder?.options.animated ?? true
     const launchMode = builder?.options?.lunchMode
     const r = await this.beforePushOrReplace(name, NavigationOperation.PUSH, param, builder)
-    if (r) {
+    if (r.isContinue()) {
       param = r.param
     } else {
       return Promise.resolve()
@@ -325,23 +327,25 @@ export class RouterMgr {
 
 
   private async beforePushOrReplace<T>(name: string, operation: NavigationOperation, param?: ObjectOrNull,
-    builder?: NavDestBuilder<T>): Promise<InterceptorInfoOrNull> {
+    builder?: NavDestBuilder<T>): Promise<DestinationInfo> {
     const state = this.getCurrentState()
     let interceptorInfo = InterceptorInfo.create(true)
     interceptorInfo.name = name
     interceptorInfo.param = param
     interceptorInfo.operation = operation
-    let r: InterceptorInfoOrNull = interceptorInfo
+    let r: DestinationInfo  = DestinationInfo.create(interceptorInfo)
     await this.interceptorMgr.runAsync(state.stackName, interceptorInfo, false, async (it) => {
       try {
-        const result = await it.onNavigateBefore?.(interceptorInfo)
-        r = result
+        const result = await it.onNavigateBefore?.(r)
+        if (result) {
+          r = result
+        }
       } catch (error) {
-        LogUtil.error('error: ', error)
+        LogUtil.error('beforePushOrReplace error: ', error)
       }
     })
-    if (!r) {
-      LogUtil.error('error: ', ErrorCode.INTERCEPTED, "intercepted before jumping")
+    if (!r.isContinue()) {
+      LogUtil.log('beforePushOrReplace next: ',  r.isContinue())
     }
     return Promise.resolve(r)
   }
@@ -597,7 +601,7 @@ export class RouterMgr {
     const anim = builder?.options.animated ?? animated
     const launchMode = builder?.options?.lunchMode
     const r = await this.beforePushOrReplace(name, NavigationOperation.REPLACE, param, builder)
-    if (r) {
+    if (r.isContinue()) {
       param = r.param
     } else {
       return

@@ -3,7 +3,7 @@
  * @date: 2024/9/15
  * @desc:
  */
-import { InterceptorInfo, InterceptorInfoOrNull } from '../model/Model';
+import { DestinationInfo, InterceptorInfo, InterceptorInfoOrNull } from '../model/Model';
 
 export interface IInterceptor {
   /**
@@ -43,14 +43,14 @@ export interface IGlobalNavigateInterceptor {
   onShowCallback?: InterceptionShowCallback
   /**
    * 在跳转之前回调，可以在此回调中拦截跳转做一些自定义的逻辑，比如修改路由参数、数据预取、拦截跳转、拦截登录等场景
-   * @param context
-   * @returns  InterceptorInfoOrNull  返回null或undefined则表示不跳转
+   * @param dest
+   * @returns  DestinationInfo#action 为NavigationAction.BLOCK 则表示拦截跳转，NEXT继续执行
    * @note
    * 如果通过ZRouter.getNavStack().push()方法跳转，则不会回调此方法,
    * 只有通过ZRouter.getInstance().push()方法跳转时会回调此方法
    */
 
-  onNavigateBefore?: (context: InterceptorInfo) => Promise<InterceptorInfoOrNull>;
+  onNavigateBefore?: (dest: DestinationInfo) => Promise<DestinationInfo>;
 }
 
 export type ProcessCallback = (context: InterceptorInfo) => InterceptorInfoOrNull;
