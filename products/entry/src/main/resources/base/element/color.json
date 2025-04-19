@@ -3,6 +3,10 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "water_flow_background_color",
+      "value": "#F1F3F5"
     }
   ]
 }

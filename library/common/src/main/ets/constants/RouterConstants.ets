@@ -26,6 +26,8 @@ export class RouterConstants {
   public static readonly ANIM_DEMO = 'AnimTransitionDemo'
   public static readonly PAGE_ONE = 'PageOne'
   public static readonly PAGE_TWO = 'PageTwo'
+  public static readonly PAGE_CARD_ONE = 'PageCardOne'
+  public static readonly PAGE_CARD_TWO = 'PageCardTwo'
   public static readonly PAGE_THREE = 'PageThree'
   public static readonly PAGE_FOUR = 'PageFour'
   public static readonly PAGE_DIALOG_MODE = 'PageDialogMode'

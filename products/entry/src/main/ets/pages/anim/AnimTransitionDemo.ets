@@ -64,6 +64,10 @@ export struct AnimTransitionDemo {
         Button('系统默认转场').onClick(() => {
             ZRouter.getInstance().push(RouterConstants.PAGE_FOUR)
           })
+        Button("卡片一镜到底").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .navigation(RouterConstants.PAGE_CARD_ONE)
+        })
       }
 
     }
