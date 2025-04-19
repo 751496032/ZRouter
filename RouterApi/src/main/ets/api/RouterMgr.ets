@@ -482,7 +482,7 @@ export class RouterMgr {
   public popToRootWithResult<T>(result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
     if (ObjUtil.isEmpty(currentName)) {
-      LogUtil.error(currentName + " 不存在路由栈顶中")
+      LogUtil.error('路由栈为空，无法执行popToRootWithResult')
       return;
     }
     this.clear(animated)

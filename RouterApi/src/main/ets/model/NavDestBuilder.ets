@@ -116,6 +116,7 @@ export class NavDestBuilder<T> {
 
   /**
    * 如果在Navigation根视图中push需要监听返回数据，则需要设置listenPopResultOnRootView为true
+   * 如果开启了，需要与popToRootWithResult()方法搭配使用
    * @returns
    */
   public listenPopResultOnRootView(): NavDestBuilder<T> {
@@ -291,7 +292,7 @@ export class NavDestBuilder<T> {
   }
 
   /**
-   * 携带结果返回到指定的页面(可以跨多级页面)，可在onPopListener回调函数内监听，前提是push时调用了enableCrossPageParamReturn()方法
+   * 携带结果返回到指定的页面(可以跨多级页面)，可在onPopListener回调函数内监听
    * @param name 路由名称
    * @param result  返回携带的数据
    * @param animated 是否执行动画

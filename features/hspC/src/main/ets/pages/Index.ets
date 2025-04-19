@@ -38,13 +38,17 @@ struct Index {
           ZRouter.getInstance().popWithResult("from hspC index data")
         })
 
-        Button('pop 案例').onClick((event: ClickEvent) => {
-          ZRouter.getInstance()
-            .setPopListener((result) => {
-              ToastUtils.show('from: ' + result.from + '  data: ' + JSON.stringify(result.data))
-            })
-            .push(RouterConstants.PAGE_POP_CASE)
-        })
+        if (!ZRouter.getParamByKey<boolean>('isRoot',false)) {
+          Button('pop 案例').onClick((event: ClickEvent) => {
+            ZRouter.getInstance()
+              .setPopListener((result) => {
+                ToastUtils.show('from: ' + result.from + '  data: ' + JSON.stringify(result.data))
+              })
+              .push(RouterConstants.PAGE_POP_CASE)
+          })
+        }
+
+
       }
       .width('100%')
     }

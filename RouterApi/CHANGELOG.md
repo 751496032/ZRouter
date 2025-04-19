@@ -1,6 +1,12 @@
 
 ## 版本更新记录
 
+### 1.3.9 / 2025-4-19
+
+- 全局拦截器：新增 onNavigateBefore() 方法，用于在路由跳转前进行拦截操作；
+- 新增popToNameWithResult() api，；用于携带结果返回指定页面，中间页面会关闭；
+- popNavWithResult 、enableCrossPageParamReturn 已废弃。
+
 ### 1.3.6 / 2025-3-17
 
 - 修复页面模板化时的生命周期函数不执行问题；

@@ -44,9 +44,9 @@ export struct MainView {
           ZRouter.push(RouterConstants.HARB_MAIN_PAGE)
         })
         Button('hsp-跳转到Hsp模块').onClick((event: ClickEvent) => {
-          let data: Record<string, string | number> = { "msg": "hello ZRouter", "num": 100 }
           ZRouter.getInstance()
-            .setParam(data)
+            .withParam("isRoot", true)
+            .withParam("msg", "hello ZRouter")
             .setPopListener((info) => {
               let msg = `返回携带的数据：${JSON.stringify(info.data)}`
               ToastUtils.show(msg)
@@ -83,7 +83,7 @@ export struct MainView {
           ZRouter.getInstance()
             .setParam("root data")
             .setLunchMode(LaunchMode.STANDARD)// 启动模式
-            .listenPopResultOnRootView()// 跨页面参数返回
+            .listenPopResultOnRootView()// 跨页面携带参数返回根视图
             .setAnimate(true)
             .setPopListener((r) => {
               ToastUtils.show(`pop result: ${r.data}  from: ${r.from}`)
