@@ -4,9 +4,9 @@ import { RouterConst } from '../constants/RouterConst';
 /**
  * @author: HZWei
  * @date: 2024/10/12
- * @desc:
+ * @desc: 如果@Route不设置任何属性，则默认使用类名作为路由名称
  */
-@Route({ name: RouterConst.SPLASH_PAGE })
+@Route
 @Component
 export struct SplashPage {
   @State countdown: number = 3000

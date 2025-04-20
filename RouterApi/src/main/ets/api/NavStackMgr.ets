@@ -49,7 +49,7 @@ export default class NavStackMgr {
       if (this.navStackMap.has(this._currentStackName!)) {
         const name = this._currentStackName!
         // this._currentStackName = undefined
-        return name
+        return name ?? DEFAULT_STACK_NAME
       } else {
         throw new Error(`stack name does not exist: 【 ${this._currentStackName} 】，please call  method  register: 【 registerNavStack 】`)
       }
@@ -193,6 +193,9 @@ export default class NavStackMgr {
 
   public addRouterInfo(routerInfo: RouterInfo) {
     const name = this.currentStackName
+    if (ObjUtil.isEmpty(name)) {
+      return
+    }
     let list = this.navDesMap.get(name)
     if (list) {
       list.add(routerInfo)

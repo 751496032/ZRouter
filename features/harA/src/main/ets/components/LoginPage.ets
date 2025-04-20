@@ -7,7 +7,7 @@ import { Route, ZRouter } from 'routerapi'
  */
 
 
-@Route({ name: 'LoginPage'})
+@Route
 @Component
 export struct LoginPage{
 
