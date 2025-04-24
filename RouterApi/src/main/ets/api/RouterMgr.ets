@@ -286,6 +286,7 @@ export class RouterMgr {
     const r = await this.beforePushOrReplace(name, NavigationOperation.PUSH, param, builder)
     if (r.isContinue()) {
       param = r.param
+      name = r.name
     } else {
       return Promise.resolve()
     }

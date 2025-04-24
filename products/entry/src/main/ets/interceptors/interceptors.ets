@@ -21,12 +21,14 @@ export class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
         // 拦截跳转到ParamPage页面
         if (GlobalNavigateInterceptor.count === 0) {
           destInfo.param = ' 在拦截器onNavigateBefore中已替换参数 '
-          GlobalNavigateInterceptor.count = 1
+          destInfo.next() // 继续跳转 默认的 ，可以不写
         } else if (GlobalNavigateInterceptor.count === 1) {
           ToastUtils.show("拦截器onNavigateBefore中已拦截, 再点一次会继续执行")
-          GlobalNavigateInterceptor.count = 2
           destInfo.block() // 拦截跳转
+        } else if (GlobalNavigateInterceptor.count === 2) {
+          destInfo.name = RouterConstants.LIFECYCLE_CASE_VIEW
         }
+        GlobalNavigateInterceptor.count += 1
         resolve(destInfo)
       } else {
         resolve(destInfo)

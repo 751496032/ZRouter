@@ -24,6 +24,7 @@ import { NavAnimationMgr } from '../animation/NavAnimationMgr'
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
 import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
 import { TemplateMgr } from '../template/TemplateMgr'
+import { LifecycleMgr } from '../lifecycle/LifecycleMgr'
 
 const KEY_Z_ROUTER = 'ZRouter'
 
@@ -242,7 +243,7 @@ export class ZRouter {
    * @param observer
    * @returns
    */
-  public static  addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL) {
+  public static addGlobalLifecycleObserver<IL extends ILifecycleObserver>(observer: IL): LifecycleMgr {
     return ZRouter.getRouterMgr().lifecycleMgr.addGlobalObserver(observer)
   }
 
@@ -250,7 +251,7 @@ export class ZRouter {
    * 添加单个NavDestination页面的生命周期观察者，在NavDestination页面模版模式下才会生效
    * @param observer
    */
-  public static addLifecycleObserver(observer: LifecycleObserver) {
+  public static addLifecycleObserver(observer: LifecycleObserver): TemplateMgr {
     return TemplateMgr.getInstance().addObserver(observer)
   }
 
