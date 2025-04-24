@@ -607,15 +607,23 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - 提交代码
 - 新建 Pull Request
 
-## 作者其他库
+## 其他库
 
 - 鸿蒙数据库工具：https://gitee.com/HW-Commons/ZDbUtil
-- 鸿蒙WebView桥接库：https://github.com/751496032/DSBridge-HarmonyOS
+- 鸿蒙Web桥接库：https://github.com/751496032/DSBridge-HarmonyOS
 - 鸿蒙日志库：https://gitee.com/common-apps/logger
+
+## 下一个版本计划
+
+- 拦截器：拦截器支持pop拦截
+- 服务路由：动态注册支持应用入口模块entry
+- 编译插件：自动生成文件调整
+- 转场动画：支持一镜到底动画
+
 
 ## 联系我们
 
- **欢迎大家提交issue、PR（可以统一收集问题，方便更多人查阅，会第一时间回复处理）** ，或进群交流(+v: 751496032)。
+ **欢迎大家提交issue、PR、需求与建议（可以统一收集问题，方便更多人查阅，会第一时间回复处理）** ，或进群交流(+v: 751496032)。
 
 [![_cgi-bin_mmwebwx-bin_webwxgetmsgimg__MsgID7985482268088807228skeycrypt_4f9ae0b8_0271518ab0cb7cd42bc056451ad75554mmweb_appidwx_webfilehelper.md.jpg](https://www.z4a.net/images/2025/03/12/_cgi-bin_mmwebwx-bin_webwxgetmsgimg__MsgID7985482268088807228skeycrypt_4f9ae0b8_0271518ab0cb7cd42bc056451ad75554mmweb_appidwx_webfilehelper.md.jpg)](https://www.z4a.net/image/ywEHV0)
 
