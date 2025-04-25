@@ -199,7 +199,7 @@ struct Index {
 
 通过ZRouter的pushXX()方法进行页面跳转，参数是@Route装饰器上的name属性值；~~或者用ZRouter的getNavStack()方法来执行页面跳转~~。
 
-3、在NavDestination子页的使用自定义@Route或@ZRoute注解描述当前页面，其中name属性是必填的，页面跳转需要用到name值，建议使用驼峰式命名，还有另外三个可选属性分别是：
+3、**在NavDestination子页的使用自定义`@Route`或`@ZRoute`注解标注页面**，其中name属性是必填的，页面跳转需要用到name值，还有另外三个可选属性分别是：
 
 - description：页面描述，没有功能作用；
 - needLogin：如果页面需要登录，可以将值设置为true，然后在拦截器中做页面重定向到登录页；
@@ -233,6 +233,8 @@ export struct Page1 {
 }
 
 ```
+
+> 如果觉得每个页面都要用NavDestination组件包裹太麻烦，可以使用[NavDestination模板化功能](https://gitee.com/common-apps/ZRouter/wikis/NavDestination%E9%A1%B5%E9%9D%A2%E6%A8%A1%E6%9D%BF%E5%8C%96%E8%83%BD%E5%8A%9B)。
 
 **建议通过ZRouter.getInstance()方式来操作路由的跳转与关闭，使用会更灵活简洁，之前的ZRouter的静态方法依然保留着，在1.2.0版本起将标记为过期状态了。**
 
