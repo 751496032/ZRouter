@@ -1,6 +1,10 @@
 {
   "string": [
     {
+      "name": "agcit_hzw_zrouter",
+      "value": "1.4.0"
+    },
+    {
       "name": "module_desc",
       "value": "module description"
     },
