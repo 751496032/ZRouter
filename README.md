@@ -16,6 +16,7 @@ ZRouter是一款轻量级且非侵入性的鸿蒙动态路由框架，可解决H
 - 支持启动模式、混淆、嵌套Navigation、Hap；
 - 支持第三方Navigation的使用本库API；
 - **支持与您现有项目中的Navigation无缝融合，实现零成本向本库迁移；**
+- 支持ArkUI-X跨平台上使用；
 - 未来计划：支持共享元素动画、持续优化。
 
 **使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
@@ -29,19 +30,21 @@ ZRouter是一款轻量级且非侵入性的鸿蒙动态路由框架，可解决H
 ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://developer.huawei.com/consumer/cn/market/landing/component)
 
 
-## router-register-plugin编译插件
+## **router-register-plugin编译插件 -- 很重要**
 
 ### 下载安装
 
-在项目根目录的hvigor目录下的hvigor-config.json5文件中配置安装
+**在项目根目录的hvigor目录下的`hvigor-config.json5`文件中配置安装**
+
+[![pEovcrt.png](https://s21.ax1x.com/2025/04/26/pEovcrt.png)](https://imgse.com/i/pEovcrt)
 
 ```
   "dependencies": {
-    "router-register-plugin":"1.3.2"
+    "router-register-plugin":"x.x.x"
   },
 ```
 
-![Static Badge](https://img.shields.io/badge/router-register-plugin?link=https%3A%2F%2Fgithub.com%2F751496032%2FRouterRegisterPlugin)
+**编译插件最新版本**: ![Static Badge](https://img.shields.io/badge/router-register-plugin?link=https%3A%2F%2Fgithub.com%2F751496032%2FRouterRegisterPlugin)
 [![npm](https://img.shields.io/npm/v/router-register-plugin)](https://www.npmjs.com/package/router-register-plugin)
 
 
@@ -56,7 +59,7 @@ hvigorw --sync
 
 ### 初始配置
 
-在每个模块中的hvigorfile.ts文件导入router-register-plugin插件模块，如下：
+**在每个模块中的`hvigorfile.ts`文件导入router-register-plugin插件模块**，如下：
 
 
 ```
@@ -78,6 +81,8 @@ export default {
 }
 
 ```
+
+> **注意：hvigorfile.ts文件中默认配置不要删除了。**
 
 常用的配置字段：
 
@@ -163,7 +168,7 @@ export class AppAbilityStage extends AbilityStage{
 2、在Index页面**使用Navigation作为根视图，通过ZRouter的getNavStack()方法获取NavPathStack实例，将其传入到Navigation的构造函数中。**
 
 
-> 如果在Index入口文件中启动Splash页面，建议放在Navigation的onAppear方法中进行启动，或者组件的onPageShow方法，具体可参考demo
+**如果在Index入口文件中启动Splash页面，建议放在Navigation的`onAppear`方法中进行启动，或者组件的`onPageShow`方法**，具体可参考demo
 
 ```
 // Index 中使用 aboutToAppear 生命周期函数会因为 Navigation 还没初始化完成导致无法有效跳转,可使用替换成 onPageShow
@@ -184,11 +189,15 @@ struct Index {
     .title('Main')
     .height('100%')
     .width('100%')
+    .onAppear(() => {
+      // 启动Splash页面
+       ZRouter.push("SplashPage")
+    })
   }
 }
 ```
 
-通过ZRouter的pushXX()方法进行页面跳转，参数是@Route装饰器上的name属性值。或者用ZRouter的getNavStack()方法来执行页面跳转。
+通过ZRouter的pushXX()方法进行页面跳转，参数是@Route装饰器上的name属性值；~~或者用ZRouter的getNavStack()方法来执行页面跳转~~。
 
 3、在NavDestination子页的使用自定义@Route或@ZRoute注解描述当前页面，其中name属性是必填的，页面跳转需要用到name值，建议使用驼峰式命名，还有另外三个可选属性分别是：
 
@@ -231,7 +240,6 @@ export struct Page1 {
  ZRouter.getInstance()
   .setParam("root data")
   .setLunchMode(LaunchMode.STANDARD) // 启动模式
-  .enableCrossPageParamReturn() // 跨页面参数返回
   .setAnimate(true)
   .setPopListener((r) => {
     LogUtil.log("index result: ", r.data ," from: ", r.from);
@@ -242,76 +250,68 @@ export struct Page1 {
 
 ### 拦截器
 
-ZRouter支持多个拦截器和全局拦截器，在拦截器中可以做页面跳转的拦截，比如登录拦截，404拦截、埋点、自定义URL路径跳转等。
+ZRouter支持多个拦截器和全局拦截器，在拦截器中可以做页面跳转的拦截，比如跳转前拦截、数据预取、登录拦截，404拦截、埋点、自定义URL路径等等。
 
 #### 全局拦截器
 
-全局拦截器提供两种使用方式：
-
-- 直接函数回调时的方式；
-- 类实现接口的方式（建议使用，功能更全面），支持字面量对象和new创建的对象。
-
-函数回调的方式，代码示例：
-
-```
-@Entry
-@Component
-struct Index {
-  aboutToAppear(): void {
-    ZRouter.setGlobalInterceptor((info) => {
-      if (info.notRegistered) {
-        return
-      }
-      let isLogin = AppStorage.get<Boolean>("isLogin")
-      if (info.needLogin && !isLogin) {
-        let param = ZRouter.getParamByName(info.data?.name ?? "")
-        ZRouter.redirectForResult2("LoginPage", param, (data) => {
-            if (data.result) {
-              // 登录成功
-              promptAction.showToast({ message: `登录成功` })
-              return true // 返回true 则继续跳转登录前的页面
-            }
-            return false
-          })
-      }
-    })
-
-  }
-    
-}
-  
-```
 
 
-类实现接口的方式，代码示例：
+代码示例：
 
 ```typescript
 
 export class GlobalNavigateInterceptor implements  IGlobalNavigateInterceptor{
-  onRootWillShow?: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
+
+  static  count = 0
+  onNavigateBefore: (destInfo: DestinationInfo) => Promise<DestinationInfo> = (destInfo) => {
+    console.log("IInterceptor Global onNavigateBefore -> ", destInfo.name)
+    return new Promise((resolve, _) => {
+      if (destInfo.name === RouterConstants.PAGE_BEFORE_PUSH) {
+        // 拦截跳转到ParamPage页面
+        if (GlobalNavigateInterceptor.count === 0) {
+          destInfo.param = ' 在拦截器onNavigateBefore中已替换参数 '
+          destInfo.next() // 继续跳转 默认的 ，可以不写
+        } else if (GlobalNavigateInterceptor.count === 1) {
+          ToastUtils.show("拦截器onNavigateBefore中已拦截, 再点一次会继续执行")
+          destInfo.block() // 拦截跳转
+        } else if (GlobalNavigateInterceptor.count === 2) {
+          destInfo.name = RouterConstants.LIFECYCLE_CASE_VIEW
+        }
+        GlobalNavigateInterceptor.count += 1
+      }
+      resolve(destInfo)
+
+    })
+  }
+
+  onRootWillShow: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
     console.log("IInterceptor Global onRootWillShow: ", fromContext.pathInfo.name)
   }
-  onPageWillShow?: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined = (from ,to)=>{
+  onPageWillShow: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined = (from ,to)=>{
     console.log("IInterceptor Global onPageWillShow: ", from, to.pathInfo.name, to.pathInfo.param)
   }
 
-  onNavigate?: ((context: InterceptorInfo) => void) | undefined = (info)=>{
+  onNavigate: ((context: InterceptorInfo) => void) | undefined = (info)=>{
     if (info.notRegistered) return
-    console.log("IInterceptor Global onNavigate: ", info.name)
-
+    console.log("IInterceptor Global onNavigate -> ", info.name)
     let isLogin = AppStorage.get<boolean>("isLogin")
     if (info.isNeedLogin && !isLogin) {
       let param = info.param
-      ZRouter.redirectForResult2<boolean>("LoginPage", param, (data) => {
-        if (data.data) {
-          // 登录成功
-          promptAction.showToast({ message: `登录成功` })
-          return true // 返回true 则继续跳转登录前的页面
-        }
-        return false
-      })
-    }
+      ZRouter.getInstance()
+        .setParam(param)
+        .setAnimate(true)
+        .setPopListener((result) => {
+          if (result.data) {
+            //  登录成功
+            promptAction.showToast({ message: `登录成功` })
+            return true // 返回true 则继续跳转登录前的页面
+          } else {
+            return false
+          }
+        })
+        .redirect("LoginPage", RedirectType.REPLACE)
 
+    }
   }
 }
 
@@ -321,7 +321,7 @@ ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
 
 ```
 
-info.notRegistered()方法判断当前页面是否注册，如果没有注册，将使用ZRouter.redirect() 方法来重定向到404页面；通过ZRouter.redirectForResult() 方法来重定向到登录页面，这个方法接受一个回调函数，该回调函数会在用户登录成功或失败后被调用，在回调函数内部，使用 data.result判断是否登录 ，如果登录成功了给回调函数 return true 来指示继续执行登录前的页面跳转。如果登录失败，或者用户取消登录，回调函数将返回 false，表示不跳转。
+info.notRegistered()方法判断当前页面是否注册，如果没有注册，将使用ZRouter.redirect() 方法来重定向到404页面； 也可以通过redirect() 方法来重定向到登录页面，这个方法接受一个回调函数，该回调函数会在用户登录成功或失败后被调用，在回调函数内部，使用 data.result判断是否登录 ，如果登录成功了给回调函数 return true 来指示继续执行登录前的页面跳转。如果登录失败，或者用户取消登录，回调函数将返回 false，表示不跳转。
 
 
 登录页面代码示例：
@@ -354,9 +354,9 @@ export struct LoginPage{
 在登录成功后通过ZRouter.finishWithResult()方法携带数据关闭页面，会将状态传递给redirectForResult2()方法的回调函数。
 
 
-上面是全局拦截器，每个跳转都会触发，如果需要添加多个拦截器，则可以使用setInterceptor()方法。
+上面是全局拦截器，每个跳转都会触发，如果需要添加多个拦截器，则可以使用setInterceptor()方法，但不建议使用。
 
-#### 自定义拦截器
+#### 自定义拦截器 - 不建议使用
 
 自定义拦截器，首先实现接口IInterceptor，然后使用setInterceptor()方法注册拦截器，，代码示例如下：
 
@@ -474,6 +474,8 @@ export class UrlInterceptor implements IInterceptor {
 
 }
 ```
+
+**上面的逻辑也可以放在全局拦截器的onNavigateBefore()方法中处理。**
 
 ## 注解上使用静态常量，可跨模块定义
 
@@ -610,7 +612,7 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 ## 其他库
 
 - 鸿蒙数据库工具：https://gitee.com/HW-Commons/ZDbUtil
-- 鸿蒙Web桥接库：https://github.com/751496032/DSBridge-HarmonyOS
+- 鸿蒙H5与原生的通信库：https://github.com/751496032/DSBridge-HarmonyOS
 - 鸿蒙日志库：https://gitee.com/common-apps/logger
 
 ## 下一个版本计划
