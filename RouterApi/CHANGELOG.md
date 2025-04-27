@@ -1,6 +1,10 @@
 
 ## 版本更新记录
 
+### 1.4.1 / 2025-4-27
+
+- 适配审核，修改agcit_。
+
 ### 1.4.0 / 2025-4-24
 
 - 修复升级1.3.9后的编译错误；
@@ -9,7 +13,7 @@
 ### 1.3.9 / 2025-4-19
 
 - 全局拦截器：新增 onNavigateBefore() 方法，用于在路由跳转前进行拦截操作；
-- 新增popToNameWithResult() api，；用于携带结果返回指定页面，中间页面会关闭；
+- 新增popToNameWithResult() api，用于携带结果返回指定页面，中间页面会关闭；
 - @Route注解可省略属性，生成的路由名为当前页面的类名；
 - 修复跳转hsp页面出现闪退问题；
 - popNavWithResult 、enableCrossPageParamReturn 已废弃。
