@@ -44,6 +44,21 @@ class MyAnim implements INavAnimateOptions {
             this.longTakeAnimationProperties.translateY = this.longTakeAnimationProperties.initTranslateY;
             this.longTakeAnimationProperties.positionYValue = this.longTakeAnimationProperties.initPositionValueY;
             this.longTakeAnimationProperties.positionXValue = this.longTakeAnimationProperties.initPositionValueX;
+
+            animateTo({
+              delay: 50,
+              duration: 100,
+              curve: Curve.Sharp
+            }, () => {
+              this.longTakeAnimationProperties.snapShotOpacity = 0;
+            });
+
+            animateTo({
+              duration: 100,
+              curve: Curve.Sharp
+            }, () => {
+              this.longTakeAnimationProperties.postPageOpacity = 1.0;
+            });
           } else {
             this.longTakeAnimationProperties.scaleValue = 1.0;
             this.longTakeAnimationProperties.translateX = 0;
@@ -54,8 +69,6 @@ class MyAnim implements INavAnimateOptions {
             this.longTakeAnimationProperties.positionXValue = 0;
             this.longTakeAnimationProperties.radius = 34;
             this.longTakeAnimationProperties.navDestinationBgColor = MyAnim.FINAL_OVERLAY_COLOR;
-            this.longTakeAnimationProperties.snapShotOpacity = 0;
-            this.longTakeAnimationProperties.postPageOpacity = 1.0;
           }
         }
         break
