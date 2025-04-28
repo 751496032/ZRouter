@@ -13,12 +13,8 @@
  * limitations under the License.
  */
 
-import { hilog } from '@kit.PerformanceAnalysisKit';
-import { componentSnapshot } from '@kit.ArkUI';
-import { image } from '@kit.ImageKit';
 import { CardAttr, WaterFlowDataSource } from './WaterFlowDataSource';
-import { SnapShotImage } from './SnapShotImage';
-import { Route, SharedCardUtil, ZRouter } from 'routerapi';
+import { Route, ZRouter } from 'routerapi';
 import { RouterConstants } from '@hzw/common_library';
 import { CardComponent } from './CardComponent';
 import { getResourceString } from './ResourceString';
@@ -30,7 +26,6 @@ export struct CardLongTakeTransitionPageOne {
   @State dataSource: WaterFlowDataSource = new WaterFlowDataSource();
   @State columnType: string = '';
   @StorageProp('currentBreakpoint') @Watch('upDateColumnData') currentBreakpoint: string = '';
-  private clickedIndex: number = -1;
 
   aboutToAppear(): void {
     for (let i = 0; i < 100; i++) {
@@ -50,37 +45,14 @@ export struct CardLongTakeTransitionPageOne {
     }
   }
 
-  private doFinishTransition(): void {
-    this.dataSource.getData(this.clickedIndex).isVisible = Visibility.Visible;
-  }
-
-  private onColumnClicked(indexValue: string): void {
-    let clickedIndex = parseInt(indexValue);
-    this.clickedIndex = clickedIndex;
-    // Click the card to get the corresponding screenshot and save it.
-    componentSnapshot.get('FlowItem_' + indexValue, (error: Error, pixelMap: image.PixelMap) => {
-      if (error) {
-        hilog.info(0x0000, 'CardLongTakePageOne', 'componentSnapshot.get error, reason: ' + JSON.stringify(error));
-        // If the screenshot fails, go to the default left/right transition. In this case, the pop-up page will not receive clickedComponentId parameter, and the registration process will not proceed.
-        // At that time from and to the animation are undefined, will go in customNavContentTransition transitions by default.
-        ZRouter.getInstance()
-          .withParam('indexValue', clickedIndex)
-          .push(RouterConstants.PAGE_CARD_TWO)
-        return;
-      } else {
-        hilog.info(0x0000, 'CardLongTakePageOne', 'componentSnapshot.get success!');
-        // If the screenshot is successful, then go to a custom mirror in the end transition.
-        SnapShotImage.pixelMap = pixelMap;
-        ZRouter.getInstance()
-          .withParam('indexValue', clickedIndex)
-          .withParam('clickedComponentId', SharedCardUtil.getFlowItemIdByIndex(indexValue))
-          .withParam('doDefaultTransition', () => {
-            this.doFinishTransition();
-          })
-          .push(RouterConstants.PAGE_CARD_TWO)
-        this.dataSource.getData(this.clickedIndex).isVisible = Visibility.Hidden;
-      }
-    })
+  private onColumnClicked(url: ResourceStr, id: string): void {
+    ZRouter.animateMgr()
+      .setNavigation(ZRouter.getInstance())
+      .withSharedCardParams({
+        imageRes: url,
+        componentId: id,
+      })
+      .push(RouterConstants.PAGE_CARD_TWO)
   }
 
   build() {
@@ -90,17 +62,17 @@ export struct CardLongTakeTransitionPageOne {
           LazyForEach(this.dataSource, (item: CardAttr, index: number) => {
             FlowItem() {
               CardComponent({
-                indexValue: index.toString(),
+                url: $r(`app.media.img_${(index % 6)}`),
                 cardAttr: item,
-                onColumnClicked: (indexValue: string) => {
-                  this.onColumnClicked(indexValue);
+                onColumnClicked: (url: ResourceStr) => {
+                  this.onColumnClicked(url, `FlowItem_${index}`);
                 }
               })
             }
             .width('100%')
             .borderRadius(10)
             .clip(true)
-            .id(SharedCardUtil.getFlowItemIdByIndex(index.toString()))
+            .id(`FlowItem_${index}`)
           }, (item: string) => item)
         }
         .columnsTemplate(this.columnType)

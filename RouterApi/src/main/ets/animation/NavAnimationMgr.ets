@@ -7,9 +7,14 @@ import { NavAnimationModifier } from './modifier/NavAnimationModifier';
 import { INavSingleAnimationParam } from './param/INavAnimationParam';
 import { NavAnimParamBuilder } from './param/NavAnimParamBuilder';
 import { util } from '@kit.ArkTS';
-import { display, window } from '@kit.ArkUI';
+import { componentSnapshot, display, window } from '@kit.ArkUI';
 import { WindowUtility } from './param/shared/utils/WindowUtility';
 import { WindowUtils } from './param/shared/utils/WindowUtils';
+import { ZRouter } from '../api/Router';
+import { image } from '@kit.ImageKit';
+import { SnapShotImage } from './param/shared/utils/SnapShotImage';
+import { ObjectOrNull } from '../model/Model';
+import { NavDestBuilder } from '../model/NavDestBuilder';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
@@ -27,6 +32,12 @@ export interface AnimateCallback {
 export interface NavAnimatePageInfo {
   pageId?: string
   modifier: NavAnimationModifier
+}
+
+export interface SharedCardParams {
+  imageRes: ResourceStr,
+  componentId: string | undefined,
+  doDefaultTransition?: () => void,
 }
 
 /**
@@ -97,6 +108,26 @@ export class NavAnimationMgr {
   public initSharedAnim(windowStage: window.WindowStage) {
     NavAnimationStore.getInstance().initSharedAnim(windowStage)
   }
+
+  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
+    NavAnimationStore.getInstance().registerSharedCardAnimParam(component, ctx)
+  }
+
+  public setNavigation(navigation: NavDestBuilder<ObjectOrNull>): NavAnimationStore {
+    return NavAnimationStore.getInstance().setNavigation(navigation)
+  }
+
+  public withSharedCardParams(param: SharedCardParams): NavAnimationStore {
+    return NavAnimationStore.getInstance().withSharedCardParams(param)
+  }
+
+  /**
+   * 页面跳转
+   * @param name 页面路由名称
+   */
+  public push(name: string) {
+    NavAnimationStore.getInstance().push(name)
+  }
 }
 
 /**
@@ -112,6 +143,9 @@ export class NavAnimationStore {
   // 根据 pageId 设置/获取 转场动画
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
   private _defaultCallback?: AnimateCallback
+  private currentBreakPoint: string = '';
+  private navigation: NavDestBuilder<ObjectOrNull> | undefined = undefined
+  private sharedCardParams: SharedCardParams | undefined = undefined
 
   static getInstance() {
     return NavAnimationStore.delegate;
@@ -378,8 +412,6 @@ export class NavAnimationStore {
     }
   }
 
-  private currentBreakPoint: string = '';
-
   updateBreakpoint(width: number) {
     let windowWidthVp = width / (display.getDefaultDisplaySync().densityDPI / 160);
     let newBreakPoint: string = '';
@@ -397,6 +429,39 @@ export class NavAnimationStore {
       // Record the current breakpoint value using the state variable.
       AppStorage.setOrCreate('currentBreakpoint', this.currentBreakPoint);
     }
+  }
+
+  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
+    this.registerAnimParam(component, ctx)
+  }
+
+  public setNavigation(navigation: NavDestBuilder<ObjectOrNull>): NavAnimationStore {
+    this.navigation = navigation
+    return this
+  }
+
+  public withSharedCardParams(param: SharedCardParams): NavAnimationStore {
+    this.sharedCardParams = param
+    return this
+  }
+
+  push(name: string) {
+    const param = this.sharedCardParams
+    if (!param) {
+      return
+    }
+    componentSnapshot.get(param.componentId, (error: Error, pixelMap: image.PixelMap) => {
+      if (error) {
+        (this.navigation ?? ZRouter.getInstance()).push(name)
+      } else {
+        SnapShotImage.pixelMap = pixelMap;
+        (this.navigation ?? ZRouter.getInstance())
+          .withParam('imageResource', param.imageRes)
+          .withParam('clickedComponentId', param.componentId)
+          .withParam('doDefaultTransition', param.doDefaultTransition)
+          .push(name)
+      }
+    })
   }
 
   // 自定义转场动画回调，在Navigation().customNavContentTransition()设置

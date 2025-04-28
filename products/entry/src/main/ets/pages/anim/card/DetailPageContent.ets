@@ -16,8 +16,6 @@ import { SharedCardUtil } from 'routerapi';
 
 @Component
 export struct DetailPageContent {
-  @Prop indexValue: number;
-  @Prop SharedComponentId: string | undefined = undefined;
   @StorageProp('currentBreakpoint') @Watch('updateIsLargeSize') currentBreakpoint: string = '';
   @State isLargeSize: boolean = false;
   public onBackPressed: () => void = () => {
@@ -58,10 +56,10 @@ export struct DetailPageContent {
     if (!this.isLargeSize) {
       Column() {
         this.MyTitleBuilder()
-        Image($r(`app.media.img_${(this.indexValue % 6)}`))
+        Image(SharedCardUtil.getSharedUrl())
           .size({ width: '100%' })
           .objectFit(ImageFit.Auto)
-          .id(this.SharedComponentId)
+          .id(SharedCardUtil.getSharedComponentId())
       }
       .size({
         width: px2vp(SharedCardUtil.getWindowWidthPx()),
@@ -72,10 +70,10 @@ export struct DetailPageContent {
         this.MyTitleBuilder()
 
         Stack() {
-          Image($r(`app.media.img_${(this.indexValue % 6)}`))
+          Image(SharedCardUtil.getSharedUrl())
             .size({ width: '50%' })
             .objectFit(ImageFit.Auto)
-            .id(this.SharedComponentId)
+            .id(SharedCardUtil.getSharedComponentId())
         }
         .width('100%')
 

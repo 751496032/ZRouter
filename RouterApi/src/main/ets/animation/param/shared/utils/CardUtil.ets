@@ -22,10 +22,6 @@ export class CardUtil {
     return 'Post_Page_Image' + prePageClickedCardId;
   }
 
-  public static getFlowItemIdByIndex(index: string): string {
-    return 'FlowItem_' + index;
-  }
-
   public static isLargeSize(): boolean {
     let currentBreakPoint: string | undefined = AppStorage.get('currentBreakpoint');
     return (currentBreakPoint === 'md' || currentBreakPoint === 'lg');

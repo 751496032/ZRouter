@@ -12,18 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CardAttr } from "./WaterFlowDataSource";
+import { CardAttr } from './WaterFlowDataSource';
 
 @Component
 export struct CardComponent {
   @ObjectLink cardAttr: CardAttr;
-  @Prop indexValue: string = '';
-  private onColumnClicked?: (index: string) => void = (_index: string) => {
+  @Prop url: ResourceStr = '';
+  onColumnClicked?: (url: ResourceStr) => void = (_url: ResourceStr) => {
   };
 
   build() {
     Column() {
-      Image($r(`app.media.img_${(parseInt(this.indexValue) % 6)}`))
+      Image(this.url)
         .size({ width: '100%' })
         .objectFit(ImageFit.Auto)
         .draggable(false)
@@ -47,7 +47,7 @@ export struct CardComponent {
     .backgroundColor(Color.White)
     .size({ width: '100%' })
     .onClick(() => {
-      this.onColumnClicked?.(this.indexValue);
+      this.onColumnClicked?.(this.url);
     })
   }
 }

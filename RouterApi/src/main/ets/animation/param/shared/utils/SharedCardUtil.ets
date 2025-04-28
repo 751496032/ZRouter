@@ -1,6 +1,9 @@
+import { ZRouter } from '../../../../api/Router';
 import { CardSharedAnimationProperties } from '../CardSharedAnimationProperties';
 import { CardUtil } from './CardUtil';
+import { SnapShotImage } from './SnapShotImage';
 import { WindowUtils } from './WindowUtils';
+import { image } from '@kit.ImageKit';
 
 /**
  * @author: HHBin
@@ -12,12 +15,18 @@ export class SharedCardUtil {
     return new CardSharedAnimationProperties();
   }
 
-  public static getPostPageImageId(prePageClickedCardId: string | undefined): string | undefined {
-    return CardUtil.getPostPageImageId(prePageClickedCardId);
+  public static getSharedUrl(): ResourceStr {
+    let imageResource = ZRouter.getParamByKey('imageResource') as ResourceStr;
+    return imageResource;
   }
 
-  public static getFlowItemIdByIndex(index: string): string {
-    return CardUtil.getFlowItemIdByIndex(index);
+  public static getSharedComponentId(): string | undefined {
+    let prePageCardId = ZRouter.getParamByKey('clickedComponentId') as string;
+    return CardUtil.getPostPageImageId(prePageCardId);
+  }
+
+  public static getPostPageImageId(prePageClickedCardId: string | undefined): string | undefined {
+    return CardUtil.getPostPageImageId(prePageClickedCardId);
   }
 
   public static getWindowWidthPx(): number {
@@ -34,5 +43,9 @@ export class SharedCardUtil {
 
   public static getNavigationIndicatorHeightPx(): number {
     return WindowUtils.navigationIndicatorHeight_px
+  }
+
+  public static getPixelMap(): image.PixelMap | undefined {
+    return SnapShotImage.pixelMap
   }
 }

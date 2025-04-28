@@ -26,5 +26,6 @@ export { BlurAnimationOptions } from './src/main/ets/animation/param/BlurAnimati
 export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'
 export { SharedCardUtil } from './src/main/ets/animation/param/shared/utils/SharedCardUtil'
 export { CardSharedAnimationProperties } from './src/main/ets/animation/param/shared/CardSharedAnimationProperties'
+export { SharedCardContainer } from './src/main/ets/animation/param/shared/components/SharedCardContainer'
 export { RedirectType } from './src/main/ets/model/Const'
 export { LaunchMode } from './src/main/ets/model/LaunchMode'
