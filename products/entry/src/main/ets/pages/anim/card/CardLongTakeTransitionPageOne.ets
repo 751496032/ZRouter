@@ -17,9 +17,8 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { componentSnapshot } from '@kit.ArkUI';
 import { image } from '@kit.ImageKit';
 import { CardAttr, WaterFlowDataSource } from './WaterFlowDataSource';
-import { CardUtil } from './CardUtil';
 import { SnapShotImage } from './SnapShotImage';
-import { Route, ZRouter } from 'routerapi';
+import { Route, SharedCardUtil, ZRouter } from 'routerapi';
 import { RouterConstants } from '@hzw/common_library';
 import { CardComponent } from './CardComponent';
 import { getResourceString } from './ResourceString';
@@ -74,7 +73,7 @@ export struct CardLongTakeTransitionPageOne {
         SnapShotImage.pixelMap = pixelMap;
         ZRouter.getInstance()
           .withParam('indexValue', clickedIndex)
-          .withParam('clickedComponentId', CardUtil.getFlowItemIdByIndex(indexValue))
+          .withParam('clickedComponentId', SharedCardUtil.getFlowItemIdByIndex(indexValue))
           .withParam('doDefaultTransition', () => {
             this.doFinishTransition();
           })
@@ -101,7 +100,7 @@ export struct CardLongTakeTransitionPageOne {
             .width('100%')
             .borderRadius(10)
             .clip(true)
-            .id(CardUtil.getFlowItemIdByIndex(index.toString()))
+            .id(SharedCardUtil.getFlowItemIdByIndex(index.toString()))
           }, (item: string) => item)
         }
         .columnsTemplate(this.columnType)

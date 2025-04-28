@@ -14,10 +14,8 @@
  */
 
 import { RouterConstants } from '@hzw/common_library';
-import { Route, ZRouter } from 'routerapi';
-import { CardUtil } from './CardUtil';
+import { CardSharedAnimationProperties, Route, SharedCardUtil, ZRouter } from 'routerapi';
 import { DetailPageContent } from './DetailPageContent';
-import { LongTakeAnimationProperties } from './LongTakeAnimationProperties';
 import { SnapShotImage } from './SnapShotImage';
 
 @Builder
@@ -28,7 +26,7 @@ export function CardLongTakeTransitionPageTwoBuilder() {
 @Route({ name: RouterConstants.PAGE_CARD_TWO })
 @Component
 export struct CardLongTakeTransitionPageTwo {
-  @State longTakeAnimationProperties: LongTakeAnimationProperties = new LongTakeAnimationProperties();
+  @State properties: CardSharedAnimationProperties = SharedCardUtil.createSharedAnimationProperties();
   @StorageProp('windowSizeChanged') @Watch('unRegisterNavParam') windowSizeChangedTime: number = 0;
   @StorageProp('onConfigurationUpdate') @Watch('unRegisterNavParam') onConfigurationUpdateTime: number = 0;
   @State snapShotImage: PixelMap | undefined = SnapShotImage.pixelMap;
@@ -59,56 +57,55 @@ export struct CardLongTakeTransitionPageTwo {
 
   build() {
     NavDestination() {
-      // Stack needs to set the alignContent to TopStart, otherwise the screenshot and content will be repositioned with the height as it changes.
+      // Stack组件的alignContent设置为TopStart，否则在高度变化时，截图和内容会重新定位。
       Stack({ alignContent: Alignment.TopStart }) {
         Stack({ alignContent: Alignment.TopStart }) {
-          // Used to display a screenshot of the card clicked on the previous page.
+          // 显示前一页点击的卡片的截图
           Image(this.snapShotImage)
-            .size(this.longTakeAnimationProperties.snapShotSize)
+            .size(this.properties.snapShotSize)
             .objectFit(ImageFit.Auto)
-            .opacity(this.longTakeAnimationProperties.snapShotOpacity)// eslint-disable-next-line @performance/hp-arkui-image-async-load
-            .syncLoad(true)// The position here gives the distance from the screenshot position to the expanded page image position.
+            .opacity(this.properties.snapShotOpacity)
+            .syncLoad(true)// 显示前一页点击的卡片的截图
             .position({
-              x: this.longTakeAnimationProperties.snapShotPositionX,
-              y: this.longTakeAnimationProperties.snapShotPositionY
+              x: this.properties.snapShotPositionX,
+              y: this.properties.snapShotPositionY
             })
 
-          // The pop-up page originally displays the content, adding transparency to control its display during animation.
+          // 原始弹出页显示内容，添加透明度控制其动画显示。
           DetailPageContent({
             indexValue: this.indexValue,
             onBackPressed: () => {
               this.onBackPressed()
             },
-            SharedComponentId: CardUtil.getPostPageImageId(this.clickedCardId)
+            SharedComponentId: SharedCardUtil.getPostPageImageId(this.clickedCardId)
           })
             .size({
               width: '100%',
               height: '100%'
             })
-            .opacity(this.longTakeAnimationProperties.postPageOpacity)
+            .opacity(this.properties.postPageOpacity)
         }
         .width('100%')
         .position({
-          x: this.longTakeAnimationProperties.positionXValue,
-          y: this.longTakeAnimationProperties.positionYValue
+          x: this.properties.positionXValue,
+          y: this.properties.positionYValue
         })
       }
       .scale({
-        x: this.longTakeAnimationProperties.scaleValue,
-        y: this.longTakeAnimationProperties.scaleValue
+        x: this.properties.scaleValue,
+        y: this.properties.scaleValue
       })
       .translate({
-        x: this.longTakeAnimationProperties.translateX,
-        y: this.longTakeAnimationProperties.translateY
+        x: this.properties.translateX,
+        y: this.properties.translateY
       })
-      .width(this.longTakeAnimationProperties.clipWidth)
-      .height(this.longTakeAnimationProperties.clipHeight)
-      .borderRadius(this.longTakeAnimationProperties.radius)
+      .width(this.properties.clipWidth)
+      .height(this.properties.clipHeight)
+      .borderRadius(this.properties.radius)
       .expandSafeArea([SafeAreaType.SYSTEM])
       .backgroundColor($r('app.color.water_flow_background_color'))
       .clip(true)
     }
-    .backgroundColor(this.longTakeAnimationProperties.navDestinationBgColor)
     .hideTitleBar(true)
     .onReady((context: NavDestinationContext) => {
       let clickedCardId = ZRouter.getParamByKey('clickedComponentId') as string;
@@ -117,14 +114,15 @@ export struct CardLongTakeTransitionPageTwo {
       if (context.navDestinationId && clickedCardId) {
         this.pageId = context.navDestinationId;
         this.clickedCardId = clickedCardId;
-        this.longTakeAnimationProperties.init(clickedCardId, this.prePageDoFinishTransition)
-        this.longTakeAnimationProperties.doAnimation(this, context)
+        this.properties.init(clickedCardId, this.prePageDoFinishTransition)
+        this.properties.doAnimation(this, context)
       }
     })
     .onDisAppear(() => {
-      ZRouter.getInstance().animateMgr().unregisterAnim(this)
+      ZRouter.animateMgr().unregisterAnim(this)
     })
-    .attributeModifier(ZRouter.getInstance().animateMgr().modifier(this))
+    .backgroundColor(Color.Transparent)
+    .attributeModifier(ZRouter.animateMgr().modifier(this))
     .onBackPressed(() => {
       return this.onBackPressed();
     })

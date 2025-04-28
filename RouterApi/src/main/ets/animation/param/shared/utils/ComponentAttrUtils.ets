@@ -23,7 +23,7 @@ export class CustomExceptions {
 }
 
 export class ComponentAttrUtils {
-  // Gets the location information of a component based on its id.
+  // 获取组件id对应的位置信息
   public static getRectInfoById(context: UIContext, id: string): RectInfoInPx {
     if (!context || !id) {
       throw CustomExceptions.EMPTY_OBJECT_EXCEPTION;

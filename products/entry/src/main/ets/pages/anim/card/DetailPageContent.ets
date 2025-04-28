@@ -12,8 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { WindowUtils } from "./WindowUtils";
-
+import { SharedCardUtil } from 'routerapi';
 
 @Component
 export struct DetailPageContent {
@@ -65,8 +64,8 @@ export struct DetailPageContent {
           .id(this.SharedComponentId)
       }
       .size({
-        width: px2vp(WindowUtils.windowWidth_px),
-        height: px2vp(WindowUtils.windowHeight_px)
+        width: px2vp(SharedCardUtil.getWindowWidthPx()),
+        height: px2vp(SharedCardUtil.getWindowHeightPx())
       })
     } else {
       Column() {
@@ -86,8 +85,8 @@ export struct DetailPageContent {
           .margin({ top: 16 })
       }
       .size({
-        width: px2vp(WindowUtils.windowWidth_px),
-        height: px2vp(WindowUtils.windowHeight_px)
+        width: px2vp(SharedCardUtil.getWindowWidthPx()),
+        height: px2vp(SharedCardUtil.getWindowHeightPx())
       })
     }
   }

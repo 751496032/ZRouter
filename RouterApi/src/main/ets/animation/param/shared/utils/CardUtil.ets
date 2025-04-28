@@ -14,7 +14,7 @@
  */
 
 export class CardUtil {
-  // For the scenario where one card mirror is attached to the other picture, the picture on the pop-up page needs to be marked with an id. Set the id in a unified way here.
+  // 一个卡片镜像被其他图片关联，弹出页上的图片需要标记id，在此统一设置id
   public static getPostPageImageId(prePageClickedCardId: string | undefined): string | undefined {
     if (!prePageClickedCardId) {
       return undefined;

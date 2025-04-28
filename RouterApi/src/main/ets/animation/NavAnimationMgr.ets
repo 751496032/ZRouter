@@ -7,6 +7,9 @@ import { NavAnimationModifier } from './modifier/NavAnimationModifier';
 import { INavSingleAnimationParam } from './param/INavAnimationParam';
 import { NavAnimParamBuilder } from './param/NavAnimParamBuilder';
 import { util } from '@kit.ArkTS';
+import { display, window } from '@kit.ArkUI';
+import { WindowUtility } from './param/shared/utils/WindowUtility';
+import { WindowUtils } from './param/shared/utils/WindowUtils';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
@@ -89,6 +92,10 @@ export class NavAnimationMgr {
    */
   public getAnimCustomNavContentTransition() {
     return NavAnimationStore.customNavContentTransition
+  }
+
+  public initSharedAnim(windowStage: window.WindowStage) {
+    NavAnimationStore.getInstance().initSharedAnim(windowStage)
   }
 }
 
@@ -338,6 +345,57 @@ export class NavAnimationStore {
           }
         })
       }
+    }
+  }
+
+  initSharedAnim(windowStage: window.WindowStage) {
+    WindowUtility.setWindow(windowStage)
+    WindowUtils.window = windowStage.getMainWindowSync();
+    WindowUtils.windowWidth_px = WindowUtils.window.getWindowProperties().windowRect.width;
+    WindowUtils.windowHeight_px = WindowUtils.window.getWindowProperties().windowRect.height;
+    this.updateBreakpoint(WindowUtils.windowWidth_px);
+    let avoidArea = WindowUtils.window.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+    WindowUtils.topAvoidAreaHeight_px = avoidArea.topRect.height;
+    let navigationArea = WindowUtils.window.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
+    WindowUtils.navigationIndicatorHeight_px = navigationArea.bottomRect.height;
+    try {
+      WindowUtils.window.on('windowSizeChange', (data) => {
+        WindowUtils.windowWidth_px = data.width;
+        WindowUtils.windowHeight_px = data.height;
+        this.updateBreakpoint(data.width);
+      })
+      WindowUtils.window.on('avoidAreaChange', (data) => {
+        if (data.type === window.AvoidAreaType.TYPE_SYSTEM) {
+          let topRectHeight = data.area.topRect.height;
+          WindowUtils.topAvoidAreaHeight_px = topRectHeight;
+        } else if (data.type === window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR) {
+          let bottomRectHeight = data.area.bottomRect.height;
+          WindowUtils.navigationIndicatorHeight_px = bottomRectHeight;
+        }
+      })
+    } catch (exception) {
+      console.error(exception)
+    }
+  }
+
+  private currentBreakPoint: string = '';
+
+  updateBreakpoint(width: number) {
+    let windowWidthVp = width / (display.getDefaultDisplaySync().densityDPI / 160);
+    let newBreakPoint: string = '';
+    if (windowWidthVp < 400) {
+      newBreakPoint = 'xs';
+    } else if (windowWidthVp < 600) {
+      newBreakPoint = 'sm';
+    } else if (windowWidthVp < 800) {
+      newBreakPoint = 'md';
+    } else {
+      newBreakPoint = 'lg';
+    }
+    if (this.currentBreakPoint !== newBreakPoint) {
+      this.currentBreakPoint = newBreakPoint;
+      // Record the current breakpoint value using the state variable.
+      AppStorage.setOrCreate('currentBreakpoint', this.currentBreakPoint);
     }
   }
 
