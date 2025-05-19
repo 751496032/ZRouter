@@ -16,7 +16,6 @@ import { CardAttr } from './WaterFlowDataSource';
 
 @Component
 export struct CardComponent {
-  @ObjectLink cardAttr: CardAttr;
   @Prop url: ResourceStr = '';
   onColumnClicked?: (url: ResourceStr) => void = (_url: ResourceStr) => {
   };

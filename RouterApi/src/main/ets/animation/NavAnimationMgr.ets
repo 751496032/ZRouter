@@ -15,6 +15,8 @@ import { image } from '@kit.ImageKit';
 import { SnapShotImage } from './param/shared/utils/SnapShotImage';
 import { ObjectOrNull } from '../model/Model';
 import { NavDestBuilder } from '../model/NavDestBuilder';
+import { CardSharedAnimationProperties } from './param/shared/CardSharedAnimationProperties';
+import { CardSharedAnimationOptions } from './param/shared/CardSharedAnimationOptions';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
@@ -81,6 +83,14 @@ export class NavAnimationMgr {
     return NavAnimationStore.getInstance().buildAnimParam(component, ctx)
   }
 
+  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
+    NavAnimationStore.getInstance().buildSharedCardAnimParam(component, ctx)
+  }
+
+  public getSharedCardAnimationProperties(): CardSharedAnimationProperties | undefined {
+    return NavAnimationStore.getInstance().getSharedCardAnimationProperties()
+  }
+
   /**
    * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
    * @param modifier
@@ -107,10 +117,6 @@ export class NavAnimationMgr {
 
   public initSharedAnim(windowStage: window.WindowStage) {
     NavAnimationStore.getInstance().initSharedAnim(windowStage)
-  }
-
-  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
-    NavAnimationStore.getInstance().registerSharedCardAnimParam(component, ctx)
   }
 
   public setNavigation(navigation: NavDestBuilder<ObjectOrNull>): NavAnimationStore {
@@ -216,6 +222,27 @@ export class NavAnimationStore {
     return NavAnimParamBuilder.builder(callback)
   }
 
+  private cardSharedAnimPropMap: Map<string, CardSharedAnimationProperties> = new Map();
+  private curComponent: Object | undefined
+
+  buildSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
+    const prop = new CardSharedAnimationProperties()
+    prop.registerSharedCardAnim()
+    ZRouter.animateMgr()
+      .registerAnimParam(component, ctx)
+      .setEnterAnimate({ duration: 500 })
+      .setExitAnimate({ duration: 500 })
+      .addAnimateOptions(new CardSharedAnimationOptions(prop));
+    this.cardSharedAnimPropMap[this.getKey(component)] = prop
+    this.curComponent = component
+  }
+
+  getSharedCardAnimationProperties(): CardSharedAnimationProperties | undefined {
+    if (!this.curComponent) {
+      return undefined
+    }
+    return this.cardSharedAnimPropMap[this.getKey(this.curComponent)]
+  }
 
   /**
    * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
@@ -429,10 +456,6 @@ export class NavAnimationStore {
       // Record the current breakpoint value using the state variable.
       AppStorage.setOrCreate('currentBreakpoint', this.currentBreakPoint);
     }
-  }
-
-  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
-    this.registerAnimParam(component, ctx)
   }
 
   public setNavigation(navigation: NavDestBuilder<ObjectOrNull>): NavAnimationStore {

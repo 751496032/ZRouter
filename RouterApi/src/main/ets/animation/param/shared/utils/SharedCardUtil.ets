@@ -11,9 +11,6 @@ import { image } from '@kit.ImageKit';
  * @desc:
  */
 export class SharedCardUtil {
-  public static createSharedAnimationProperties(): CardSharedAnimationProperties {
-    return new CardSharedAnimationProperties();
-  }
 
   public static getSharedUrl(): ResourceStr {
     let imageResource = ZRouter.getParamByKey('imageResource') as ResourceStr;

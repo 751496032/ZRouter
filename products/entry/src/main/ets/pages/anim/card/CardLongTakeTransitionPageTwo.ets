@@ -14,7 +14,7 @@
  */
 
 import { RouterConstants } from '@hzw/common_library';
-import { CardSharedAnimationProperties, Route, SharedCardContainer, SharedCardUtil, ZRouter } from 'routerapi';
+import { Route, SharedCardContainer, ZRouter } from 'routerapi';
 import { DetailPageContent } from './DetailPageContent';
 
 @Builder
@@ -25,8 +25,6 @@ export function CardLongTakeTransitionPageTwoBuilder() {
 @Route({ name: RouterConstants.PAGE_CARD_TWO })
 @Component
 export struct CardLongTakeTransitionPageTwo {
-  @State properties: CardSharedAnimationProperties = SharedCardUtil.createSharedAnimationProperties();
-
   onBackPressed(): boolean {
     ZRouter.getInstance().pop()
     return true;
@@ -46,7 +44,6 @@ export struct CardLongTakeTransitionPageTwo {
   build() {
     NavDestination() {
       SharedCardContainer({
-        properties: this.properties,
         bgColor: $r('app.color.water_flow_background_color'),
         content: () => {
           this.Content()
@@ -54,7 +51,7 @@ export struct CardLongTakeTransitionPageTwo {
       })
     }
     .onReady((context: NavDestinationContext) => {
-      this.properties.registerSharedCardAnim(this, context)
+      ZRouter.animateMgr().registerSharedCardAnimParam(this, context)
     })
     .onDisAppear(() => {
       ZRouter.animateMgr().unregisterAnim(this)

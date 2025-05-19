@@ -45,16 +45,6 @@ export struct CardLongTakeTransitionPageOne {
     }
   }
 
-  private onColumnClicked(url: ResourceStr, id: string): void {
-    ZRouter.animateMgr()
-      .setNavigation(ZRouter.getInstance())
-      .withSharedCardParams({
-        imageRes: url,
-        componentId: id,
-      })
-      .push(RouterConstants.PAGE_CARD_TWO)
-  }
-
   build() {
     NavDestination() {
       Stack() {
@@ -63,9 +53,14 @@ export struct CardLongTakeTransitionPageOne {
             FlowItem() {
               CardComponent({
                 url: $r(`app.media.img_${(index % 6)}`),
-                cardAttr: item,
                 onColumnClicked: (url: ResourceStr) => {
-                  this.onColumnClicked(url, `FlowItem_${index}`);
+                  ZRouter.animateMgr()
+                    .setNavigation(ZRouter.getInstance())
+                    .withSharedCardParams({
+                      imageRes: url,
+                      componentId: `FlowItem_${index}`,
+                    })
+                    .push(RouterConstants.PAGE_CARD_TWO)
                 }
               })
             }

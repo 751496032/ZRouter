@@ -38,18 +38,13 @@ export class CardSharedAnimationProperties {
   };
   public clickedCardId: string = '';
 
-  public registerSharedCardAnim(component: object, ctx: NavDestinationContext): void {
+  public registerSharedCardAnim(): void {
     let prePageCardId = ZRouter.getParamByKey('clickedComponentId') as string;
     let prePageOnFinish = ZRouter.getParamByKey('doDefaultTransition') as () => void;
-    if (ctx.navDestinationId && prePageCardId) {
+    if (prePageCardId) {
       this.clickedCardId = prePageCardId;
       this.recoverPrePage = prePageOnFinish;
       this.cardItemInfo_px = ComponentAttrUtils.getRectInfoById(WindowUtils.window.getUIContext(), prePageCardId);
-      ZRouter.animateMgr()
-        .registerAnimParam(component, ctx)
-        .setEnterAnimate({ duration: 500 })
-        .setExitAnimate({ duration: 500 })
-        .addAnimateOptions(new CardSharedAnimationOptions(this))
     }
   }
 
