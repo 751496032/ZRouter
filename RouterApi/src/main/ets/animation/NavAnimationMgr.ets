@@ -17,6 +17,7 @@ import { ObjectOrNull } from '../model/Model';
 import { NavDestBuilder } from '../model/NavDestBuilder';
 import { CardSharedAnimationProperties } from './param/shared/CardSharedAnimationProperties';
 import { CardSharedAnimationOptions } from './param/shared/CardSharedAnimationOptions';
+import { CardUtil } from './param/shared/utils/CardUtil';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
@@ -83,10 +84,6 @@ export class NavAnimationMgr {
     return NavAnimationStore.getInstance().buildAnimParam(component, ctx)
   }
 
-  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
-    NavAnimationStore.getInstance().buildSharedCardAnimParam(component, ctx)
-  }
-
   public getSharedCardAnimationProperties(): CardSharedAnimationProperties | undefined {
     return NavAnimationStore.getInstance().getSharedCardAnimationProperties()
   }
@@ -133,6 +130,53 @@ export class NavAnimationMgr {
    */
   public push(name: string) {
     NavAnimationStore.getInstance().push(name)
+  }
+
+  public SharedCard(): NavSharedCardAnimMgr {
+    return new NavSharedCardAnimMgr()
+  }
+}
+
+/**
+ * 卡片一镜到底转场动画管理器
+ */
+export class NavSharedCardAnimMgr {
+  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
+    NavAnimationStore.getInstance().buildSharedCardAnimParam(component, ctx)
+  }
+
+  public getSharedUrl(): ResourceStr {
+    let imageResource = ZRouter.getParamByKey('imageResource') as ResourceStr;
+    return imageResource;
+  }
+
+  public getSharedComponentId(): string | undefined {
+    let prePageCardId = ZRouter.getParamByKey('clickedComponentId') as string;
+    return CardUtil.getPostPageImageId(prePageCardId);
+  }
+
+  public getPostPageImageId(prePageClickedCardId: string | undefined): string | undefined {
+    return CardUtil.getPostPageImageId(prePageClickedCardId);
+  }
+
+  public getWindowWidthPx(): number {
+    return WindowUtils.windowWidth_px
+  }
+
+  public getWindowHeightPx(): number {
+    return WindowUtils.windowHeight_px
+  }
+
+  public getTopAvoidAreaHeightPx(): number {
+    return WindowUtils.topAvoidAreaHeight_px
+  }
+
+  public getNavigationIndicatorHeightPx(): number {
+    return WindowUtils.navigationIndicatorHeight_px
+  }
+
+  public getPixelMap(): image.PixelMap | undefined {
+    return SnapShotImage.pixelMap
   }
 }
 

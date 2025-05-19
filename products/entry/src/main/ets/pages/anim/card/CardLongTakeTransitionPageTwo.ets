@@ -51,7 +51,7 @@ export struct CardLongTakeTransitionPageTwo {
       })
     }
     .onReady((context: NavDestinationContext) => {
-      ZRouter.animateMgr().registerSharedCardAnimParam(this, context)
+      ZRouter.animateMgr().SharedCard().registerSharedCardAnimParam(this, context)
     })
     .onDisAppear(() => {
       ZRouter.animateMgr().unregisterAnim(this)

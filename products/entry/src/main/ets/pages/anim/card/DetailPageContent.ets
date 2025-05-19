@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SharedCardUtil } from 'routerapi';
+import { ZRouter } from 'routerapi';
 
 @Component
 export struct DetailPageContent {
@@ -56,24 +56,24 @@ export struct DetailPageContent {
     if (!this.isLargeSize) {
       Column() {
         this.MyTitleBuilder()
-        Image(SharedCardUtil.getSharedUrl())
+        Image(ZRouter.animateMgr().SharedCard().getSharedUrl())
           .size({ width: '100%' })
           .objectFit(ImageFit.Auto)
-          .id(SharedCardUtil.getSharedComponentId())
+          .id(ZRouter.animateMgr().SharedCard().getSharedComponentId())
       }
       .size({
-        width: px2vp(SharedCardUtil.getWindowWidthPx()),
-        height: px2vp(SharedCardUtil.getWindowHeightPx())
+        width: px2vp(ZRouter.animateMgr().SharedCard().getWindowWidthPx()),
+        height: px2vp(ZRouter.animateMgr().SharedCard().getWindowHeightPx())
       })
     } else {
       Column() {
         this.MyTitleBuilder()
 
         Stack() {
-          Image(SharedCardUtil.getSharedUrl())
+          Image(ZRouter.animateMgr().SharedCard().getSharedUrl())
             .size({ width: '50%' })
             .objectFit(ImageFit.Auto)
-            .id(SharedCardUtil.getSharedComponentId())
+            .id(ZRouter.animateMgr().SharedCard().getSharedComponentId())
         }
         .width('100%')
 
@@ -83,8 +83,8 @@ export struct DetailPageContent {
           .margin({ top: 16 })
       }
       .size({
-        width: px2vp(SharedCardUtil.getWindowWidthPx()),
-        height: px2vp(SharedCardUtil.getWindowHeightPx())
+        width: px2vp(ZRouter.animateMgr().SharedCard().getWindowWidthPx()),
+        height: px2vp(ZRouter.animateMgr().SharedCard().getWindowHeightPx())
       })
     }
   }

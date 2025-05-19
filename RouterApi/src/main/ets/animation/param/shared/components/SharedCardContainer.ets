@@ -1,6 +1,5 @@
 import { ZRouter } from '../../../../api/Router';
 import { CardSharedAnimationProperties } from '../CardSharedAnimationProperties';
-import { SharedCardUtil } from '../utils/SharedCardUtil';
 
 /**
  * @author: HHBin
@@ -27,7 +26,7 @@ export struct SharedCardContainer {
       Stack({ alignContent: Alignment.TopStart }) {
         Stack({ alignContent: Alignment.TopStart }) {
           // 显示前一页点击的卡片的截图
-          Image(SharedCardUtil.getPixelMap())
+          Image(ZRouter.animateMgr().SharedCard().getPixelMap())
             .size(this.properties.snapShotSize)
             .objectFit(ImageFit.Auto)
             .opacity(this.properties.snapShotOpacity)
