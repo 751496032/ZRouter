@@ -9,7 +9,6 @@ import { ZRouter } from '../../../api/Router';
  * @date: 2025/4/28
  * @desc:
  */
-@Observed
 export class CardSharedAnimationProperties {
   public navDestinationBgColor: ResourceColor = CardSharedAnimationOptions.INIT_OVERLAY_COLOR;
   public snapShotOpacity: number = 1;
@@ -34,16 +33,12 @@ export class CardSharedAnimationProperties {
   public initPositionValueX: number = 0;
   public initPositionValueY: number = 0;
   public cardItemInfo_px: RectInfoInPx = new RectInfoInPx();
-  public recoverPrePage: () => void = () => {
-  };
   public clickedCardId: string = '';
 
   public registerSharedCardAnim(): void {
-    let prePageCardId = ZRouter.getParamByKey('clickedComponentId') as string;
-    let prePageOnFinish = ZRouter.getParamByKey('doDefaultTransition') as () => void;
+    let prePageCardId = ZRouter.getParamByKey(CardUtil.KEY_CLICKED_COMPONENT_ID) as string;
     if (prePageCardId) {
       this.clickedCardId = prePageCardId;
-      this.recoverPrePage = prePageOnFinish;
       this.cardItemInfo_px = ComponentAttrUtils.getRectInfoById(WindowUtils.window.getUIContext(), prePageCardId);
     }
   }

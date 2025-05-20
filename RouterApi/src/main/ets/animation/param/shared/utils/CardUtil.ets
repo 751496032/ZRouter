@@ -26,4 +26,6 @@ export class CardUtil {
     let currentBreakPoint: string | undefined = AppStorage.get('currentBreakpoint');
     return (currentBreakPoint === 'md' || currentBreakPoint === 'lg');
   }
+  public static KEY_IMAGE_RESOURCE = "Post_Page_Image_imageResource"
+  public static KEY_CLICKED_COMPONENT_ID = "Post_Page_Image_clickedComponentId"
 }

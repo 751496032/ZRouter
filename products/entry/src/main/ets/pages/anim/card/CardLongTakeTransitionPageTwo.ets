@@ -15,7 +15,8 @@
 
 import { RouterConstants } from '@hzw/common_library';
 import { Route, SharedCardContainer, ZRouter } from 'routerapi';
-import { DetailPageContent } from './DetailPageContent';
+import { CardComponent } from './CardComponent';
+import { CardAttr, WaterFlowDataSource } from './WaterFlowDataSource';
 
 @Builder
 export function CardLongTakeTransitionPageTwoBuilder() {
@@ -25,6 +26,16 @@ export function CardLongTakeTransitionPageTwoBuilder() {
 @Route({ name: RouterConstants.PAGE_CARD_TWO })
 @Component
 export struct CardLongTakeTransitionPageTwo {
+  @State dataSource: WaterFlowDataSource = new WaterFlowDataSource();
+  @State flag: number = 0
+
+  aboutToAppear(): void {
+    for (let i = 0; i < 100; i++) {
+      this.dataSource.pushData(new CardAttr());
+    }
+    this.flag = ZRouter.getInstance().getParamByKey("flag")
+  }
+
   onBackPressed(): boolean {
     ZRouter.getInstance().pop()
     return true;
@@ -32,13 +43,60 @@ export struct CardLongTakeTransitionPageTwo {
 
   @Builder
   Content() {
-    DetailPageContent({
-      onBackPressed: () => {
-        this.onBackPressed()
-      },
-    })
-      .width('100%')
-      .height('100%')
+    Scroll() {
+      Column() {
+        Row({ space: 10 }) {
+          Image($r('app.media.icon_back'))
+            .width(40)
+            .height(40)
+            .onClick(() => {
+              this.onBackPressed();
+            })
+            .margin({ left: 20 })
+
+          Text($r('app.string.img'))
+            .height(56)
+            .width('100%')
+            .fontSize(22)
+            .fontWeight(FontWeight.Bold)
+        }
+        .clip(true)
+        .width('100%')
+        .height(px2vp(182))
+        .alignItems(VerticalAlign.Center)
+
+        Image(ZRouter.animateMgr().SharedCard().getSharedUrl())
+          .size({ width: '100%' })
+          .objectFit(ImageFit.Auto)
+          .id(ZRouter.animateMgr().SharedCard().getSharedComponentId())
+
+        List() {
+          LazyForEach(this.dataSource, (item: CardAttr, index: number) => {
+            ListItem() {
+              CardComponent({
+                url: $r(`app.media.img_${(index % 6)}`),
+                onColumnClicked: (url: ResourceStr) => {
+                  ZRouter.animateMgr()
+                    .setNavigation(ZRouter.getInstance().withParam("flag", this.flag+1))
+                    .withSharedCardParams({
+                      imageRes: url,
+                      componentId: `FlowItem_${this.flag}_${index}`,
+                    })
+                    .push(RouterConstants.PAGE_CARD_TWO)
+                }
+              })
+            }
+            .borderRadius(10)
+            .clip(true)
+            .width(100)
+            .id(`FlowItem_${this.flag}_${index}`)
+          }, (item: string) => item)
+        }
+        .listDirection(Axis.Horizontal)
+        .width('100%')
+        .margin({ top: 1 })
+      }
+    }
   }
 
   build() {
@@ -54,7 +112,7 @@ export struct CardLongTakeTransitionPageTwo {
       ZRouter.animateMgr().SharedCard().registerSharedCardAnimParam(this, context)
     })
     .onDisAppear(() => {
-      ZRouter.animateMgr().unregisterAnim(this)
+      ZRouter.animateMgr().SharedCard().unregisterSharedCardAnim(this)
     })
     .hideTitleBar(true)
     .backgroundColor(Color.Transparent)

@@ -38,7 +38,17 @@ export struct SharedCardContainer {
 
           // 原始弹出页显示内容，添加透明度控制其动画显示。
           Stack() {
-            this.content()
+            Column() {
+              Column() {
+                this.content()
+              }
+              .size({
+                width: px2vp(ZRouter.animateMgr().SharedCard().getWindowWidthPx()),
+                height: px2vp(ZRouter.animateMgr().SharedCard().getWindowHeightPx())
+              })
+            }
+            .width('100%')
+            .height('100%')
           }
           .size({
             width: '100%',

@@ -40,7 +40,6 @@ export interface NavAnimatePageInfo {
 export interface SharedCardParams {
   imageRes: ResourceStr,
   componentId: string | undefined,
-  doDefaultTransition?: () => void,
 }
 
 /**
@@ -145,13 +144,17 @@ export class NavSharedCardAnimMgr {
     NavAnimationStore.getInstance().buildSharedCardAnimParam(component, ctx)
   }
 
+  public unregisterSharedCardAnim(component: object) {
+    NavAnimationStore.getInstance().unregisterSharedCardAnim(component)
+  }
+
   public getSharedUrl(): ResourceStr {
-    let imageResource = ZRouter.getParamByKey('imageResource') as ResourceStr;
+    let imageResource = ZRouter.getParamByKey(CardUtil.KEY_IMAGE_RESOURCE) as ResourceStr;
     return imageResource;
   }
 
   public getSharedComponentId(): string | undefined {
-    let prePageCardId = ZRouter.getParamByKey('clickedComponentId') as string;
+    let prePageCardId = ZRouter.getParamByKey(CardUtil.KEY_CLICKED_COMPONENT_ID) as string;
     return CardUtil.getPostPageImageId(prePageCardId);
   }
 
@@ -195,6 +198,8 @@ export class NavAnimationStore {
   private _defaultCallback?: AnimateCallback
   private currentBreakPoint: string = '';
   private navigation: NavDestBuilder<ObjectOrNull> | undefined = undefined
+  private cardSharedAnimPropMap: Map<string, CardSharedAnimationProperties> = new Map();
+  private curComponent: Object | undefined
   private sharedCardParams: SharedCardParams | undefined = undefined
 
   static getInstance() {
@@ -266,26 +271,11 @@ export class NavAnimationStore {
     return NavAnimParamBuilder.builder(callback)
   }
 
-  private cardSharedAnimPropMap: Map<string, CardSharedAnimationProperties> = new Map();
-  private curComponent: Object | undefined
-
-  buildSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
-    const prop = new CardSharedAnimationProperties()
-    prop.registerSharedCardAnim()
-    ZRouter.animateMgr()
-      .registerAnimParam(component, ctx)
-      .setEnterAnimate({ duration: 500 })
-      .setExitAnimate({ duration: 500 })
-      .addAnimateOptions(new CardSharedAnimationOptions(prop));
-    this.cardSharedAnimPropMap[this.getKey(component)] = prop
-    this.curComponent = component
-  }
-
   getSharedCardAnimationProperties(): CardSharedAnimationProperties | undefined {
     if (!this.curComponent) {
       return undefined
     }
-    return this.cardSharedAnimPropMap[this.getKey(this.curComponent)]
+    return this.cardSharedAnimPropMap.get(this.getKey(this.curComponent))
   }
 
   /**
@@ -502,14 +492,31 @@ export class NavAnimationStore {
     }
   }
 
+  public withSharedCardParams(param: SharedCardParams): NavAnimationStore {
+    this.sharedCardParams = param
+    return this
+  }
+
   public setNavigation(navigation: NavDestBuilder<ObjectOrNull>): NavAnimationStore {
     this.navigation = navigation
     return this
   }
 
-  public withSharedCardParams(param: SharedCardParams): NavAnimationStore {
-    this.sharedCardParams = param
-    return this
+  buildSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
+    const prop = new CardSharedAnimationProperties()
+    prop.registerSharedCardAnim()
+    ZRouter.animateMgr()
+      .registerAnimParam(component, ctx)
+      .setEnterAnimate({ duration: 500 })
+      .setExitAnimate({ duration: 500 })
+      .addAnimateOptions(new CardSharedAnimationOptions(prop));
+    this.cardSharedAnimPropMap.set(this.getKey(component), prop)
+    this.curComponent = component
+  }
+
+  unregisterSharedCardAnim(component: object) {
+    this.unregisterAnim(component)
+    this.cardSharedAnimPropMap.delete(this.getKey(component))
   }
 
   push(name: string) {
@@ -523,9 +530,8 @@ export class NavAnimationStore {
       } else {
         SnapShotImage.pixelMap = pixelMap;
         (this.navigation ?? ZRouter.getInstance())
-          .withParam('imageResource', param.imageRes)
-          .withParam('clickedComponentId', param.componentId)
-          .withParam('doDefaultTransition', param.doDefaultTransition)
+          .withParam(CardUtil.KEY_IMAGE_RESOURCE, param.imageRes)
+          .withParam(CardUtil.KEY_CLICKED_COMPONENT_ID, param.componentId)
           .push(name)
       }
     })
