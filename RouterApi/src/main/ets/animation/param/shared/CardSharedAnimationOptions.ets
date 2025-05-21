@@ -11,54 +11,85 @@ import { CardSharedAnimationProperties } from './CardSharedAnimationProperties';
 
 export class CardSharedAnimationOptions implements INavAnimateOptions {
   _isBeforePage: boolean = false;
-  longTakeAnimationProperties: CardSharedAnimationProperties
+  p: CardSharedAnimationProperties
   static readonly INIT_OVERLAY_COLOR = '#00000000';
   static readonly FINAL_OVERLAY_COLOR = '#33000000';
 
   constructor(longTakeAnimationProperties: CardSharedAnimationProperties) {
-    this.longTakeAnimationProperties = longTakeAnimationProperties
+    this.p = longTakeAnimationProperties
   }
 
   updateModifier(modifier: NavAnimationModifier, isStart: boolean, status: NavAnimateStatus): void {
+    if (!modifier.attribute
+      || !this.p.stack1Modifier.attribute
+      || !this.p.stack2Modifier.attribute
+      || !this.p.stack3Modifier.attribute
+      || !this.p.imageModifier.attribute
+    ) {
+      return
+    }
     switch (status) {
       case NavAnimateStatus.PUSH_ENTER:
         if (!this._isBeforePage) {
           if (isStart) {
-            this.longTakeAnimationProperties.initParams();
-            this.longTakeAnimationProperties.scaleValue = this.longTakeAnimationProperties.initScale;
-            this.longTakeAnimationProperties.translateX = this.longTakeAnimationProperties.initTranslateX;
-            this.longTakeAnimationProperties.clipWidth = this.longTakeAnimationProperties.initClipWidth;
-            this.longTakeAnimationProperties.clipHeight = this.longTakeAnimationProperties.initClipHeight;
-            this.longTakeAnimationProperties.translateY = this.longTakeAnimationProperties.initTranslateY;
-            this.longTakeAnimationProperties.positionYValue = this.longTakeAnimationProperties.initPositionValueY;
-            this.longTakeAnimationProperties.positionXValue = this.longTakeAnimationProperties.initPositionValueX;
-            this.longTakeAnimationProperties.navDestinationBgColor = CardSharedAnimationOptions.INIT_OVERLAY_COLOR;
-            modifier.attribute?.backgroundColor(this.longTakeAnimationProperties.navDestinationBgColor)
+            this.p.initParams();
+            modifier.attribute.backgroundColor(CardSharedAnimationOptions.INIT_OVERLAY_COLOR)
+            this.p.stack1Modifier.attribute
+              .scale({
+                x: this.p.initScale,
+                y: this.p.initScale
+              })
+              .translate({
+                x: this.p.initTranslateX,
+                y: this.p.initTranslateY
+              })
+              .width(this.p.initClipWidth)
+              .height(this.p.initClipHeight)
+            this.p.stack2Modifier.attribute
+              .position({
+                x: this.p.initPositionValueX,
+                y: this.p.initPositionValueY
+              })
+            this.p.imageModifier.attribute
+              .size(this.p.snapShotSize)
+              .position({
+                x: this.p.snapShotPositionX,
+                y: this.p.snapShotPositionY
+              })
+            this.p.imageModifier.attribute.opacity(1.0)
             animateTo({
               delay: 50,
               duration: 100,
               curve: Curve.Sharp
             }, () => {
-              this.longTakeAnimationProperties.snapShotOpacity = 0;
+              this.p.imageModifier.attribute?.opacity(0.0)
             });
-
+            this.p.stack3Modifier.attribute.opacity(0.0)
             animateTo({
               duration: 100,
               curve: Curve.Sharp
             }, () => {
-              this.longTakeAnimationProperties.postPageOpacity = 1.0;
+              this.p.stack3Modifier.attribute?.opacity(1.0)
             });
           } else {
-            this.longTakeAnimationProperties.scaleValue = 1.0;
-            this.longTakeAnimationProperties.translateX = 0;
-            this.longTakeAnimationProperties.translateY = 0;
-            this.longTakeAnimationProperties.clipWidth = '100%';
-            this.longTakeAnimationProperties.clipHeight = '100%';
-            this.longTakeAnimationProperties.positionYValue = 0;
-            this.longTakeAnimationProperties.positionXValue = 0;
-            this.longTakeAnimationProperties.radius = 34;
-            this.longTakeAnimationProperties.navDestinationBgColor = CardSharedAnimationOptions.FINAL_OVERLAY_COLOR;
-            modifier.attribute?.backgroundColor(this.longTakeAnimationProperties.navDestinationBgColor)
+            modifier.attribute.backgroundColor(CardSharedAnimationOptions.FINAL_OVERLAY_COLOR)
+            this.p.stack1Modifier.attribute
+              .scale({
+                x: 1.0,
+                y: 1.0
+              })
+              .translate({
+                x: 0,
+                y: 0
+              })
+              .width('100%')
+              .height('100%')
+              .borderRadius(34)
+            this.p.stack2Modifier.attribute
+              .position({
+                x: 0,
+                y: 0
+              })
           }
         }
         break
@@ -66,16 +97,24 @@ export class CardSharedAnimationOptions implements INavAnimateOptions {
         if (!this._isBeforePage) {
           if (isStart) {
           } else {
-            this.longTakeAnimationProperties.scaleValue = this.longTakeAnimationProperties.initScale;
-            this.longTakeAnimationProperties.translateX = this.longTakeAnimationProperties.initTranslateX;
-            this.longTakeAnimationProperties.clipWidth = this.longTakeAnimationProperties.initClipWidth;
-            this.longTakeAnimationProperties.clipHeight = this.longTakeAnimationProperties.initClipHeight;
-            this.longTakeAnimationProperties.translateY = this.longTakeAnimationProperties.initTranslateY;
-            this.longTakeAnimationProperties.radius = 16;
-            this.longTakeAnimationProperties.positionXValue = this.longTakeAnimationProperties.initPositionValueX;
-            this.longTakeAnimationProperties.positionYValue = this.longTakeAnimationProperties.initPositionValueY;
-            this.longTakeAnimationProperties.navDestinationBgColor = CardSharedAnimationOptions.INIT_OVERLAY_COLOR;
-            modifier.attribute?.backgroundColor(this.longTakeAnimationProperties.navDestinationBgColor)
+            modifier.attribute.backgroundColor(CardSharedAnimationOptions.INIT_OVERLAY_COLOR)
+            this.p.stack1Modifier.attribute
+              .scale({
+                x: this.p.initScale,
+                y: this.p.initScale
+              })
+              .translate({
+                x: this.p.initTranslateX,
+                y: this.p.initTranslateY
+              })
+              .width(this.p.initClipWidth)
+              .height(this.p.initClipHeight)
+              .borderRadius(16)
+            this.p.stack2Modifier.attribute
+              .position({
+                x: this.p.initPositionValueX,
+                y: this.p.initPositionValueY
+              })
           }
         }
         break

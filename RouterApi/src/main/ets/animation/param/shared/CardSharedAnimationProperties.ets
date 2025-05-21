@@ -1,8 +1,8 @@
 import { CardUtil } from './utils/CardUtil';
 import { WindowUtils } from './utils/WindowUtils';
-import { CardSharedAnimationOptions } from './CardSharedAnimationOptions';
 import { ComponentAttrUtils, RectInfoInPx } from './utils/ComponentAttrUtils';
 import { ZRouter } from '../../../api/Router';
+import { ImageAnimationModifier, StackAnimationModifier } from '../../modifier/NavAnimationModifier';
 
 /**
  * @author: HHBin
@@ -10,17 +10,10 @@ import { ZRouter } from '../../../api/Router';
  * @desc:
  */
 export class CardSharedAnimationProperties {
-  public navDestinationBgColor: ResourceColor = CardSharedAnimationOptions.INIT_OVERLAY_COLOR;
-  public snapShotOpacity: number = 1;
-  public postPageOpacity: number = 0;
-  public translateX: number = 0;
-  public translateY: number = 0;
-  public scaleValue: number = 1;
-  public clipWidth: Dimension = '100%';
-  public clipHeight: Dimension = '100%';
-  public radius: number = 16;
-  public positionXValue: number = 0;
-  public positionYValue: number = 0;
+  public stack1Modifier: StackAnimationModifier = new StackAnimationModifier();
+  public stack2Modifier: StackAnimationModifier = new StackAnimationModifier();
+  public stack3Modifier: StackAnimationModifier = new StackAnimationModifier();
+  public imageModifier: ImageAnimationModifier = new ImageAnimationModifier();
   public snapShotSize: SizeOptions = { width: '100%', height: '100%' };
   public snapShotPositionX: number = 0;
   public snapShotPositionY: number = 0;

@@ -27,14 +27,9 @@ export struct SharedCardContainer {
         Stack({ alignContent: Alignment.TopStart }) {
           // 显示前一页点击的卡片的截图
           Image(ZRouter.animateMgr().SharedCard().getPixelMap())
-            .size(this.properties.snapShotSize)
             .objectFit(ImageFit.Auto)
-            .opacity(this.properties.snapShotOpacity)
             .syncLoad(true)// 显示前一页点击的卡片的截图
-            .position({
-              x: this.properties.snapShotPositionX,
-              y: this.properties.snapShotPositionY
-            })
+            .attributeModifier(this.properties.imageModifier)
 
           // 原始弹出页显示内容，添加透明度控制其动画显示。
           Stack() {
@@ -54,28 +49,15 @@ export struct SharedCardContainer {
             width: '100%',
             height: '100%'
           })
-          .opacity(this.properties.postPageOpacity)
+          .attributeModifier(this.properties.stack3Modifier)
         }
         .width('100%')
-        .position({
-          x: this.properties.positionXValue,
-          y: this.properties.positionYValue
-        })
+        .attributeModifier(this.properties.stack2Modifier)
       }
-      .scale({
-        x: this.properties.scaleValue,
-        y: this.properties.scaleValue
-      })
-      .translate({
-        x: this.properties.translateX,
-        y: this.properties.translateY
-      })
-      .width(this.properties.clipWidth)
-      .height(this.properties.clipHeight)
-      .borderRadius(this.properties.radius)
       .expandSafeArea([SafeAreaType.SYSTEM])
       .clip(true)
       .backgroundColor(this.bgColor)
+      .attributeModifier(this.properties.stack1Modifier)
     }
   }
 }
