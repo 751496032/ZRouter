@@ -36,7 +36,7 @@ export class CardSharedAnimationProperties {
     }
   }
 
-  public initParams(): void {
+  public initParams(isAdaptImmersive: boolean): void {
     let postNode = WindowUtils.window.getUIContext().getFrameNodeById(CardUtil.getPostPageImageId(this.clickedCardId));
     let postNodePositionX_vp: number = 0;
     let postNodePositionY_vp: number = 0;
@@ -51,8 +51,8 @@ export class CardSharedAnimationProperties {
     }
 
     this.initPositionValueX = -postNodePositionX_vp;
-    this.initPositionValueY = -postNodePositionY_vp + px2vp(WindowUtils.topAvoidAreaHeight_px);
-    this.snapShotPositionY = postNodePositionY_vp - px2vp(WindowUtils.topAvoidAreaHeight_px);
+    this.initPositionValueY = -postNodePositionY_vp + (isAdaptImmersive ? 0 : px2vp(WindowUtils.topAvoidAreaHeight_px));
+    this.snapShotPositionY = postNodePositionY_vp - (isAdaptImmersive ? 0 : px2vp(WindowUtils.topAvoidAreaHeight_px));
     this.snapShotPositionX = postNodePositionX_vp;
 
     // 计算卡片的宽高与窗口的宽高之比。
@@ -65,12 +65,12 @@ export class CardSharedAnimationProperties {
       this.snapShotSize = { width: '100%' };
       this.initTranslateY = px2vp(this.cardItemInfo_px.top -
         ((vp2px(this.initClipHeight) - vp2px(this.initClipHeight) * this.initScale) / 2) -
-      WindowUtils.topAvoidAreaHeight_px);
+        (isAdaptImmersive ? 0 : WindowUtils.topAvoidAreaHeight_px));
     } else {
       this.initClipHeight = px2vp(this.cardItemInfo_px.height / this.initScale);
       this.initTranslateY = px2vp(this.cardItemInfo_px.top -
         ((vp2px(this.initClipHeight) - vp2px(this.initClipHeight) * this.initScale) / 2) -
-      WindowUtils.topAvoidAreaHeight_px);
+        (isAdaptImmersive ? 0 : WindowUtils.topAvoidAreaHeight_px));
       this.initClipWidth = px2vp((this.cardItemInfo_px.width) / this.initScale);
       this.snapShotSize = { width: px2vp(postNodeWidth_px) };
       this.initTranslateX = px2vp(this.cardItemInfo_px.left -

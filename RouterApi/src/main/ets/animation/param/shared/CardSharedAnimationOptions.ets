@@ -12,11 +12,17 @@ import { CardSharedAnimationProperties } from './CardSharedAnimationProperties';
 export class CardSharedAnimationOptions implements INavAnimateOptions {
   _isBeforePage: boolean = false;
   p: CardSharedAnimationProperties
-  static readonly INIT_OVERLAY_COLOR = '#00000000';
-  static readonly FINAL_OVERLAY_COLOR = '#33000000';
+  _navBgColor: ResourceColor | undefined
+  _IsAdaptImmersive: boolean = false
 
-  constructor(longTakeAnimationProperties: CardSharedAnimationProperties) {
+  constructor(
+    longTakeAnimationProperties: CardSharedAnimationProperties,
+    bgColor: ResourceColor | undefined,
+    isAdaptImmersive: boolean
+  ) {
     this.p = longTakeAnimationProperties
+    this._navBgColor = bgColor
+    this._IsAdaptImmersive = isAdaptImmersive
   }
 
   updateModifier(modifier: NavAnimationModifier, isStart: boolean, status: NavAnimateStatus): void {
@@ -32,8 +38,8 @@ export class CardSharedAnimationOptions implements INavAnimateOptions {
       case NavAnimateStatus.PUSH_ENTER:
         if (!this._isBeforePage) {
           if (isStart) {
-            this.p.initParams();
-            modifier.attribute.backgroundColor(CardSharedAnimationOptions.INIT_OVERLAY_COLOR)
+            this.p.initParams(this._IsAdaptImmersive);
+            modifier.attribute.backgroundColor(Color.Transparent)
             this.p.stack1Modifier.attribute
               .scale({
                 x: this.p.initScale,
@@ -73,7 +79,7 @@ export class CardSharedAnimationOptions implements INavAnimateOptions {
               this.p.stack3Modifier.attribute?.opacity(1.0)
             });
           } else {
-            modifier.attribute.backgroundColor(CardSharedAnimationOptions.FINAL_OVERLAY_COLOR)
+            modifier.attribute.backgroundColor(this._navBgColor ?? Color.White)
             this.p.stack1Modifier.attribute
               .scale({
                 x: 1.0,
@@ -98,7 +104,7 @@ export class CardSharedAnimationOptions implements INavAnimateOptions {
         if (!this._isBeforePage) {
           if (isStart) {
           } else {
-            modifier.attribute.backgroundColor(CardSharedAnimationOptions.INIT_OVERLAY_COLOR)
+            modifier.attribute.backgroundColor(Color.Transparent)
             this.p.stack1Modifier.attribute
               .scale({
                 x: this.p.initScale,

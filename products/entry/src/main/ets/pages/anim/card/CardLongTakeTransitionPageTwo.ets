@@ -102,7 +102,7 @@ export struct CardLongTakeTransitionPageTwo {
   build() {
     NavDestination() {
       SharedCardContainer({
-        bgColor: $r('app.color.water_flow_background_color'),
+        bgColor: Color.White,
         content: () => {
           this.Content()
         }
@@ -111,6 +111,8 @@ export struct CardLongTakeTransitionPageTwo {
     .onReady((context: NavDestinationContext) => {
       ZRouter.animateMgr()
         .sharedCard()
+        .setIsAdaptImmersive(false)
+        .setNavBgColor(Color.White)
         .registerSharedCardAnimParam(this, context)
         .setEnterAnimate({ duration: 500 })
         .setExitAnimate({ duration: 500 })

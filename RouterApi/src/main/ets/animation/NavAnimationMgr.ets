@@ -140,47 +140,103 @@ export class NavAnimationMgr {
  * 卡片一镜到底转场动画管理器
  */
 export class NavSharedCardAnimMgr {
+  private _navBgColor: ResourceColor | undefined = undefined
+  private _isAdaptImmersive: boolean = false
 
+  /**
+   * 注册卡片一镜到底转场动画
+   * @param component
+   * @param ctx
+   * @returns
+   */
   public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
-    return NavAnimationStore.getInstance().buildSharedCardAnimParam(component, ctx)
+    return NavAnimationStore.getInstance()
+      .buildSharedCardAnimParam(component, ctx, this._navBgColor, this._isAdaptImmersive)
   }
 
+  /**
+   * 取消注册卡片一镜到底转场动画
+   * @param component
+   */
   public unregisterSharedCardAnim(component: object) {
     NavAnimationStore.getInstance().unregisterSharedCardAnim(component)
   }
 
+  /**
+   * 获取卡片图片资源
+   * @returns
+   */
   public getSharedUrl(): ResourceStr {
     let imageResource = ZRouter.getParamByKey(CardUtil.KEY_IMAGE_RESOURCE) as ResourceStr;
     return imageResource;
   }
 
+  /**
+   * 获取卡片点击的组件id
+   * @returns
+   */
   public getSharedComponentId(): string | undefined {
     let prePageCardId = ZRouter.getParamByKey(CardUtil.KEY_CLICKED_COMPONENT_ID) as string;
     return CardUtil.getPostPageImageId(prePageCardId);
   }
 
-  public getPostPageImageId(prePageClickedCardId: string | undefined): string | undefined {
-    return CardUtil.getPostPageImageId(prePageClickedCardId);
-  }
-
+  /**
+   * 获取屏幕宽度
+   * @returns
+   */
   public getWindowWidthPx(): number {
     return WindowUtils.windowWidth_px
   }
 
+  /**
+   * 获取屏幕高度
+   * @returns
+   */
   public getWindowHeightPx(): number {
     return WindowUtils.windowHeight_px
   }
 
+  /**
+   * 获取顶部安全区域高度
+   * @returns
+   */
   public getTopAvoidAreaHeightPx(): number {
     return WindowUtils.topAvoidAreaHeight_px
   }
 
+  /**
+   * 获取导航栏高度
+   * @returns
+   */
   public getNavigationIndicatorHeightPx(): number {
     return WindowUtils.navigationIndicatorHeight_px
   }
 
+  /**
+   * 获取控件截图
+   * @returns
+   */
   public getPixelMap(): image.PixelMap | undefined {
     return SnapShotImage.pixelMap
+  }
+
+  /**
+   * 设置背景色
+   * @param color 颜色
+   * @returns
+   */
+  public setNavBgColor(color: ResourceColor) {
+    this._navBgColor = color
+    return this
+  }
+
+  /**
+   * 设置是否适配沉浸式，如果页面是沉浸式，则设置为true
+   * @param b
+   */
+  public setIsAdaptImmersive(b: boolean) {
+    this._isAdaptImmersive = b
+    return this
   }
 }
 
@@ -503,14 +559,19 @@ export class NavAnimationStore {
     return this
   }
 
-  buildSharedCardAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
+  buildSharedCardAnimParam(
+    component: object,
+    ctx: NavDestinationContext,
+    navBgColor: ResourceColor | undefined,
+    isAdaptImmersive: boolean
+  ): NavAnimParamBuilder {
     const prop = new CardSharedAnimationProperties()
     prop.registerSharedCardAnim()
     this.cardSharedAnimPropMap.set(this.getKey(component), prop)
     this.curComponent = component
     return ZRouter.animateMgr()
       .registerAnimParam(component, ctx)
-      .addAnimateOptions(new CardSharedAnimationOptions(prop));
+      .addAnimateOptions(new CardSharedAnimationOptions(prop, navBgColor, isAdaptImmersive));
   }
 
   unregisterSharedCardAnim(component: object) {
