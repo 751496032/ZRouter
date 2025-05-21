@@ -54,8 +54,9 @@ export struct CardLongTakeTransitionPageOne {
               CardComponent({
                 url: $r(`app.media.img_${(index % 6)}`),
                 onColumnClicked: (url: ResourceStr) => {
-                  ZRouter.animateMgr()
-                    .setNavigation(ZRouter.getInstance())
+                  ZRouter
+                    .getInstance()
+                    .animateMgr()
                     .withSharedCardParams({
                       imageRes: url,
                       componentId: `FlowItem_${index}`,

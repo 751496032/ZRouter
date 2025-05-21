@@ -65,10 +65,10 @@ export struct CardLongTakeTransitionPageTwo {
         .height(px2vp(182))
         .alignItems(VerticalAlign.Center)
 
-        Image(ZRouter.animateMgr().SharedCard().getSharedUrl())
+        Image(ZRouter.animateMgr().sharedCard().getSharedUrl())
           .size({ width: '100%' })
           .objectFit(ImageFit.Auto)
-          .id(ZRouter.animateMgr().SharedCard().getSharedComponentId())
+          .id(ZRouter.animateMgr().sharedCard().getSharedComponentId())
 
         List() {
           LazyForEach(this.dataSource, (item: CardAttr, index: number) => {
@@ -109,10 +109,14 @@ export struct CardLongTakeTransitionPageTwo {
       })
     }
     .onReady((context: NavDestinationContext) => {
-      ZRouter.animateMgr().SharedCard().registerSharedCardAnimParam(this, context)
+      ZRouter.animateMgr()
+        .sharedCard()
+        .registerSharedCardAnimParam(this, context)
+        .setEnterAnimate({ duration: 500 })
+        .setExitAnimate({ duration: 500 })
     })
     .onDisAppear(() => {
-      ZRouter.animateMgr().SharedCard().unregisterSharedCardAnim(this)
+      ZRouter.animateMgr().sharedCard().unregisterSharedCardAnim(this)
     })
     .hideTitleBar(true)
     .backgroundColor(Color.Transparent)

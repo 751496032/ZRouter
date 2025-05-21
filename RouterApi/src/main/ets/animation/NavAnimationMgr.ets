@@ -131,7 +131,7 @@ export class NavAnimationMgr {
     NavAnimationStore.getInstance().push(name)
   }
 
-  public SharedCard(): NavSharedCardAnimMgr {
+  public sharedCard(): NavSharedCardAnimMgr {
     return new NavSharedCardAnimMgr()
   }
 }
@@ -140,8 +140,9 @@ export class NavAnimationMgr {
  * 卡片一镜到底转场动画管理器
  */
 export class NavSharedCardAnimMgr {
-  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
-    NavAnimationStore.getInstance().buildSharedCardAnimParam(component, ctx)
+
+  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimationStore.getInstance().buildSharedCardAnimParam(component, ctx)
   }
 
   public unregisterSharedCardAnim(component: object) {
@@ -502,16 +503,14 @@ export class NavAnimationStore {
     return this
   }
 
-  buildSharedCardAnimParam(component: object, ctx: NavDestinationContext) {
+  buildSharedCardAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
     const prop = new CardSharedAnimationProperties()
     prop.registerSharedCardAnim()
-    ZRouter.animateMgr()
-      .registerAnimParam(component, ctx)
-      .setEnterAnimate({ duration: 500 })
-      .setExitAnimate({ duration: 500 })
-      .addAnimateOptions(new CardSharedAnimationOptions(prop));
     this.cardSharedAnimPropMap.set(this.getKey(component), prop)
     this.curComponent = component
+    return ZRouter.animateMgr()
+      .registerAnimParam(component, ctx)
+      .addAnimateOptions(new CardSharedAnimationOptions(prop));
   }
 
   unregisterSharedCardAnim(component: object) {

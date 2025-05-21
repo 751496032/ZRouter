@@ -60,14 +60,14 @@ export class CardSharedAnimationOptions implements INavAnimateOptions {
             this.p.imageModifier.attribute.opacity(1.0)
             animateTo({
               delay: 50,
-              duration: 100,
+              duration: 200,
               curve: Curve.Sharp
             }, () => {
               this.p.imageModifier.attribute?.opacity(0.0)
             });
             this.p.stack3Modifier.attribute.opacity(0.0)
             animateTo({
-              duration: 100,
+              duration: 200,
               curve: Curve.Sharp
             }, () => {
               this.p.stack3Modifier.attribute?.opacity(1.0)

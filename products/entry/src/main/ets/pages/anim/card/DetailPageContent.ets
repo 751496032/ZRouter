@@ -56,24 +56,24 @@ export struct DetailPageContent {
     if (!this.isLargeSize) {
       Column() {
         this.MyTitleBuilder()
-        Image(ZRouter.animateMgr().SharedCard().getSharedUrl())
+        Image(ZRouter.animateMgr().sharedCard().getSharedUrl())
           .size({ width: '100%' })
           .objectFit(ImageFit.Auto)
-          .id(ZRouter.animateMgr().SharedCard().getSharedComponentId())
+          .id(ZRouter.animateMgr().sharedCard().getSharedComponentId())
       }
       .size({
-        width: px2vp(ZRouter.animateMgr().SharedCard().getWindowWidthPx()),
-        height: px2vp(ZRouter.animateMgr().SharedCard().getWindowHeightPx())
+        width: px2vp(ZRouter.animateMgr().sharedCard().getWindowWidthPx()),
+        height: px2vp(ZRouter.animateMgr().sharedCard().getWindowHeightPx())
       })
     } else {
       Column() {
         this.MyTitleBuilder()
 
         Stack() {
-          Image(ZRouter.animateMgr().SharedCard().getSharedUrl())
+          Image(ZRouter.animateMgr().sharedCard().getSharedUrl())
             .size({ width: '50%' })
             .objectFit(ImageFit.Auto)
-            .id(ZRouter.animateMgr().SharedCard().getSharedComponentId())
+            .id(ZRouter.animateMgr().sharedCard().getSharedComponentId())
         }
         .width('100%')
 
@@ -83,8 +83,8 @@ export struct DetailPageContent {
           .margin({ top: 16 })
       }
       .size({
-        width: px2vp(ZRouter.animateMgr().SharedCard().getWindowWidthPx()),
-        height: px2vp(ZRouter.animateMgr().SharedCard().getWindowHeightPx())
+        width: px2vp(ZRouter.animateMgr().sharedCard().getWindowWidthPx()),
+        height: px2vp(ZRouter.animateMgr().sharedCard().getWindowHeightPx())
       })
     }
   }

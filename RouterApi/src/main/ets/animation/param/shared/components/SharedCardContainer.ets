@@ -26,7 +26,7 @@ export struct SharedCardContainer {
       Stack({ alignContent: Alignment.TopStart }) {
         Stack({ alignContent: Alignment.TopStart }) {
           // 显示前一页点击的卡片的截图
-          Image(ZRouter.animateMgr().SharedCard().getPixelMap())
+          Image(ZRouter.animateMgr().sharedCard().getPixelMap())
             .objectFit(ImageFit.Auto)
             .syncLoad(true)// 显示前一页点击的卡片的截图
             .attributeModifier(this.properties.imageModifier)
@@ -38,8 +38,8 @@ export struct SharedCardContainer {
                 this.content()
               }
               .size({
-                width: px2vp(ZRouter.animateMgr().SharedCard().getWindowWidthPx()),
-                height: px2vp(ZRouter.animateMgr().SharedCard().getWindowHeightPx())
+                width: px2vp(ZRouter.animateMgr().sharedCard().getWindowWidthPx()),
+                height: px2vp(ZRouter.animateMgr().sharedCard().getWindowHeightPx())
               })
             }
             .width('100%')
