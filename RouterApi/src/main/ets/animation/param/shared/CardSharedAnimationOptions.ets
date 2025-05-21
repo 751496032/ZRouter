@@ -41,10 +41,11 @@ export class CardSharedAnimationOptions implements INavAnimateOptions {
               })
               .translate({
                 x: this.p.initTranslateX,
-                y: this.p.initTranslateY
+                y: this.p.initTranslateY,
               })
               .width(this.p.initClipWidth)
               .height(this.p.initClipHeight)
+              .borderRadius(34)
             this.p.stack2Modifier.attribute
               .position({
                 x: this.p.initPositionValueX,
@@ -84,7 +85,7 @@ export class CardSharedAnimationOptions implements INavAnimateOptions {
               })
               .width('100%')
               .height('100%')
-              .borderRadius(34)
+              .borderRadius(0)
             this.p.stack2Modifier.attribute
               .position({
                 x: 0,

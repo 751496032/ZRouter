@@ -54,10 +54,11 @@ export struct SharedCardContainer {
         .width('100%')
         .attributeModifier(this.properties.stack2Modifier)
       }
-      .expandSafeArea([SafeAreaType.SYSTEM])
       .clip(true)
       .backgroundColor(this.bgColor)
       .attributeModifier(this.properties.stack1Modifier)
+    } else {
+      this.content()
     }
   }
 }
