@@ -4,26 +4,24 @@
  * @desc: NavDestination页面注解
  */
 
-export const Route: ClassDecorator & ((param: Param) => ClassDecorator) = () => {
-  return void 0
+export interface RouteDecorator extends ClassDecorator {
+  (param?: Param): ClassDecorator
 }
 
+export declare const Route: RouteDecorator
 
-// export function Route(param: Param) {
-//   return Object
-// }
 /**
  * 可以替代@Route
  * @param param
  * @returns
  */
-export const ZRoute = Route
+export declare const ZRoute: RouteDecorator
 
 interface Param {
   /**
    * 页面路由名称
    */
-  name: string,
+  name?: string,
   /**
    * 是否使用NavDestination模板，true时，则页面组件可以不用NavDestination组件包裹，在编译阶段会自动生成NavDestination组件。
    * 可选，默认不使用
@@ -47,7 +45,7 @@ interface Param {
   /**
    * 页面生命周期函数属性名称，可选，只针对NavDestination页面模板
    */
-  loAttributeName  ?: string
+  loAttributeName?: string
 
   /**
    * 页面描述，可选
@@ -59,4 +57,3 @@ interface Param {
   needLogin?: boolean
   extra?: string
 }
-
