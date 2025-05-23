@@ -24,5 +24,7 @@ export { OpacityAnimateOptions } from './src/main/ets/animation/param/OpacityAni
 export { RotateAnimateOptions} from './src/main/ets/animation/param/RotateAnimateOptions'
 export { BlurAnimationOptions } from './src/main/ets/animation/param/BlurAnimationOptions'
 export { NavAnimParamBuilder } from './src/main/ets/animation/param/NavAnimParamBuilder'
+export { CardSharedAnimationProperties } from './src/main/ets/animation/param/shared/CardSharedAnimationProperties'
+export { SharedCardContainer } from './src/main/ets/animation/param/shared/components/SharedCardContainer'
 export { RedirectType } from './src/main/ets/model/Const'
 export { LaunchMode } from './src/main/ets/model/LaunchMode'

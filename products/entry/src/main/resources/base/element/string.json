@@ -15,6 +15,18 @@
     {
       "name": "EntryAbility_label",
       "value": "ZRouter"
+    },
+    {
+      "name": "img",
+      "value": "image"
+    },
+    {
+      "name": "content",
+      "value": "The two nodes that appear and disappear are associated with location size content."
+    },
+    {
+      "name": "card_title",
+      "value": "Card to the end"
     }
   ]
 }

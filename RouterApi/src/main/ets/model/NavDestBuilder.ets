@@ -12,6 +12,7 @@ import { ObjUtil } from '../utlis/ObjUtil';
 import { RedirectType } from './Const';
 import { LaunchMode } from './LaunchMode';
 import Logger from '../utlis/Logger';
+import { ZRouter } from '../api/Router';
 
 export class NavDestBuilder<T> {
   private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
@@ -453,11 +454,11 @@ export class NavDestBuilder<T> {
 
 
   /**
-   * @deprecated
    * @see {@link ZRouter.animateMgr()}
    * @returns
    */
   public animateMgr(): NavAnimationMgr {
+    this.routerMgr.animateMgr.setNavigation(this as object as NavDestBuilder<ObjectOrNull>)
     return this.routerMgr.animateMgr
   }
 }

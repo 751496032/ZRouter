@@ -7,6 +7,17 @@ import { NavAnimationModifier } from './modifier/NavAnimationModifier';
 import { INavSingleAnimationParam } from './param/INavAnimationParam';
 import { NavAnimParamBuilder } from './param/NavAnimParamBuilder';
 import { util } from '@kit.ArkTS';
+import { componentSnapshot, display, window } from '@kit.ArkUI';
+import { WindowUtility } from './param/shared/utils/WindowUtility';
+import { WindowUtils } from './param/shared/utils/WindowUtils';
+import { ZRouter } from '../api/Router';
+import { image } from '@kit.ImageKit';
+import { SnapShotImage } from './param/shared/utils/SnapShotImage';
+import { ObjectOrNull } from '../model/Model';
+import { NavDestBuilder } from '../model/NavDestBuilder';
+import { CardSharedAnimationProperties } from './param/shared/CardSharedAnimationProperties';
+import { CardSharedAnimationOptions } from './param/shared/CardSharedAnimationOptions';
+import { CardUtil } from './param/shared/utils/CardUtil';
 
 // 自定义接口，用来保存某个页面相关的转场动画回调和参数
 export interface AnimateCallback {
@@ -24,6 +35,11 @@ export interface AnimateCallback {
 export interface NavAnimatePageInfo {
   pageId?: string
   modifier: NavAnimationModifier
+}
+
+export interface SharedCardParams {
+  imageRes: ResourceStr,
+  componentId: string | undefined,
 }
 
 /**
@@ -67,6 +83,10 @@ export class NavAnimationMgr {
     return NavAnimationStore.getInstance().buildAnimParam(component, ctx)
   }
 
+  public getSharedCardAnimationProperties(): CardSharedAnimationProperties | undefined {
+    return NavAnimationStore.getInstance().getSharedCardAnimationProperties()
+  }
+
   /**
    * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
    * @param modifier
@@ -90,6 +110,134 @@ export class NavAnimationMgr {
   public getAnimCustomNavContentTransition() {
     return NavAnimationStore.customNavContentTransition
   }
+
+  public initSharedAnim(windowStage: window.WindowStage) {
+    NavAnimationStore.getInstance().initSharedAnim(windowStage)
+  }
+
+  public setNavigation(navigation: NavDestBuilder<ObjectOrNull>): NavAnimationStore {
+    return NavAnimationStore.getInstance().setNavigation(navigation)
+  }
+
+  public withSharedCardParams(param: SharedCardParams): NavAnimationStore {
+    return NavAnimationStore.getInstance().withSharedCardParams(param)
+  }
+
+  /**
+   * 页面跳转
+   * @param name 页面路由名称
+   */
+  public push(name: string) {
+    NavAnimationStore.getInstance().push(name)
+  }
+
+  public sharedCard(): NavSharedCardAnimMgr {
+    return new NavSharedCardAnimMgr()
+  }
+}
+
+/**
+ * 卡片一镜到底转场动画管理器
+ */
+export class NavSharedCardAnimMgr {
+  private _navBgColor: ResourceColor | undefined = undefined
+  private _isAdaptImmersive: boolean = false
+
+  /**
+   * 注册卡片一镜到底转场动画
+   * @param component
+   * @param ctx
+   * @returns
+   */
+  public registerSharedCardAnimParam(component: object, ctx: NavDestinationContext): NavAnimParamBuilder {
+    return NavAnimationStore.getInstance()
+      .buildSharedCardAnimParam(component, ctx, this._navBgColor, this._isAdaptImmersive)
+  }
+
+  /**
+   * 取消注册卡片一镜到底转场动画
+   * @param component
+   */
+  public unregisterSharedCardAnim(component: object) {
+    NavAnimationStore.getInstance().unregisterSharedCardAnim(component)
+  }
+
+  /**
+   * 获取卡片图片资源
+   * @returns
+   */
+  public getSharedUrl(): ResourceStr {
+    let imageResource = ZRouter.getParamByKey(CardUtil.KEY_IMAGE_RESOURCE) as ResourceStr;
+    return imageResource;
+  }
+
+  /**
+   * 获取卡片点击的组件id
+   * @returns
+   */
+  public getSharedComponentId(): string | undefined {
+    let prePageCardId = ZRouter.getParamByKey(CardUtil.KEY_CLICKED_COMPONENT_ID) as string;
+    return CardUtil.getPostPageImageId(prePageCardId);
+  }
+
+  /**
+   * 获取屏幕宽度
+   * @returns
+   */
+  public getWindowWidthPx(): number {
+    return WindowUtils.windowWidth_px
+  }
+
+  /**
+   * 获取屏幕高度
+   * @returns
+   */
+  public getWindowHeightPx(): number {
+    return WindowUtils.windowHeight_px
+  }
+
+  /**
+   * 获取顶部安全区域高度
+   * @returns
+   */
+  public getTopAvoidAreaHeightPx(): number {
+    return WindowUtils.topAvoidAreaHeight_px
+  }
+
+  /**
+   * 获取导航栏高度
+   * @returns
+   */
+  public getNavigationIndicatorHeightPx(): number {
+    return WindowUtils.navigationIndicatorHeight_px
+  }
+
+  /**
+   * 获取控件截图
+   * @returns
+   */
+  public getPixelMap(): image.PixelMap | undefined {
+    return SnapShotImage.pixelMap
+  }
+
+  /**
+   * 设置背景色
+   * @param color 颜色
+   * @returns
+   */
+  public setNavBgColor(color: ResourceColor) {
+    this._navBgColor = color
+    return this
+  }
+
+  /**
+   * 设置是否适配沉浸式，如果页面是沉浸式，则设置为true
+   * @param b
+   */
+  public setIsAdaptImmersive(b: boolean) {
+    this._isAdaptImmersive = b
+    return this
+  }
 }
 
 /**
@@ -105,6 +253,11 @@ export class NavAnimationStore {
   // 根据 pageId 设置/获取 转场动画
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
   private _defaultCallback?: AnimateCallback
+  private currentBreakPoint: string = '';
+  private navigation: NavDestBuilder<ObjectOrNull> | undefined = undefined
+  private cardSharedAnimPropMap: Map<string, CardSharedAnimationProperties> = new Map();
+  private curComponent: Object | undefined
+  private sharedCardParams: SharedCardParams | undefined = undefined
 
   static getInstance() {
     return NavAnimationStore.delegate;
@@ -175,6 +328,12 @@ export class NavAnimationStore {
     return NavAnimParamBuilder.builder(callback)
   }
 
+  getSharedCardAnimationProperties(): CardSharedAnimationProperties | undefined {
+    if (!this.curComponent) {
+      return undefined
+    }
+    return this.cardSharedAnimPropMap.get(this.getKey(this.curComponent))
+  }
 
   /**
    * 如果已经注册了路由动画，则获取动画参数构建器，没注册则返回空
@@ -339,6 +498,103 @@ export class NavAnimationStore {
         })
       }
     }
+  }
+
+  initSharedAnim(windowStage: window.WindowStage) {
+    WindowUtility.setWindow(windowStage)
+    WindowUtils.window = windowStage.getMainWindowSync();
+    WindowUtils.windowWidth_px = WindowUtils.window.getWindowProperties().windowRect.width;
+    WindowUtils.windowHeight_px = WindowUtils.window.getWindowProperties().windowRect.height;
+    this.updateBreakpoint(WindowUtils.windowWidth_px);
+    let avoidArea = WindowUtils.window.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+    WindowUtils.topAvoidAreaHeight_px = avoidArea.topRect.height;
+    let navigationArea = WindowUtils.window.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
+    WindowUtils.navigationIndicatorHeight_px = navigationArea.bottomRect.height;
+    try {
+      WindowUtils.window.on('windowSizeChange', (data) => {
+        WindowUtils.windowWidth_px = data.width;
+        WindowUtils.windowHeight_px = data.height;
+        this.updateBreakpoint(data.width);
+      })
+      WindowUtils.window.on('avoidAreaChange', (data) => {
+        if (data.type === window.AvoidAreaType.TYPE_SYSTEM) {
+          let topRectHeight = data.area.topRect.height;
+          WindowUtils.topAvoidAreaHeight_px = topRectHeight;
+        } else if (data.type === window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR) {
+          let bottomRectHeight = data.area.bottomRect.height;
+          WindowUtils.navigationIndicatorHeight_px = bottomRectHeight;
+        }
+      })
+    } catch (exception) {
+      console.error(exception)
+    }
+  }
+
+  updateBreakpoint(width: number) {
+    let windowWidthVp = width / (display.getDefaultDisplaySync().densityDPI / 160);
+    let newBreakPoint: string = '';
+    if (windowWidthVp < 400) {
+      newBreakPoint = 'xs';
+    } else if (windowWidthVp < 600) {
+      newBreakPoint = 'sm';
+    } else if (windowWidthVp < 800) {
+      newBreakPoint = 'md';
+    } else {
+      newBreakPoint = 'lg';
+    }
+    if (this.currentBreakPoint !== newBreakPoint) {
+      this.currentBreakPoint = newBreakPoint;
+      // Record the current breakpoint value using the state variable.
+      AppStorage.setOrCreate('currentBreakpoint', this.currentBreakPoint);
+    }
+  }
+
+  public withSharedCardParams(param: SharedCardParams): NavAnimationStore {
+    this.sharedCardParams = param
+    return this
+  }
+
+  public setNavigation(navigation: NavDestBuilder<ObjectOrNull>): NavAnimationStore {
+    this.navigation = navigation
+    return this
+  }
+
+  buildSharedCardAnimParam(
+    component: object,
+    ctx: NavDestinationContext,
+    navBgColor: ResourceColor | undefined,
+    isAdaptImmersive: boolean
+  ): NavAnimParamBuilder {
+    const prop = new CardSharedAnimationProperties()
+    prop.registerSharedCardAnim()
+    this.cardSharedAnimPropMap.set(this.getKey(component), prop)
+    this.curComponent = component
+    return ZRouter.animateMgr()
+      .registerAnimParam(component, ctx)
+      .addAnimateOptions(new CardSharedAnimationOptions(prop, navBgColor, isAdaptImmersive));
+  }
+
+  unregisterSharedCardAnim(component: object) {
+    this.unregisterAnim(component)
+    this.cardSharedAnimPropMap.delete(this.getKey(component))
+  }
+
+  push(name: string) {
+    const param = this.sharedCardParams
+    if (!param) {
+      return
+    }
+    componentSnapshot.get(param.componentId, (error: Error, pixelMap: image.PixelMap) => {
+      if (error) {
+        (this.navigation ?? ZRouter.getInstance()).push(name)
+      } else {
+        SnapShotImage.pixelMap = pixelMap;
+        (this.navigation ?? ZRouter.getInstance())
+          .withParam(CardUtil.KEY_IMAGE_RESOURCE, param.imageRes)
+          .withParam(CardUtil.KEY_CLICKED_COMPONENT_ID, param.componentId)
+          .push(name)
+      }
+    })
   }
 
   // 自定义转场动画回调，在Navigation().customNavContentTransition()设置
