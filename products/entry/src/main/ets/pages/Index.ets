@@ -1,4 +1,4 @@
-
+import { RouterConstants } from '@hzw/common_library'
 import {
   ILifecycleObserver,
   Lifecycle,
@@ -11,20 +11,26 @@ import {
 } from 'routerapi'
 import { RouterConst } from '../constants/RouterConst'
 import { AddInterceptor } from '../interceptors/AddIntercetors'
-import { MainView } from './MainView'
+import { GlobalNavInterceptorMgr } from '../interceptors/interceptors'
+import { AnimView } from '../views/AnimView'
+import { BottomNavigationBar } from '../views/BottomNavigationBar'
+import { MainView } from '../views/MainView'
+import { MineView } from '../views/MineView'
 import onBackPress from './onBackPress'
 
 @Entry
 @Component
 struct Index {
+  // 生命周期管理 如果使用模板化能力，LifecycleRegistry则不需要创建，ZRouter会自动创建接管NavDestiantion的生命周期
   @Lifecycle
   lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
-  @State isShowMainView: boolean = false
+  @State isShowContent: boolean = false
 
   aboutToAppear(): void {
+    // 添加拦截器
     AddInterceptor()
+    // 监听模块是否加载完成 服务路由
     ZRouter.setModuleLoadedListener(() => {
-      // 模块加载完成
       console.log("Index 模块加载完成")
     })
 
@@ -45,7 +51,7 @@ struct Index {
       aboutToDisappear(): void {
         console.log('Index  aboutToDisappear')
       },
-      onWillShow(){
+      onWillShow() {
         console.log('Index  onWillShow')
       }
     } as ILifecycleObserver, true)
@@ -61,9 +67,10 @@ struct Index {
   }
 
   build() {
+    // 初始化Navigation路由栈 ，必选
     Navigation(ZRouter.getNavStack()) {
-      if (this.isShowMainView){
-        MainView()
+      if (this.isShowContent) {
+        MainContentView()
       }
     }
     .onAppear(() => {
@@ -71,16 +78,18 @@ struct Index {
       if (!isStarted) {
         ZRouter.getInstance()
           .setAnimate(false)
-          .setPopListener((r)=>{
-           console.log('Index  setPopListener',r)
-           this.isShowMainView = true
+          .setPopListener((r) => {
+            console.log('Index  setPopListener', r)
+            this.isShowContent = true
           })
           .navigation(RouterConst.SPLASH_PAGE)
       }
     })
+    .hideTitleBar(true)
     .title('Main')
     .height('100%')
     .width('100%')
+    // 可选
     .customNavContentTransition(ZRouter.animateMgr()// 创建默认动画管理器
       .defaultAnimateBuilder()// 设置进场动画参数
       .setEnterAnimate({ duration: 500 })// 设置退场动画参数
@@ -92,3 +101,66 @@ struct Index {
       .getAnimCustomNavContentTransition())
   }
 }
+
+
+@ComponentV2
+struct MainContentView {
+  @Local currentIndex: number = 0;
+  previousIndex: number = -1;
+
+  aboutToAppear(): void {
+    GlobalNavInterceptorMgr.onRootShow = () => {
+      if (this.isLogin && this.previousIndex > 0) {
+        this.currentIndex = this.previousIndex
+      }
+      if (this.previousIndex > 0) {
+        this.previousIndex = -1
+      }
+    }
+  }
+
+  build() {
+    Column() {
+      Tabs({ index: this.currentIndex }) {
+        TabContent() {
+          MainView()
+        }
+
+        TabContent() {
+          AnimView()
+        }
+
+        TabContent() {
+          MineView({onLogout: () => {
+            this.currentIndex = 0
+          }})
+        }
+      }
+      .barMode(BarMode.Fixed)
+      .scrollable(false)
+      .layoutWeight(1)
+      .barHeight(0)
+
+      BottomNavigationBar({
+        currentIndex: this.currentIndex!!,
+        onItemClick: (index) => {
+          if (index === 2) {
+            if (!this.isLogin) {
+              this.previousIndex = index
+              ZRouter.getInstance().navigation(RouterConstants.LOGIN_PAGE)
+              return true
+            }
+          }
+          return false
+        }
+
+      })
+    }.width('100%')
+    .height('100%')
+  }
+
+  private get isLogin() {
+    return AppStorage.get<boolean>('isLogin')
+  }
+}
+

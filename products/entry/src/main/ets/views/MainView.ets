@@ -8,7 +8,6 @@ import { RouterConst } from "../constants/RouterConst";
 import { common, Want } from "@kit.AbilityKit";
 import { BusinessError, deviceInfo } from "@kit.BasicServicesKit";
 import { RouterConstants, ToastUtils } from "@hzw/common_library";
-import { GlobalNavigateInterceptor } from "../interceptors/interceptors";
 import { promptAction, router } from "@kit.ArkUI";
 
 @Component
@@ -110,9 +109,7 @@ export struct MainView {
           ZRouter.getInstance().navigation(RouterConstants.LIFECYCLE_CASE_VIEW)
         })
 
-        Button("转场动画").onClick((event: ClickEvent) => {
-          ZRouter.getInstance().navigation(RouterConstants.ANIM_DEMO)
-        })
+
 
         Button("NavDestination页面模板化").onClick((event: ClickEvent) => {
           ZRouter.getInstance().navigation(RouterConstants.CUSTOM_COMPONENT_CHILD_VIEW)
@@ -122,11 +119,7 @@ export struct MainView {
           ZRouter.getInstance().navigation(RouterConstants.NEST_PAGE)
         })
 
-        Button('退出登录').onClick((event: ClickEvent) => {
-          AppStorage.set<boolean>("isLogin", false)
-          GlobalNavigateInterceptor.count = 0
-          promptAction.showToast({ message: "已退出登录" })
-        })
+
 
         Button("模拟第三方Navigation实例使用ZRouter库的Api").onClick((event: ClickEvent) => {
           router.pushUrl({ url: RouterConst.NAV_PAGE })

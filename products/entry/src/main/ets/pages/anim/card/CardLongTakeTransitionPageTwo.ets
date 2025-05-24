@@ -54,7 +54,7 @@ export struct CardLongTakeTransitionPageTwo {
             })
             .margin({ left: 20 })
 
-          Text($r('app.string.img'))
+          Text($r('app.string.page_show'))
             .height(56)
             .width('100%')
             .fontSize(22)

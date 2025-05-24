@@ -35,5 +35,7 @@ export class RouterConstants {
   public static readonly PAGE_BEFORE_PUSH = 'BeforePushPage'
   public static readonly PAGE_NAVDEST_TEMPLATE_V2 = 'NavDestTemplateV2'
   public static readonly NEST_PAGE = 'NestPage'
+  public static readonly LOGIN_PAGE = 'LoginPage'
+  public static readonly LoginVerifyCodePage = 'loginVerifyCodePage'
   // public static readonly PAGE_POP_CASE = 'POP_CASE_PAGE'
 }

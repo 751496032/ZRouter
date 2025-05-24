@@ -1,3 +1,4 @@
+import { RouterConstants } from 'common_library'
 import { Route, ZRouter } from 'routerapi'
 
 /**
@@ -24,12 +25,15 @@ export struct LoginPage{
     NavDestination(){
        Column({space:15}){
          Button('填写登录验证码').onClick((event: ClickEvent) => {
-           ZRouter.getInstance().push("loginVerifyCodePage")
+           ZRouter.getInstance().push(RouterConstants.LoginVerifyCodePage)
          })
 
          Button('登录成功').onClick((event: ClickEvent) => {
            AppStorage.setOrCreate<boolean>('isLogin', true)
-           ZRouter.getInstance().finishWithResult<boolean>(true)
+           const r = ZRouter.getInstance().finishWithResult<boolean>(true)
+           if (!r) {
+             ZRouter.getInstance().pop()
+           }
          })
        }
        .width('100%')

@@ -5,13 +5,13 @@
  */
 
 import { IInterceptor, InterceptorInfo, ZRouter } from "routerapi"
-import { GlobalNavigateInterceptor, UrlInterceptor } from "./interceptors"
+import { GlobalNavInterceptorMgr, UrlInterceptor } from "./interceptors"
 
 export function AddInterceptor(){
 
   // 可设置多个拦截器
   ZRouter.setInterceptor(new UrlInterceptor())
   // 全局拦截器
-  ZRouter.setGlobalInterceptor(new GlobalNavigateInterceptor())
+  ZRouter.setGlobalInterceptor(GlobalNavInterceptorMgr)
 
 }

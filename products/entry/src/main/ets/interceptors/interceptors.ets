@@ -1,34 +1,40 @@
 /**
  * @author: HZWei
  * @date: 2024/9/22
- * @desc:  拦截器案例
+ * @desc: 拦截器案例
  */
-import { IInterceptor, InterceptorInfo, InterceptorInfoOrNull, IGlobalNavigateInterceptor, ZRouter,
+import {
+  IInterceptor,
+  InterceptorInfo,
+  InterceptorInfoOrNull,
+  IGlobalNavigateInterceptor,
+  ZRouter,
   RedirectType,
   DestinationInfo,
   NavigationAction,
-   } from 'routerapi';
+} from 'routerapi';
 import { promptAction } from '@kit.ArkUI';
 import { HashMap } from '@kit.ArkTS';
 import { RouterConstants, ToastUtils } from '@hzw/common_library';
 
-export class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
- static  count = 0
+class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
+  count = 0
+  onRootShow?: () => void
   onNavigateBefore: (destInfo: DestinationInfo) => Promise<DestinationInfo> = (destInfo) => {
     console.log("IInterceptor Global onNavigateBefore -> ", destInfo.name)
     return new Promise((resolve, _) => {
       if (destInfo.name === RouterConstants.PAGE_BEFORE_PUSH) {
         // 拦截跳转到ParamPage页面
-        if (GlobalNavigateInterceptor.count === 0) {
+        if (this.count === 0) {
           destInfo.param = ' 在拦截器onNavigateBefore中已替换参数 '
           destInfo.next() // 继续跳转 默认的 ，可以不写
-        } else if (GlobalNavigateInterceptor.count === 1) {
+        } else if (this.count === 1) {
           ToastUtils.show("拦截器onNavigateBefore中已拦截, 再点一次会继续执行")
           destInfo.block() // 拦截跳转
-        } else if (GlobalNavigateInterceptor.count === 2) {
+        } else if (this.count === 2) {
           destInfo.name = RouterConstants.LIFECYCLE_CASE_VIEW
         }
-        GlobalNavigateInterceptor.count += 1
+        this.count += 1
         resolve(destInfo)
       } else {
         resolve(destInfo)
@@ -36,30 +42,24 @@ export class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
 
     })
   }
-
   onRootWillShow: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
     console.log("IInterceptor Global onRootWillShow ->  from name: ", fromContext.pathInfo.name)
+    this.onRootShow?.()
   }
-  onPageWillShow: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined = (from ,to)=>{
-    console.log("IInterceptor Global onPageWillShow -> ", " form name: ", from.pathInfo.name," to name: ", to.pathInfo.name)
-  }
-
-  onNavigate: ((context: InterceptorInfo) => void) | undefined = (info)=>{
-    if (info.notRegistered) return
+  onPageWillShow: ((fromContext: NavDestinationContext, toContext: NavDestinationContext) => void) | undefined =
+    (from, to) => {
+      console.log("IInterceptor Global onPageWillShow -> ", " form name: ", from.pathInfo.name, " to name: ",
+        to.pathInfo.name)
+    }
+  onNavigate: ((context: InterceptorInfo) => void) | undefined = (info) => {
+    if (info.notRegistered) {
+      return
+    }
     console.log("IInterceptor Global onNavigate -> ", info.name)
 
     let isLogin = AppStorage.get<boolean>("isLogin")
     if (info.isNeedLogin && !isLogin) {
       let param = info.param
-      // ZRouter.redirectForResult2<boolean>("LoginPage", param, (data) => {
-      //   if (data.data) {
-      //     // 登录成功
-      //     promptAction.showToast({ message: `登录成功` })
-      //     return true // 返回true 则继续跳转登录前的页面
-      //   }
-      //   return false
-      // })
-
       ZRouter.getInstance()
         .setParam(param)
         .setAnimate(true)
@@ -72,7 +72,7 @@ export class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
             return false
           }
         })
-        .redirect("LoginPage", RedirectType.REPLACE)
+        .redirect(RouterConstants.LOGIN_PAGE, RedirectType.REPLACE)
 
     }
 
@@ -102,7 +102,7 @@ export class UrlInterceptor implements IInterceptor {
     return context
   };
 
-   isLink(str: string): boolean {
+  isLink(str: string): boolean {
     const linkRegex = /^(hzw:\/\/|http:\/\/|https:\/\/|www\.).+/;
     return linkRegex.test(str);
   }
@@ -122,15 +122,16 @@ export class UrlInterceptor implements IInterceptor {
     }
     return params;
   }
-
 }
 
 export class TestInterceptor implements IInterceptor {
-  process: (context: InterceptorInfo) => InterceptorInfoOrNull =(context)=>{
+  process: (context: InterceptorInfo) => InterceptorInfoOrNull = (context) => {
     console.log("IInterceptor TestInterceptor: ", context.name)
     return context
   }
-
   priority: number = 100;
-
 }
+
+const globalInterceptor = new GlobalNavigateInterceptor()
+
+export { globalInterceptor as GlobalNavInterceptorMgr }

@@ -5,9 +5,10 @@
  */
 import { Route, ZRouter } from 'routerapi';
 import { promptAction } from '@kit.ArkUI';
+import { RouterConstants } from 'common_library';
 
 
-@Route({ name: 'loginVerifyCodePage' })
+@Route({ name: RouterConstants.LoginVerifyCodePage })
 @Component
 @Preview
 export struct LoginVerifyCodePage {
@@ -31,8 +32,11 @@ export struct LoginVerifyCodePage {
             return
           }
           AppStorage.setOrCreate('isLogin', true)
-          ZRouter.removeByName("LoginPage")
-          ZRouter.finishWithResult<boolean>(true)
+          ZRouter.getInstance().removeByName(RouterConstants.LOGIN_PAGE)
+          if (!ZRouter.getInstance().finishWithResult(true)) {
+            ZRouter.getInstance().pop()
+          }
+
 
         })
       }

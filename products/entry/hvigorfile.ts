@@ -1,7 +1,7 @@
 import { hapTasks } from '@ohos/hvigor-ohos-plugin';
 import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
 const config: PluginConfig = {
-    scanDirs: ['src/main/ets/pages', 'src/main/ets/views','src/main/ets/model'], // 扫描的目录，如果不设置，默认是扫描src/main/ets目录
+    scanDirs: ['src/main/ets/pages','src/main/ets/model'], // 扫描的目录，如果不设置，默认是扫描src/main/ets目录
     logEnabled: true, // 查看日志
     viewNodeInfo: false, // 查看节点信息
     lifecycleObserverAttributeName: 'viewModel', // 生命周期观察者属性名
