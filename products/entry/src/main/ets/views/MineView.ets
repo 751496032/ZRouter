@@ -6,6 +6,7 @@
 import { promptAction } from '@kit.ArkUI'
 import { GlobalNavInterceptorMgr } from '../interceptors/interceptors'
 
+@Preview
 @ComponentV2
 export struct MineView {
   @Param onLogout: () => void = () => {

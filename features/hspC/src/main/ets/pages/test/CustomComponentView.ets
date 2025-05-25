@@ -11,7 +11,7 @@ import { CustomCompLifecycleObserver } from './CustomCompLifecycleObserver';
 @ZRoute({ name: RouterConstants.CUSTOM_COMPONENT_VIEW_HSP, useTemplate: true })
 @Component
 export struct ChildView {
-  @Consume lifecycleObserver: CustomCompLifecycleObserver
+  @Consume viewModel: CustomCompLifecycleObserver
   aboutToAppear(): void {
     ZRouter.addLifecycleObserver((state, router) => {
       console.log("ChildView hsp addObserver ", state, router?.navDestinationId)
@@ -20,9 +20,9 @@ export struct ChildView {
 
   build() {
     Column({ space: 15 }) {
-      Text(this.lifecycleObserver.counter + "")
+      Text(this.viewModel.counter + "")
       Button("+1").onClick((event: ClickEvent) => {
-        this.lifecycleObserver.counter++
+        this.viewModel.counter++
       })
 
       Button("CustomComp-hsp").onClick((event: ClickEvent) => {

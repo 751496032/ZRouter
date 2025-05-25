@@ -124,6 +124,7 @@ export struct MainView {
         Button("模拟第三方Navigation实例使用ZRouter库的Api").onClick((event: ClickEvent) => {
           router.pushUrl({ url: RouterConst.NAV_PAGE })
         }).margin({ top: 30 })
+          .visibility(Visibility.None)
 
       }
     }

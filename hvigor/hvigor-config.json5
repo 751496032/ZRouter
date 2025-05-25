@@ -1,9 +1,8 @@
 {
   "modelVersion": "5.0.0",
   "dependencies": {
-//    "router-register-plugin":"file:../plugins/router-register-plugin-1.3.1.tgz"
-    "router-register-plugin":"1.3.2"
-
+    "router-register-plugin":"file:../plugins/router-register-plugin-1.4.1.tgz"
+//    "router-register-plugin":"1.3.2"
   },
   "execution": {
     // "analyze": "normal",                     /* Define the build analyze mode. Value: [ "normal" | "advanced" | false ]. Default: "normal" */
