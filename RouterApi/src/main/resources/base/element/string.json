@@ -1,12 +1,12 @@
 {
   "string": [
     {
-      "name": "agcit_router_tools",
-      "value": "1.4.1"
-    },
-    {
       "name": "page_show",
       "value": "page from package"
+    },
+    {
+      "name": "agcit_router_tools",
+      "value": "1.5.0"
     }
   ]
 }

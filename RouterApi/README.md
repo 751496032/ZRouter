@@ -9,15 +9,14 @@ ZRouter是一款轻量级且非侵入性的鸿蒙动态路由框架，可解决H
 - 注解参数支持使用静态常量，可跨模块定义；
 - 支持自定义与全局拦截器，可设优先级及中断逻辑，可实现页面重定向、登录验证等业务场景。
 - **支持服务路由，可实现Har/Hsp模块间的通信；**
-- 支持全局及单个页面的生命周期函数管理，可使任意类都能享有与组件相同的生命周期特性，可实现页面埋点统计等业务场景；
+- 支持全局及单个页面的生命周期函数管理，可使任意类都能享有与组件相同的生命周期特性，可用于页面埋点统计等业务场景；
 - **支持跨多级页面参数携带返回监听；**
 - 支持自定义URL路径跳转，可在拦截器内自行解析URL实现业务逻辑；
-- 内置多种转场动画效果（平移、旋转、渐变、缩放、高斯模糊），并支持自定义动画；
+- 内置多种转场动画效果（平移、旋转、渐变、缩放、高斯模糊、共享一镜到底动画），并支持自定义动画；
 - 支持启动模式、混淆、嵌套Navigation、Hap；
-- 支持第三方Navigation的使用本库API；
 - **支持与您现有项目中的Navigation无缝融合，实现零成本向本库迁移；**
 - 支持ArkUI-X跨平台上使用；
-- 未来计划：支持共享元素动画、持续优化。
+- 支持第三方Navigation的使用本库API；
 
 **使用十分简单，没有繁琐的配置，两行代码就可以完成页面的跳转**，如下:
 
@@ -57,11 +56,16 @@ ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://develope
 hvigorw --sync
 ```
 
-### 初始配置
+### 配置
 
-**在每个模块中的`hvigorfile.ts`文件导入router-register-plugin插件模块**，如下：
+支持两种配置方式：
 
+- **工程级配置**: 即在工程根目录下的hvigorfile.ts文件中全局配置；
+- **模块级配置**：即在每个模块目录下的hvigorfile.ts文件中单独配置；
 
+> 不建议一个项目同时使用两种配置方式，虽然是这种混合方式也是支持的，但容易出现配置冲突。模块级配置相对繁琐些，但配置项会更精细化些。
+
+步骤：
 ```
 // 1、导入
 import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
@@ -71,9 +75,8 @@ const config: PluginConfig = {
     scanDirs: ['src/main/ets/pages', 'src/main/ets/views'], // 扫描的目录，如果不设置，默认是扫描src/main/ets目录
     logEnabled: true, // 查看日志
     viewNodeInfo: false, // 查看节点信息
-    isAutoDeleteHistoryFiles: true // 删除无用编译产物
-    lifecycleObserverAttributeName: 'xxx' // 可选，设置全局的生命周期实现类在组件上的属性名，默认值是lifecycleObserver
-
+    ignoredModules:['RouterApi','common','xxx'], // 忽略的参与构建的模块，根据自己项目自行设置
+    enableUiPreviewBuild: false, // 启用UI预览构建，不建议启动
 }
 export default {
     // 3、添加插件
@@ -84,17 +87,21 @@ export default {
 
 > **注意：hvigorfile.ts文件中默认配置不要删除了。**
 
-常用的配置字段：
+配置参数说明：
 
-- scanDirs：扫描的目录，建议设置可更精准、更快扫描生成文件，如果不设置，默认是扫描src/main/ets目录
-- logEnabled：日志记录开关。
-- viewNodeInfo：查看节点信息的开关，只有logEnabled和viewNodeInfo同时开启才会生效
-- isAutoDeleteHistoryFiles：是否删除无用编译产物；
-- lifecycleObserverAttributeName：设置全局的生命周期实现类在组件上的属性名，默认值是lifecycleObserver，若要设置单个页面的名称，可在@ZRoute注解中的loAttributeName属性上设置。
 
-PluginConfig配置对象还有其他属性，但不建议使用，使用默认值即可。
+| 参数名                              | 类型       | 默认值               | 描述                                                                           |
+|----------------------------------|----------|-------------------|------------------------------------------------------------------------------|
+| `scanDirs`                       | string[] | ['src/main/ets']  | 扫描的目录，如果不设置，默认是扫描src/main/ets目录。建议配置该字段，避免扫描所有目录，影响工程编译效率**                  |                                           |
+| `logEnabled`                     | boolean  | true              | 是否打印日志                                                                       |                                 |
+| `viewNodeInfo`                   | boolean  | false             | 查看节点信息，只有与logEnable同时为true才会打印输出                                             |
+| ~~`isAutoDeleteHistoryFiles`~~   | boolean  | false             | 是否在构建时删除编译产物，已弃用，在项目`clean`自动删除无用编译产物，请不要设置此参数。                              |              |
+| `lifecycleObserverAttributeName` | string   | lifecycleObserver | 如果使用了NavDest页面模板化功能，该配置字段会生效，默认属性名是lifecycleObserver，也可以在@Route注解上单独设置这个属性   |
+| **`ignoredModules`**             | string[] | []                | 忽略需要扫描的模块，填写模块名称，默认是全部模块；**插件在工程级时使用**，该字段才会生效。**建议配置该字段，避免扫描所有模块，影响工程编译效率** |
+| `enableUiPreviewBuild`           | boolean  | false             | 是否在ui预览构建时生成，默认不启用, 会降低ui预览构建效率                                              |
 
-> 上面所有路径都是相对模块的src目录而言的，是相对路径。最后记得Sync Now或重新build让配置生效。
+
+>  **注意：** 以上配置参数都是可选的，建议配置`scanDirs`和`ignoredModules`字段，避免扫描所有目录和模块，影响工程编译效率。
 
 其中`_generated`目录和`route_map.json`文件在编译阶段自动生成的，建议在git的`.gitignore`忽略掉这两个文件。
 
@@ -617,12 +624,11 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - 鸿蒙H5与原生的通信库：https://github.com/751496032/DSBridge-HarmonyOS
 - 鸿蒙日志库：https://gitee.com/common-apps/logger
 
-## 下一个版本计划
+## 计划
 
-- 拦截器：拦截器支持pop拦截
-- 服务路由：动态注册支持应用入口模块entry
-- 编译插件：自动生成文件调整
-- 转场动画：支持一镜到底动画
+- 路由拦截器：支持pop拦截
+- 服务路由：模块entry支持动态注册
+- 路由插件：自动生成文件调整
 
 
 ## 联系我们

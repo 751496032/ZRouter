@@ -7,7 +7,7 @@ const config: PluginConfig = {
   logEnabled: true, // 查看日志
   viewNodeInfo: false, // 查看节点信息
   lifecycleObserverAttributeName: 'viewModel', // 生命周期观察者属性名
-  ignoredModules:['RouterApi','common'],
+  ignoredModules:['RouterApi','common'], // 忽略的参与构建的模块，建议设置
   enableUiPreviewBuild: false, // 启用UI预览构建，不建议启动
 }
 
