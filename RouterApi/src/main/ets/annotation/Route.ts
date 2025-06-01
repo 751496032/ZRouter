@@ -56,4 +56,5 @@ interface Param {
    */
   needLogin?: boolean
   extra?: string
+  param?: Record<string, {default: ESObject}>
 }
