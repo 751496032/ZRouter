@@ -19,6 +19,7 @@ export default class EntryAbility extends UIAbility {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
+    // 初始化卡片一镜到底动画
     ZRouter.animateMgr().initSharedAnim(windowStage)
 
     windowStage.loadContent('pages/Index', (err) => {

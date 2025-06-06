@@ -101,27 +101,39 @@ export struct CardLongTakeTransitionPageTwo {
 
   build() {
     NavDestination() {
+      // 卡片动画容器，里面包裹真正需要显示的布局
       SharedCardContainer({
         bgColor: Color.White,
         content: () => {
+          // 具体布局
           this.Content()
         }
       })
     }
     .onReady((context: NavDestinationContext) => {
+      // 注册卡片一镜到底动画
       ZRouter.animateMgr()
+        // 卡片一镜到底动画入口
         .sharedCard()
+        // 设置是否适配沉浸式，如果页面是沉浸式，则设置为true
         .setIsAdaptImmersive(false)
+        // 设置背景色
         .setNavBgColor(Color.White)
+        // 注册卡片一镜到底动画
         .registerSharedCardAnimParam(this, context)
+        // 设置进场转场动画相关动画属性
         .setEnterAnimate({ duration: 500 })
+        // 设置退场转场动画相关动画属性
         .setExitAnimate({ duration: 500 })
     })
     .onDisAppear(() => {
+      // 取消注册卡片一镜到底动画
       ZRouter.animateMgr().sharedCard().unregisterSharedCardAnim(this)
     })
     .hideTitleBar(true)
+    // 需要设置颜色，不然背景渐变效果不生效
     .backgroundColor(Color.Transparent)
+    // 卡片一镜到底动画相关modifier
     .attributeModifier(ZRouter.animateMgr().modifier(this))
     .onBackPressed(() => {
       return this.onBackPressed();

@@ -54,13 +54,17 @@ export struct CardLongTakeTransitionPageOne {
               CardComponent({
                 url: $r(`app.media.img_${(index % 6)}`),
                 onColumnClicked: (url: ResourceStr) => {
+                  // 一镜到底跳转目标页，需要传入图片资源，和点击的组件id
                   ZRouter
                     .getInstance()
+                    // 动画管理器
                     .animateMgr()
+                    // 携带图片资源和点击的组件id
                     .withSharedCardParams({
                       imageRes: url,
                       componentId: `FlowItem_${index}`,
                     })
+                    // 跳转目标页
                     .push(RouterConstants.PAGE_CARD_TWO)
                 }
               })
@@ -68,6 +72,7 @@ export struct CardLongTakeTransitionPageOne {
             .width('100%')
             .borderRadius(10)
             .clip(true)
+            // 设置组件 id
             .id(`FlowItem_${index}`)
           }, (item: string) => item)
         }
