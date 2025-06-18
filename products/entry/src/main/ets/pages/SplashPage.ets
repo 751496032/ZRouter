@@ -6,14 +6,22 @@ import { RouterConst } from '../constants/RouterConst';
  * @date: 2024/10/12
  * @desc: 如果@Route不设置任何属性，则默认使用类名作为路由名称
  */
-@Route
+@Route({
+  param: {
+    "ids": {
+      default: -1
+    }
+  }
+})
 @Component
 export struct SplashPage {
+  @State ids: number = -1
   @State countdown: number = 3000
 
   build() {
     NavDestination() {
       Column() {
+        Text("测试id参数=" + this.ids)
         Text('欢迎使用ZRouter')
           .fontColor(Color.Black)
           .textAlign(TextAlign.Center)
