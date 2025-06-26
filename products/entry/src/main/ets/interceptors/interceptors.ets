@@ -86,6 +86,10 @@ class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
 
     }
   }
+  onPop?: ((fromContext: NavDestinationContext, toContext: NavDestinationContext | undefined) => void) = (from, to) => {
+    console.log("IInterceptor Global onPop -> ", " form name: ", from.pathInfo.name, " to name: ",
+      to?.pathInfo.name)
+  }
 }
 
 

@@ -125,6 +125,7 @@ export default class NavStackMgr {
           const interceptorInfo = InterceptorInfo.create(false)
           interceptorInfo.operation = operation
           const isPushOrReplace = operation === NavigationOperation.PUSH || operation === NavigationOperation.REPLACE
+          const isPop = operation === NavigationOperation.POP
           if (isPushOrReplace) {
             try {
               const toContext: NavDestinationContext = to as NavDestinationContext
@@ -170,6 +171,10 @@ export default class NavStackMgr {
               }
               if (isWillShowNavDestView) {
                 interceptor.onPageWillShow?.(fromContext, toContext)
+              }
+              if (isPop) {
+                interceptor.onPop?.(from as NavDestinationContext,
+                  this.isNavBar(to) ? undefined : to as NavDestinationContext)
               }
               interceptor.onShowCallback?.(from, to, operation, animated)
             })

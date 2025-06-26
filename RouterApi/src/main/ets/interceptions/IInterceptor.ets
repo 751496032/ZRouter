@@ -40,6 +40,13 @@ export interface IGlobalNavigateInterceptor {
    * @param context
    */
   onNavigate?: (context: InterceptorInfo) => void;
+
+  /**
+   * 页面pop时回调
+   * @param fromContext 从哪个页面返回
+   * @param toContext undefined 表示返回到Navigation根容器了
+   */
+  onPop?: (fromContext: NavDestinationContext, toContext: NavDestinationContext | undefined) => void;
   /**
    * 页面显示回调，鸿蒙sdk默认的，没有处理逻辑，如果其他的回调函数无法满足你的需求，可考虑在这里实现
    * @param context

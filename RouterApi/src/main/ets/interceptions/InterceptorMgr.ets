@@ -8,6 +8,9 @@ import { List } from '@kit.ArkTS'
 import { InterceptorInfo } from '../model/Model'
 
 export class InterceptorMgr {
+  /**
+   * @deprecated
+   */
   private interceptions = new Map<string, List<IInterceptor>>()
   private static instance: InterceptorMgr
   private globalInterceptors = new  Map<string, IGlobalNavigateInterceptor>();
@@ -64,14 +67,6 @@ export class InterceptorMgr {
 
   }
 
-  /**
-   * @deprecated
-   * @param stackName
-   * @param context
-   * @param isPush
-   * @param callback
-   * @returns
-   */
   public run(stackName: string, context: InterceptorInfo, isPush: boolean = false,
     callback?: (it: IGlobalNavigateInterceptor) => void): InterceptorInfo {
     if (this.interceptions.has(stackName) && isPush) {
