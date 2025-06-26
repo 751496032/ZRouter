@@ -7,8 +7,8 @@ import { Route, ZRouter } from 'routerapi'
  * @desc:
  */
 
-
-@Route
+@Preview
+@Route()
 @Component
 export struct LoginPage{
 

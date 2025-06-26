@@ -4,18 +4,17 @@
  * @desc: NavDestination页面注解
  */
 
-export interface RouteDecorator extends ClassDecorator {
-  (param?: Param): ClassDecorator
-}
+// 使用ClassDecorator会造成har、hsp模块的ui无法预览
+// export interface RouteDecorator extends ClassDecorator {
+//   (param?: Param): ClassDecorator
+// }
+// export declare const Route: RouteDecorator
+// export declare const ZRoute: RouteDecorator
 
-export declare const Route: RouteDecorator
-
-/**
- * 可以替代@Route
- * @param param
- * @returns
- */
-export declare const ZRoute: RouteDecorator
+export function Route(param?: Param){
+  return Object
+};
+export const ZRoute = Route;
 
 interface Param {
   /**
