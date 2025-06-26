@@ -64,6 +64,14 @@ export class InterceptorMgr {
 
   }
 
+  /**
+   * @deprecated
+   * @param stackName
+   * @param context
+   * @param isPush
+   * @param callback
+   * @returns
+   */
   public run(stackName: string, context: InterceptorInfo, isPush: boolean = false,
     callback?: (it: IGlobalNavigateInterceptor) => void): InterceptorInfo {
     if (this.interceptions.has(stackName) && isPush) {
@@ -92,8 +100,24 @@ export class InterceptorMgr {
     return context
   }
 
+  /**
+   * @deprecated
+   * @param stackName
+   * @param context
+   * @param isPush
+   * @param callback
+   * @returns
+   */
   public async runAsync(stackName: string, context: InterceptorInfo, isPush: boolean = false,
     callback?: (it: IGlobalNavigateInterceptor) => void) {
-     return Promise.resolve(this.run(stackName, context, isPush, callback))
+    return Promise.resolve(this.run(stackName, context, isPush, callback))
+  }
+
+
+  public getGlobalInterceptor(stackName: string): IGlobalNavigateInterceptor | undefined {
+    if (!this.globalInterceptors.has(stackName)) {
+      return undefined
+    }
+    return this.globalInterceptors.get(stackName) as IGlobalNavigateInterceptor
   }
 }

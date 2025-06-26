@@ -335,20 +335,19 @@ export class RouterMgr {
     interceptorInfo.param = param
     interceptorInfo.operation = operation
     let r: DestinationInfo  = DestinationInfo.create(interceptorInfo)
-    await this.interceptorMgr.runAsync(state.stackName, interceptorInfo, false, async (it) => {
-      try {
-        const result = await it.onNavigateBefore?.(r)
-        if (result) {
-          r = result
-        }
-      } catch (error) {
-        LogUtil.error('beforePushOrReplace error: ', error)
+    try {
+      const interceptor = this.interceptorMgr.getGlobalInterceptor(state.stackName)
+      const result = await interceptor?.onNavigateBefore?.(r)
+      if (result) {
+        r = result
       }
-    })
+    } catch (error) {
+      LogUtil.error('beforePushOrReplace error: ', error)
+    }
     if (!r.isContinue()) {
       LogUtil.log('beforePushOrReplace next: ',  r.isContinue())
     }
-    return Promise.resolve(r)
+    return r
   }
 
   /**

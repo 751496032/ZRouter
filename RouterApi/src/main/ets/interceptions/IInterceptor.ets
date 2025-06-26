@@ -49,6 +49,9 @@ export interface IGlobalNavigateInterceptor {
 }
 
 
+/**
+ * @deprecated 建议使用IGlobalNavigateInterceptor
+ */
 export interface IInterceptor {
   /**
    * 处理push和replace拦截器逻辑，返回null或undefined则表示拦截器处理完成，否则继续执行下一个拦截器

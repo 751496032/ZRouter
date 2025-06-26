@@ -17,12 +17,20 @@ import { promptAction } from '@kit.ArkUI';
 import { HashMap } from '@kit.ArkTS';
 import { RouterConstants, ToastUtils } from '@hzw/common_library';
 
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve, _) => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
+  })
+}
+
 class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
   count = 0
   onRootShow?: () => void
   onNavigateBefore: (destInfo: DestinationInfo) => Promise<DestinationInfo> = (destInfo) => {
     console.log("IInterceptor Global onNavigateBefore -> ", destInfo.name)
-    return new Promise((resolve, _) => {
+    return new Promise( async (resolve, _) => {
       if (destInfo.name === RouterConstants.PAGE_BEFORE_PUSH) {
         // 拦截跳转到ParamPage页面
         if (this.count === 0) {
@@ -32,6 +40,7 @@ class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
           ToastUtils.show("拦截器onNavigateBefore中已拦截, 再点一次会继续执行")
           destInfo.block() // 拦截跳转
         } else if (this.count === 2) {
+          await wait(2000)
           destInfo.name = RouterConstants.LIFECYCLE_CASE_VIEW
         }
         this.count += 1
@@ -42,7 +51,8 @@ class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
 
     })
   }
-  onRootWillShow: ((fromContext: NavDestinationContext) => void) | undefined = (fromContext) => {
+
+  onRootWillShow: ((fromContext: NavDestinationContext) => void)  = (fromContext) => {
     console.log("IInterceptor Global onRootWillShow ->  from name: ", fromContext.pathInfo.name)
     this.onRootShow?.()
   }
@@ -51,7 +61,7 @@ class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
       console.log("IInterceptor Global onPageWillShow -> ", " form name: ", from.pathInfo.name, " to name: ",
         to.pathInfo.name)
     }
-  onNavigate: ((context: InterceptorInfo) => void) | undefined = (info) => {
+  onNavigate: ((context: InterceptorInfo) => void)  = (info) => {
     if (info.notRegistered) {
       return
     }
@@ -75,11 +85,13 @@ class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
         .redirect(RouterConstants.LOGIN_PAGE, RedirectType.REPLACE)
 
     }
-
   }
 }
 
 
+/**
+ * @deprecated
+ */
 export class UrlInterceptor implements IInterceptor {
   // 设置拦截器优先级，数值越大则优先执行
   priority: number = 10000;

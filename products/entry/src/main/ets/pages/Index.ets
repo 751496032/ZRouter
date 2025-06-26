@@ -77,7 +77,7 @@ struct Index {
       let isStarted = AppStorage.get<boolean>(RouterConst.SPLASH_TAG)
       if (!isStarted) {
         ZRouter.getInstance()
-          .setParam(Object({ids: 1}))
+          .setParam(Object({ids: 1, name: 'hzw'}))
           .setAnimate(false)
           .setPopListener((r) => {
             console.log('Index  setPopListener', r)
