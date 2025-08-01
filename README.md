@@ -618,17 +618,12 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 - 提交代码
 - 新建 Pull Request
 
-## 其他库
 
-- 鸿蒙数据库工具：https://gitee.com/HW-Commons/ZDbUtil
-- 鸿蒙H5与原生的通信库：https://github.com/751496032/DSBridge-HarmonyOS
-- 鸿蒙日志库：https://gitee.com/common-apps/logger
 
 ## 计划
 
-- 路由拦截器：支持pop拦截
 - 服务路由：模块entry支持动态注册
-- 路由插件：自动生成文件调整
+- 路由插件：调整文件生成
 
 
 ## 联系我们
