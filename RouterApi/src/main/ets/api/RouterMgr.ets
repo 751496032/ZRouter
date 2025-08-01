@@ -396,11 +396,11 @@ export class RouterMgr {
 
 
   private popInternal(result?: Object, animated: boolean = true): boolean {
+    // 路由栈默认是不支持Boolean类型，转成字符串携带
+    if (typeof result == "boolean") {
+      result = `${result}`
+    }
     if (result) {
-      // 路由栈默认是不支持Boolean类型，转成字符串携带
-      if (typeof result == "boolean") {
-        result = result + ""
-      }
       let r = this.getNavStack().pop(result, animated)
       if (!r) {
         r = this.getNavStack().getParent()?.pop(result, animated)
