@@ -257,11 +257,9 @@ export struct Page1 {
 ```
 
 
-### 拦截器
+### 全局拦截器
 
-ZRouter支持多个拦截器和全局拦截器，在拦截器中可以做页面跳转的拦截，比如跳转前拦截、数据预取、登录拦截，404拦截、埋点、自定义URL路径等等。
-
-#### 全局拦截器
+全局拦截器每个页面跳转都会触发，可以拦截器中做页面跳转的拦截，比如跳转前拦截、数据预取、登录拦截，404拦截、埋点、自定义URL路径等等。
 
 
 
@@ -363,41 +361,6 @@ export struct LoginPage{
 在登录成功后通过ZRouter.finishWithResult()方法携带数据关闭页面，会将状态传递给redirectForResult2()方法的回调函数。
 
 
-上面是全局拦截器，每个跳转都会触发，如果需要添加多个拦截器，则可以使用setInterceptor()方法，但不建议使用。
-
-#### 自定义拦截器 - 不建议使用
-
-自定义拦截器，首先实现接口IInterceptor，然后使用setInterceptor()方法注册拦截器，，代码示例如下：
-
-```typescript
-export interface IInterceptor {
-  process: ProcessCallback;
-  // 优先级，数字越大优先级越高
-  priority: number;
-}
-export type ProcessCallback = (context: InterceptorInfo) => InterceptorInfoOrNull;
-```
-
-**在IInterceptor的process()方法中进行页面跳转的拦截，process()方法返回null会中断后面的拦截器逻辑，返回context则继续执行后面的拦截器逻辑。**
-
-代码示例：
-
-```typescript
-
-aboutToAppear(): void {
-  ZRouter.setInterceptor(new UrlInterceptor())
-}
-
-export class UrlInterceptor implements IInterceptor {
-  // 设置拦截器优先级，数值越大则优先执行
-  priority: number = 10000;
-  process: (context: InterceptorInfo) => InterceptorInfoOrNull = (context) => {
-    return context
-  }
-}
-```
-
-关于其他API的使用请参考demo。
 
 
 ## NavDestination页面模板化
@@ -603,13 +566,6 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 
 - gitee：https://gitee.com/common-apps/ZRouter
 - github：https://github.com/751496032/ZRouter
-
-## 实战案例
-
-这里推荐一个基于ZRouter搭建项目的实战案例，仅做参考具体可根据你项目来调整。
-
-- [《探索 HarmonyOS NEXT (5.0)：开启构建模块化项目架构奇幻之旅 —— 动态路由 ZRouter：引领高效模块通信的智慧中枢》](https://blog.csdn.net/qq_40533422/article/details/143479759)
-- [案例源码](https://github.com/JasonYinH/ExploreHarmonyNext)
 
 
 ## 参与贡献
