@@ -14,6 +14,7 @@ import { AddInterceptor } from '../interceptors/AddIntercetors'
 import { GlobalNavInterceptorMgr } from '../interceptors/interceptors'
 import { AnimView } from '../views/AnimView'
 import { BottomNavigationBar } from '../views/BottomNavigationBar'
+import { HomeView } from '../views/HomeView'
 import { MainView } from '../views/MainView'
 import { MineView } from '../views/MineView'
 import onBackPress from './onBackPress'
@@ -61,23 +62,23 @@ struct Index {
 
   }
 
-  onBackPress(): boolean | void {
-    console.log('Index  onBackPress')
-    return onBackPress()
-  }
+  // onBackPress(): boolean | void {
+  //   console.log('Index  onBackPress')
+  //   return onBackPress()
+  // }
 
   build() {
     // 初始化Navigation路由栈 ，必选
     Navigation(ZRouter.getNavStack()) {
       if (this.isShowContent) {
-        MainContentView()
+        MainView()
       }
     }
     .onAppear(() => {
       let isStarted = AppStorage.get<boolean>(RouterConst.SPLASH_TAG)
       if (!isStarted) {
         ZRouter.getInstance()
-          .setParam(Object({ids: 1, name: 'hzw'}))
+          .setParam(Object({ids: 1, name: 'zrouter'}))
           .setAnimate(false)
           .setPopListener((r) => {
             console.log('Index  setPopListener', r)
@@ -87,6 +88,7 @@ struct Index {
       }
     })
     .hideTitleBar(true)
+    .hideNavBar(true)
     .title('Main')
     .height('100%')
     .width('100%')
@@ -104,64 +106,5 @@ struct Index {
 }
 
 
-@ComponentV2
-struct MainContentView {
-  @Local currentIndex: number = 0;
-  previousIndex: number = -1;
 
-  aboutToAppear(): void {
-    GlobalNavInterceptorMgr.onRootShow = () => {
-      if (this.isLogin && this.previousIndex > 0) {
-        this.currentIndex = this.previousIndex
-      }
-      if (this.previousIndex > 0) {
-        this.previousIndex = -1
-      }
-    }
-  }
-
-  build() {
-    Column() {
-      Tabs({ index: this.currentIndex }) {
-        TabContent() {
-          MainView()
-        }
-
-        TabContent() {
-          AnimView()
-        }
-
-        TabContent() {
-          MineView({onLogout: () => {
-            this.currentIndex = 0
-          }})
-        }
-      }
-      .barMode(BarMode.Fixed)
-      .scrollable(false)
-      .layoutWeight(1)
-      .barHeight(0)
-
-      BottomNavigationBar({
-        currentIndex: this.currentIndex!!,
-        onItemClick: (index) => {
-          if (index === 2) {
-            if (!this.isLogin) {
-              this.previousIndex = index
-              ZRouter.getInstance().navigation(RouterConstants.LOGIN_PAGE)
-              return true
-            }
-          }
-          return false
-        }
-
-      })
-    }.width('100%')
-    .height('100%')
-  }
-
-  private get isLogin() {
-    return AppStorage.get<boolean>('isLogin')
-  }
-}
 

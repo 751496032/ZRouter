@@ -289,6 +289,10 @@ export class ZRouter {
     return ZRouter.getInstance().getParamByKey<P>(key, defVal)
   }
 
+  public static hideNavBar(hide: boolean) {
+    ZRouter.getRouterMgr().hideNavbar = hide
+  }
+
 
   // region 废弃方法
 

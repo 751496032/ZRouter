@@ -37,5 +37,6 @@ export class RouterConstants {
   public static readonly NEST_PAGE = 'NestPage'
   public static readonly LOGIN_PAGE = 'LoginPage'
   public static readonly LoginVerifyCodePage = 'loginVerifyCodePage'
+  public static readonly MAIN_PAGE = 'main_page'
   // public static readonly PAGE_POP_CASE = 'POP_CASE_PAGE'
 }

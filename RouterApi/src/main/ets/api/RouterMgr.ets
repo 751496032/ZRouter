@@ -46,7 +46,11 @@ export class RouterMgr {
    */
   public isDynamicLoadedComplete = false
   public moduleLoadedListener?: () => void
-  public hasPageBeenLaunched = false
+  private hasPageBeenLaunched = false
+  /**
+   * 是否隐藏Navigation根视图
+   */
+  public hideNavbar = false
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -513,6 +517,9 @@ export class RouterMgr {
    */
   public clear(animated: boolean = true) {
     this.getNavStack().clear(animated)
+    if (this.hideNavbar) {
+
+    }
   }
 
 
