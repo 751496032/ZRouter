@@ -5,6 +5,7 @@
  */
 import { ObjUtil } from '../utlis/ObjUtil'
 import { HashMap } from '@kit.ArkTS'
+import { INavDestOptions } from './NavDestOptions'
 
 export class InterceptorInfo {
   /**
@@ -45,6 +46,10 @@ export class InterceptorInfo {
   operation?: NavigationOperation
 
 
+  /**
+   * 跳转时的配置信息
+   */
+  navigationOptions?: INavDestOptions<ObjectOrNull>
 
 
   private constructor(notRegistered : boolean = false) {
@@ -109,6 +114,10 @@ export class DestinationInfo {
    *  是否拦截、继续
    */
   action: NavigationAction = NavigationAction.NEXT
+  /**
+   * 页面跳转时的配置信息
+   */
+  navigationOptions?: INavDestOptions<ObjectOrNull>
 
   private constructor() {
   }

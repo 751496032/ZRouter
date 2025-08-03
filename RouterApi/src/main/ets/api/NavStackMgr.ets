@@ -8,14 +8,14 @@ import { DEFAULT_STACK_NAME, InterceptorInfo, RouteMetadata } from '../model/Mod
 import LogUtil from '../utlis/LogUtil';
 import { ObjUtil } from '../utlis/ObjUtil';
 import { ArrayList, HashMap } from '@kit.ArkTS';
-import NavStackState from '../model/NavStackState';
+import NavDestState from '../model/NavDestState';
 import { ZRouter } from './Router';
 import { RouterInfo } from '../model/RouterInfo';
 
 export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
   private interceptorMgr = InterceptorMgr.getInstance()
-  private navStackStateMap = new HashMap<string, NavStackState>()
+  private navStateMap = new HashMap<string, NavDestState>()
   private _currentStackName: string | undefined = undefined
   private onBeforeNavStackRegisterCallback?: Function
   private navDesMap = new HashMap<string, ArrayList<RouterInfo>>()
@@ -85,11 +85,11 @@ export default class NavStackMgr {
     return stack
   }
 
-  public getNavStackState(): NavStackState {
+  public getNavDestState(): NavDestState {
     const name = this.currentStackName
-    let state = this.navStackStateMap.get(name)
+    let state = this.navStateMap.get(name)
     if (state !== undefined && state !== null) {
-      return state as NavStackState
+      return state as NavDestState
     }
     throw new Error(`current 【${name}】 state is null`)
   }
@@ -98,8 +98,8 @@ export default class NavStackMgr {
     if (this.navStackMap.has(stackName)) {
       this.navStackMap.delete(stackName)
     }
-    if (this.navStackStateMap.hasKey(stackName)) {
-      this.navStackStateMap.remove(stackName)
+    if (this.navStateMap.hasKey(stackName)) {
+      this.navStateMap.remove(stackName)
     }
 
   }
@@ -108,11 +108,11 @@ export default class NavStackMgr {
     willShow?: InterceptionShowCallback): void {
     if (!this.navStackMap.has(stackName)) {
       this.navStackMap.set(stackName, pathStack)
-      this.navStackStateMap.set(stackName, NavStackState.create(stackName))
+      this.navStateMap.set(stackName, NavDestState.create(stackName))
       pathStack.setInterception({
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
-          const state = this.getNavStackState()
+          const state = this.getNavDestState()
           LogUtil.log(`setInterception ${state.stackName} from: `, this.getNavDestContext(from)?.pathInfo?.name , " isNavBar: " ,this.isNavBar(from),  " --> to: ", this.getNavDestContext(to)?.pathInfo?.name," isNavBar: " , this.isNavBar(to), ' operation: ', operation)
 
           if (willShow !== undefined) {
@@ -126,6 +126,7 @@ export default class NavStackMgr {
           interceptorInfo.operation = operation
           const isPushOrReplace = operation === NavigationOperation.PUSH || operation === NavigationOperation.REPLACE
           const isPop = operation === NavigationOperation.POP
+
           if (isPushOrReplace) {
             try {
               const toContext: NavDestinationContext = to as NavDestinationContext
@@ -138,7 +139,7 @@ export default class NavStackMgr {
                 interceptorInfo.param = ZRouter.getInstance(state.stackName).getParam()
                 interceptorInfo.metadata = metadata
               }
-
+              interceptorInfo.navigationOptions = state.getDestOptions(toContext.pathInfo.name)
               state.stackTopInfo = interceptorInfo
             } catch (e) {
               // 检查route_map、装饰器Route、push三者的name值是否一致

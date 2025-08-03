@@ -26,7 +26,7 @@ import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
 import { TemplateMgr } from '../template/TemplateMgr'
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr'
 
-const KEY_Z_ROUTER = 'ZRouter'
+const KEY_ROUTER = 'ZRouter'
 
 export class ZRouter {
   private static routerMgr: RouterMgr | undefined = undefined
@@ -81,13 +81,13 @@ export class ZRouter {
     ZRouter.routerMgr = RouterMgr.getInstance()
     if (isHSPModuleDependent) {
       LogUtil.log("isHSPModuleDependent ")
-      AppStorage.setOrCreate(KEY_Z_ROUTER, ZRouter.routerMgr)
+      AppStorage.setOrCreate(KEY_ROUTER, ZRouter.routerMgr)
     }
   }
 
   private static getRouterMgr(): RouterMgr {
     if (ZRouter.routerMgr === undefined) {
-      const mgr = AppStorage.get<RouterMgr>(KEY_Z_ROUTER)
+      const mgr = AppStorage.get<RouterMgr>(KEY_ROUTER)
       if (!ObjUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
@@ -112,8 +112,14 @@ export class ZRouter {
     return NavDestBuilder.create<ObjectOrNull>(ZRouter.routerMgr, stackName)
   }
 
+
+  public static build(stackName: string = DEFAULT_STACK_NAME): NavDestBuilder<ObjectOrNull> {
+    return ZRouter.getInstance(stackName)
+  }
+
   /**
    * 获取路由操作的实例,如跳转、返回等操作
+   * @deprecated
    * @param stackName 栈名，如果有多个Navigation，需要设置，如果一个应用只有一个，可不设置
    * @returns
    */

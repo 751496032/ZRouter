@@ -32,6 +32,7 @@ import { RouterInfo } from '../model/RouterInfo';
 import { LifecycleEvent } from '../lifecycle/LifecycleEvent';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { DeviceUtil } from '../utlis/DeviceUtil';
+import { INavDestOptions } from '../model/NavDestOptions';
 
 
 export class RouterMgr {
@@ -68,6 +69,7 @@ export class RouterMgr {
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
+          this.getCurrentState().deleteDestOptions(name)
           this.navStackMgr.removeRouterInfo(routerInfo)
           const indexList = this.getNavStack().getIndexByName(name)
           if (indexList.length == 0 && !this.getCurrentState().redirectWithResultMode) {
@@ -158,7 +160,7 @@ export class RouterMgr {
 
 
   private getCurrentState() {
-    return this.navStackMgr.getNavStackState()
+    return this.navStackMgr.getNavDestState()
   }
 
 
@@ -298,7 +300,7 @@ export class RouterMgr {
           }
         }, { launchMode: launchMode, animated: animated })
         .catch((err: BusinessError) => {
-          this.handlePushError(err, name, param)
+          this.handlePushError(err, name, param, builder)
         })
     } else {
       return this.getNavStack()
@@ -308,18 +310,19 @@ export class RouterMgr {
           }
         }, animated)
         .catch((err: BusinessError) => {
-          this.handlePushError(err, name, param)
+          this.handlePushError(err, name, param ,builder)
         })
     }
   }
 
-  private handlePushError(err: BusinessError, name: string, param?: ObjectOrNull) {
+  private handlePushError<T>(err: BusinessError, name: string, param?: ObjectOrNull, builder?: NavDestBuilder<T>) {
     LogUtil.error('error: ', err.code, err.message)
     if (err.code == ErrorCode.NOT_REGISTERED) {
       const state = this.getCurrentState()
       let interceptorInfo = InterceptorInfo.create(true)
       interceptorInfo.name = name
       interceptorInfo.param = param
+      interceptorInfo.navigationOptions = builder?.options as INavDestOptions<ObjectOrNull>
       this.interceptorMgr.run(state.stackName, interceptorInfo, true, (it) => {
         it.onNavigate?.(interceptorInfo)
       })
@@ -336,6 +339,10 @@ export class RouterMgr {
     interceptorInfo.operation = operation
     let r: DestinationInfo  = DestinationInfo.create(interceptorInfo)
     try {
+      r.navigationOptions = builder?.options as INavDestOptions<ObjectOrNull>
+      if (builder) {
+        state.setDestOptions(name, r.navigationOptions)
+      }
       const interceptor = this.interceptorMgr.getGlobalInterceptor(state.stackName)
       const result = await interceptor?.onNavigateBefore?.(r)
       if (result) {

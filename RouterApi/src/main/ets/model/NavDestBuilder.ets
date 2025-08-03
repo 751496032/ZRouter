@@ -182,6 +182,7 @@ export class NavDestBuilder<T> {
     this.updateCurrentStackName()
     if (this.optionsImpl.onPopListener) {
       if (this.optionsImpl.listenPopResultOnRootView) {
+        // 从根级页面监听返回结果
         this.routerMgr.pushNavForResult<T>(name, this.mergeParams(), this.optionsImpl.onPopListener,this)
       } else {
         this.routerMgr.pushForResult(name, this.mergeParams(), (data) => {
