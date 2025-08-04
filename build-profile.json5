@@ -1,20 +1,6 @@
 {
   "app": {
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "/Users/hzwei/.ohos/config/default_ZRouter__EiISoI1nbAFwJlh41fLC0MEbUzlLqe44A44ICjIzGw=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001BA1E3E01A040A3E8CEE2134ADA4B0C4200B703EF99745CD92939417BB822E4A2CA72921657BE455",
-          "profile": "/Users/hzwei/.ohos/config/default_ZRouter__EiISoI1nbAFwJlh41fLC0MEbUzlLqe44A44ICjIzGw=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/hzwei/.ohos/config/default_ZRouter__EiISoI1nbAFwJlh41fLC0MEbUzlLqe44A44ICjIzGw=.p12",
-          "storePassword": "0000001B38784C4C8A6375D2DED39590140D706F70E98E533A0E32CB866FFB7A4A82D841C313A7F29A14A6"
-        }
-      }
-    ],
+    "signingConfigs": [],
     "products": [
       {
         "name": "default",

@@ -119,8 +119,14 @@ export struct HomeView {
         })
 
 
-        Button(`${this.hideNavbar ? "当前hideNavbar模式 是否关闭hideNavbar模式" : "当前非hideNavbar模式 是否启用hideNavbar模式"}  — 退出app重新进入`).onClick((event: ClickEvent) => {
-          // getContext().getApplicationContext().terminateSelf()
+        Text(`${this.hideNavbar ? "当前hideNavbar模式 \n是否关闭hideNavbar模式\n" : "当前非hideNavbar模式 \n是否启用hideNavbar模式\n"}  退出app重新进入`)
+          .width('90%')
+          .backgroundColor(Color.Brown)
+          .borderRadius(20)
+          .textAlign(TextAlign.Center)
+          .fontColor(Color.White)
+          .padding(10)
+          .onClick((event: ClickEvent) => {
           PreferencesUtil.put("hideNavbar", !this.hideNavbar);
           (this.getUIContext().getHostContext() as common.UIAbilityContext).terminateSelf()
 

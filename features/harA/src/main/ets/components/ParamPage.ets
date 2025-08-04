@@ -8,7 +8,7 @@ import { ZRoute, ZRouter } from "routerapi";
 import { ArrayList, HashMap } from "@kit.ArkTS";
 
 
-@ZRoute({ name: RouterConstants.PAGE_PARAM, useTemplate: true, title: "获取携带的参数案例" })
+@ZRoute({ name: RouterConstants.PAGE_PARAM, useTemplate: true })
 @Component
 export struct ParamPage {
   @State name :string =''

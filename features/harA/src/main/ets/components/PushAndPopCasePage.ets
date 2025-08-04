@@ -64,6 +64,14 @@ export struct PushAndPopCasePage {
 
         })
 
+        Button("携带参数跳转-组件间直接传递参数").onClick((event: ClickEvent) => {
+          ZRouter.getInstance()
+            .setParam(Object({ name: "张三", age: 25, score: [80, 100, 100], userInfo: new Student("李四") }))
+            .navigation(RouterConstants.PAGE_PARAM2)
+
+        })
+
+
       }
 
     }
