@@ -1,4 +1,4 @@
-
+import { PreferencesUtil, RouterConstants } from '@hzw/common_library';
 import { OpacityAnimateOptions, Route, ScaleAnimateOptions, ZRouter } from 'routerapi';
 import { RouterConst } from '../constants/RouterConst';
 /**
@@ -55,7 +55,13 @@ export struct SplashPage {
       setInterval(() => {
         this.countdown -= 1000
         if (this.countdown === 0) {
-          ZRouter.getInstance().popWithResult(true)
+          const hideNavbar = PreferencesUtil.get<boolean>("hideNavbar") ?? false
+          if (hideNavbar) {
+            ZRouter.getInstance().replaceWithDefaultAnim(RouterConstants.MAIN_PAGE)
+          } else {
+            ZRouter.getInstance().popWithResult(true)
+          }
+
         }
       }, 1000)
     })

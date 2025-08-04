@@ -497,7 +497,7 @@ export class RouterMgr {
       return;
     }
     this.clear(animated)
-    const name = NavRootEvent
+    const name = !this.hideNavbar ? NavRootEvent : this.getBottomPathName() ?? NavRootEvent
     this.sendEvent<T>(name!, currentName!, result)
   }
 
@@ -516,11 +516,40 @@ export class RouterMgr {
    * 清空页面栈，返回Navigation 根视图
    */
   public clear(animated: boolean = true) {
-    this.getNavStack().clear(animated)
-    if (this.hideNavbar) {
-
+    if (!this.hideNavbar) {
+      this.getNavStack().clear(animated)
+    } else {
+      const indexes: number[] = this.getIndexesExceptBottom()
+      this.getNavStack().removeByIndexes(indexes)
     }
   }
+
+  /**
+   * 获取除栈底外的所有元素索引
+   * @returns
+   */
+  private getIndexesExceptBottom(): number[] {
+    const indexes: number[] = []
+    this.getAllPathName().forEach((name, index) => {
+      if (index > 0) {
+        indexes.push(index)
+      }
+    })
+    return indexes
+  }
+
+  /**
+   * 获取栈底元素名称
+   * @returns
+   */
+  private getBottomPathName(): string | null {
+    const allPaths = this.getAllPathName()
+    if (allPaths.length > 0) {
+      return allPaths[0]  // 栈底元素索引为0
+    }
+    return null
+  }
+
 
 
   public getAllPathName(): string[] {

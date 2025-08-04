@@ -24,6 +24,7 @@ export interface IGlobalNavigateInterceptor {
 
   /**
    * Navigation根视图显示时回调
+   * 如果是hideNavbar为true时，默认返回栈底页面会回调这个函数。
    * @param fromContext
    */
   onRootWillShow?: (fromContext: NavDestinationContext) => void;

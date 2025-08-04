@@ -9,7 +9,7 @@ import { MainView } from '../views/MainView';
 
 @ZRoute({ name: RouterConstants.MAIN_PAGE, useTemplate: true })
 @ComponentV2
-struct MainPage{
+export struct MainPage{
   build() {
     Stack(){
       MainView()

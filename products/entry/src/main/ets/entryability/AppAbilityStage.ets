@@ -3,6 +3,7 @@
  * @date: 2024/11/25
  * @desc:
  */
+import { PreferencesUtil } from "@hzw/common_library";
 import { Logger } from "@hzw/logger";
 import { AbilityStage } from "@kit.AbilityKit";
 import BuildProfile from "BuildProfile";
@@ -27,6 +28,7 @@ export class AppAbilityStage extends AbilityStage{
       }
       // config.dynamicLoadDelayTime = 5000
     })
+    PreferencesUtil.init(this.context)
 
   }
 }

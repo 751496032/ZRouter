@@ -7,7 +7,7 @@ import { LifecycleState, RouterInfo, ZRoute, ZRouter } from "routerapi";
 import { RouterConst } from "../constants/RouterConst";
 import { common, Want } from "@kit.AbilityKit";
 import { BusinessError, deviceInfo } from "@kit.BasicServicesKit";
-import { RouterConstants, ToastUtils } from "@hzw/common_library";
+import { PreferencesUtil, RouterConstants, ToastUtils } from "@hzw/common_library";
 import { promptAction, router } from "@kit.ArkUI";
 
 @Component
@@ -15,6 +15,7 @@ export struct HomeView {
   private context = getContext(this) as common.UIAbilityContext;
   private sdkApiVer = deviceInfo.sdkApiVersion
   private isSdkApi12 = this.sdkApiVer >= 12
+  private hideNavbar = PreferencesUtil.get<boolean>("hideNavbar") ?? false
 
   desc(): string {
     if (this.isSdkApi12) {
@@ -118,7 +119,10 @@ export struct HomeView {
         })
 
 
-        Button("hideNavbar — 退出app重新进入").onClick((event: ClickEvent) => {
+        Button(`${this.hideNavbar ? "当前hideNavbar模式 是否关闭hideNavbar模式" : "当前非hideNavbar模式 是否启用hideNavbar模式"}  — 退出app重新进入`).onClick((event: ClickEvent) => {
+          // getContext().getApplicationContext().terminateSelf()
+          PreferencesUtil.put("hideNavbar", !this.hideNavbar);
+          (this.getUIContext().getHostContext() as common.UIAbilityContext).terminateSelf()
 
         })
 

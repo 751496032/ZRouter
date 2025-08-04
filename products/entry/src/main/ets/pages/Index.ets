@@ -1,4 +1,4 @@
-import { RouterConstants } from '@hzw/common_library'
+import { PreferencesUtil, RouterConstants } from '@hzw/common_library'
 import {
   ILifecycleObserver,
   Lifecycle,
@@ -26,6 +26,7 @@ struct Index {
   @Lifecycle
   lifecycle: LifecycleRegistry = LifecycleRegistry.create(this)
   @State isShowContent: boolean = false
+  private hideNavbar = PreferencesUtil.get<boolean>("hideNavbar") ?? false
 
   aboutToAppear(): void {
     // 添加拦截器
@@ -34,6 +35,8 @@ struct Index {
     ZRouter.setModuleLoadedListener(() => {
       console.log("Index 模块加载完成")
     })
+
+    ZRouter.hideNavBar(this.hideNavbar)
 
     // @Entry页面生命周期监听 onPageShow onPageHide
     // 如果在Navigation根视图中设置生命周期监听，建议将inRootView设置为true
@@ -88,7 +91,7 @@ struct Index {
       }
     })
     .hideTitleBar(true)
-    .hideNavBar(true)
+    .hideNavBar(this.hideNavbar)
     .title('Main')
     .height('100%')
     .width('100%')

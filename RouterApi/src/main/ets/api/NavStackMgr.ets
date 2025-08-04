@@ -11,6 +11,7 @@ import { ArrayList, HashMap } from '@kit.ArkTS';
 import NavDestState from '../model/NavDestState';
 import { ZRouter } from './Router';
 import { RouterInfo } from '../model/RouterInfo';
+import { RouterMgr } from './RouterMgr';
 
 export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
@@ -18,7 +19,7 @@ export default class NavStackMgr {
   private navStateMap = new HashMap<string, NavDestState>()
   private _currentStackName: string | undefined = undefined
   private onBeforeNavStackRegisterCallback?: Function
-  private navDesMap = new HashMap<string, ArrayList<RouterInfo>>()
+  private navDestMap = new HashMap<string, ArrayList<RouterInfo>>()
 
   private constructor() {
   }
@@ -147,9 +148,16 @@ export default class NavStackMgr {
               LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
             }
           } else {
+            const routerMgr = RouterMgr.getInstance()
             if (this.isNavBar(to)) {
               isWillShowRootView = true
               fromContext = from as NavDestinationContext
+            } else if (routerMgr.hideNavbar) {
+              const names = routerMgr.getAllPathName()
+              if (names.length === 1) {
+                isWillShowRootView = true
+                fromContext = from as NavDestinationContext
+              }
             }
           }
           if (ObjUtil.isObject(from) && !isWillShowRootView) {
@@ -202,18 +210,18 @@ export default class NavStackMgr {
     if (ObjUtil.isEmpty(name)) {
       return
     }
-    let list = this.navDesMap.get(name)
+    let list = this.navDestMap.get(name)
     if (list) {
       list.add(routerInfo)
     } else {
       const list = new ArrayList<RouterInfo>()
       list.add(routerInfo)
-      this.navDesMap.set(name, list)
+      this.navDestMap.set(name, list)
     }
   }
 
   public removeRouterInfo(routerInfo: RouterInfo) {
-    let list = this.navDesMap.get(this.currentStackName)
+    let list = this.navDestMap.get(this.currentStackName)
     if (list) {
       let pos = -1
       for (let i = 0; i < list.length; i++) {
@@ -229,7 +237,7 @@ export default class NavStackMgr {
   }
 
   public getLastNavDestinationId(): string | undefined {
-    let list = this.navDesMap.get(this.currentStackName)
+    let list = this.navDestMap.get(this.currentStackName)
     if (list && list.length > 0) {
       return list[list.length - 1].navDestinationId
     }

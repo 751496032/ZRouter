@@ -40,7 +40,7 @@ class GlobalNavigateInterceptor implements IGlobalNavigateInterceptor {
           ToastUtils.show("拦截器onNavigateBefore中已拦截, 再点一次会继续执行")
           destInfo.block() // 拦截跳转
         } else if (this.count === 2) {
-          await wait(2000)
+          // await wait(2000)
           destInfo.name = RouterConstants.LIFECYCLE_CASE_VIEW
         }
         this.count += 1
