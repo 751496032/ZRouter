@@ -87,7 +87,7 @@ export default class NavStackMgr {
   }
 
   public getNavDestState(): NavDestState {
-    const name = this.currentStackName
+    const name = this.currentStackName ?? DEFAULT_STACK_NAME
     let state = this.navStateMap.get(name)
     if (state !== undefined && state !== null) {
       return state as NavDestState

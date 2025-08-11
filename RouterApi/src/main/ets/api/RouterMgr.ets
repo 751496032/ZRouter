@@ -411,6 +411,9 @@ export class RouterMgr {
     if (typeof result == "boolean") {
       result = `${result}`
     }
+    if (this.isHideNavbarModeWithEmptyStack()) {
+      return false
+    }
     if (result) {
       let r = this.getNavStack().pop(result, animated)
       if (!r) {
@@ -426,8 +429,15 @@ export class RouterMgr {
     }
   }
 
+  private isHideNavbarModeWithEmptyStack(): boolean {
+    return this.hideNavbar && this.getIndexesExceptBottom().length === 0
+  }
+
   private popToNameInternal<T>(name: string, result?: T, animated: boolean = true): number {
     let index = -1
+    if (this.isHideNavbarModeWithEmptyStack()) {
+      return index
+    }
     if (result) {
       index = this.getNavStack().popToName(name, result!, animated)
       if (index === -1) {
