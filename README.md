@@ -592,8 +592,10 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 ## 待优化项
 
 - 服务路由：支持在entry模块动态注册；
-- 拦截器：`onNavigateBefore()`兼容系统push api跳转前拦截；
-- 页面模板化：支持路由组件间参数携带，非模板功能已支持了；
+- 拦截器：
+  - `onNavigateBefore()`兼容系统push 等api拦截；
+  - `onNavigateBefore()`支持获取注解中的参数；
+- 路由组件间参数携带：在模板化下支持页面路由组件直接参数携带，非模板功能已支持了；
 - 支持元服务hsp模块动态下载
 
 
