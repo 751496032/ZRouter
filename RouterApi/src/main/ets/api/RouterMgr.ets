@@ -33,6 +33,8 @@ import { LifecycleEvent } from '../lifecycle/LifecycleEvent';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { DeviceUtil } from '../utlis/DeviceUtil';
 import { INavDestOptions } from '../model/NavDestOptions';
+import { runCatching } from '../utlis/runCatching';
+import { common } from '@kit.AbilityKit';
 
 
 export class RouterMgr {
@@ -46,16 +48,26 @@ export class RouterMgr {
    */
   public isDynamicLoadedComplete = false
   public moduleLoadedListener?: () => void
-  private hasPageBeenLaunched = false
+  private isPageLaunched = false
   /**
    * 是否隐藏Navigation根视图
    */
   public hideNavbar = false
+   /**
+    * 在栈底的pop返回逻辑，可以由开发者自定义
+    * 是一个拦截回调函数
+    * @hideNavbar 为true才会生效
+    * @returns true: 拦截成功，不会再执行默认逻辑
+    */
+  public onPopAtBottom: () => boolean = () => {
+    // 默认是返回桌面
+    return false
+  }
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
-      if (!this.hasPageBeenLaunched) {
-        this.hasPageBeenLaunched = true
+      if (!this.isPageLaunched) {
+        this.isPageLaunched = true
       }
       const name = info.name.toString()
       if (ObjUtil.isEmpty(name)) {
@@ -430,7 +442,16 @@ export class RouterMgr {
   }
 
   private isHideNavbarModeWithEmptyStack(): boolean {
-    return this.hideNavbar && this.getIndexesExceptBottom().length === 0
+    return runCatching(() => {
+      const isBottomStack = this.hideNavbar && this.getIndexesExceptBottom().length === 0
+      if (isBottomStack) {
+        const isIntercept = this.onPopAtBottom()
+        if (!isIntercept) {
+          (getContext() as common.UIAbilityContext).terminateSelf()
+        }
+      }
+      return isBottomStack
+    }).getOrNull() ?? false
   }
 
   private popToNameInternal<T>(name: string, result?: T, animated: boolean = true): number {

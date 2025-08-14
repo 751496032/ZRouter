@@ -289,6 +289,10 @@ export class ZRouter {
     return ZRouter.getInstance().getParamByKey<P>(key, defVal)
   }
 
+  /**
+   * 标记Navigation是否是hideNavBar模式
+   * @param hide true: Navigation根视图将会隐藏
+   */
   public static hideNavBar(hide: boolean) {
     ZRouter.getRouterMgr().hideNavbar = hide
   }
