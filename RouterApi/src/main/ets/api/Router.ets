@@ -10,7 +10,8 @@ import {
   InterceptorInfo,
   ObjectOrNull,
   OnPopCallback,
-  OnPopResultCallback
+  OnPopResultCallback,
+  OnAtBottomBackCallback
 } from '../model/Model'
 import { RouterMgr } from './RouterMgr'
 import LogUtil from '../utlis/LogUtil'
@@ -293,8 +294,12 @@ export class ZRouter {
    * 标记Navigation是否是hideNavBar模式
    * @param hide true: Navigation根视图将会隐藏
    */
-  public static hideNavBar(hide: boolean) {
+  public static hideNavBar(hide: boolean, atBottomBackCallback: OnAtBottomBackCallback | null = null) {
     ZRouter.getRouterMgr().hideNavbar = hide
+    if (atBottomBackCallback) {
+      ZRouter.getRouterMgr().onBackAtBottom = atBottomBackCallback
+    }
+
   }
 
 

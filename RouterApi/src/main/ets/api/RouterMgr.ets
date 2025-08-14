@@ -16,7 +16,8 @@ import {
   OnPopCallback,
   OnPopResultCallback,
   PopResult,
-  RouteMetadata
+  RouteMetadata,
+  OnAtBottomBackCallback
 } from '../model/Model'
 import LogUtil from '../utlis/LogUtil'
 import { BusinessError, emitter } from '@kit.BasicServicesKit'
@@ -59,8 +60,7 @@ export class RouterMgr {
     * @hideNavbar 为true才会生效
     * @returns true: 拦截成功，不会再执行默认逻辑
     */
-  public onPopAtBottom: () => boolean = () => {
-    // 默认是返回桌面
+  public onBackAtBottom: OnAtBottomBackCallback = () => {
     return false
   }
 
@@ -423,7 +423,7 @@ export class RouterMgr {
     if (typeof result == "boolean") {
       result = `${result}`
     }
-    if (this.isHideNavbarModeWithEmptyStack()) {
+    if (this.isAtBottomOfHiddenNavbarStack()) {
       return false
     }
     if (result) {
@@ -441,13 +441,17 @@ export class RouterMgr {
     }
   }
 
-  private isHideNavbarModeWithEmptyStack(): boolean {
+  /**
+   * 是否在隐藏导航栏模式下处于路由栈的栈底
+   * @returns
+   */
+  private isAtBottomOfHiddenNavbarStack(): boolean {
     return runCatching(() => {
       const isBottomStack = this.hideNavbar && this.getIndexesExceptBottom().length === 0
       if (isBottomStack) {
-        const isIntercept = this.onPopAtBottom()
+        const isIntercept = this.onBackAtBottom()
         if (!isIntercept) {
-          (getContext() as common.UIAbilityContext).terminateSelf()
+          (getContext() as common.UIAbilityContext).moveAbilityToBackground()
         }
       }
       return isBottomStack
@@ -456,7 +460,7 @@ export class RouterMgr {
 
   private popToNameInternal<T>(name: string, result?: T, animated: boolean = true): number {
     let index = -1
-    if (this.isHideNavbarModeWithEmptyStack()) {
+    if (this.isAtBottomOfHiddenNavbarStack()) {
       return index
     }
     if (result) {

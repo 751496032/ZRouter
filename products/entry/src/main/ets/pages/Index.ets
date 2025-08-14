@@ -1,4 +1,4 @@
-import { PreferencesUtil, RouterConstants } from '@hzw/common_library'
+import { PreferencesUtil, RouterConstants, ToastUtils } from '@hzw/common_library'
 import {
   ILifecycleObserver,
   Lifecycle,
@@ -36,7 +36,10 @@ struct Index {
       console.log("Index 模块加载完成")
     })
 
-    ZRouter.hideNavBar(this.hideNavbar)
+    ZRouter.hideNavBar(this.hideNavbar, () => {
+      ToastUtils.show('已拦截默认实现')
+      return true // 拦截器返回true 表示拦截默认实现
+    })
 
     // @Entry页面生命周期监听 onPageShow onPageHide
     // 如果在Navigation根视图中设置生命周期监听，建议将inRootView设置为true
