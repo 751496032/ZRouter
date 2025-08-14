@@ -18,6 +18,7 @@ import { HomeView } from '../views/HomeView'
 import { MainView } from '../views/MainView'
 import { MineView } from '../views/MineView'
 import onBackPress from './onBackPress'
+import { common } from '@kit.AbilityKit'
 
 @Entry
 @Component
@@ -37,8 +38,9 @@ struct Index {
     })
 
     ZRouter.hideNavBar(this.hideNavbar, () => {
-      ToastUtils.show('已拦截默认实现')
-      return true // 拦截器返回true 表示拦截默认实现
+      ToastUtils.show('已拦截默认实现');
+      // (getContext() as common.UIAbilityContext).terminateSelf()
+      return true // 返回true 表示拦截默认实现
     })
 
     // @Entry页面生命周期监听 onPageShow onPageHide
