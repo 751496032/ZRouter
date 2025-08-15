@@ -3,10 +3,9 @@
  * @date: 2024/10/20
  * @desc:
  */
-import LogUtil from "../utlis/LogUtil"
 import { util } from "@kit.ArkTS"
-import { RouterMgr } from "../api/RouterMgr"
 import { ZRouter } from "../api/Router"
+import Logger from "../utlis/Logger"
 
 export class ConfigInitializer implements IConfigOptions {
   private _onDynamicLoadComplete?: () => void
@@ -17,6 +16,7 @@ export class ConfigInitializer implements IConfigOptions {
   private _loadDynamicModule: string[] = []
   private _isLoaded = false
   private _onDynamicLoadedComplete?: () => void
+  // private _isMetaServiceHspEnabled: boolean = false
 
   public get dynamicLoadDelayTime(): number {
     return this._dynamicLoadDelayTime
@@ -42,6 +42,11 @@ export class ConfigInitializer implements IConfigOptions {
     return this._loadDynamicModule
   }
 
+
+  // public get isMetaServiceHspEnabled(): boolean {
+  //   return this._isMetaServiceHspEnabled
+  // }
+  //
 
   constructor() {
     util.Aspect.addAfter(ZRouter, "setup", true, () => {
@@ -89,7 +94,7 @@ export class ConfigInitializer implements IConfigOptions {
     setTimeout(() => {
       Promise.allSettled(this._loadDynamicModule.map((value) => this.importModule(value)))
         .catch((e: Error) => {
-          LogUtil.log(`模块加载异常`)
+          Logger.log(`模块加载异常`)
         })
         .finally(() => {
           this._isLoaded = true
@@ -105,12 +110,12 @@ export class ConfigInitializer implements IConfigOptions {
     return new Promise<ESObject>((resolve, reject) => {
       import(module).then((ns: ESObject) => {
         if (this._isLoggingEnabled) {
-          LogUtil.log(`${module} 模块加载成功`)
+          Logger.log(`${module} 模块加载成功`)
         }
         resolve(ns)
       }).catch((err: Error) => {
         if (this._isLoggingEnabled) {
-          LogUtil.log(`${module} 模块加载失败: ${err.message}`)
+          Logger.log(`${module} 模块加载失败: ${err.message}`)
           reject(err)
         }
       })
@@ -124,6 +129,13 @@ export class ConfigInitializer implements IConfigOptions {
    * 是否有依赖hsp模块
    */
   isHSPModuleDependent: boolean
+
+
+  /**
+   * 是否开启元服务跨hsp模块跳转
+   */
+  // isMetaServiceHspEnabled: boolean
+
   /**
    * 是否打印日志
    */

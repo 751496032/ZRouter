@@ -41,6 +41,17 @@ export interface INavDestOptions<T> {
    * 是否将跳转参数的0和false转为字符串，默认false
    */
   isConvertJumpParamZeroAndFalseToString?: boolean;
+
+  /**
+   * 支持元服务跨模块hsp模块动态加载
+   *
+   */
+  isMetaServiceHspEnabled?: boolean;
+
+  /**
+   * 模块名称,元服务hsp模块跳转需要使用
+   */
+  moduleName?: string;
 }
 
 export class NavDestOptionsImpl<T> implements INavDestOptions<T> {
@@ -48,5 +59,6 @@ export class NavDestOptionsImpl<T> implements INavDestOptions<T> {
   lunchMode: LaunchMode = LaunchMode.STANDARD;
   navStackName: string = DEFAULT_STACK_NAME;
   redirectType: RedirectType = RedirectType.REPLACE;
-  isConvertJumpParamZeroAndFalseToString: boolean = false
+  isConvertJumpParamZeroAndFalseToString: boolean = false;
+  isMetaServiceHspEnabled: boolean = false;
 }

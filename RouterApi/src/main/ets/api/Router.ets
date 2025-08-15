@@ -14,7 +14,6 @@ import {
   OnAtBottomBackCallback
 } from '../model/Model'
 import { RouterMgr } from './RouterMgr'
-import LogUtil from '../utlis/LogUtil'
 import { NavDestBuilder } from '../model/NavDestBuilder'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import { ServiceMgr } from '../service/ServiceMgr'
@@ -26,13 +25,11 @@ import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
 import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
 import { TemplateMgr } from '../template/TemplateMgr'
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr'
+import { KEY_CONFIG_INITIALIZER, KEY_ROUTER } from '../model/Const'
 
-const KEY_ROUTER = 'ZRouter'
 
 export class ZRouter {
   private static routerMgr: RouterMgr | undefined = undefined
-
-
 
   private constructor() {
   }
@@ -44,9 +41,9 @@ export class ZRouter {
   public static initialize(invoke?: ((config: ConfigInitializer) => void)) {
     const config = new ConfigInitializer()
     invoke?.(config)
-    LogUtil.config = { isShowLog: config.isLoggingEnabled }
-    Logger.isShowLog = config.isLoggingEnabled
+    Logger.init(config.isLoggingEnabled)
     ZRouter.setup(config.isHSPModuleDependent)
+    AppStorage.setOrCreate(KEY_CONFIG_INITIALIZER, config)
     config.onDynamicLoadComplete = () => {
       ZRouter.getRouterMgr().isDynamicLoadedComplete = true
       ZRouter.getRouterMgr().moduleLoadedListener?.()
@@ -73,15 +70,14 @@ export class ZRouter {
    * @param config
    */
   public static init(isDependHspModule: boolean = false, config: InitConfig = { isShowLog: true }) {
-    LogUtil.config = config
-    Logger.isShowLog = config.isShowLog
+    Logger.init(config.isShowLog)
     ZRouter.setup(isDependHspModule)
   }
 
   private static setup(isHSPModuleDependent: boolean) {
     ZRouter.routerMgr = RouterMgr.getInstance()
     if (isHSPModuleDependent) {
-      LogUtil.log("isHSPModuleDependent ")
+      Logger.log("isHSPModuleDependent ")
       AppStorage.setOrCreate(KEY_ROUTER, ZRouter.routerMgr)
     }
   }

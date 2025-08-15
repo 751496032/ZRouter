@@ -6,6 +6,9 @@
 import { InitConfig, ObjectOrNull } from '../model/Model'
 import { ObjUtil } from './ObjUtil'
 
+/**
+ * @deprecated
+ */
 export default class LogUtil {
   static config : InitConfig
 

@@ -18,6 +18,5 @@ export enum RedirectType {
   REMOVE = 'remove',
 }
 
-// export class InterceptorNames {
-//   public static readonly PageNavigateInterceptor: string = 'PageNavigateInterceptor'
-// }
+export const KEY_CONFIG_INITIALIZER = "ConfigInitializer"
+export const KEY_ROUTER = "ZRouter"

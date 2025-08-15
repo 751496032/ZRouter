@@ -8,8 +8,6 @@ import {
   DEFAULT_STACK_NAME,
   DestinationInfo,
   InterceptorInfo,
-  InterceptorInfoOrNull,
-  NavigationAction,
   NavRootEvent,
   ObjectOrNull,
   OnInterceptorCallback,
@@ -19,14 +17,13 @@ import {
   RouteMetadata,
   OnAtBottomBackCallback
 } from '../model/Model'
-import LogUtil from '../utlis/LogUtil'
 import { BusinessError, emitter } from '@kit.BasicServicesKit'
 import uiObserver from '@ohos.arkui.observer';
 import { InterceptorMgr } from '../interceptions/InterceptorMgr'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import NavStackMgr from './NavStackMgr'
 import { NavDestBuilder } from '../model/NavDestBuilder'
-import { ErrorCode, RedirectType } from '../model/Const'
+import { ErrorCode, KEY_CONFIG_INITIALIZER, RedirectType } from '../model/Const'
 import { ServiceMgr } from '../service/ServiceMgr';
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr';
 import { RouterInfo } from '../model/RouterInfo';
@@ -36,6 +33,9 @@ import { DeviceUtil } from '../utlis/DeviceUtil';
 import { INavDestOptions } from '../model/NavDestOptions';
 import { runCatching } from '../utlis/runCatching';
 import { common } from '@kit.AbilityKit';
+import Logger from '../utlis/Logger';
+import { ConfigInitializer } from '../model/ConfigInitializer';
+import { NavPushPathHelper } from '@kit.ArkUI';
 
 
 export class RouterMgr {
@@ -63,6 +63,8 @@ export class RouterMgr {
   public onBackAtBottom: OnAtBottomBackCallback = () => {
     return false
   }
+
+  private navPushPathHelper?: NavPushPathHelper
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -231,7 +233,7 @@ export class RouterMgr {
       this.registerEvent<T>(eName, param, callback)
     })
       .catch((e: Error) => {
-        LogUtil.error('error: ', e)
+        Logger.error('error: ', e)
       })
 
   }
@@ -296,6 +298,20 @@ export class RouterMgr {
 
   }
 
+  private getNavPushPathHelper(): NavPushPathHelper {
+    if (!this.navPushPathHelper) {
+      this.navPushPathHelper = new NavPushPathHelper(this.getNavStack())
+    }
+    return this.navPushPathHelper
+  }
+
+
+  private isMetaServiceHspEnabled<T>(builder?: NavDestBuilder<T>): boolean {
+    const config = AppStorage.get<ConfigInitializer>(KEY_CONFIG_INITIALIZER)
+    return builder?.options.isMetaServiceHspEnabled ?? false
+  }
+
+
 
   private async pushDestination<T>(name: string, param?: ObjectOrNull, callback?: OnPopCallback,
     builder?: NavDestBuilder<T>) {
@@ -308,23 +324,30 @@ export class RouterMgr {
     } else {
       return Promise.resolve()
     }
+    const navPathInfo = {
+      name,
+      param: param,
+      onPop: (data) => {
+        callback?.(data)
+      }
+    } as NavPathInfo
     if (DeviceUtil.isSdkVersion12()) {
+      const navigationOptions = { launchMode: launchMode, animated: animated } as NavigationOptions
+      if (this.isMetaServiceHspEnabled(builder)) {
+        const moduleName = builder?.options.moduleName ?? ""
+        return this.getNavPushPathHelper().pushDestination(moduleName, navPathInfo, navigationOptions)
+          .catch((err: BusinessError) => {
+            this.handlePushError(err, name, param, builder)
+          })
+      }
       return this.getNavStack()
-        .pushDestination({
-          name, param: param, onPop: (data) => {
-            callback?.(data)
-          }
-        }, { launchMode: launchMode, animated: animated })
+        .pushDestination(navPathInfo, navigationOptions)
         .catch((err: BusinessError) => {
           this.handlePushError(err, name, param, builder)
         })
     } else {
       return this.getNavStack()
-        .pushDestination({
-          name, param: param, onPop: (data) => {
-            callback?.(data)
-          }
-        }, animated)
+        .pushDestination(navPathInfo, animated)
         .catch((err: BusinessError) => {
           this.handlePushError(err, name, param ,builder)
         })
@@ -332,7 +355,7 @@ export class RouterMgr {
   }
 
   private handlePushError<T>(err: BusinessError, name: string, param?: ObjectOrNull, builder?: NavDestBuilder<T>) {
-    LogUtil.error('error: ', err.code, err.message)
+    Logger.error('error: ', err.code, err.message)
     if (err.code == ErrorCode.NOT_REGISTERED) {
       const state = this.getCurrentState()
       let interceptorInfo = InterceptorInfo.create(true)
@@ -365,10 +388,10 @@ export class RouterMgr {
         r = result
       }
     } catch (error) {
-      LogUtil.error('beforePushOrReplace error: ', error)
+      Logger.error('beforePushOrReplace error: ', error)
     }
     if (!r.isContinue()) {
-      LogUtil.log('beforePushOrReplace next: ',  r.isContinue())
+      Logger.log('beforePushOrReplace next: ',  r.isContinue())
     }
     return r
   }
@@ -490,17 +513,17 @@ export class RouterMgr {
   public popNavWithResult<T>(name: string, result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
     if (ObjUtil.isEmpty(currentName)) {
-      LogUtil.error(currentName + " 不存在路由栈顶中")
+      Logger.error(currentName + " 不存在路由栈顶中")
       return;
     }
     if (ObjUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
       if (currentName !== name) {
         this.popToNameWithResult(name, result!, animated)
       } else {
-        LogUtil.error('不支持关闭当前页， 请使用popWithResult')
+        Logger.error('不支持关闭当前页， 请使用popWithResult')
       }
     } else {
-      LogUtil.error(name + " 不存在路由栈中")
+      Logger.error(name + " 不存在路由栈中")
       return
     }
     this.sendEvent<T>(name!, currentName!, result)
@@ -528,7 +551,7 @@ export class RouterMgr {
   public popToRootWithResult<T>(result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
     if (ObjUtil.isEmpty(currentName)) {
-      LogUtil.error('路由栈为空，无法执行popToRootWithResult')
+      Logger.error('路由栈为空，无法执行popToRootWithResult')
       return;
     }
     this.clear(animated)
@@ -620,7 +643,7 @@ export class RouterMgr {
         this.push<ObjectOrNull>(name, param, true)
       }
     } catch (e) {
-      LogUtil.error('error: ', e)
+      Logger.error('error: ', e)
     }
   }
 
@@ -648,7 +671,7 @@ export class RouterMgr {
         let params = this.getParamByName(name)
         return params[params.length-1]
       } catch (e) {
-        LogUtil.error('err: ', e)
+        Logger.error('err: ', e)
         return null
       }
     } else {

@@ -1,5 +1,5 @@
+import Logger from "../utlis/Logger";
 import { IProvider } from "./IProvider";
-import LogUtil from "../utlis/LogUtil";
 
 /**
  * @author: HZWei
@@ -26,7 +26,7 @@ export class ServiceMgr {
         if (!this._services.has(name)) {
             this._services.set(name, service)
         } else {
-            LogUtil.error(`已存在[${name}]服务`)
+            Logger.error(`已存在[${name}]服务`)
         }
     }
 
@@ -36,7 +36,7 @@ export class ServiceMgr {
                 return this._services.get(name) as T
             }
         } catch (e) {
-            LogUtil.error(e)
+            Logger.error(e)
         }
         return null
     }

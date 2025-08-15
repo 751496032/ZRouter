@@ -4,7 +4,11 @@
  * @desc:
  */
 export default class Logger {
-  static isShowLog : boolean
+  private static isShowLog : boolean
+
+  static init(isShowLog: boolean) {
+    Logger.isShowLog = isShowLog
+  }
 
   static log(msg: string, ...args: Object[]) {
     if (Logger.hide()) return

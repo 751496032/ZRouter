@@ -5,13 +5,13 @@
  */
 import { InterceptorMgr } from '../interceptions/InterceptorMgr';
 import { DEFAULT_STACK_NAME, InterceptorInfo, RouteMetadata } from '../model/Model';
-import LogUtil from '../utlis/LogUtil';
 import { ObjUtil } from '../utlis/ObjUtil';
 import { ArrayList, HashMap } from '@kit.ArkTS';
 import NavDestState from '../model/NavDestState';
 import { ZRouter } from './Router';
 import { RouterInfo } from '../model/RouterInfo';
 import { RouterMgr } from './RouterMgr';
+import Logger from '../utlis/Logger';
 
 export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
@@ -114,7 +114,7 @@ export default class NavStackMgr {
         willShow: (from: NavDestinationContext | NavBar, to: NavDestinationContext | NavBar,
           operation: NavigationOperation, animated: boolean) => {
           const state = this.getNavDestState()
-          LogUtil.log(`setInterception ${state.stackName} from: `, this.getNavDestContext(from)?.pathInfo?.name , " isNavBar: " ,this.isNavBar(from),  " --> to: ", this.getNavDestContext(to)?.pathInfo?.name," isNavBar: " , this.isNavBar(to), ' operation: ', operation)
+          Logger.log(`setInterception ${state.stackName} from: `, this.getNavDestContext(from)?.pathInfo?.name , " isNavBar: " ,this.isNavBar(from),  " --> to: ", this.getNavDestContext(to)?.pathInfo?.name," isNavBar: " , this.isNavBar(to), ' operation: ', operation)
 
           if (willShow !== undefined) {
             willShow(from, to, operation, animated)
@@ -144,8 +144,8 @@ export default class NavStackMgr {
               state.stackTopInfo = interceptorInfo
             } catch (e) {
               // 检查route_map、装饰器Route、push三者的name值是否一致
-              LogUtil.error((e as Error).message)
-              LogUtil.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
+              Logger.error((e as Error).message)
+              Logger.error('push: 页面配置错误，请检查是否正确配置（检查route_map、装饰器Route、push三者的name值是否一致)')
             }
           } else {
             const routerMgr = RouterMgr.getInstance()

@@ -1,6 +1,5 @@
 import { KeyConst, RouterConstants, Student, ToastUtils } from 'common_library';
 import { Route, ZRouter } from 'routerapi';
-import LogUtil from 'routerapi/src/main/ets/utlis/LogUtil';
 
 
 @Route({ name: RouterConstants.PAGE_PUSH_AND_POP_CASE ,needLogin: true})

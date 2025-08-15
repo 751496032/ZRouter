@@ -33,6 +33,18 @@ export class NavDestBuilder<T> {
   }
 
   /**
+   * 开启元服务hsp模块动态加载
+   * @param moduleName 模块名称
+   * @returns
+   */
+  public enableMetaServiceHsp(moduleName: string): NavDestBuilder<T> {
+    this.options.isMetaServiceHspEnabled = true
+    this.options.moduleName = moduleName
+    return this
+  }
+
+
+  /**
    * 是否启动动画
    * @param animated
    * @returns
