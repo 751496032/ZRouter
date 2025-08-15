@@ -30,7 +30,8 @@ export struct LoginPage{
 
          Button('登录成功').onClick((event: ClickEvent) => {
            AppStorage.setOrCreate<boolean>('isLogin', true)
-           const r = ZRouter.getInstance().finishWithResult<boolean>(true)
+           // const r = ZRouter.getInstance().finishWithResult<boolean>(true)
+           const r = ZRouter.getInstance().popWithResult(true, true, { returnToRedirectedPage: true })
            if (!r) {
              ZRouter.getInstance().pop()
            }

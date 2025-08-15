@@ -4,7 +4,7 @@
  * @desc:
  */
 import { RouterMgr } from '../api/RouterMgr';
-import { ObjectOrNull, OnPopResultCallback, PopResult, RouteMetadata } from './Model';
+import { ObjectOrNull, OnPopResultCallback, PopResult, RouteMetadata, IPopOptions } from './Model';
 import { INavDestOptions, NavDestOptionsImpl } from './NavDestOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { ArrayList, HashMap } from '@kit.ArkTS';
@@ -298,11 +298,14 @@ export class NavDestBuilder<T> {
    * 携带结果返回上一页，可在onPopListener回调函数内监听
    * @param result 返回携带的数据
    * @param animated 是否执行动画
+   * @param returnToRedirectedPage 返回重定向前的页面, 前提调用是使用 redirect()方法
    * @returns boolean 是否返回成功
    */
-  public popWithResult(result: Object , animated: boolean = true): boolean {
+  public popWithResult(result: Object, animated: boolean = true, opts: IPopOptions = {}): boolean {
     this.updateCurrentStackName()
-    return this.routerMgr.popWithResult(result, animated)
+    const returnToRedirectedPage = opts.returnToRedirectedPage
+    return returnToRedirectedPage ? this.routerMgr.finishWithResult(result, animated) :
+    this.routerMgr.popWithResult(result, animated)
   }
 
   /**
@@ -403,33 +406,28 @@ export class NavDestBuilder<T> {
   }
 
   private defaultValue<P = ObjectOrNull>(defVal: ObjectOrNull = null): P {
-    if (defVal instanceof Array) {
-      return defVal as P
+    // 对于 null 或 undefined，直接返回
+    if (defVal === null || defVal === undefined) {
+      return defVal as P;
     }
-    if (defVal instanceof Map) {
-      return defVal as P
-    }
-    if (defVal instanceof Set) {
-      return defVal as P
-    }
-    if (typeof defVal === 'number') {
-      return defVal as P
-    }
-    if (typeof defVal === 'boolean') {
-      return defVal as P
-    }
-    if (typeof defVal === 'string') {
-      return defVal as P
-    }
-    if (typeof defVal === 'object') {
-      return defVal as P
-    }
-    Logger.error('defaultValue is not support type ' + typeof defVal)
-    throw new Error('defaultValue is not support type ' + typeof defVal)
 
-    // return defVal as P
+    // 检查是否为基本数据类型或常见对象类型
+    const validTypes = ['number', 'boolean', 'string', 'object', 'function'];
+    const type = typeof defVal;
 
+    if (validTypes.includes(type) ||
+      defVal instanceof Array ||
+      defVal instanceof Map ||
+      defVal instanceof Set) {
+      return defVal as P;
+    }
+
+    // 不支持的类型记录错误并抛出异常
+    const errorMsg = 'defaultValue is not support type ' + type;
+    Logger.error(errorMsg);
+    throw new Error(errorMsg);
   }
+
 
 
   public hasKey(key: string): boolean {

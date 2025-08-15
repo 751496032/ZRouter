@@ -159,6 +159,11 @@ export class PopResult<T> {
   from?: string
 }
 
+export interface IPopOptions {
+  // 返回重定向前的页面, 前提调用是使用 redirect()方法
+  returnToRedirectedPage?: boolean
+}
+
 export type OnPopCallback = (data: PopInfo) => void | boolean
 
 export type OnPopResultCallback<T> = (data: PopResult<T | ObjectOrNull>) => void | boolean
