@@ -11,6 +11,7 @@ export class RouterConstants {
   public static readonly ORDER_DETAILS_PAGE: string = "order_Details_Page"
   public static readonly SERVICE_HSPC_IMPL: string = "HspC_Service"
   public static readonly SERVICE_HARA_IMPL: string = "HarA_Service"
+  public static readonly SERVICE_ENTRY_IMPL: string = "EntryService"
   public static readonly SERVICE_CASE_VIEW = 'Service_Case_View'
   public static readonly LIFECYCLE_CASE_VIEW = 'Lifecycle_Case_View'
   public static readonly LIFECYCLE1_VIEW = 'Lifecycle1_View'

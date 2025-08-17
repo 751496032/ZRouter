@@ -2,9 +2,6 @@
  * @author: HZWei
  * @date: 2025/8/14
  * @desc:
- */
-
-/**
  * runCatching 函数
  * 安全并捕获任何异常
  * @param block

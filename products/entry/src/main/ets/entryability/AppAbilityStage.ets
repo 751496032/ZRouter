@@ -7,7 +7,7 @@ import { PreferencesUtil } from "@hzw/common_library";
 import { Logger } from "@hzw/logger";
 import { AbilityStage } from "@kit.AbilityKit";
 import BuildProfile from "BuildProfile";
-import { ZRouter } from "routerapi";
+import { ZObject, ZRouter } from "routerapi";
 
 export class AppAbilityStage extends AbilityStage{
   onCreate(): void {
@@ -22,11 +22,16 @@ export class AppAbilityStage extends AbilityStage{
     ZRouter.initialize((config) => {
       config.isLoggingEnabled = true
       config.isHSPModuleDependent = true
-      config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc']
-      config.onDynamicLoadComplete = () => {
-        console.log("已完成所有模块的加载")
+      // 路由服务动态加载
+      config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc', '../_generated/ZRService.ets']
+      config.onDynamicLoadComplete = (path) => {
+        // console.log("已完成所有模块的加载" ,path)
+        if (path) {
+          import(path).then((module:ESObject) => {
+            console.log("Entry ZRService 动态加载成功", module)
+          })
+        }
       }
-      // config.dynamicLoadDelayTime = 5000
     })
     PreferencesUtil.init(this.context)
 

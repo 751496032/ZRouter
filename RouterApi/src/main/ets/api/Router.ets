@@ -83,7 +83,7 @@ export class ZRouter {
   }
 
   private static getRouterMgr(): RouterMgr {
-    if (ZRouter.routerMgr === undefined) {
+    if (!ZRouter.routerMgr) {
       const mgr = AppStorage.get<RouterMgr>(KEY_ROUTER)
       if (!ObjUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
@@ -222,6 +222,7 @@ export class ZRouter {
 
   /**
    * 添加拦截器，可设置多次
+   * @deprecated
    * @param interceptor
    * @param stackName
    */

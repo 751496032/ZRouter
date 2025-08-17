@@ -3,7 +3,15 @@
   "buildOption": {
     "arkOptions": {
       "runtimeOnly": {
-       "packages": [ "@hzw/hara","harb","hspc" ]  // 配置本模块变量动态import其他模块名，要求与dependencies中配置的名字一致。
+        // 配置本模块变量动态import其他模块名，要求与dependencies中配置的名字一致。
+        "packages": [
+          "@hzw/hara",
+          "harb",
+          "hspc"
+        ],
+        "sources": [
+          "./src/main/ets/_generated/ZRService.ets"
+        ]
       }
     }
   },

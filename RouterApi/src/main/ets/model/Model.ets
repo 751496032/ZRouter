@@ -6,6 +6,7 @@
 import { ObjUtil } from '../utlis/ObjUtil'
 import { HashMap } from '@kit.ArkTS'
 import { INavDestOptions } from './NavDestOptions'
+import { runCatching } from '../utlis/runCatching'
 
 export class InterceptorInfo {
   /**
@@ -182,3 +183,5 @@ export const DEFAULT_STACK_NAME = 'ZRouter'
 export type  InterceptorInfoOrNull = InterceptorInfo | null | undefined
 
 export type OnAtBottomBackCallback = () => boolean
+
+export type ZObject = ESObject

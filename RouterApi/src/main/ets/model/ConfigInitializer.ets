@@ -6,16 +6,19 @@
 import { util } from "@kit.ArkTS"
 import { ZRouter } from "../api/Router"
 import Logger from "../utlis/Logger"
+import { ZObject } from "./Model"
+
+type onDynamicLoadedComplete = (path?: string) => void | Promise<ZObject>
 
 export class ConfigInitializer implements IConfigOptions {
-  private _onDynamicLoadComplete?: () => void
+  private _onDynamicLoadComplete?: onDynamicLoadedComplete
   private _dynamicLoadDelayTime: number = 0
   private _isHSPModuleDependent: boolean = false
   private _isLoadModulesThreadEnabled: boolean = false
   private _isLoggingEnabled: boolean = true
   private _loadDynamicModule: string[] = []
   private _isLoaded = false
-  private _onDynamicLoadedComplete?: () => void
+  private _onDynamicLoadedComplete?: onDynamicLoadedComplete
   // private _isMetaServiceHspEnabled: boolean = false
 
   public get dynamicLoadDelayTime(): number {
@@ -54,7 +57,7 @@ export class ConfigInitializer implements IConfigOptions {
     })
   }
 
-  public set onDynamicLoadComplete(value: () => void) {
+  public set onDynamicLoadComplete(value: onDynamicLoadedComplete) {
     if (!this._onDynamicLoadComplete) {
       this._onDynamicLoadComplete = value
     } else {
@@ -91,24 +94,27 @@ export class ConfigInitializer implements IConfigOptions {
       return
     }
 
+    const moduleNames = this._loadDynamicModule.filter((value) => !value.startsWith('.'))
+    const filePath = this._loadDynamicModule.find((value) => value.startsWith('.'))
+
     setTimeout(() => {
-      Promise.allSettled(this._loadDynamicModule.map((value) => this.importModule(value)))
+      Promise.allSettled(moduleNames.map((value) => this.importModule(value)))
         .catch((e: Error) => {
           Logger.log(`模块加载异常`)
         })
         .finally(() => {
           this._isLoaded = true
-          this._onDynamicLoadComplete?.()
-          this._onDynamicLoadedComplete?.()
+          this._onDynamicLoadComplete?.(filePath)
+          this._onDynamicLoadedComplete?.(filePath)
 
         })
     }, this._dynamicLoadDelayTime)
 
   }
 
-  private importModule(module: string): Promise<ESObject> {
-    return new Promise<ESObject>((resolve, reject) => {
-      import(module).then((ns: ESObject) => {
+  private importModule(module: string): Promise<ZObject> {
+    return new Promise<ZObject>((resolve, reject) => {
+      import(module).then((ns: ZObject) => {
         if (this._isLoggingEnabled) {
           Logger.log(`${module} 模块加载成功`)
         }
