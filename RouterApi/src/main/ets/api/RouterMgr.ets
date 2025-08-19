@@ -32,10 +32,10 @@ import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { DeviceUtil } from '../utlis/DeviceUtil';
 import { INavDestOptions } from '../model/NavDestOptions';
 import { runCatching } from '../utlis/runCatching';
-import { common } from '@kit.AbilityKit';
 import Logger from '../utlis/Logger';
 import { ConfigInitializer } from '../model/ConfigInitializer';
 import { NavPushPathHelper } from '@kit.ArkUI';
+import { common } from '@kit.AbilityKit';
 
 
 export class RouterMgr {

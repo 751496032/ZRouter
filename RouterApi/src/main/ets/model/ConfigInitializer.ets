@@ -55,6 +55,14 @@ export class ConfigInitializer implements IConfigOptions {
     util.Aspect.addAfter(ZRouter, "setup", true, () => {
       this.dynamicImportModule()
     })
+    util.Aspect.addBefore(ZRouter, 'getNavStack', true, () => {
+      getContext().resourceManager.getRawFileContent("router_map.json").then((data) => {
+        // 将Uint8Array转为字符串
+        let textDecoder: util.TextDecoder = new util.TextDecoder();
+        let rawfileContent: string = textDecoder.decodeToString(data);
+        console.log('getRawFileContent: ', rawfileContent)
+      })
+    })
   }
 
   public set onDynamicLoadComplete(value: onDynamicLoadedComplete) {

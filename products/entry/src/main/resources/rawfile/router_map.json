@@ -1,0 +1,461 @@
+{
+  "routerMap": [
+    {
+      "buildFunction": "entryAnimTransitionDemoBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "AnimTransitionDemo",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRAnimTransitionDemo.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRAnimTransitionDemo"
+    },
+    {
+      "buildFunction": "entryCardLongTakeTransitionPageOneBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageCardOne",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRCardLongTakeTransitionPageOne.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRCardLongTakeTransitionPageOne"
+    },
+    {
+      "buildFunction": "entryCardLongTakeTransitionPageTwoBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageCardTwo",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRCardLongTakeTransitionPageTwo.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRCardLongTakeTransitionPageTwo"
+    },
+    {
+      "buildFunction": "entryPageDialogModeBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageDialogMode",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPageDialogMode.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRPageDialogMode"
+    },
+    {
+      "buildFunction": "entryPageFourBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageFour",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPageFour.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRPageFour"
+    },
+    {
+      "buildFunction": "entryPageOneBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageOne",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPageOne.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRPageOne"
+    },
+    {
+      "buildFunction": "entryPageThreeBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageThree",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPageThree.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRPageThree"
+    },
+    {
+      "buildFunction": "entryPageTwoBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageTwo",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPageTwo.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRPageTwo"
+    },
+    {
+      "buildFunction": "entryURLPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "custom_url_page",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRURLPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRURLPage"
+    },
+    {
+      "buildFunction": "entryEmptyPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageNotFound",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZREmptyPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZREmptyPage"
+    },
+    {
+      "buildFunction": "entryEmptyPage2Builder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PageNotFound2",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZREmptyPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZREmptyPage"
+    },
+    {
+      "buildFunction": "entryLifecycle1ViewBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "Lifecycle1_View",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRLifecycle1View.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRLifecycle1View"
+    },
+    {
+      "buildFunction": "entryLifecycle2ViewBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "Lifecycle2_View",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRLifecycle2View.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRLifecycle2View"
+    },
+    {
+      "buildFunction": "entryLifecycle3ViewBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "Lifecycle3_View",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRLifecycle3View.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRLifecycle3View"
+    },
+    {
+      "buildFunction": "entryLifecycle4ViewBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "Lifecycle4_View",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRLifecycle4View.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRLifecycle4View"
+    },
+    {
+      "buildFunction": "entryLifecycleCaseViewBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "Lifecycle_Case_View",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRLifecycleCaseView.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRLifecycleCaseView"
+    },
+    {
+      "buildFunction": "entryMainPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "main_page",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRMainPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRMainPage"
+    },
+    {
+      "buildFunction": "entryChildViewBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "Custom_Component_Child_View",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRCustomComponentView.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRCustomComponentView"
+    },
+    {
+      "buildFunction": "entryNavDestV2Builder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "NavDestTemplateV2",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRNavDestV2.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRNavDestV2"
+    },
+    {
+      "buildFunction": "entryNestPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "NestPage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRNestPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRNestPage"
+    },
+    {
+      "buildFunction": "entryNestChild1PageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "NestChild1Page",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRNestPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRNestPage"
+    },
+    {
+      "buildFunction": "entryNestChild2PageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "NestChild2Page",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRNestPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRNestPage"
+    },
+    {
+      "buildFunction": "entryOrderPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "order_Details_Page",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZROrderDetailsPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZROrderDetailsPage"
+    },
+    {
+      "buildFunction": "entryOrderPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "order_Page",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZROrderPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZROrderPage"
+    },
+    {
+      "buildFunction": "entrySplashPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "SplashPage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRSplashPage.ets",
+      "ohmurl": "@bundle:com.harmony.router/entry/ets/_generated/ZRSplashPage"
+    },
+    {
+      "buildFunction": "harABeforePushPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "BeforePushPage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRBeforePushPage.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRBeforePushPage"
+    },
+    {
+      "buildFunction": "harALoginPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "LoginPage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRLoginPage.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRLoginPage"
+    },
+    {
+      "buildFunction": "harALoginVerifyCodePageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "loginVerifyCodePage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRLoginVerifyCodePage.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRLoginVerifyCodePage"
+    },
+    {
+      "buildFunction": "harAMainPageBuilder",
+      "data": {
+        "needLogin": "true",
+        "description": "测试"
+      },
+      "name": "harAMainPage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRMainPage.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRMainPage"
+    },
+    {
+      "buildFunction": "harAPage1Builder",
+      "data": {
+        "needLogin": "true"
+      },
+      "name": "harAPage1",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPage1.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRPage1"
+    },
+    {
+      "buildFunction": "harAPage2Builder",
+      "data": {
+        "needLogin": "false",
+        "description": "测试"
+      },
+      "name": "harAPage2",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPage2.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRPage2"
+    },
+    {
+      "buildFunction": "harAPage4Builder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "harAPage4",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPage4.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRPage4"
+    },
+    {
+      "buildFunction": "harAParamPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "ParamPage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRParamPage.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRParamPage"
+    },
+    {
+      "buildFunction": "harAParamPage2Builder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "ParamPage2",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRParamPage2.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRParamPage2"
+    },
+    {
+      "buildFunction": "harAPopCasePage5Builder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "PopCasePage5",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPopCasePage.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRPopCasePage"
+    },
+    {
+      "buildFunction": "harAPushAndPopCasePageBuilder",
+      "data": {
+        "needLogin": "true"
+      },
+      "name": "PushAndPopCasePage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPushAndPopCasePage.ets",
+      "packageName": "@hzw/hara",
+      "ohmurl": "@bundle:com.harmony.router/entry@harA/ets/_generated/ZRPushAndPopCasePage"
+    },
+    {
+      "buildFunction": "harBMainPageBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "harBMainPage",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRMainPage.ets",
+      "packageName": "harb",
+      "ohmurl": "@bundle:com.harmony.router/entry@harB/ets/_generated/ZRMainPage"
+    },
+    {
+      "buildFunction": "harBPage1Builder",
+      "data": {
+        "needLogin": "true"
+      },
+      "name": "harBPage1",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPage1.ets",
+      "packageName": "harb",
+      "ohmurl": "@bundle:com.harmony.router/entry@harB/ets/_generated/ZRPage1"
+    },
+    {
+      "buildFunction": "harBPage2Builder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "harBPage2",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRPage2.ets",
+      "packageName": "harb",
+      "ohmurl": "@bundle:com.harmony.router/entry@harB/ets/_generated/ZRPage2"
+    },
+    {
+      "buildFunction": "harBServiceCaseViewBuilder",
+      "data": {
+        "needLogin": "false"
+      },
+      "name": "Service_Case_View",
+      "moduleName": "entry",
+      "bundleName": "com.harmony.router",
+      "pageSourceFile": "src/main/ets/_generated/ZRServiceCaseView.ets",
+      "packageName": "harb",
+      "ohmurl": "@bundle:com.harmony.router/entry@harB/ets/_generated/ZRServiceCaseView"
+    }
+  ]
+}
