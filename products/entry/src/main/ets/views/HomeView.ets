@@ -76,7 +76,7 @@ export struct HomeView {
 
         Button('404页面').onClick((event: ClickEvent) => {
           // 页面不存在，重定向到提示页
-          // ZRouter.getInstance().navigation("PageNotFound111")
+          ZRouter.getInstance().navigation("PageNotFound111")
         })
 
         Button('跳转携带参数与监听pop携带的参数').onClick((event: ClickEvent) => {
@@ -146,7 +146,7 @@ export struct HomeView {
           .visibility(Visibility.None)
 
       }
-    }
+    }.scrollBar(BarState.Off)
   }
 }
 
