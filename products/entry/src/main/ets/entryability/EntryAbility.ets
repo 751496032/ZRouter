@@ -21,6 +21,7 @@ export default class EntryAbility extends UIAbility {
 
     // 初始化卡片一镜到底动画
     ZRouter.animateMgr().initSharedAnim(windowStage)
+    console.log('初始化卡片一镜到底动画' ,this.context.resourceManager)
 
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {

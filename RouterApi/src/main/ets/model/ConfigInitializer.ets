@@ -6,6 +6,7 @@
 import { util } from "@kit.ArkTS"
 import { ZRouter } from "../api/Router"
 import Logger from "../utlis/Logger"
+import { runCatching } from "../utlis/runCatching"
 import { ZObject } from "./Model"
 
 type onDynamicLoadedComplete = (path?: string) => void | Promise<ZObject>
@@ -19,7 +20,31 @@ export class ConfigInitializer implements IConfigOptions {
   private _loadDynamicModule: string[] = []
   private _isLoaded = false
   private _onDynamicLoadedComplete?: onDynamicLoadedComplete
+  private _isRoutePreloadEnabled: boolean = true
   // private _isMetaServiceHspEnabled: boolean = false
+  private _context?: Context
+
+  /**
+   * 强烈建议初始化
+   * @param value
+   */
+  public set context(value: Context) {
+    this._context = value
+  }
+
+  public get context(): Context {
+    return this._context ?? getContext()
+  }
+
+
+
+  public get isRoutePreloadEnabled(): boolean {
+    return this._isRoutePreloadEnabled
+  }
+
+  public set isRoutePreloadEnabled(value: boolean) {
+    this._isRoutePreloadEnabled = value
+  }
 
   public get dynamicLoadDelayTime(): number {
     return this._dynamicLoadDelayTime
@@ -51,19 +76,37 @@ export class ConfigInitializer implements IConfigOptions {
   // }
   //
 
+  private isRouterMapLoaded: boolean = false
   constructor() {
     util.Aspect.addAfter(ZRouter, "setup", true, () => {
+      if (this.isRoutePreloadEnabled) {
+        this.loadRouterMap()
+      }
       this.dynamicImportModule()
     })
     util.Aspect.addBefore(ZRouter, 'getNavStack', true, () => {
-      getContext().resourceManager.getRawFileContent("router_map.json").then((data) => {
-        // 将Uint8Array转为字符串
-        let textDecoder: util.TextDecoder = new util.TextDecoder();
-        let rawfileContent: string = textDecoder.decodeToString(data);
-        console.log('getRawFileContent: ', rawfileContent)
-      })
+      // 如果尚未加载路由表，会再次尝试加载
+      if (!this.isRouterMapLoaded) {
+        this.loadRouterMap()
+      }
+
     })
   }
+
+
+  private loadRouterMap() {
+    runCatching(() => {
+      this.context.resourceManager.getRawFileContent("router_map.json").then((data) => {
+        let textDecoder: util.TextDecoder = new util.TextDecoder();
+        let rawfileContent: string = textDecoder.decodeToString(data);
+        this.isRouterMapLoaded = true
+        Logger.log(`路由配置加载成功: ${rawfileContent}`)
+      })
+    }).onFailure((e: Error) => {
+      Logger.log(`路由配置加载失败: ${e.message}`)
+    })
+  }
+
 
   public set onDynamicLoadComplete(value: onDynamicLoadedComplete) {
     if (!this._onDynamicLoadComplete) {
@@ -168,6 +211,15 @@ export class ConfigInitializer implements IConfigOptions {
    * 动态加载完成后回调函数
    */
   onDynamicLoadComplete?: () => void
+
+  /**
+   * 是否启用路由预加载
+   */
+  isRoutePreloadEnabled?: boolean
+  /**
+   * 上下文，建议初始化时设置
+   */
+  context: Context
 
 }
 

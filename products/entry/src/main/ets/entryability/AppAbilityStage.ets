@@ -20,6 +20,8 @@ export class AppAbilityStage extends AbilityStage{
     })
     // 初始化路由
     ZRouter.initialize((config) => {
+      // 强烈建议初始化 context
+      config.context = this.context
       config.isLoggingEnabled = true
       config.isHSPModuleDependent = true
       // 路由服务动态加载

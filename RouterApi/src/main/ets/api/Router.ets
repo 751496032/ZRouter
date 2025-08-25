@@ -30,6 +30,7 @@ import { KEY_CONFIG_INITIALIZER, KEY_ROUTER } from '../model/Const'
 
 export class ZRouter {
   private static routerMgr: RouterMgr | undefined = undefined
+  private static _context: Context | undefined = undefined
 
   private constructor() {
   }
@@ -42,12 +43,17 @@ export class ZRouter {
     const config = new ConfigInitializer()
     invoke?.(config)
     Logger.init(config.isLoggingEnabled)
+    ZRouter._context = config.context
     ZRouter.setup(config.isHSPModuleDependent)
     AppStorage.setOrCreate(KEY_CONFIG_INITIALIZER, config)
     config.onDynamicLoadComplete = () => {
       ZRouter.getRouterMgr().isDynamicLoadedComplete = true
       ZRouter.getRouterMgr().moduleLoadedListener?.()
     }
+  }
+
+  public static get context(): Context {
+    return this._context ?? getContext()
   }
 
   public static setModuleLoadedListener(listener: () => void) {
