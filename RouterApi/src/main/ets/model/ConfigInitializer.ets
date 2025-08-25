@@ -213,7 +213,7 @@ export class ConfigInitializer implements IConfigOptions {
   onDynamicLoadComplete?: () => void
 
   /**
-   * 是否启用路由预加载
+   * 是否启用路由预加载, 默认为true
    */
   isRoutePreloadEnabled?: boolean
   /**
