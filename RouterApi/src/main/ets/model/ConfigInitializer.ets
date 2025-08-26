@@ -3,15 +3,17 @@
  * @date: 2024/10/20
  * @desc:
  */
-import { util } from "@kit.ArkTS"
+import { taskpool, util } from "@kit.ArkTS"
 import { ZRouter } from "../api/Router"
 import Logger from "../utlis/Logger"
 import { runCatching } from "../utlis/runCatching"
 import { ZObject } from "./Model"
-
+import { RouterMapGenerator } from "./RouterMap"
+import { process } from '@kit.ArkTS'
 type onDynamicLoadedComplete = (path?: string) => void | Promise<ZObject>
 
 export class ConfigInitializer implements IConfigOptions {
+  private isRouterMapLoaded: boolean = false
   private _onDynamicLoadComplete?: onDynamicLoadedComplete
   private _dynamicLoadDelayTime: number = 0
   private _isHSPModuleDependent: boolean = false
@@ -21,9 +23,37 @@ export class ConfigInitializer implements IConfigOptions {
   private _isLoaded = false
   private _onDynamicLoadedComplete?: onDynamicLoadedComplete
   private _isRoutePreloadEnabled: boolean = true
-  // private _isMetaServiceHspEnabled: boolean = false
   private _context?: Context
+  private _isRoutePreloadThreadEnabled: boolean = true
 
+
+  constructor() {
+    util.Aspect.addAfter(ZRouter, "setup", true, () => {
+      if (this.isRoutePreloadEnabled) {
+        this.loadRouterMap()
+      }
+      this.dynamicImportModule()
+    })
+    util.Aspect.addBefore(ZRouter, 'getNavStack', true, () => {
+      // 如果尚未加载路由表，会再次尝试加载
+      if (!this.isRouterMapLoaded) {
+        this.loadRouterMap()
+      }
+
+    })
+  }
+
+ public get isRoutePreloadThreadEnabled(): boolean {
+    return this._isRoutePreloadThreadEnabled
+  }
+
+  /**
+   * 路由预加载是否启用多线程，默认为true
+   * @param value
+   */
+  public set isRoutePreloadThreadEnabled(value: boolean) {
+    this._isRoutePreloadThreadEnabled = value
+  }
   /**
    * 强烈建议初始化
    * @param value
@@ -36,12 +66,14 @@ export class ConfigInitializer implements IConfigOptions {
     return this._context ?? getContext()
   }
 
-
-
   public get isRoutePreloadEnabled(): boolean {
     return this._isRoutePreloadEnabled
   }
 
+  /**
+   * 是否启用路由预加载, 默认为true
+   * @param value
+   */
   public set isRoutePreloadEnabled(value: boolean) {
     this._isRoutePreloadEnabled = value
   }
@@ -68,43 +100,6 @@ export class ConfigInitializer implements IConfigOptions {
 
   public get loadDynamicModule(): string[] {
     return this._loadDynamicModule
-  }
-
-
-  // public get isMetaServiceHspEnabled(): boolean {
-  //   return this._isMetaServiceHspEnabled
-  // }
-  //
-
-  private isRouterMapLoaded: boolean = false
-  constructor() {
-    util.Aspect.addAfter(ZRouter, "setup", true, () => {
-      if (this.isRoutePreloadEnabled) {
-        this.loadRouterMap()
-      }
-      this.dynamicImportModule()
-    })
-    util.Aspect.addBefore(ZRouter, 'getNavStack', true, () => {
-      // 如果尚未加载路由表，会再次尝试加载
-      if (!this.isRouterMapLoaded) {
-        this.loadRouterMap()
-      }
-
-    })
-  }
-
-
-  private loadRouterMap() {
-    runCatching(() => {
-      this.context.resourceManager.getRawFileContent("router_map.json").then((data) => {
-        let textDecoder: util.TextDecoder = new util.TextDecoder();
-        let rawfileContent: string = textDecoder.decodeToString(data);
-        this.isRouterMapLoaded = true
-        Logger.log(`路由配置加载成功: ${rawfileContent}`)
-      })
-    }).onFailure((e: Error) => {
-      Logger.log(`路由配置加载失败: ${e.message}`)
-    })
   }
 
 
@@ -136,6 +131,39 @@ export class ConfigInitializer implements IConfigOptions {
   public set loadDynamicModule(value: string[]) {
     this._loadDynamicModule = value
   }
+
+
+
+
+  private async loadRouterMap() {
+    if (this.isRoutePreloadThreadEnabled) {
+      taskpool.execute(loadRouterMapAsync, this.context).then((data: object) => {
+        this.parseRouterMap(data)
+      }).catch((e: Error) => {
+        Logger.log(`路由配置加载失败: ${e.message}`)
+      })
+    } else {
+      runCatching(async () => {
+        await loadRouterMapAsync(this.context).then((data: object) => {
+          this.parseRouterMap(data)
+        })
+      }).onFailure((e: Error) => {
+        Logger.log(`路由配置加载失败: ${e.message}`)
+      })
+    }
+  }
+
+
+
+  private parseRouterMap(data: object) {
+    let routerMapGenerator: RouterMapGenerator = data as RouterMapGenerator
+    Logger.log(`路由配置加载成功` , JSON.stringify(routerMapGenerator,null , 2))
+    this.isRouterMapLoaded = true
+
+  }
+
+
+
 
 
 
@@ -181,6 +209,18 @@ export class ConfigInitializer implements IConfigOptions {
 
 }
 
+
+@Concurrent
+async function loadRouterMapAsync(context: Context): Promise<RouterMapGenerator> {
+  Logger.log(`isMainThread: ` , process.pid == process.tid)
+  const data = await context.resourceManager.getRawFileContent("router_map.json")
+  let textDecoder: util.TextDecoder = new util.TextDecoder();
+  let rawfileContent: string = textDecoder.decodeToString(data);
+  let routerMapGenerator: RouterMapGenerator = JSON.parse(rawfileContent)
+
+  return routerMapGenerator
+}
+
  interface IConfigOptions {
   /**
    * 是否有依赖hsp模块
@@ -220,6 +260,11 @@ export class ConfigInitializer implements IConfigOptions {
    * 上下文，建议初始化时设置
    */
   context: Context
+
+   /**
+   * 路由预加载是否启用多线程，默认为true
+   */
+  isRoutePreloadThreadEnabled?: boolean
 
 }
 
