@@ -20,3 +20,4 @@ export enum RedirectType {
 
 export const KEY_CONFIG_INITIALIZER = "ConfigInitializer"
 export const KEY_ROUTER = "ZRouter"
+export const KEY_ROUTER_MAP = "routerMap"

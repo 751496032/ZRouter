@@ -8,8 +8,10 @@ import { ZRouter } from "../api/Router"
 import Logger from "../utlis/Logger"
 import { runCatching } from "../utlis/runCatching"
 import { ZObject } from "./Model"
-import { RouterMapGenerator } from "./RouterMap"
+import { RouterMap, RouterMapGenerator } from "./RouterMap"
 import { process } from '@kit.ArkTS'
+import { KEY_ROUTER_MAP } from "./Const"
+
 type onDynamicLoadedComplete = (path?: string) => void | Promise<ZObject>
 
 export class ConfigInitializer implements IConfigOptions {
@@ -136,19 +138,21 @@ export class ConfigInitializer implements IConfigOptions {
 
 
   private async loadRouterMap() {
+    Logger.log(`loadRouterMap: 开始加载路由表`, this.isRoutePreloadThreadEnabled)
     if (this.isRoutePreloadThreadEnabled) {
-      taskpool.execute(loadRouterMapAsync, this.context).then((data: object) => {
+      Logger.log(`isMainThread: ` , process.pid == process.tid)
+      taskpool.execute(loadRouterMapFromRawFile, this.context).then((data: object) => {
         this.parseRouterMap(data)
       }).catch((e: Error) => {
-        Logger.log(`路由配置加载失败: ${e.message}`)
+        Logger.log(`路由表加载失败: ${e.message}`)
       })
     } else {
       runCatching(async () => {
-        await loadRouterMapAsync(this.context).then((data: object) => {
+        await loadRouterMapFromRawFile(this.context).then((data: object) => {
           this.parseRouterMap(data)
         })
       }).onFailure((e: Error) => {
-        Logger.log(`路由配置加载失败: ${e.message}`)
+        Logger.log(`路由表加载失败: ${e.message}`)
       })
     }
   }
@@ -157,8 +161,9 @@ export class ConfigInitializer implements IConfigOptions {
 
   private parseRouterMap(data: object) {
     let routerMapGenerator: RouterMapGenerator = data as RouterMapGenerator
-    Logger.log(`路由配置加载成功` , JSON.stringify(routerMapGenerator,null , 2))
+    Logger.log(`路由表加载成功` , JSON.stringify(routerMapGenerator))
     this.isRouterMapLoaded = true
+    AppStorage.setOrCreate<RouterMap[]>(KEY_ROUTER_MAP, routerMapGenerator.routerMap)
 
   }
 
@@ -211,7 +216,7 @@ export class ConfigInitializer implements IConfigOptions {
 
 
 @Concurrent
-async function loadRouterMapAsync(context: Context): Promise<RouterMapGenerator> {
+async function loadRouterMapFromRawFile(context: Context): Promise<RouterMapGenerator> {
   Logger.log(`isMainThread: ` , process.pid == process.tid)
   const data = await context.resourceManager.getRawFileContent("router_map.json")
   let textDecoder: util.TextDecoder = new util.TextDecoder();

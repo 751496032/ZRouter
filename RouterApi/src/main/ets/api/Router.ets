@@ -25,7 +25,8 @@ import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
 import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
 import { TemplateMgr } from '../template/TemplateMgr'
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr'
-import { KEY_CONFIG_INITIALIZER, KEY_ROUTER } from '../model/Const'
+import { KEY_CONFIG_INITIALIZER, KEY_ROUTER, KEY_ROUTER_MAP } from '../model/Const'
+import { RouterMap } from '../model/RouterMap'
 
 
 export class ZRouter {
@@ -50,6 +51,10 @@ export class ZRouter {
       ZRouter.getRouterMgr().isDynamicLoadedComplete = true
       ZRouter.getRouterMgr().moduleLoadedListener?.()
     }
+  }
+
+  public static get routerMap(): RouterMap[] {
+    return AppStorage.get<RouterMap[]>(KEY_ROUTER_MAP) ?? []
   }
 
   public static get context(): Context {
