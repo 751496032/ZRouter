@@ -3,12 +3,12 @@
  * @date: 2025/4/19
  * @desc:
  */
-import { LifecycleState, RouterInfo, RouterMap, ZRoute, ZRouter } from "routerapi";
+import { RouterMap, ZRouter } from "routerapi";
 import { RouterConst } from "../constants/RouterConst";
 import { common, Want } from "@kit.AbilityKit";
 import { BusinessError, deviceInfo } from "@kit.BasicServicesKit";
 import { PreferencesUtil, RouterConstants, ToastUtils } from "@hzw/common_library";
-import { promptAction, router } from "@kit.ArkUI";
+import { router } from "@kit.ArkUI";
 
 @Component
 export struct HomeView {
@@ -16,7 +16,6 @@ export struct HomeView {
   private sdkApiVer = deviceInfo.sdkApiVersion
   private isSdkApi12 = this.sdkApiVer >= 12
   private hideNavbar = PreferencesUtil.get<boolean>("hideNavbar") ?? false
-  @State routerMap: RouterMap[] = []
 
   desc(): string {
     if (this.isSdkApi12) {
@@ -139,13 +138,9 @@ export struct HomeView {
         }).visibility(this.hideNavbar ? Visibility.Visible : Visibility.None)
 
         Button("获取路由表信息").onClick((event: ClickEvent) => {
-          let routerMap = ZRouter.routerMap
-          this.routerMap = routerMap
+          ZRouter.build().navigation(RouterConstants.ROUTER_MAP_PAGE)
         })
 
-        if (this.routerMap.length > 0) {
-          Text(`路由表信息: ${JSON.stringify({ routerMap: this.routerMap }, null, 2)}`)
-        }
 
 
 

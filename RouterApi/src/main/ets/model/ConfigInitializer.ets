@@ -13,6 +13,7 @@ import { process } from '@kit.ArkTS'
 import { KEY_ROUTER_MAP } from "./Const"
 
 type onDynamicLoadedComplete = (path?: string) => void | Promise<ZObject>
+type onRouterMapLoadedComplete = (routerMap: RouterMap[]) => void
 
 export class ConfigInitializer implements IConfigOptions {
   private isRouterMapLoaded: boolean = false
@@ -27,7 +28,7 @@ export class ConfigInitializer implements IConfigOptions {
   private _isRoutePreloadEnabled: boolean = true
   private _context?: Context
   private _isRoutePreloadThreadEnabled: boolean = true
-
+  private _onRouterMapLoadedCompletes?: onRouterMapLoadedComplete[] = []
 
   constructor() {
     util.Aspect.addAfter(ZRouter, "setup", true, () => {
@@ -45,7 +46,18 @@ export class ConfigInitializer implements IConfigOptions {
     })
   }
 
- public get isRoutePreloadThreadEnabled(): boolean {
+  /**
+   * 路由表加载完成回调
+   * @param value
+   */
+  public set onRouterMapLoadedComplete(value: onRouterMapLoadedComplete) {
+    if (!this._onRouterMapLoadedCompletes) {
+      this._onRouterMapLoadedCompletes = []
+    }
+    this._onRouterMapLoadedCompletes?.push(value)
+  }
+
+  public get isRoutePreloadThreadEnabled(): boolean {
     return this._isRoutePreloadThreadEnabled
   }
 
@@ -56,6 +68,7 @@ export class ConfigInitializer implements IConfigOptions {
   public set isRoutePreloadThreadEnabled(value: boolean) {
     this._isRoutePreloadThreadEnabled = value
   }
+
   /**
    * 强烈建议初始化
    * @param value
@@ -135,12 +148,10 @@ export class ConfigInitializer implements IConfigOptions {
   }
 
 
-
-
   private async loadRouterMap() {
     Logger.log(`loadRouterMap: 开始加载路由表`, this.isRoutePreloadThreadEnabled)
     if (this.isRoutePreloadThreadEnabled) {
-      Logger.log(`isMainThread: ` , process.pid == process.tid)
+      Logger.log(`isMainThread: `, process.pid == process.tid)
       taskpool.execute(loadRouterMapFromRawFile, this.context).then((data: object) => {
         this.parseRouterMap(data)
       }).catch((e: Error) => {
@@ -158,19 +169,14 @@ export class ConfigInitializer implements IConfigOptions {
   }
 
 
-
   private parseRouterMap(data: object) {
     let routerMapGenerator: RouterMapGenerator = data as RouterMapGenerator
-    Logger.log(`路由表加载成功` , JSON.stringify(routerMapGenerator))
+    Logger.log(`路由表加载成功`, JSON.stringify(routerMapGenerator))
     this.isRouterMapLoaded = true
-    AppStorage.setOrCreate<RouterMap[]>(KEY_ROUTER_MAP, routerMapGenerator.routerMap)
-
+    this._onRouterMapLoadedCompletes?.forEach((value) => {
+      value(routerMapGenerator.routerMap)
+    })
   }
-
-
-
-
-
 
 
   private dynamicImportModule() {
@@ -211,28 +217,35 @@ export class ConfigInitializer implements IConfigOptions {
       })
     })
   }
-
 }
 
 
 @Concurrent
 async function loadRouterMapFromRawFile(context: Context): Promise<RouterMapGenerator> {
-  Logger.log(`isMainThread: ` , process.pid == process.tid)
+  Logger.log(`isMainThread: `, process.pid == process.tid)
   const data = await context.resourceManager.getRawFileContent("router_map.json")
   let textDecoder: util.TextDecoder = new util.TextDecoder();
   let rawfileContent: string = textDecoder.decodeToString(data);
   let routerMapGenerator: RouterMapGenerator = JSON.parse(rawfileContent)
-
   return routerMapGenerator
 }
 
- interface IConfigOptions {
+export function loadRouterMapFromRawFileSync(context: Context): RouterMap[] {
+  const r = runCatching(() => {
+    const data = context.resourceManager.getRawFileContentSync("router_map.json")
+    let textDecoder: util.TextDecoder = new util.TextDecoder();
+    let rawfileContent: string = textDecoder.decodeToString(data);
+    let routerMapGenerator: RouterMapGenerator = JSON.parse(rawfileContent)
+    return routerMapGenerator
+  }).getOrNull()
+  return r?.routerMap ?? []
+}
+
+interface IConfigOptions {
   /**
    * 是否有依赖hsp模块
    */
   isHSPModuleDependent: boolean
-
-
   /**
    * 是否开启元服务跨hsp模块跳转
    */
@@ -251,12 +264,10 @@ async function loadRouterMapFromRawFile(context: Context): Promise<RouterMapGene
    * 延迟动态加载的时间，单位毫秒
    */
   dynamicLoadDelayTime: number
-
   /**
    * 动态加载完成后回调函数
    */
   onDynamicLoadComplete?: () => void
-
   /**
    * 是否启用路由预加载, 默认为true
    */
@@ -265,8 +276,7 @@ async function loadRouterMapFromRawFile(context: Context): Promise<RouterMapGene
    * 上下文，建议初始化时设置
    */
   context: Context
-
-   /**
+  /**
    * 路由预加载是否启用多线程，默认为true
    */
   isRoutePreloadThreadEnabled?: boolean

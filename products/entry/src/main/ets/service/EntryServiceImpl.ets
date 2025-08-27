@@ -3,7 +3,7 @@
  * @date: 2025/8/16
  * @desc:
  */
-import { IEntryService, RouterConstants, UIView } from "@hzw/common_library";
+import { IEntryService, RouterConstants } from "@hzw/common_library";
 import { BannerBuilder } from "../views/Banner";
 import { ZService } from "routerapi";
 

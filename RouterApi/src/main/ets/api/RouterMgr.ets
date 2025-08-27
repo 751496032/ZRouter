@@ -36,9 +36,11 @@ import Logger from '../utlis/Logger';
 import { ConfigInitializer } from '../model/ConfigInitializer';
 import { NavPushPathHelper } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
+import { RouterMap } from '../model/RouterMap';
 
 
 export class RouterMgr {
+  private isPageLaunched = false
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStackMgr = NavStackMgr.getInstance()
   private _serviceMgr = ServiceMgr.getInstance()
@@ -49,7 +51,6 @@ export class RouterMgr {
    */
   public isDynamicLoadedComplete = false
   public moduleLoadedListener?: () => void
-  private isPageLaunched = false
   /**
    * 是否隐藏Navigation根视图
    */
@@ -63,8 +64,10 @@ export class RouterMgr {
   public onBackAtBottom: OnAtBottomBackCallback = () => {
     return false
   }
-
+  // 支持元服务跨hsp模块
   private navPushPathHelper?: NavPushPathHelper
+  // 路由表
+  public routerMap: RouterMap[] = []
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -307,7 +310,6 @@ export class RouterMgr {
 
 
   private isMetaServiceHspEnabled<T>(builder?: NavDestBuilder<T>): boolean {
-    const config = AppStorage.get<ConfigInitializer>(KEY_CONFIG_INITIALIZER)
     return builder?.options.isMetaServiceHspEnabled ?? false
   }
 
@@ -372,11 +374,14 @@ export class RouterMgr {
   private async beforePushOrReplace<T>(name: string, operation: NavigationOperation, param?: ObjectOrNull,
     builder?: NavDestBuilder<T>): Promise<DestinationInfo> {
     const state = this.getCurrentState()
-    let interceptorInfo = InterceptorInfo.create(true)
+    const isExist = this.routerMap.filter((item) => item.name == name).length > 0
+    let interceptorInfo = InterceptorInfo.create(!isExist, true)
     interceptorInfo.name = name
     interceptorInfo.param = param
     interceptorInfo.operation = operation
+    interceptorInfo.metadata = this.routerMap.find((item)=> item.name == name)?.data
     let r: DestinationInfo  = DestinationInfo.create(interceptorInfo)
+
     try {
       r.navigationOptions = builder?.options as INavDestOptions<ObjectOrNull>
       if (builder) {

@@ -3,7 +3,7 @@
  * @date: 2025/8/27
  * @desc:
  */
-
+import { RouteMetadata } from './Model'
 export interface RouterMapGenerator {
   routerMap: RouterMap[];
 }
@@ -15,12 +15,3 @@ export interface RouterMap {
   data:           RouteMetadata;
 }
 
-export interface RouteMetadata {
-  needLogin:    string;
-  /**
-   * 是一个base64编码的字符串，自行解码获取其他参数
-   */
-  others:       string;
-  description?: string;
-  extra?:       string;
-}

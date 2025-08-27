@@ -18,7 +18,7 @@ import { NavDestBuilder } from '../model/NavDestBuilder'
 import { IInterceptor, IGlobalNavigateInterceptor } from '../interceptions/IInterceptor'
 import { ServiceMgr } from '../service/ServiceMgr'
 import { IProvider } from '../service/IProvider'
-import { ConfigInitializer } from '../model/ConfigInitializer'
+import { ConfigInitializer, loadRouterMapFromRawFileSync } from '../model/ConfigInitializer'
 import Logger from '../utlis/Logger'
 import { NavAnimationMgr } from '../animation/NavAnimationMgr'
 import { ILifecycleObserver } from '../lifecycle/ILifecycleObserver'
@@ -42,19 +42,33 @@ export class ZRouter {
    */
   public static initialize(invoke?: ((config: ConfigInitializer) => void)) {
     const config = new ConfigInitializer()
-    invoke?.(config)
-    Logger.init(config.isLoggingEnabled)
-    ZRouter._context = config.context
-    ZRouter.setup(config.isHSPModuleDependent)
-    AppStorage.setOrCreate(KEY_CONFIG_INITIALIZER, config)
     config.onDynamicLoadComplete = () => {
       ZRouter.getRouterMgr().isDynamicLoadedComplete = true
       ZRouter.getRouterMgr().moduleLoadedListener?.()
     }
+    config.onRouterMapLoadedComplete = (r) => {
+      ZRouter.getRouterMgr().routerMap = r
+    }
+    invoke?.(config)
+    Logger.init(config.isLoggingEnabled)
+    ZRouter._context = config.context
+    ZRouter.setup(config.isHSPModuleDependent)
+    // AppStorage.setOrCreate(KEY_CONFIG_INITIALIZER, config) // 暂时没有作用
   }
 
+  /**
+   * 获取路由表
+   * @returns
+   */
   public static get routerMap(): RouterMap[] {
-    return AppStorage.get<RouterMap[]>(KEY_ROUTER_MAP) ?? []
+    let routerMap = ZRouter.getRouterMgr().routerMap
+    if (routerMap.length === 0) {
+      // 尝试同步获取，正常情况是不会执行到这里，在初始化时会在工作线程中完成
+      const routerMap = loadRouterMapFromRawFileSync(this.context)
+      ZRouter.getRouterMgr().routerMap = routerMap
+      return routerMap
+    }
+    return routerMap
   }
 
   public static get context(): Context {

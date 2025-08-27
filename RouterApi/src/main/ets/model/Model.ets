@@ -52,13 +52,15 @@ export class InterceptorInfo {
    */
   navigationOptions?: INavDestOptions<ObjectOrNull>
 
+  private isBefore: boolean = false
 
-  private constructor(notRegistered : boolean = false) {
+  private constructor(notRegistered : boolean = false, isBefore: boolean = false) {
     this.isNotRegistered = notRegistered
+    this.isBefore = isBefore
   }
 
-  static create(notRegistered : boolean = false) {
-    return new InterceptorInfo(notRegistered)
+  static create(notRegistered: boolean = false, isBefore: boolean = false) {
+    return new InterceptorInfo(notRegistered, isBefore)
   }
 
   public get isNeedLogin(): boolean {
@@ -66,6 +68,9 @@ export class InterceptorInfo {
   }
 
   public get notRegistered(): boolean {
+    if (this.isBefore) {
+      return this.isNotRegistered
+    }
     return !this.isContext() || this.isNotRegistered
   }
 
@@ -92,6 +97,10 @@ export class RouteMetadata {
   description?: string
   extra?: string
   needLogin: string = ''
+  /**
+   * 是一个base64编码的字符串，自行解码获取参数
+   */
+  others?: string;
 }
 
 
@@ -120,6 +129,15 @@ export class DestinationInfo {
    */
   navigationOptions?: INavDestOptions<ObjectOrNull>
 
+  /**
+   * @Route和@ZRoute注解上的元数据 - 参数
+   */
+  routeMetadata?: RouteMetadata
+  /**
+   * 页面是否未注册
+   */
+  notRegistered: boolean = false
+
   private constructor() {
   }
   static create(info : InterceptorInfo) {
@@ -128,6 +146,8 @@ export class DestinationInfo {
     dest.param = info.param
     dest.operation = info.operation
     dest.action = NavigationAction.NEXT
+    dest.routeMetadata = info.metadata
+    dest.notRegistered = info.notRegistered
     return dest
   }
   isContinue() {
