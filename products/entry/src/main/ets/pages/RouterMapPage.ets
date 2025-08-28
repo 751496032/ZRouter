@@ -20,6 +20,7 @@ export struct RouterMapPage {
   build() {
     Scroll(){
       Column({ space: 12 }) {
+        Text(`路由数：${ZRouter.routerMap.length}`)
         Text(`${JSON.stringify({ routerMap: this.routerMap }, null, 2)}`)
       }
     }.scrollBar(BarState.Off)
