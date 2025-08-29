@@ -26,7 +26,8 @@ import { LifecycleObserver } from '../lifecycle/LifecycleEvent'
 import { TemplateMgr } from '../template/TemplateMgr'
 import { LifecycleMgr } from '../lifecycle/LifecycleMgr'
 import { KEY_CONFIG_INITIALIZER, KEY_ROUTER, KEY_ROUTER_MAP } from '../model/Const'
-import { RouterMap } from '../model/RouterMap'
+import { RouteItem } from '../model/RouterMap'
+import { runCatching } from '../utlis/runCatching'
 
 
 export class ZRouter {
@@ -60,7 +61,7 @@ export class ZRouter {
    * 获取路由表
    * @returns
    */
-  public static get routerMap(): RouterMap[] {
+  public static get routerMap(): RouteItem[] {
     let routerMap = ZRouter.getRouterMgr().routerMap
     if (routerMap.length === 0) {
       // 尝试同步获取，正常情况是不会执行到这里，在初始化时会在工作线程中完成
@@ -71,6 +72,21 @@ export class ZRouter {
     return routerMap
   }
 
+  /**
+   * 获取路由信息
+   * @param name
+   * @returns
+   */
+  public static getRouteInfo(name: string): RouteItem | null {
+    return runCatching<RouteItem>(() => {
+      return ZRouter.routerMap[name]
+    }).getOrNull()
+  }
+
+  /**
+   * 获取应用上下文
+   * @returns
+   */
   public static get context(): Context {
     return this._context ?? getContext()
   }

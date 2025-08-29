@@ -5,12 +5,12 @@
  */
 import { RouterConstants } from '@hzw/common_library';
 import { ZRoute, ZRouter } from 'routerapi';
-import { RouterMap } from 'routerapi/src/main/ets/model/RouterMap';
+import { RouteItem } from 'routerapi/src/main/ets/model/RouterMap';
 
 @ZRoute({name: RouterConstants.ROUTER_MAP_PAGE ,useTemplate:true ,hideTitleBar:false,title:'路由表信息'})
 @Component
 export struct RouterMapPage {
-  @State routerMap: RouterMap[] = []
+  @State routerMap: RouteItem[] = []
   aboutToAppear(): void {
     setTimeout(() => {
       this.routerMap = ZRouter.routerMap

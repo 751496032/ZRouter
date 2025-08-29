@@ -29,4 +29,4 @@ export { SharedCardContainer } from './src/main/ets/animation/param/shared/compo
 export { RedirectType } from './src/main/ets/model/Const'
 export { LaunchMode } from './src/main/ets/model/LaunchMode'
 export { ZObject } from './src/main/ets/model/Model'
-export { RouterMap } from './src/main/ets/model/RouterMap'
+export { RouteItem  } from './src/main/ets/model/RouterMap'

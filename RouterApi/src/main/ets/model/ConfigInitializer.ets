@@ -8,12 +8,12 @@ import { ZRouter } from "../api/Router"
 import Logger from "../utlis/Logger"
 import { runCatching } from "../utlis/runCatching"
 import { ZObject } from "./Model"
-import { RouterMap, RouterMapGenerator } from "./RouterMap"
+import { RouteItem, RouterMapWrapper } from "./RouterMap"
 import { process } from '@kit.ArkTS'
 import { KEY_ROUTER_MAP } from "./Const"
 
 type onDynamicLoadedComplete = (path?: string) => void | Promise<ZObject>
-type onRouterMapLoadedComplete = (routerMap: RouterMap[]) => void
+type onRouterMapLoadedComplete = (routerMap: RouteItem[]) => void
 
 export class ConfigInitializer implements IConfigOptions {
   private isRouterMapLoaded: boolean = false
@@ -170,7 +170,7 @@ export class ConfigInitializer implements IConfigOptions {
 
 
   private parseRouterMap(data: object) {
-    let routerMapGenerator: RouterMapGenerator = data as RouterMapGenerator
+    let routerMapGenerator: RouterMapWrapper = data as RouterMapWrapper
     Logger.log(`路由表加载成功`, JSON.stringify(routerMapGenerator))
     this.isRouterMapLoaded = true
     this._onRouterMapLoadedCompletes?.forEach((value) => {
@@ -221,21 +221,21 @@ export class ConfigInitializer implements IConfigOptions {
 
 
 @Concurrent
-async function loadRouterMapFromRawFile(context: Context): Promise<RouterMapGenerator> {
+async function loadRouterMapFromRawFile(context: Context): Promise<RouterMapWrapper> {
   Logger.log(`isMainThread: `, process.pid == process.tid)
   const data = await context.resourceManager.getRawFileContent("router_map.json")
   let textDecoder: util.TextDecoder = new util.TextDecoder();
   let rawfileContent: string = textDecoder.decodeToString(data);
-  let routerMapGenerator: RouterMapGenerator = JSON.parse(rawfileContent)
+  let routerMapGenerator: RouterMapWrapper = JSON.parse(rawfileContent)
   return routerMapGenerator
 }
 
-export function loadRouterMapFromRawFileSync(context: Context): RouterMap[] {
+export function loadRouterMapFromRawFileSync(context: Context): RouteItem[] {
   const r = runCatching(() => {
     const data = context.resourceManager.getRawFileContentSync("router_map.json")
     let textDecoder: util.TextDecoder = new util.TextDecoder();
     let rawfileContent: string = textDecoder.decodeToString(data);
-    let routerMapGenerator: RouterMapGenerator = JSON.parse(rawfileContent)
+    let routerMapGenerator: RouterMapWrapper = JSON.parse(rawfileContent)
     return routerMapGenerator
   }).getOrNull()
   return r?.routerMap ?? []

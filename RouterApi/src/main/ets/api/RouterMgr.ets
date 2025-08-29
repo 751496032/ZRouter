@@ -36,7 +36,7 @@ import Logger from '../utlis/Logger';
 import { ConfigInitializer } from '../model/ConfigInitializer';
 import { NavPushPathHelper } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
-import { RouterMap } from '../model/RouterMap';
+import { RouteItem } from '../model/RouterMap';
 
 
 export class RouterMgr {
@@ -67,7 +67,7 @@ export class RouterMgr {
   // 支持元服务跨hsp模块
   private navPushPathHelper?: NavPushPathHelper
   // 路由表
-  public routerMap: RouterMap[] = []
+  public routerMap: RouteItem[] = []
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {

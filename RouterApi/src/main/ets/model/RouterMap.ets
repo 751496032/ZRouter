@@ -4,11 +4,11 @@
  * @desc:
  */
 import { RouteMetadata } from './Model'
-export interface RouterMapGenerator {
-  routerMap: RouterMap[];
+export interface RouterMapWrapper {
+  routerMap: RouteItem[];
 }
 
-export interface RouterMap {
+export interface RouteItem {
   name:           string;
   pageSourceFile: string;
   buildFunction:  string;
