@@ -132,7 +132,7 @@ export class DestinationInfo {
   /**
    * @Route和@ZRoute注解上的元数据 - 参数
    */
-  routeMetadata?: RouteMetadata
+  metadata?: RouteMetadata
   /**
    * 页面是否未注册
    */
@@ -146,7 +146,7 @@ export class DestinationInfo {
     dest.param = info.param
     dest.operation = info.operation
     dest.action = NavigationAction.NEXT
-    dest.routeMetadata = info.metadata
+    dest.metadata = info.metadata
     dest.notRegistered = info.notRegistered
     return dest
   }

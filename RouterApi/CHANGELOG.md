@@ -1,11 +1,29 @@
 
 ## 版本更新记录
 
+### 1.8.0 / 2025-8-31
+
+- **服务路由支持**: `entry`模块支持服务路由，可用于底层模块调用`entry`模块的方法或组件的场景，[#ICRLKS](https://gitee.com/common-apps/ZRouter/issues/ICRLKS)；
+- **动态加载支持**: 路由跳转支持元服务`hsp`模块动态加载 [#ICQ22O](https://gitee.com/common-apps/ZRouter/issues/ICQ22O)；
+- **拦截器增强**: 拦截器方法支持获取页面`@Route`注解中的配置参数 [#ICSAC5](https://gitee.com/common-apps/ZRouter/issues/ICSAC5)；
+- **路由预加载**: 支持路由表预加载，默认在工作线程执行；
+- **返回处理优化**: 修复`hideNavbar`模式下的返回问题，支持自定义返回拦截 [#ICNNJF](https://gitee.com/common-apps/ZRouter/issues/ICNNJF)；
+- **缓存优化**: 优化路由缓存的回收机制；
+- [接口API变更](https://gitee.com/common-apps/ZRouter/blob/main/%E6%8E%A5%E5%8F%A3%E5%88%97%E8%A1%A8.md)
+  - 新增初始化参数`isRoutePreloadEnabled`、`isRoutePreloadThreadEnabled`等参数；
+  - 新增`routerMap`方法，获取已经注册的所有路由表信息；
+  - 新增`getActiveRouteInfos`方法，获取已入路由栈的所有页面；
+  - 新增`popToRoot`返回首页根视图方法；
+  - 新增`navigateBack`返回聚合方法，支持所有返回场景；
+  - `popWithResult`和`finishWithResult`方法合并 [#ICSZ6X](https://gitee.com/common-apps/ZRouter/issues/ICSZ6X)。
+  
+**注意：路由编译插件需要升级到1.8.0以上版本。**
+
 ### 1.6.1 / 2025-8-5
 
 - 拦截器支持获取页面跳转配置，比如启动模式、动画开关等；
-- 兼容支持hideNavbar模式；
-- 修复`popWithResult`携带参数为`false`时无法接收的问题；
+- 兼容支持`hideNavbar`模式；
+- 修复`NavDestBuilder#popWithResult`携带参数为`false`时无法接收的问题；
 
 ### 1.6.0 / 2025-6-27
 

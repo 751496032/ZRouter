@@ -137,7 +137,6 @@ export default class NavStackMgr {
           interceptorInfo.operation = operation
           const isPushOrReplace = operation === NavigationOperation.PUSH || operation === NavigationOperation.REPLACE
           const isPop = operation === NavigationOperation.POP
-
           if (isPushOrReplace) {
             try {
               const toContext: NavDestinationContext = to as NavDestinationContext
