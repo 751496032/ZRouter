@@ -90,12 +90,14 @@ export class RouterMgr {
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_APPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_DISAPPEAR:
-          this.getCurrentState().deleteDestOptions(name)
-          this.navStackMgr.removeRouterInfo(routerInfo)
-          const indexList = this.getNavStack().getIndexByName(name)
-          if (indexList.length == 0 && !this.getCurrentState().redirectWithResultMode) {
-            this.unregisterEvent(name)
-          }
+          runCatching(() => {
+            this.navStackMgr.deleteDestBuildOpts(name)
+            this.navStackMgr.deleteRouterInfo(routerInfo)
+            const indexList = this.getNavStack().getIndexByName(name)
+            if (indexList.length == 0 && !this.getCurrentState().redirectWithResultMode) {
+              this.unregisterEvent(name)
+            }
+          })
           this._lifecycleMgr.notifyObservers(LifecycleEvent.ON_DISAPPEAR, routerInfo)
           break
         case uiObserver.NavDestinationState.ON_WILL_SHOW:

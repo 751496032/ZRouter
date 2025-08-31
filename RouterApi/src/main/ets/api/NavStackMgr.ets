@@ -12,13 +12,13 @@ import { ZRouter } from './Router';
 import { RouterInfo } from '../model/RouterInfo';
 import { RouterMgr } from './RouterMgr';
 import Logger from '../utlis/Logger';
+import { runCatching } from '../utlis/runCatching';
 
 export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
   private interceptorMgr = InterceptorMgr.getInstance()
   private navStateMap = new HashMap<string, NavDestState>()
   private _currentStackName: string | undefined = undefined
-  private onBeforeNavStackRegisterCallback?: Function
   private navDestMap = new HashMap<string, ArrayList<RouterInfo>>()
 
   private constructor() {
@@ -89,11 +89,20 @@ export default class NavStackMgr {
   public getNavDestState(): NavDestState {
     const name = this.currentStackName ?? DEFAULT_STACK_NAME
     let state = this.navStateMap.get(name)
-    if (state !== undefined && state !== null) {
+    if (state) {
       return state as NavDestState
+    } else {
+      const r = runCatching(() => {
+        return this.navStateMap.values().next().value as NavDestState
+      }).getOrNull()
+      if (r) {
+        return r;
+      }
     }
-    throw new Error(`current 【${name}】 state is null`)
+    throw new Error(`current 【${name}】 NavDestState is null`)
   }
+
+
 
   public unregisterNavStack(stackName: string): void {
     if (this.navStackMap.has(stackName)) {
@@ -220,7 +229,7 @@ export default class NavStackMgr {
     }
   }
 
-  public removeRouterInfo(routerInfo: RouterInfo) {
+  public deleteRouterInfo(routerInfo: RouterInfo) {
     let list = this.navDestMap.get(this.currentStackName)
     if (list) {
       let pos = -1
@@ -234,6 +243,11 @@ export default class NavStackMgr {
         list.removeByIndex(pos)
       }
     }
+  }
+
+
+  public deleteDestBuildOpts(name: string) {
+    this.getNavDestState().deleteDestOptions(name)
   }
 
   public getLastNavDestinationId(): string | undefined {
