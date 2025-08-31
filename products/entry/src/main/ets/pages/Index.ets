@@ -97,6 +97,7 @@ struct Index {
     })
     .hideTitleBar(true)
     .hideNavBar(this.hideNavbar)
+    .expandSafeArea([SafeAreaType.SYSTEM],[SafeAreaEdge.BOTTOM])
     .title('Main')
     .height('100%')
     .width('100%')

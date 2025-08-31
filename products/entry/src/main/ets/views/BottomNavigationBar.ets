@@ -5,7 +5,7 @@
  */
 
 @ComponentV2
-export  struct BottomNavigationBar {
+export struct BottomNavigationBar {
   @Param @Require currentIndex: number = 0;
   @Event private $currentIndex: (index: number) => void = (index) => {
   }
@@ -28,8 +28,9 @@ export  struct BottomNavigationBar {
     }.width('100%')
     .height(50)
     .shadow({
-      color: Color.Gray,
-      radius: 1
+      color: "#E5E5E5",
+      radius: 3,
+      offsetY: -1
     })
   }
 

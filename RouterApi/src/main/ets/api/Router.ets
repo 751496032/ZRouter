@@ -58,7 +58,7 @@ export class ZRouter {
   }
 
   /**
-   * 获取路由表
+   * 获取已经注册的所有路由表
    * @returns
    */
   public static get routerMap(): RouteItem[] {
@@ -73,7 +73,8 @@ export class ZRouter {
   }
 
   /**
-   * 获取路由信息
+   * 获取路由信息，可能没有入栈，如果要获取已入栈的路由信息，可使用 getAllRouteInfo
+   * @see getAllRouteInfo
    * @param name
    * @returns
    */
@@ -89,6 +90,28 @@ export class ZRouter {
    */
   public static get context(): Context {
     return this._context ?? getContext()
+  }
+
+  /**
+   * 获取已入路由栈的页面数
+   * @param stackName
+   * @returns
+   */
+  public static size(stackName: string = DEFAULT_STACK_NAME): number {
+    return ZRouter.getNavStackByName(stackName).size()
+  }
+
+  /**
+   * 获取已入路由栈的所有页面
+   * @param listener
+   */
+  public static getAllRouteInfo(stackName: string = DEFAULT_STACK_NAME): RouteItem[] {
+    return ZRouter.getInstance(stackName)
+      .getAllPathName()
+      .map((name) => {
+        const target = ZRouter.getRouteInfo(name)
+        return target
+      }).filter((item) => item !== null) as RouteItem[]
   }
 
   public static setModuleLoadedListener(listener: () => void) {

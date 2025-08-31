@@ -3,7 +3,7 @@
  * @date: 2025/4/19
  * @desc:
  */
-import { RouterMap, ZRouter } from "routerapi";
+import { ZRouter } from "routerapi";
 import { RouterConst } from "../constants/RouterConst";
 import { common, Want } from "@kit.AbilityKit";
 import { BusinessError, deviceInfo } from "@kit.BasicServicesKit";
@@ -29,7 +29,7 @@ export struct HomeView {
 
   build() {
     this.MainBuilder()
-  }
+ }
 
   @Builder
   MainBuilder() {
@@ -151,6 +151,7 @@ export struct HomeView {
           .visibility(Visibility.None)
 
       }
+      .padding({bottom : 20})
     }.scrollBar(BarState.Off)
   }
 }
