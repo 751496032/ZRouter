@@ -10,10 +10,10 @@ ZRouter是一款轻量级且非侵入性的鸿蒙动态路由框架，可解决H
 - 支持自定义拦截器，可实现页面重定向、登录验证、数据预取、埋点等业务场景。
 - **支持服务路由，可实现Har/Hsp模块间的通信；**
 - 支持全局及单个页面的生命周期函数管理，可使任意类都能享有与组件相同的生命周期特性，可用于页面埋点统计等业务场景；
-- **支持跨多级页面参数携带返回监听；**
+- 支持跨多级页面参数携带返回监听；
 - 支持自定义URL路径跳转，可在拦截器内自行解析URL实现业务逻辑；
 - 内置多种转场动画效果（平移、旋转、渐变、缩放、高斯模糊、共享一镜到底动画），并支持自定义动画；
-- 支持启动模式、混淆、嵌套Navigation、Hap；
+- 支持启动模式、混淆、嵌套Navigation、Hap、元服务；
 - **支持与您现有项目中的Navigation无缝融合，实现零成本向本库迁移；**
 - 支持ArkUI-X跨平台上使用；
 - 支持第三方应用Navigation的使用本库API；
@@ -165,6 +165,8 @@ export class AppAbilityStage extends AbilityStage{
     // 在module.json5配置文件中，通过配置 srcEntry 参数来指定模块对应的代码路径，以作为HAP加载的入口。
     // 初始化路由
     ZRouter.initialize((config) => {
+      // 设置context
+      config.context = this.context
       config.isLoggingEnabled = BuildProfile.DEBUG
       config.isHSPModuleDependent = true 
       // 服务路由初始化配置，如果没有使用服务路由，可不设置
@@ -591,12 +593,12 @@ ZRouter库是对NavPathStack对进行高度封装的，包括了页面跳转、�
 
 ## 待优化项
 
-- 服务路由：支持在entry模块动态注册；
+- ~~服务路由：支持在entry模块动态注册；~~
 - 拦截器：
   - `onNavigateBefore()`兼容系统push 等api拦截；
-  - `onNavigateBefore()`支持获取注解中的参数；
+  - ~~`onNavigateBefore()`支持获取注解中的参数；~~
 - 路由组件间参数携带：在模板化下支持页面路由组件直接参数携带，非模板功能已支持了；
-- 支持元服务hsp模块动态下载
+- ~~支持元服务hsp模块动态下载~~
 
 
 ## 联系我们
