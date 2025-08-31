@@ -104,6 +104,10 @@ export class ZRouter {
       }).filter((item) => item !== null) as RouteItem[]
   }
 
+  /**
+   * 添加模块加载完成的监听器 动态服务路由使用
+   * @param listener
+   */
   public static setModuleLoadedListener(listener: () => void) {
     if (ZRouter.isDynamicLoadedComplete()) {
       listener()

@@ -24,14 +24,17 @@ export class AppAbilityStage extends AbilityStage{
       config.context = this.context
       config.isLoggingEnabled = true
       config.isHSPModuleDependent = true
-      // 路由服务动态加载
+      // 路由服务动态加载的模块
       config.loadDynamicModule = ['@hzw/hara', 'harb', 'hspc', '../_generated/ZRService.ets']
       config.onDynamicLoadComplete = (path) => {
-        // console.log("已完成所有模块的加载" ,path)
         if (path) {
+          // entry模块的服务路由动态加载
           import(path).then((module:ESObject) => {
             console.log("Entry ZRService 动态加载成功", module)
+            console.log("已完成所有模块的加载")
           })
+        }else {
+          console.log("已完成所有模块的加载")
         }
       }
     })

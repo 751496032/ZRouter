@@ -4,7 +4,7 @@
  * @desc:
  */
 import { InterceptorMgr } from '../interceptions/InterceptorMgr';
-import { DEFAULT_STACK_NAME, InterceptorInfo, RouteMetadata } from '../model/Model';
+import { DEFAULT_STACK_NAME, InterceptorInfo, ObjectOrNull, RouteMetadata } from '../model/Model';
 import { ObjectUtil } from '../utlis/ObjectUtil';
 import { ArrayList, HashMap } from '@kit.ArkTS';
 import NavDestState from '../model/NavDestState';
@@ -13,6 +13,7 @@ import { RouterInfo } from '../model/RouterInfo';
 import { RouterMgr } from './RouterMgr';
 import Logger from '../utlis/Logger';
 import { runCatching } from '../utlis/runCatching';
+import { INavDestOptions } from '../model/NavDestOptions';
 
 export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
@@ -186,6 +187,7 @@ export default class NavStackMgr {
               }
               if (isWillShowRootView) {
                 interceptor.onRootWillShow?.(fromContext)
+                this.deleteAllDestBuildOpts()
               }
               if (isWillShowNavDestView) {
                 interceptor.onPageWillShow?.(fromContext, toContext)
@@ -248,6 +250,19 @@ export default class NavStackMgr {
 
   public deleteDestBuildOpts(name: string) {
     this.getNavDestState().deleteDestOptions(name)
+  }
+
+  public deleteAllDestBuildOpts() {
+    runCatching(() => {
+      this.navStateMap.forEach((value, key) => {
+        value?.clearDestOptions()
+      })
+    })
+
+  }
+
+  public addDestBuildOpts(name: string, opts: INavDestOptions<ObjectOrNull>) {
+    this.getNavDestState().setDestOptions(name, opts)
   }
 
   public getLastNavDestinationId(): string | undefined {

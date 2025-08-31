@@ -42,6 +42,10 @@ export default class NavDestState {
     return undefined
   }
 
+  public clearDestOptions() {
+    this._destOptionsMap.clear()
+  }
+
   public deleteDestOptions(name: string) {
     try {
       const key = this.findDestOptionsKey(name)
