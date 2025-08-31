@@ -4,7 +4,7 @@
  * @desc:
  */
 import { InitConfig, ObjectOrNull } from '../model/Model'
-import { ObjUtil } from './ObjUtil'
+import { ObjectUtil } from './ObjectUtil'
 
 /**
  * @deprecated
@@ -23,6 +23,6 @@ export default class LogUtil {
   }
 
   private static hide(): boolean {
-    return ObjUtil.isEmpty(LogUtil.config) || !LogUtil.config.isShowLog
+    return ObjectUtil.isEmpty(LogUtil.config) || !LogUtil.config.isShowLog
   }
 }

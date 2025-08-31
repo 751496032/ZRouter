@@ -3,7 +3,7 @@
  * @date: 2024/7/18
  * @desc:
  */
-import { ObjUtil } from '../utlis/ObjUtil'
+import { ObjectUtil } from '../utlis/ObjectUtil'
 import {
   DEFAULT_STACK_NAME,
   InitConfig,
@@ -73,18 +73,6 @@ export class ZRouter {
   }
 
   /**
-   * 获取路由信息，可能没有入栈，如果要获取已入栈的路由信息，可使用 getAllRouteInfo
-   * @see getAllRouteInfo
-   * @param name
-   * @returns
-   */
-  public static getRouteInfo(name: string): RouteItem | null {
-    return runCatching<RouteItem>(() => {
-      return ZRouter.routerMap[name]
-    }).getOrNull()
-  }
-
-  /**
    * 获取应用上下文
    * @returns
    */
@@ -105,11 +93,13 @@ export class ZRouter {
    * 获取已入路由栈的所有页面
    * @param listener
    */
-  public static getAllRouteInfo(stackName: string = DEFAULT_STACK_NAME): RouteItem[] {
+  public static getActiveRouteInfos(stackName: string = DEFAULT_STACK_NAME): RouteItem[] {
     return ZRouter.getInstance(stackName)
       .getAllPathName()
       .map((name) => {
-        const target = ZRouter.getRouteInfo(name)
+        const target = runCatching<RouteItem>(() => {
+          return ZRouter.routerMap[name]
+        }).getOrNull()
         return target
       }).filter((item) => item !== null) as RouteItem[]
   }
@@ -149,7 +139,7 @@ export class ZRouter {
   private static getRouterMgr(): RouterMgr {
     if (!ZRouter.routerMgr) {
       const mgr = AppStorage.get<RouterMgr>(KEY_ROUTER)
-      if (!ObjUtil.isEmpty(mgr)) {
+      if (!ObjectUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
          ZRouter.init(true)

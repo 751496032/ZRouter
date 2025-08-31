@@ -4,15 +4,16 @@
  * @desc:
  */
 import { RouterMgr } from '../api/RouterMgr';
-import { ObjectOrNull, OnPopResultCallback, PopResult, RouteMetadata, IPopOptions } from './Model';
+import { ObjectOrNull, OnPopResultCallback, PopResult, RouteMetadata, IPopOptions, StringOrNull } from './Model';
 import { INavDestOptions, NavDestOptionsImpl } from './NavDestOptions';
 import { NavAnimationMgr } from '../animation/NavAnimationMgr';
 import { ArrayList, HashMap } from '@kit.ArkTS';
-import { ObjUtil } from '../utlis/ObjUtil';
+import { ObjectUtil } from '../utlis/ObjectUtil';
 import { RedirectType } from './Const';
 import { LaunchMode } from './LaunchMode';
 import Logger from '../utlis/Logger';
 import { ZRouter } from '../api/Router';
+import { isBoolean } from '@hzw/logger/src/main/ets/common/Types';
 
 export class NavDestBuilder<T> {
   private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
@@ -23,7 +24,7 @@ export class NavDestBuilder<T> {
     return this.optionsImpl
   }
 
-  public static  create<T>(routerMgr: RouterMgr, stackName: string): NavDestBuilder<T> {
+  public static create<T>(routerMgr: RouterMgr, stackName: string): NavDestBuilder<T> {
     return new NavDestBuilder<T>(routerMgr, stackName)
   }
 
@@ -159,10 +160,10 @@ export class NavDestBuilder<T> {
       return param
     }
     const objs = new Array<object>()
-    if (!(param instanceof Array) && !(param instanceof Set) && ObjUtil.isObject(param)) {
+    if (!(param instanceof Array) && !(param instanceof Set) && ObjectUtil.isObject(param)) {
       objs.push(param!)
     }
-    if (this.paramMap.length > 0 ) {
+    if (this.paramMap.length > 0) {
       let newObj: Record<string, ObjectOrNull> = {};
       this.paramMap.forEach((val, key) => {
         if (key) {
@@ -172,13 +173,13 @@ export class NavDestBuilder<T> {
       objs.push(newObj)
     }
 
-    if (param && !ObjUtil.isObject(param) && objs.length > 0) {
+    if (param && !ObjectUtil.isObject(param) && objs.length > 0) {
       throw new Error('当setParam()和withParam()方法同时调用时，setParam()方法的实参不能为基本数据类型，必须是对象')
     }
 
 
-    if (objs.length > 0 || ObjUtil.isEmpty(param)) {
-      param = ObjUtil.merge(objs)
+    if (objs.length > 0 || ObjectUtil.isEmpty(param)) {
+      param = ObjectUtil.merge(objs)
     }
 
 
@@ -195,7 +196,7 @@ export class NavDestBuilder<T> {
     if (this.optionsImpl.onPopListener) {
       if (this.optionsImpl.listenPopResultOnRootView) {
         // 从根级页面监听返回结果
-        this.routerMgr.pushNavForResult<T>(name, this.mergeParams(), this.optionsImpl.onPopListener,this)
+        this.routerMgr.pushNavForResult<T>(name, this.mergeParams(), this.optionsImpl.onPopListener, this)
       } else {
         this.routerMgr.pushForResult(name, this.mergeParams(), (data) => {
           let result = data.result
@@ -301,7 +302,7 @@ export class NavDestBuilder<T> {
    * @param returnToRedirectedPage 返回重定向前的页面, 前提调用是使用 redirect()方法
    * @returns boolean 是否返回成功
    */
-  public popWithResult(result: Object, animated: boolean = true, opts: IPopOptions = {}): boolean {
+  public popWithResult(result: Object, animated: boolean = true, opts: IPopOptions = { animated: true }): boolean {
     this.updateCurrentStackName()
     const returnToRedirectedPage = opts.returnToRedirectedPage
     return returnToRedirectedPage ? this.routerMgr.finishWithResult(result, animated) :
@@ -334,6 +335,8 @@ export class NavDestBuilder<T> {
    * 携带结果返回到重定向页面，与redirect()方法搭配使用
    * @param result
    * @param animated
+   * @deprecated
+   * @see popWithResult
    */
   public finishWithResult<T>(result: T, animated: boolean = true) {
     this.updateCurrentStackName()
@@ -347,6 +350,41 @@ export class NavDestBuilder<T> {
   public clear() {
     this.updateCurrentStackName()
     this.routerMgr.clear()
+  }
+
+  /**
+   * 返回根视图，即Navigation页面
+   * @param result
+   */
+  public popToRoot(result: ObjectOrNull = null, opts: IPopOptions = { animated: true }) {
+    if (ObjectUtil.isNotEmpty(result)) {
+      this.popToRootWithResult(result, opts.animated ?? true)
+    } else {
+      this.clear()
+    }
+  }
+
+  /**
+   * 页面返回聚合方法
+   * @param opts
+   */
+  public navigateBack(opts: IPopOptions = { animated: true, toRoot: false }) {
+    if (ObjectUtil.isEmpty(opts.name) && ObjectUtil.isEmpty(opts.result) && !opts.toRoot) {
+      // 返回上一页
+      this.pop(opts.animated)
+    } else if (opts.toRoot) {
+      // 返回根视图 即Navigation页面
+      this.popToRoot(opts.result, opts)
+    } else if (ObjectUtil.isNotEmpty(opts.name) && ObjectUtil.isEmpty(opts.result)) {
+      // 返回指定路由名称的页面
+      this.popToName(opts.name!, opts.animated)
+    } else if (ObjectUtil.isNotEmpty(opts.name) && ObjectUtil.isNotEmpty(opts.result)) {
+      // 携带结果返回指定路由名称的页面
+      this.popToNameWithResult(opts.name!, opts.result, opts.animated)
+    } else if (ObjectUtil.isNotEmpty(opts.result)) {
+      // 携带结果返回上一页
+      this.popWithResult(opts.result!, opts.animated, opts)
+    }
   }
 
   /**
@@ -394,7 +432,7 @@ export class NavDestBuilder<T> {
   public getParamByKey<P = ObjectOrNull>(key: string, defVal: ObjectOrNull = null): P {
     const p = this.getParam()
     try {
-      if (ObjUtil.hasProperty(p, key)) {
+      if (ObjectUtil.hasProperty(p, key)) {
         const o = p as Record<string, ObjectOrNull>
         const target = o[key]
         return target as P
@@ -429,17 +467,16 @@ export class NavDestBuilder<T> {
   }
 
 
-
   public hasKey(key: string): boolean {
     const p = this.getParam()
-    return ObjUtil.hasProperty(p, key)
+    return ObjectUtil.hasProperty(p, key)
   }
 
   /**
    * 获取当前页面的@Route或@ZRoute注解中的参数
    * @returns
    */
-  public getAnnotationParam() :RouteMetadata | undefined {
+  public getAnnotationParam(): RouteMetadata | undefined {
     this.updateCurrentStackName()
     return this.routerMgr.getAnnotationParam()
   }
@@ -461,7 +498,6 @@ export class NavDestBuilder<T> {
     this.updateCurrentStackName()
     this.routerMgr.moveToTop(name)
   }
-
 
 
   /**

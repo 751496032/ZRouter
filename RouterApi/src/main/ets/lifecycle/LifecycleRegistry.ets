@@ -3,7 +3,7 @@ import { ILifecycleObserver } from "./ILifecycleObserver";
 import { LifecycleCallback } from "./LifecycleMgr";
 import { util } from "@kit.ArkTS";
 import { SPLIT_SYMBOL } from "./ObserverState";
-import { ObjUtil } from "../utlis/ObjUtil";
+import { ObjectUtil } from "../utlis/ObjectUtil";
 import Logger from "../utlis/Logger";
 
 /**

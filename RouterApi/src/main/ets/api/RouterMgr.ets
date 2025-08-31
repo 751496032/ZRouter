@@ -3,7 +3,7 @@
  * @date: 2024/7/18
  * @desc:
  */
-import { ObjUtil } from '../utlis/ObjUtil'
+import { ObjectUtil } from '../utlis/ObjectUtil'
 import {
   DEFAULT_STACK_NAME,
   DestinationInfo,
@@ -75,7 +75,7 @@ export class RouterMgr {
         this.isPageLaunched = true
       }
       const name = info.name.toString()
-      if (ObjUtil.isEmpty(name)) {
+      if (ObjectUtil.isEmpty(name)) {
         return
       }
       const routerInfo = RouterInfo.create(name, info.navigationId.toString(), info.param, info.navDestinationId)
@@ -224,7 +224,7 @@ export class RouterMgr {
     const topName = this.getTopPathName()
     return this.pushDestination(name, param, undefined, builder).then(() => {
       let eName = ''
-      if (ObjUtil.isNotEmpty(topName)) {
+      if (ObjectUtil.isNotEmpty(topName)) {
         eName = topName!
       } else {
         eName = NavRootEvent
@@ -517,11 +517,11 @@ export class RouterMgr {
    */
   public popNavWithResult<T>(name: string, result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
-    if (ObjUtil.isEmpty(currentName)) {
+    if (ObjectUtil.isEmpty(currentName)) {
       Logger.error(currentName + " 不存在路由栈顶中")
       return;
     }
-    if (ObjUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
+    if (ObjectUtil.isNotEmpty(name) && this.getAllPathName().includes(name!)) {
       if (currentName !== name) {
         this.popToNameWithResult(name, result!, animated)
       } else {
@@ -543,7 +543,7 @@ export class RouterMgr {
    */
   public finishWithResult<T>(result: T, animated: boolean = true): boolean {
     const state = this.getCurrentState()
-    if (state.redirectWithResultMode && ObjUtil.isNotEmpty(state.redirectInfo.name)) {
+    if (state.redirectWithResultMode && ObjectUtil.isNotEmpty(state.redirectInfo.name)) {
       const topName = this.getTopPathName()
       this.sendEvent<T>(state.redirectInfo.name, topName!, result)
       this.pop(animated)
@@ -555,7 +555,7 @@ export class RouterMgr {
 
   public popToRootWithResult<T>(result: T, animated: boolean = true) {
     const currentName = this.getTopPathName()
-    if (ObjUtil.isEmpty(currentName)) {
+    if (ObjectUtil.isEmpty(currentName)) {
       Logger.error('路由栈为空，无法执行popToRootWithResult')
       return;
     }
@@ -636,7 +636,7 @@ export class RouterMgr {
       if (state.redirectWithResultMode) {
         name = state.redirectInfo.name
       } else {
-        if (ObjUtil.isEmpty(name)) {
+        if (ObjectUtil.isEmpty(name)) {
           name = state.stackTopInfo?.metadata?.name || state.redirectInfo.name
         }
       }

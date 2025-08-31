@@ -3,7 +3,7 @@
  * @date: 2024/7/18
  * @desc:
  */
-import { ObjUtil } from '../utlis/ObjUtil'
+import { ObjectUtil } from '../utlis/ObjectUtil'
 import { HashMap } from '@kit.ArkTS'
 import { INavDestOptions } from './NavDestOptions'
 import { runCatching } from '../utlis/runCatching'
@@ -64,7 +64,7 @@ export class InterceptorInfo {
   }
 
   public get isNeedLogin(): boolean {
-    return !ObjUtil.isEmpty(this.metadata) && this.metadata?.needLogin === 'true'
+    return !ObjectUtil.isEmpty(this.metadata) && this.metadata?.needLogin === 'true'
   }
 
   public get notRegistered(): boolean {
@@ -75,8 +75,8 @@ export class InterceptorInfo {
   }
 
   private isContext() {
-    return ObjUtil.isNotEmpty(this.toContext?.pathStack)
-      && ObjUtil.isNotEmpty(this.toContext?.pathInfo)
+    return ObjectUtil.isNotEmpty(this.toContext?.pathStack)
+      && ObjectUtil.isNotEmpty(this.toContext?.pathInfo)
   }
 
   public putExtra(key: string, value: ObjectOrNull) {
@@ -183,6 +183,11 @@ export class PopResult<T> {
 export interface IPopOptions {
   // 返回重定向前的页面, 前提调用是使用 redirect()方法
   returnToRedirectedPage?: boolean
+  // 以下参数只有在popTo 、 popToRoot、popWithResult方法中才有效
+  animated?: boolean
+  toRoot?: boolean
+  name?: string
+  result?: Object
 }
 
 export type OnPopCallback = (data: PopInfo) => void | boolean
@@ -195,6 +200,8 @@ export type OnPopResultCallback<T> = (data: PopResult<T | ObjectOrNull>) => void
 export type OnInterceptorCallback = (data: InterceptorInfo) => void | boolean
 
 export type ObjectOrNull = Object | undefined | null
+
+export type StringOrNull = string | null | undefined
 
 export const NavRootEvent = 'NavRoot'
 

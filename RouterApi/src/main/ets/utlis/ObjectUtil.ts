@@ -4,7 +4,7 @@
  * @date: 2024/7/18
  * @desc:
  */
-export class ObjUtil {
+export class ObjectUtil {
   private constructor() {
   }
 
@@ -26,6 +26,8 @@ export class ObjUtil {
     let isEmpty = obj === undefined || obj === null
     if (typeof obj === 'string') {
       isEmpty = isEmpty || obj.trim().length === 0
+    } else if (ObjectUtil.isObject(obj)) {
+      isEmpty = isEmpty || Object.keys(obj).length === 0
     }
     return isEmpty
   }
@@ -36,7 +38,7 @@ export class ObjUtil {
    * @returns
    */
   static isNotEmpty(obj: Object | undefined | null): boolean {
-    return !ObjUtil.isEmpty(obj)
+    return !ObjectUtil.isEmpty(obj)
   }
 
   /**
@@ -46,7 +48,7 @@ export class ObjUtil {
    * @returns
    */
   static hasProperty(obj: Object | undefined | null, propertyName: string): boolean {
-    if (!ObjUtil.isObject(obj)) {
+    if (!ObjectUtil.isObject(obj)) {
       return false
     }
     for (const key of Object.keys(obj!)) {
@@ -70,19 +72,19 @@ export class ObjUtil {
     if (Array.isArray(obj)) {
       copy = [];
       for (let i = 0; i < obj.length; i++) {
-        copy[i] = ObjUtil.deepCopy(obj[i]);
+        copy[i] = ObjectUtil.deepCopy(obj[i]);
       }
     } else {
       copy = {};
       for (let key of Object.keys(obj)) {
-        if (ObjUtil.hasProperty(obj, key)) {
+        if (ObjectUtil.hasProperty(obj, key)) {
           let keyStr = key + '';
           let suffix = '__ob_'
           if (keyStr.startsWith(suffix)) {
             const newKey = keyStr.substring(suffix.length)
-            copy[newKey] = ObjUtil.deepCopy(obj[key]);
+            copy[newKey] = ObjectUtil.deepCopy(obj[key]);
           }else {
-            copy[key] = ObjUtil.deepCopy(obj[key]);
+            copy[key] = ObjectUtil.deepCopy(obj[key]);
           }
         }
       }

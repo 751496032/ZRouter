@@ -5,7 +5,7 @@
  */
 import { InterceptorMgr } from '../interceptions/InterceptorMgr';
 import { DEFAULT_STACK_NAME, InterceptorInfo, RouteMetadata } from '../model/Model';
-import { ObjUtil } from '../utlis/ObjUtil';
+import { ObjectUtil } from '../utlis/ObjectUtil';
 import { ArrayList, HashMap } from '@kit.ArkTS';
 import NavDestState from '../model/NavDestState';
 import { ZRouter } from './Router';
@@ -35,7 +35,7 @@ export default class NavStackMgr {
 
   public updateCurrentStackName(name: string) {
     if (!this.navStackMap.has(name)) {
-      if (ObjUtil.isEmpty(name)) {
+      if (ObjectUtil.isEmpty(name)) {
         throw new Error(`Initialize NavPathStack: 【 Navigation(ZRouter.getNavStack())  or  Navigation(ZRouter.getNavStackByName(xx))】`)
       } else {
         throw new Error(`stack name does not exist: 【 ${name} 】，please call  method  register: 【 registerNavStack 】`)
@@ -46,7 +46,7 @@ export default class NavStackMgr {
   }
 
   public get currentStackName(): string {
-    if (ObjUtil.isNotEmpty(this._currentStackName) ) {
+    if (ObjectUtil.isNotEmpty(this._currentStackName) ) {
       if (this.navStackMap.has(this._currentStackName!)) {
         const name = this._currentStackName!
         // this._currentStackName = undefined
@@ -133,7 +133,7 @@ export default class NavStackMgr {
               const toContext: NavDestinationContext = to as NavDestinationContext
               interceptorInfo.toContext = toContext
               const data = toContext.getConfigInRouteMap()?.data
-              if (ObjUtil.isObject(data)) {
+              if (ObjectUtil.isObject(data)) {
                 const metadata: RouteMetadata = data as RouteMetadata
                 metadata.name = toContext.getConfigInRouteMap()?.name
                 interceptorInfo.name = metadata.name
@@ -160,7 +160,7 @@ export default class NavStackMgr {
               }
             }
           }
-          if (ObjUtil.isObject(from) && !isWillShowRootView) {
+          if (ObjectUtil.isObject(from) && !isWillShowRootView) {
             fromContext = from as NavDestinationContext
             toContext = to as NavDestinationContext
             isWillShowNavDestView = true
@@ -207,7 +207,7 @@ export default class NavStackMgr {
 
   public addRouterInfo(routerInfo: RouterInfo) {
     const name = this.currentStackName
-    if (ObjUtil.isEmpty(name)) {
+    if (ObjectUtil.isEmpty(name)) {
       return
     }
     let list = this.navDestMap.get(name)
