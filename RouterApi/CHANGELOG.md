@@ -3,7 +3,7 @@
 
 ### 1.8.1 / 2025-9-1
 
-- **功能优化**: 优化 `popWithResult` 方法，修复携带参数对空字符串或 `false` 值的兼容性问题；
+- **功能优化**: 优化 `popWithResult` 方法，修复携带参数对空字符串或 `false` 值的兼容性问题 [#ICVNPT](https://gitee.com/common-apps/ZRouter/issues/ICVNPT)；
 - [**接口API变更**](https://gitee.com/common-apps/ZRouter/blob/main/%E6%8E%A5%E5%8F%A3%E5%88%97%E8%A1%A8.md)
   - 新增初始化参数`isGlobalPopCallbackEnabled`，默认为`false`，用于控制是否开启全局`pop`方法触发回调功能。
   - 调整 `popWithResult` 和 `popToNameWithResult` 方法携带参数为可选。
