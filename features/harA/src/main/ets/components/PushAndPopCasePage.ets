@@ -22,7 +22,7 @@ export struct PushAndPopCasePage {
             // .setParam('hello')
             .withParam("key1", 55)
             .setPopListener((v)=>{
-              ToastUtils.show(JSON.stringify(v.data))
+              ToastUtils.show("结果：" +JSON.stringify(v.data))
             })
             .push(RouterConstants.HSPC_INDEX_PAGE)
 

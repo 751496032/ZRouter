@@ -440,7 +440,7 @@ export class ZRouter {
    * @param result
    * @param animated
    */
-  public static popWithResult(result: Object, animated: boolean = true) {
+  public static popWithResult(result?: Object, animated: boolean = true) {
     ZRouter.getRouterMgr().popWithResult(result, animated)
   }
 

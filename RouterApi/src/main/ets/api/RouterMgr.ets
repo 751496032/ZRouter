@@ -422,6 +422,9 @@ export class RouterMgr {
    * @returns
    */
   public popToNameWithResult<T>(name: string, result?: T, animated: boolean = true) {
+    if (result === undefined || result === null) {
+      result = new Object() as T
+    }
     return this.popToNameInternal(name, result, animated)
   }
 
@@ -443,32 +446,42 @@ export class RouterMgr {
    * @param animated
    * @returns boolean true: 表示成功关闭页面
    */
-  public popWithResult(result: Object, animated: boolean = true) {
+  public popWithResult(result?: Object, animated: boolean = true) {
+    if (result === undefined || result === null) {
+      result = new Object()
+    }
     return this.popInternal(result, animated)
   }
 
 
   private popInternal(result?: Object, animated: boolean = true): boolean {
-    // 路由栈默认是不支持Boolean类型，转成字符串携带
+    // 路由默认是不支持Boolean类型，转成字符串携带
     if (typeof result == "boolean") {
       result = `${result}`
     }
     if (this.isAtBottomOfHiddenNavbarStack()) {
       return false
     }
-    if (result) {
-      let r = this.getNavStack().pop(result, animated)
-      if (!r) {
-        r = this.getNavStack().getParent()?.pop(result, animated)
-      }
-      return r !== undefined
-    } else {
-      let r = this.getNavStack().pop(animated)
-      if (!r) {
-        r = this.getNavStack()?.getParent()?.pop(animated)
-      }
-      return r !== undefined
+
+    let r = this.getNavStack().pop(result, animated)
+    if (!r) {
+      r = this.getNavStack().getParent()?.pop(result, animated)
     }
+    return r !== undefined
+
+    // if (result !== undefined && result !== null) {
+    //   let r = this.getNavStack().pop(result, animated)
+    //   if (!r) {
+    //     r = this.getNavStack().getParent()?.pop(result, animated)
+    //   }
+    //   return r !== undefined
+    // } else {
+    //   let r = this.getNavStack().pop(animated)
+    //   if (!r) {
+    //     r = this.getNavStack()?.getParent()?.pop(animated)
+    //   }
+    //   return r !== undefined
+    // }
   }
 
   /**
@@ -493,7 +506,7 @@ export class RouterMgr {
     if (this.isAtBottomOfHiddenNavbarStack()) {
       return index
     }
-    if (result) {
+    if (result !== undefined && result !== null) {
       index = this.getNavStack().popToName(name, result!, animated)
       if (index === -1) {
         index = this.getNavStack()?.getParent()?.popToName(name, result!, animated) ?? -1

@@ -10,7 +10,6 @@ import { runCatching } from "../utlis/runCatching"
 import { ZObject } from "./Model"
 import { RouteItem, RouterMapWrapper } from "./RouterMap"
 import { process } from '@kit.ArkTS'
-import { KEY_ROUTER_MAP } from "./Const"
 
 type onDynamicLoadedComplete = (path?: string) => void | Promise<ZObject>
 type onRouterMapLoadedComplete = (routerMap: RouteItem[]) => void

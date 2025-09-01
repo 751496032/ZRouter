@@ -301,7 +301,7 @@ export class NavDestBuilder<T> {
    * @param returnToRedirectedPage 返回重定向前的页面, 前提调用是使用 redirect()方法
    * @returns boolean 是否返回成功
    */
-  public popWithResult(result: Object, animated: boolean = true, opts: IPopOptions = { animated: true }): boolean {
+  public popWithResult(result?: Object, animated: boolean = true, opts: IPopOptions = { animated: true }): boolean {
     this.updateCurrentStackName()
     const returnToRedirectedPage = opts.returnToRedirectedPage
     return returnToRedirectedPage ? this.routerMgr.finishWithResult(result, animated) :

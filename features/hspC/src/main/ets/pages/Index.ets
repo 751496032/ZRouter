@@ -35,7 +35,7 @@ struct Index {
 
         Button('popWithResult - 携带参数返回上一页').onClick((event: ClickEvent) => {
           // ZRouter.popWithResult('hspCIndex data')
-          ZRouter.getInstance().popWithResult("from hspC index data")
+          ZRouter.getInstance().popWithResult(undefined)
         })
 
         if (!ZRouter.getParamByKey<boolean>('isRoot',false)) {
