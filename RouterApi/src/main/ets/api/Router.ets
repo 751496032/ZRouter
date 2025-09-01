@@ -53,6 +53,7 @@ export class ZRouter {
     invoke?.(config)
     Logger.init(config.isLoggingEnabled)
     ZRouter._context = config.context
+    ZRouter.getRouterMgr().configOptions = config
     ZRouter.setup(config.isHSPModuleDependent)
     // AppStorage.setOrCreate(KEY_CONFIG_INITIALIZER, config) // 暂时没有作用
   }
@@ -65,6 +66,7 @@ export class ZRouter {
     let routerMap = ZRouter.getRouterMgr().routerMap
     if (routerMap.length === 0) {
       // 尝试同步获取，正常情况是不会执行到这里，在初始化时会在工作线程中完成
+      // 兜底操作
       const routerMap = loadRouterMapFromRawFileSync(this.context)
       ZRouter.getRouterMgr().routerMap = routerMap
       return routerMap

@@ -22,6 +22,8 @@ export class AppAbilityStage extends AbilityStage{
     ZRouter.initialize((config) => {
       // 强烈建议初始化 context
       config.context = this.context
+      // 可选
+      config.isGlobalPopCallbackEnabled = true
       config.isLoggingEnabled = true
       config.isHSPModuleDependent = true
       // 路由服务动态加载的模块

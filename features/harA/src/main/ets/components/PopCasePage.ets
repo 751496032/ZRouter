@@ -32,12 +32,21 @@ export struct PopCasePage5 {
         ZRouter.getInstance().pop()
       })
 
+      Button('popWithResult - 空参数返回上一页').onClick((event: ClickEvent) => {
+        ZRouter.getInstance().popWithResult()
+      })
+
+
       Button('popWithResult - 携带参数返回上一页').onClick((event: ClickEvent) => {
         ZRouter.getInstance().popWithResult('popWithResult 携带参数返回上一页  ' + + systemDateTime.getTime())
       })
 
       Button('popToName - 返回指定页面').onClick((event: ClickEvent) => {
         ZRouter.getInstance().popToName(RouterConstants.PAGE_PUSH_AND_POP_CASE)
+      })
+
+      Button('popToNameWithResult - 空参数返回指定页面').onClick((event: ClickEvent) => {
+        ZRouter.getInstance().popToNameWithResult(RouterConstants.PAGE_PUSH_AND_POP_CASE)
       })
 
       Button('popToNameWithResult - 携带参数返回指定页面').onClick((event: ClickEvent) => {

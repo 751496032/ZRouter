@@ -25,17 +25,35 @@ struct Index {
         Text(this.message)
         Button('toHspCPage1').onClick((event: ClickEvent) => {
           // ZRouter.push('hspCPage1')
-          ZRouter.getInstance().push("hspCPage1")
+          ZRouter.getInstance()
+            .setPopListener((result) => {
+              ToastUtils.show('in HspCPage1 from: ' + result.from + '  data: ' + JSON.stringify(result.data))
+            })
+            .push("hspCPage1")
         })
 
         Button('toHspCPage2').onClick((event: ClickEvent) => {
           // ZRouter.push('hspCPage2')
-          ZRouter.getInstance().push("hspCPage2")
+          ZRouter.getInstance()
+            .setPopListener((result) => {
+              ToastUtils.show('in HspCPage2 from: ' + result.from + '  data: ' + JSON.stringify(result.data))
+            })
+            .push("hspCPage2")
         })
 
         Button('popWithResult - 携带参数返回上一页').onClick((event: ClickEvent) => {
           // ZRouter.popWithResult('hspCIndex data')
-          ZRouter.getInstance().popWithResult(undefined)
+          // ZRouter.getInstance().popWithResult(undefined)
+          ZRouter.getInstance().popWithResult('hspCIndex data')
+        })
+
+        Button('popWithResult - 携带参数返回上一页 - false').onClick((event: ClickEvent) => {
+          ZRouter.getInstance().popWithResult(false)
+        })
+
+
+        Button('popWithResult - 携带参数返回上一页 - 0').onClick((event: ClickEvent) => {
+          ZRouter.getInstance().popWithResult(0)
         })
 
         if (!ZRouter.getParamByKey<boolean>('isRoot',false)) {

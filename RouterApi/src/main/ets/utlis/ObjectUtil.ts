@@ -32,6 +32,22 @@ export class ObjectUtil {
     return isEmpty
   }
 
+  static isNull(obj: Object | undefined | null): boolean {
+    return obj === undefined || obj === null
+  }
+
+  static isNotNull(obj: Object | undefined | null): boolean {
+    return !ObjectUtil.isNull(obj)
+  }
+
+  static isTrue(obj: Object | undefined | null): boolean {
+    return typeof obj === 'boolean' && obj === true
+  }
+
+  static isFalse(obj: Object | undefined | null): boolean {
+    return typeof obj === 'boolean' && obj === false
+  }
+
   /**
    * 判断是否不为空
    * @param obj

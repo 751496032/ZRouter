@@ -285,18 +285,18 @@ export class NavDestBuilder<T> {
    * 携带结果返回指定路由名称的页面，会关闭中间页面，可以替代popNavWithResult
    * 可在onPopListener回调函数内监听
    * @param name
-   * @param result
+   * @param result 返回携带的数据，如果不传，默认是一个空对象
    * @param animated
    * @returns
    */
-  public popToNameWithResult<T>(name: string, result: T, animated: boolean = true): number {
+  public popToNameWithResult<T = ObjectOrNull>(name: string, result: T | undefined = undefined, animated: boolean = true): number {
     this.updateCurrentStackName()
     return this.routerMgr.popToNameWithResult<T>(name, result, animated)
   }
 
   /**
    * 携带结果返回上一页，可在onPopListener回调函数内监听
-   * @param result 返回携带的数据
+   * @param result 返回携带的数据，如果不传，默认是一个空对象
    * @param animated 是否执行动画
    * @param returnToRedirectedPage 返回重定向前的页面, 前提调用是使用 redirect()方法
    * @returns boolean 是否返回成功
@@ -368,19 +368,19 @@ export class NavDestBuilder<T> {
    * @param opts
    */
   public navigateBack(opts: IPopOptions = { animated: true, toRoot: false }) {
-    if (ObjectUtil.isEmpty(opts.name) && ObjectUtil.isEmpty(opts.result) && !opts.toRoot) {
+    if (ObjectUtil.isEmpty(opts.name) && ObjectUtil.isNull(opts.result) && ObjectUtil.isFalse(opts.toRoot)) {
       // 返回上一页
       this.pop(opts.animated)
-    } else if (opts.toRoot) {
+    } else if (ObjectUtil.isTrue(opts.toRoot)) {
       // 返回根视图 即Navigation页面
       this.popToRoot(opts.result, opts)
-    } else if (ObjectUtil.isNotEmpty(opts.name) && ObjectUtil.isEmpty(opts.result)) {
+    } else if (ObjectUtil.isNotEmpty(opts.name) && ObjectUtil.isNull(opts.result)) {
       // 返回指定路由名称的页面
       this.popToName(opts.name!, opts.animated)
-    } else if (ObjectUtil.isNotEmpty(opts.name) && ObjectUtil.isNotEmpty(opts.result)) {
+    } else if (ObjectUtil.isNotEmpty(opts.name) && ObjectUtil.isNotNull(opts.result)) {
       // 携带结果返回指定路由名称的页面
       this.popToNameWithResult(opts.name!, opts.result, opts.animated)
-    } else if (ObjectUtil.isNotEmpty(opts.result)) {
+    } else if (ObjectUtil.isNotNull(opts.result)) {
       // 携带结果返回上一页
       this.popWithResult(opts.result!, opts.animated, opts)
     }

@@ -28,6 +28,7 @@ export class ConfigInitializer implements IConfigOptions {
   private _context?: Context
   private _isRoutePreloadThreadEnabled: boolean = true
   private _onRouterMapLoadedCompletes?: onRouterMapLoadedComplete[] = []
+  private _isGlobalPopCallbackEnabled: boolean = false
 
   constructor() {
     util.Aspect.addAfter(ZRouter, "setup", true, () => {
@@ -37,12 +38,27 @@ export class ConfigInitializer implements IConfigOptions {
       this.dynamicImportModule()
     })
     util.Aspect.addBefore(ZRouter, 'getNavStack', true, () => {
-      // 如果尚未加载路由表，会再次尝试加载
+      // 如果尚未加载路由表，会再次尝试加载，兜底操作
       if (!this.isRouterMapLoaded) {
         this.loadRouterMap()
       }
 
     })
+  }
+
+  /**
+   *
+   * 是否启用页面返回回调，默认为false
+   * ZRouter.getInstance().pop() 会触发setPopListener回调
+   * 等同于 ZRouter.getInstance().popWithResult()
+   * @param value
+   */
+  public set isGlobalPopCallbackEnabled(value: boolean) {
+    this._isGlobalPopCallbackEnabled = value
+  }
+
+  public get isGlobalPopCallbackEnabled(): boolean {
+    return this._isGlobalPopCallbackEnabled
   }
 
   /**
@@ -240,7 +256,7 @@ export function loadRouterMapFromRawFileSync(context: Context): RouteItem[] {
   return r?.routerMap ?? []
 }
 
-interface IConfigOptions {
+export interface IConfigOptions {
   /**
    * 是否有依赖hsp模块
    */
@@ -279,6 +295,13 @@ interface IConfigOptions {
    * 路由预加载是否启用多线程，默认为true
    */
   isRoutePreloadThreadEnabled?: boolean
+
+  /**
+   * 是否启用页面返回回调，默认为false
+   * ZRouter.getInstance().pop() 会触发setPopListener回调
+   * 等同于 ZRouter.getInstance().popWithResult()
+   */
+  isGlobalPopCallbackEnabled?: boolean
 
 }
 

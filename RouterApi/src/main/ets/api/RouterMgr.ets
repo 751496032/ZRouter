@@ -33,7 +33,7 @@ import { DeviceUtil } from '../utlis/DeviceUtil';
 import { INavDestOptions } from '../model/NavDestOptions';
 import { runCatching } from '../utlis/runCatching';
 import Logger from '../utlis/Logger';
-import { ConfigInitializer } from '../model/ConfigInitializer';
+import { ConfigInitializer, IConfigOptions } from '../model/ConfigInitializer';
 import { NavPushPathHelper } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 import { RouteItem } from '../model/RouterMap';
@@ -64,10 +64,18 @@ export class RouterMgr {
   public onBackAtBottom: OnAtBottomBackCallback = () => {
     return false
   }
-  // 支持元服务跨hsp模块
+  /**
+   * 用于支持元服务跨hsp模块
+   */
   private navPushPathHelper?: NavPushPathHelper
-  // 路由表
+  /**
+   * 路由表
+   */
   public routerMap: RouteItem[] = []
+  /**
+   * 路由初始化配置选项
+   */
+  public configOptions?: IConfigOptions
 
   private constructor() {
     uiObserver.on('navDestinationUpdate', (info) => {
@@ -409,7 +417,10 @@ export class RouterMgr {
    * @param animated
    * @returns 页面在栈中的索引index
    */
-  public popToName(name: string, animated: boolean = true) {
+  public popToName(name: string, animated: boolean = true): number {
+    if (this.configOptions?.isGlobalPopCallbackEnabled === true) {
+      return this.popToNameWithResult(name, undefined, animated)
+    }
     return this.popToNameInternal(name, undefined, animated)
   }
 
@@ -422,7 +433,7 @@ export class RouterMgr {
    * @returns
    */
   public popToNameWithResult<T>(name: string, result?: T, animated: boolean = true) {
-    if (result === undefined || result === null) {
+    if (ObjectUtil.isNull(result)) {
       result = new Object() as T
     }
     return this.popToNameInternal(name, result, animated)
@@ -433,7 +444,10 @@ export class RouterMgr {
    * @param animated
    * @returns boolean true: 表示成功关闭页面
    */
-  public pop(animated: boolean = true) {
+  public pop(animated: boolean = true): boolean {
+    if (this.configOptions?.isGlobalPopCallbackEnabled === true) {
+      return this.popWithResult(undefined, animated)
+    }
     return this.popInternal(undefined, animated)
   }
 
@@ -447,7 +461,7 @@ export class RouterMgr {
    * @returns boolean true: 表示成功关闭页面
    */
   public popWithResult(result?: Object, animated: boolean = true) {
-    if (result === undefined || result === null) {
+    if (ObjectUtil.isNull(result)) {
       result = new Object()
     }
     return this.popInternal(result, animated)
@@ -463,25 +477,25 @@ export class RouterMgr {
       return false
     }
 
-    let r = this.getNavStack().pop(result, animated)
-    if (!r) {
-      r = this.getNavStack().getParent()?.pop(result, animated)
-    }
-    return r !== undefined
-
-    // if (result !== undefined && result !== null) {
-    //   let r = this.getNavStack().pop(result, animated)
-    //   if (!r) {
-    //     r = this.getNavStack().getParent()?.pop(result, animated)
-    //   }
-    //   return r !== undefined
-    // } else {
-    //   let r = this.getNavStack().pop(animated)
-    //   if (!r) {
-    //     r = this.getNavStack()?.getParent()?.pop(animated)
-    //   }
-    //   return r !== undefined
+    // let r = this.getNavStack().pop(result, animated)
+    // if (!r) {
+    //   r = this.getNavStack().getParent()?.pop(result, animated)
     // }
+    // return r !== undefined
+
+    if (ObjectUtil.isNotNull(result)) {
+      let r = this.getNavStack().pop(result, animated)
+      if (!r) {
+        r = this.getNavStack().getParent()?.pop(result, animated)
+      }
+      return r !== undefined
+    } else {
+      let r = this.getNavStack().pop(animated)
+      if (!r) {
+        r = this.getNavStack()?.getParent()?.pop(animated)
+      }
+      return r !== undefined
+    }
   }
 
   /**
@@ -506,7 +520,7 @@ export class RouterMgr {
     if (this.isAtBottomOfHiddenNavbarStack()) {
       return index
     }
-    if (result !== undefined && result !== null) {
+    if (ObjectUtil.isNotNull(result)) {
       index = this.getNavStack().popToName(name, result!, animated)
       if (index === -1) {
         index = this.getNavStack()?.getParent()?.popToName(name, result!, animated) ?? -1
