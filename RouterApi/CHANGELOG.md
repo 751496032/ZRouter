@@ -4,7 +4,7 @@
 ### 1.8.0 / 2025-8-31
 
 - **服务路由支持**: `entry`模块支持服务路由，可用于底层模块调用`entry`模块的方法或组件的场景，[#ICRLKS](https://gitee.com/common-apps/ZRouter/issues/ICRLKS)；
-- **动态加载支持**: 路由跳转支持元服务`hsp`模块动态加载 [#ICQ22O](https://gitee.com/common-apps/ZRouter/issues/ICQ22O)；
+- **元服务支持**: 路由跳转支持元服务`hsp`模块动态加载 [#ICQ22O](https://gitee.com/common-apps/ZRouter/issues/ICQ22O)；
 - **拦截器增强**: 拦截器方法支持获取页面`@Route`注解中的配置参数 [#ICSAC5](https://gitee.com/common-apps/ZRouter/issues/ICSAC5)；
 - **路由预加载**: 支持路由表预加载，默认在工作线程执行，不影响启动速度；
 - **返回处理优化**: 修复`hideNavbar`模式下的返回问题，支持自定义返回拦截 [#ICNNJF](https://gitee.com/common-apps/ZRouter/issues/ICNNJF)；

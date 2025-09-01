@@ -13,7 +13,6 @@ import { RedirectType } from './Const';
 import { LaunchMode } from './LaunchMode';
 import Logger from '../utlis/Logger';
 import { ZRouter } from '../api/Router';
-import { isBoolean } from '@hzw/logger/src/main/ets/common/Types';
 
 export class NavDestBuilder<T> {
   private optionsImpl: INavDestOptions<T> = new NavDestOptionsImpl<T>();
