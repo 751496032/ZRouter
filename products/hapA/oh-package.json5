@@ -6,8 +6,9 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "routerapi": "file:../../RouterApi",
-    "common_library": "file:../../library/common"
-  }
+    "common_library": "file:../../library/common",
+    "@hzw/zrouter": "file:../../libs/RouterApi.har"
+  },
+  "devDependencies": {},
+  "dynamicDependencies": {}
 }
-

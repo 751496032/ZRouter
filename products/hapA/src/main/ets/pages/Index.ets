@@ -1,7 +1,7 @@
 import { RouterConstants } from 'common_library';
-import { ZRouter } from 'routerapi';
 import { common } from '@kit.AbilityKit';
 import { Logger } from '@hzw/logger';
+import { ZRouter } from '@hzw/zrouter';
 
 @Entry
 @Component
