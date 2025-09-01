@@ -111,11 +111,12 @@ export default {
 
 >  **注意：** 以上配置参数都是可选的，建议配置`scanDirs`和`ignoredModules`字段，避免扫描所有目录和模块，影响工程编译效率。
 
-其中`_generated`目录和`route_map.json`文件在编译阶段自动生成的，建议在git的`.gitignore`忽略掉这两个文件。
+编译阶段会自动生成的，建议在git的`.gitignore`忽略掉这些文件。
 
 ```gitignore
 _generated
-route_map.json
+**/route_map.json
+**/router_map.json
 ```
 
 ## ZRouter的基本使用
