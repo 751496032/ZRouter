@@ -164,13 +164,13 @@ export class ConfigInitializer implements IConfigOptions {
 
 
   private async loadRouterMap() {
-    Logger.log(`loadRouterMap: 开始加载路由表`, this.isRoutePreloadThreadEnabled)
+    Logger.log(`loadRouterMap: 开始预加载路由表`, this.isRoutePreloadThreadEnabled)
     if (this.isRoutePreloadThreadEnabled) {
       Logger.log(`isMainThread: `, process.pid == process.tid)
       taskpool.execute(loadRouterMapFromRawFile, this.context).then((data: object) => {
         this.parseRouterMap(data)
       }).catch((e: Error) => {
-        Logger.log(`路由表加载失败: ${e.message}`)
+        Logger.log(`路由表预加载失败: ${e.message}，请检查下路由初始化处是否缺少context赋值`)
       })
     } else {
       runCatching(async () => {
@@ -178,7 +178,7 @@ export class ConfigInitializer implements IConfigOptions {
           this.parseRouterMap(data)
         })
       }).onFailure((e: Error) => {
-        Logger.log(`路由表预加载失败: ${e.message}`)
+        Logger.log(`路由表预加载失败: ${e.message}，请检查下路由初始化处是否缺少context赋值`)
       })
     }
   }
