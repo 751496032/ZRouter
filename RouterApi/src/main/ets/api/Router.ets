@@ -52,8 +52,9 @@ export class ZRouter {
     }
     invoke?.(config)
     Logger.init(config.isLoggingEnabled)
+    // 初始化路由管理类
+    RouterMgr.getInstance().configOptions = config
     ZRouter._context = config.context
-    ZRouter.getRouterMgr().configOptions = config
     ZRouter.setup(config.isHSPModuleDependent)
     // AppStorage.setOrCreate(KEY_CONFIG_INITIALIZER, config) // 暂时没有作用
   }

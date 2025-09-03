@@ -7,7 +7,8 @@
   "license": "",
   "dependencies": {
     "common_library": "file:../../library/common",
-    "@hzw/zrouter": "file:../../libs/RouterApi.har"
+    "@hzw/zrouter": "file:../../libs/RouterApi.har",
+    "@hzw/logger": "1.0.2"
   },
   "devDependencies": {},
   "dynamicDependencies": {}

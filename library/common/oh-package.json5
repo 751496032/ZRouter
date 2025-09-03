@@ -6,7 +6,8 @@
   "author": "hzw",
   "license": "Apache-2.0",
   "dependencies": {
-    "@hzw/zrouter": "file:../../RouterApi"
+    "@hzw/zrouter": "^1.8.1",
+    "@hzw/logger": "1.0.2"
   },
   "devDependencies": {}
 }

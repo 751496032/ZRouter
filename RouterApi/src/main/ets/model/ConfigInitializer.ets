@@ -178,7 +178,7 @@ export class ConfigInitializer implements IConfigOptions {
           this.parseRouterMap(data)
         })
       }).onFailure((e: Error) => {
-        Logger.log(`路由表加载失败: ${e.message}`)
+        Logger.log(`路由表预加载失败: ${e.message}`)
       })
     }
   }
@@ -186,7 +186,7 @@ export class ConfigInitializer implements IConfigOptions {
 
   private parseRouterMap(data: object) {
     let routerMapGenerator: RouterMapWrapper = data as RouterMapWrapper
-    Logger.log(`路由表加载成功`, JSON.stringify(routerMapGenerator))
+    Logger.log(`路由表预加载成功`, JSON.stringify(routerMapGenerator))
     this.isRouterMapLoaded = true
     this._onRouterMapLoadedCompletes?.forEach((value) => {
       value(routerMapGenerator.routerMap)

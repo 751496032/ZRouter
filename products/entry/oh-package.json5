@@ -10,7 +10,8 @@
     "@hzw/hara": "file:../../features/harA",
     "harb": "file:../../features/harB",
     "hspc": "file:../../features/hspC",
-    "@hzw/common_library": "file:../../library/common"
+    "@hzw/common_library": "file:../../library/common",
+    "@hzw/logger": "1.0.2"
   },
   "devDependencies": {},
   "dynamicDependencies": {}
