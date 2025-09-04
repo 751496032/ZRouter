@@ -1,6 +1,11 @@
 
 ## 版本更新记录
 
+### 1.8.2 / 2025-9-5
+
+- **问题修复**: 修复日志开关`isLoggingEnabled`失效问题；
+- **编译插件**：升级到**1.8.2**版本，修复在DevEco 5.1.1版本的兼容问题。
+
 ### 1.8.1 / 2025-9-1
 
 - **功能优化**: 优化 `popWithResult` 方法，修复携带参数对空字符串或 `false` 值的兼容性问题 [#ICVNPT](https://gitee.com/common-apps/ZRouter/issues/ICVNPT)；
