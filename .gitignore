@@ -15,3 +15,8 @@ _generated
 oh-package-lock.json5
 **/oh-package-lock.json5
 **/router_map.json
+scripts/publish.config
+
+
+# 使gitignore生效
+# git rm -r --cached [文件路径]
