@@ -74,6 +74,12 @@ export interface INavLifecycle extends ILifecycle {
    */
   onDisappear?(info: RouterInfo): void
 
+  /**
+   * Navigation的根页面显示时触发此回调
+   * 用户返回到根页面时触发此回调
+   */
+  onRootShow?(): void
+
 
   //—————————————————— onBackPress 和 onReady 方法只有在NavDestination模板模式下才会生效 ——————————————————
 

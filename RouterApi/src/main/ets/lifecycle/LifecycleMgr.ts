@@ -37,6 +37,10 @@ export class LifecycleMgr {
     return this
   }
 
+  get globalLifecycleObservers(): ArrayList<ILifecycleObserver> {
+    return this.globalObservers
+  }
+
   public removeGlobalObserver(observer: ILifecycleObserver){
     if (this.globalObservers.has(observer)) {
       this.globalObservers.remove(observer)

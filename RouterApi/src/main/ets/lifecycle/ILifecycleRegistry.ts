@@ -8,5 +8,6 @@ import { LifecycleObserver } from "./LifecycleEvent"
 
 export interface ILifecycleRegistry {
     addNavObserver(callback: LifecycleObserver)
-    getLifecycle():ILifecycleRegistry
+
+    getLifecycle(): ILifecycleRegistry
 }

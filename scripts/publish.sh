@@ -1,8 +1,6 @@
 #!/bin/bash
 echo "start publish..."
 
-#!/bin/bash
-
 # 加载配置
 if [ -f "publish.config" ]; then
     source publish.config

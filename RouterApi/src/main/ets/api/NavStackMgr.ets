@@ -14,6 +14,7 @@ import { RouterMgr } from './RouterMgr';
 import Logger from '../utlis/Logger';
 import { runCatching } from '../utlis/runCatching';
 import { INavDestOptions } from '../model/NavDestOptions';
+import { LifecycleMgr } from '../lifecycle/LifecycleMgr';
 
 export default class NavStackMgr {
   private navStackMap: Map<string, NavPathStack> = new Map<string, NavPathStack>()
@@ -186,6 +187,9 @@ export default class NavStackMgr {
               }
               if (isWillShowRootView) {
                 interceptor.onRootWillShow?.(fromContext)
+                LifecycleMgr.getInstance().globalLifecycleObservers.forEach(observer => {
+                  observer.onRootShow?.()
+                })
                 this.deleteAllDestBuildOpts()
               }
               if (isWillShowNavDestView) {
