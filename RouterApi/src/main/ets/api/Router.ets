@@ -149,7 +149,7 @@ export class ZRouter {
       if (!ObjectUtil.isEmpty(mgr)) {
         return mgr as RouterMgr
       } else {
-         ZRouter.init(true)
+        ZRouter.init(true)
       }
     }
     if (!ZRouter.routerMgr) {
@@ -271,7 +271,6 @@ export class ZRouter {
   }
 
 
-
   /**
    * 设置全局拦截器，每个路由栈只能设置一次
    * @param interceptor
@@ -312,7 +311,19 @@ export class ZRouter {
     return ZRouter.getRouterMgr().lifecycleMgr.addGlobalObserver(observer)
   }
 
-  /**
+ /**
+  * 添加根页面显示回调
+  * @param callback
+  */
+  public static addRootPageShowObserver(callback: () => void) {
+    ZRouter.addGlobalLifecycleObserver({
+      onRootShow: () => {
+        callback()
+      }
+    } as ILifecycleObserver)
+  }
+
+  /**`
    * 添加单个NavDestination页面的生命周期观察者，在NavDestination页面模版模式下才会生效
    * @param observer
    */
@@ -560,7 +571,6 @@ export class ZRouter {
   public static replacePathByName(name: string, param?: ObjectOrNull, animated: boolean = true) {
     ZRouter.getRouterMgr().replacePathByName<ObjectOrNull>(name, param, animated)
   }
-
 
 
   /**
