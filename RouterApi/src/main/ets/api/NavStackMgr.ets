@@ -186,11 +186,16 @@ export default class NavStackMgr {
                 interceptor.onNavigate?.(interceptorInfo)
               }
               if (isWillShowRootView) {
-                interceptor.onRootWillShow?.(fromContext)
-                LifecycleMgr.getInstance().globalLifecycleObservers.forEach(observer => {
-                  observer.onRootShow?.()
-                })
-                this.deleteAllDestBuildOpts()
+                try {
+                  interceptor.onRootWillShow?.(fromContext)
+                  this.deleteAllDestBuildOpts()
+                  LifecycleMgr.getInstance().globalLifecycleObservers.forEach(observer => {
+                    observer.onRootShow?.()
+                  })
+                } catch (error) {
+                  Logger.error(error)
+                }
+
               }
               if (isWillShowNavDestView) {
                 interceptor.onPageWillShow?.(fromContext, toContext)
