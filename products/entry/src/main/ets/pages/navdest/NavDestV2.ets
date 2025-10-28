@@ -1,6 +1,6 @@
 
 import { RouterConstants } from '@hzw/common_library';
-import { ZRoute } from 'routerapi';
+import { ZRoute, ZRouter } from 'routerapi';
 import { NavDestV2ViewModel } from './NavDestV2ViewModel';
 
 
@@ -14,7 +14,17 @@ import { NavDestV2ViewModel } from './NavDestV2ViewModel';
 @Preview
 @ComponentV2
 export struct NavDestV2 {
+  // 方式1：在ViewModel中监听生命周期函数
   @Param viewModel: NavDestV2ViewModel = new NavDestV2ViewModel()
+  private static readonly TAG = 'NavDestV2 addLifecycleObserver'
+
+  aboutToAppear(): void {
+    // 方式2：在组件中可以监听生命周期函数
+    ZRouter.addLifecycleObserver((e, r) => {
+      console.log(NavDestV2.TAG, e)
+    })
+  }
+
   build() {
     Column({space : 10}){
       Text(`${this.viewModel.counter}`)
