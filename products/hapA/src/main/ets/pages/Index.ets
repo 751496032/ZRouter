@@ -1,4 +1,4 @@
-import { RouterConstants } from 'common_library';
+import { RouterConstants, RouterMap } from 'common_library';
 import { common } from '@kit.AbilityKit';
 import { Logger } from '@hzw/logger';
 import { ZRouter } from '@hzw/zrouter';
@@ -17,7 +17,7 @@ struct Index {
     Navigation(ZRouter.getNavStackByName(RouterConstants.HAP)) {
       Column({ space: 20 }) {
         Button("toHapPageOne").onClick((event: ClickEvent) => {
-          ZRouter.getInstance(RouterConstants.HAP).navigation(RouterConstants.HAP_A_PAGE_ONE)
+          ZRouter.getInstance(RouterConstants.HAP).navigation(RouterMap.HapA.HAP_A_PAGE_ONE)
         })
       }
     }.onAppear(() => {
