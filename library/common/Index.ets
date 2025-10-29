@@ -1,5 +1,6 @@
 export { MainPage } from './src/main/ets/components/MainPage'
 export { RouterConstants } from './src/main/ets/constants/RouterConstants'
+export { RouterMap } from './src/main/ets/constants/RouterMap'
 export { KeyConst } from './src/main/ets/constants/KeyConst'
 export { commonTest } from './src/main/ets/constants/Test'
 export { IHarAService } from './src/main/ets/services/IHarAService'
