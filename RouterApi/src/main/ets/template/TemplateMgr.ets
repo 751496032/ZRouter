@@ -12,7 +12,7 @@ import { LifecycleEvent, LifecycleObserver, LifecycleState } from "../lifecycle/
 export class TemplateMgr {
 
   private _templateMap: Map<string, ILifecycleRegistry | undefined> = new Map()
-  private _observers: Map<string, LifecycleObserver> = new Map()
+  private _observers: Map<string, LifecycleObserver[]> = new Map()
   private static _instance: TemplateMgr;
 
   private constructor() {
@@ -28,7 +28,9 @@ export class TemplateMgr {
   addObserver(callback: LifecycleObserver): TemplateMgr {
     const navDesId = ZRouter.getLastNavDestinationId()
     if (navDesId) {
-      this._observers.set(navDesId, callback)
+      const callbacks = this._observers.get(navDesId) ?? []
+      callbacks.push(callback)
+      this._observers.set(navDesId, callbacks)
     }
     return this
   }
@@ -49,7 +51,7 @@ export class TemplateMgr {
 
   }
 
-  private findObserver(navDesId: string | undefined):  LifecycleObserver | undefined {
+  private findObserver(navDesId: string | undefined):  LifecycleObserver[] | undefined {
     if (navDesId) {
       return this._observers.get(navDesId)
     }
@@ -57,7 +59,20 @@ export class TemplateMgr {
   }
 
   private notifyObservers(navDesId: string | undefined, state: LifecycleState,  router?: RouterInfo) {
-    return this.findObserver(navDesId)?.(state, router)
+    const targets = this.findObserver(navDesId) || [];
+    for (let i = 0; i < targets.length; i++) {
+      const callback = targets[i]
+      if (state !== LifecycleState.ON_BACK_PRESS) {
+        callback(state, router)
+      } else {
+        const r = callback(state,router)
+        if (typeof r === 'boolean') {
+          return r;
+        }
+      }
+    }
+    return void 0;
+
   }
 
   dispatch(navDesId: string | undefined, event: LifecycleEvent, router?: RouterInfo): void | boolean {
