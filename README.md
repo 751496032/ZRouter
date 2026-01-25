@@ -28,6 +28,13 @@ ZRouter是一款轻量级且非侵入性的鸿蒙动态路由框架，可解决H
 
 ZRouter已上架录入到[华为鸿蒙生态伙伴组件专区](https://developer.huawei.com/consumer/cn/market/landing/component)
 
+## 使用收集
+
+
+为了持续优化鸿蒙ZRouter路由库，恳请您花一点时间填写下应用名称。您的每一次反馈，都是我们持续改进的重要动力。
+
+https://wj.qq.com/s2/25201566/76c1/
+
 
 ## 快速入门
 
