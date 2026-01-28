@@ -83,10 +83,10 @@ hvigorw --sync
 步骤：
 ```
 // 1、导入
-import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
+import { routerRegisterPlugin, OptionalPluginConfig } from 'router-register-plugin'
 
 // 2、初始化配置
-const config: PluginConfig = {
+const config: OptionalPluginConfig = {
     scanDirs: ['src/main/ets/pages', 'src/main/ets/views'], // 扫描的目录，如果不设置，默认是扫描src/main/ets目录
     logEnabled: true, // 查看日志
     viewNodeInfo: false, // 查看节点信息

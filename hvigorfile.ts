@@ -1,7 +1,7 @@
 import { appTasks } from '@ohos/hvigor-ohos-plugin';
-import { routerRegisterPlugin, PluginConfig } from 'router-register-plugin'
+import { routerRegisterPlugin, OptionalPluginConfig } from 'router-register-plugin'
 
-const config: PluginConfig = {
+const config: OptionalPluginConfig = {
   scanDirs: ["src/main/ets/components", "src/main/ets/service", "src/main/ets/views", "src/main/ets/pages",
     'src/main/ets/model'],
   logEnabled: true, // 查看日志

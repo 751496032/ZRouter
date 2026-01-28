@@ -29,7 +29,14 @@ export struct NavDestV2 {
     Column({space : 10}){
       Text(`${this.viewModel.counter}`)
       Button("+1").onClick((event: ClickEvent) => {
+        if (this.viewModel.counter === 0) {
+          ZRouter.addLifecycleObserver((e, r) => {
+            console.log(NavDestV2.TAG, " onClick ", e)
+          })
+        }
         this.viewModel.counter ++
+
+
       })
     }
   }
